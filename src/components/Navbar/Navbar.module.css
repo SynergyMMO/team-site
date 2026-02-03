@@ -4,7 +4,7 @@
   width: 100%;
   background: rgba(10, 10, 15, 0.95);
   backdrop-filter: blur(6px);
-  z-index: 2;
+  z-index: 1002;
   box-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 
@@ -185,10 +185,18 @@
   .discordLink {
     display: none;
   }
+
+  /* Fix nav height on mobile */
+  .nav {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 600px) {
   .nav {
-    padding: 4px 10px;
+    min-height: 50px;
   }
 }
