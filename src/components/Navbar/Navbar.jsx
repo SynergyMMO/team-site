@@ -61,36 +61,35 @@ export default function Navbar() {
       </a>
 
       {/* Mobile menu overlay */}
-      {menuOpen && (
-        <>
-          <div className={styles.overlay} onClick={() => setMenuOpen(false)} />
-          <div className={styles.mobileMenu}>
-            {NAV_ITEMS.map(item => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.to === '/'}
-                className={({ isActive }) =>
-                  `${styles.mobileLink} ${isActive ? styles.mobileActive : ''}`
-                }
-                onClick={handleLinkClick}
-              >
-                {item.label}
-              </NavLink>
-            ))}
-            <a
-              href="https://discord.gg/2BEUq6fWAj"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.mobileDiscord}
-              onClick={handleLinkClick}
-            >
-              <img src={getAssetUrl('images/discord.png')} alt="Discord" />
-              Join Discord
-            </a>
-          </div>
-        </>
-      )}
+      <div
+        className={`${styles.overlay} ${menuOpen ? styles.overlayOpen : ''}`}
+        onClick={() => setMenuOpen(false)}
+      />
+      <div className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ''}`}>
+        {NAV_ITEMS.map(item => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.to === '/'}
+            className={({ isActive }) =>
+              `${styles.mobileLink} ${isActive ? styles.mobileActive : ''}`
+            }
+            onClick={handleLinkClick}
+          >
+            {item.label}
+          </NavLink>
+        ))}
+        <a
+          href="https://discord.gg/2BEUq6fWAj"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.mobileDiscord}
+          onClick={handleLinkClick}
+        >
+          <img src={getAssetUrl('images/discord.png')} alt="Discord" />
+          Join Discord
+        </a>
+      </div>
     </nav>
   )
 }
