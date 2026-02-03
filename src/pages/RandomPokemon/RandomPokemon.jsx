@@ -415,41 +415,47 @@ export default function RandomPokemon() {
         </div>
       </div>
 
-      {checkedCount >= 2 && (
-        <div className={styles.modeSettings}>
-          <h4>Mode Weights</h4>
-          <p>Low number = low chance, high number = high chance</p>
-          {enableShiny && (
-            <label>Shiny: <input type="number" min={1} max={100} value={pctShiny} onChange={e => setPctShiny(parseInt(e.target.value) || 0)} className={styles.weightInput} /></label>
-          )}
-          {allowNormal && (
-            <label>Non-Shiny: <input type="number" min={1} max={100} value={pctNormal} onChange={e => setPctNormal(parseInt(e.target.value) || 0)} className={styles.weightInput} /></label>
-          )}
-          {allowNature && (
-            <label>Nature: <input type="number" min={1} max={100} value={pctNature} onChange={e => setPctNature(parseInt(e.target.value) || 0)} className={styles.weightInput} /></label>
-          )}
-          {allowIV && (
-            <label>Random IV: <input type="number" min={1} max={100} value={pctIV} onChange={e => setPctIV(parseInt(e.target.value) || 0)} className={styles.weightInput} /></label>
-          )}
-        </div>
+      {currentTab === 'single' && (
+        <button className={styles.generateBtn} onClick={handleGenerate}>Generate</button>
       )}
 
       {currentTab === 'bingo' && (
-        <div className={styles.bingoSettings}>
-          <label>
-            Bingo Size:{' '}
-            <select value={bingoSize} onChange={e => setBingoSize(parseInt(e.target.value))} className={styles.bingoSelect}>
-              <option value={3}>3x3</option>
-              <option value={4}>4x4</option>
-              <option value={5}>5x5</option>
-              <option value={6}>6x6</option>
-              <option value={7}>7x7</option>
-            </select>
-          </label>
-        </div>
-      )}
+        <>
+          {checkedCount >= 2 && (
+            <div className={styles.modeSettings}>
+              <h4>Mode Weights</h4>
+              <p>Low number = low chance, high number = high chance</p>
+              {enableShiny && (
+                <label>Shiny: <input type="number" min={1} max={100} value={pctShiny} onChange={e => setPctShiny(parseInt(e.target.value) || 0)} className={styles.weightInput} /></label>
+              )}
+              {allowNormal && (
+                <label>Non-Shiny: <input type="number" min={1} max={100} value={pctNormal} onChange={e => setPctNormal(parseInt(e.target.value) || 0)} className={styles.weightInput} /></label>
+              )}
+              {allowNature && (
+                <label>Nature: <input type="number" min={1} max={100} value={pctNature} onChange={e => setPctNature(parseInt(e.target.value) || 0)} className={styles.weightInput} /></label>
+              )}
+              {allowIV && (
+                <label>Random IV: <input type="number" min={1} max={100} value={pctIV} onChange={e => setPctIV(parseInt(e.target.value) || 0)} className={styles.weightInput} /></label>
+              )}
+            </div>
+          )}
 
-      <button className={styles.generateBtn} onClick={handleGenerate}>Generate</button>
+          <div className={styles.bingoSettings}>
+            <label>
+              Bingo Size:{' '}
+              <select value={bingoSize} onChange={e => setBingoSize(parseInt(e.target.value))} className={styles.bingoSelect}>
+                <option value={3}>3x3</option>
+                <option value={4}>4x4</option>
+                <option value={5}>5x5</option>
+                <option value={6}>6x6</option>
+                <option value={7}>7x7</option>
+              </select>
+            </label>
+          </div>
+
+          <button className={styles.generateBtn} onClick={handleGenerate}>Generate</button>
+        </>
+      )}
 
       {/* Single mode results */}
       {currentTab === 'single' && (
