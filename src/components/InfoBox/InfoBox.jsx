@@ -22,12 +22,18 @@ export default function InfoBox({ shiny, points }) {
       const parentDiv = span.parentElement
       const isFavorite = parentDiv && parentDiv.className && parentDiv.className.includes('bigShiny')
 
-      let leftPos = span.offsetWidth + 8
+      let leftPos
 
-      // For favorites, always position to the right
-      // For others, check viewport and position accordingly
-      if (!isFavorite && spanRect.right + boxWidth + 8 > viewportWidth) {
-        leftPos = -boxWidth - 8
+      if (isFavorite) {
+        // For favorites, position far to the right to avoid scaled/glowing item
+        // Favorites are scaled 1.3x with glow, so need extra clearance
+        leftPos = span.offsetWidth + 60
+      } else {
+        // For normal items, position to the right or left based on viewport
+        leftPos = span.offsetWidth + 8
+        if (spanRect.right + boxWidth + 8 > viewportWidth) {
+          leftPos = -boxWidth - 8
+        }
       }
 
       box.style.left = leftPos + 'px'
