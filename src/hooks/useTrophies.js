@@ -7,11 +7,14 @@ export function useTrophies() {
     queryKey: ['trophies'],
     queryFn: () => {
       // Transform trophy image paths to include base URL
-      const transformed = {}
-      for (const [key, value] of Object.entries(trophiesData)) {
-        transformed[key] = typeof value === 'string' ? getAssetUrl(value.replace(/^\//, '')) : value
+      const transformedTrophies = {}
+      for (const [key, value] of Object.entries(trophiesData.trophies)) {
+        transformedTrophies[key] = getAssetUrl(value.replace(/^\//, ''))
       }
-      return transformed
+      return {
+        trophies: transformedTrophies,
+        trophyAssignments: trophiesData.trophyAssignments
+      }
     },
     staleTime: Infinity,
   })
