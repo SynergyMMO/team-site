@@ -34,5 +34,5 @@
 /* Show on parent span hover */
 span:hover .infoBox {
   opacity: 1;
-  pointer-events: auto;
+  pointer-events: none;
 }
