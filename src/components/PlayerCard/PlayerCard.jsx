@@ -35,7 +35,15 @@ function PlayerCard({ player, data, rank, streamers }) {
             rel="noopener noreferrer"
             className={styles.twitchLink}
           >
-            <img src={getAssetUrl('images/twitch.png')} alt="Twitch" className={styles.twitchIcon} />
+            <img
+              src={getAssetUrl('images/twitch.png')}
+              alt="Twitch"
+              className={styles.twitchIcon}
+              width="24"
+              height="24"
+              loading="lazy"
+              decoding="async"
+            />
           </a>
         )}
         <Link
@@ -47,7 +55,15 @@ function PlayerCard({ player, data, rank, streamers }) {
           {sparkle && <span className={styles.sparkle}>&#10024;</span>}
         </Link>
         {trophyImg && (
-          <img src={trophyImg} alt="trophy" className={styles.playerTrophy} />
+          <img
+            src={trophyImg}
+            alt="trophy"
+            className={styles.playerTrophy}
+            width="40"
+            height="40"
+            loading="lazy"
+            decoding="async"
+          />
         )}
       </div>
       <div className={styles.shinyList}>

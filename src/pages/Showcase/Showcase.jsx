@@ -52,7 +52,15 @@ export default function Showcase() {
           </a>
         </h2>
         <a href="https://www.youtube.com/watch?v=ngejc1FMWqg" target="_blank" rel="noopener noreferrer">
-          <img src={getAssetUrl('images/shinyshowcase.png')} alt="Shiny Showcase Video" className={styles.showcaseVideo} />
+          <img
+            src={getAssetUrl('images/shinyshowcase.png')}
+            alt="Shiny Showcase Video"
+            className={styles.showcaseVideo}
+            width="300"
+            height="169"
+            loading="eager"
+            decoding="async"
+          />
         </a>
       </div>
 
