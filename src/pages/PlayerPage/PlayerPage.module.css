@@ -1,0 +1,74 @@
+.playerPage {
+  padding: 20px;
+  max-width: 90%;
+  margin: auto;
+  text-align: center;
+}
+
+.playerPage h1 {
+  color: #fff;
+  font-size: 2rem;
+  margin-bottom: 16px;
+}
+
+.playerPage h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.playerPage p {
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+.shinyList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  position: relative;
+}
+
+.favouriteList {
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.favouritesHeader {
+  font-size: 2.5em;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+  display: block;
+  position: relative;
+  letter-spacing: 1px;
+}
+
+.bigShinyWrapper {
+  display: inline-block;
+  margin: 8px;
+  z-index: 1;
+  position: relative;
+}
+
+.bigShinyWrapper span > div {
+  transform: scale(1.3);
+  transition: transform 0.2s;
+}
+
+.bigShinyWrapper span > div:hover {
+  transform: scale(1.4);
+}
+
+@media (max-width: 900px) {
+  .bigShinyWrapper span > div {
+    transform: scale(1.1);
+  }
+  .bigShinyWrapper span > div:hover {
+    transform: scale(1.2);
+  }
+}

@@ -1,0 +1,400 @@
+/* All-time / collapsible container */
+.alltimeContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Toggle buttons — matches .alltime-toggle */
+.toggleBtn {
+  display: block;
+  padding: 12px 25px;
+  border-radius: 25px;
+  border: 2px solid #444;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  margin: 8px 0;
+}
+
+.toggleBtn:hover {
+  background: #2a2a2a;
+  border-color: #666;
+  box-shadow: 0 4px 12px rgba(74,144,226,0.5);
+  color: #4a90e2;
+}
+
+.toggleBtn:active {
+  background: #111;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* All-time leaderboard list */
+.alltimeList {
+  margin-top: 15px;
+  background: #222;
+  padding: 15px 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: slideDown 0.3s ease-out;
+  transform-origin: top;
+}
+
+.alltimeList > div {
+  font-size: 1rem;
+  color: #fff;
+  background: #1f1f1f;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.alltimeList > div:hover {
+  background: #2a2a2a;
+  color: #4a90e2;
+  box-shadow: 0 0 12px rgba(74,144,226,0.5);
+}
+
+/* Points content — matches .points-content */
+.pointsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 15px;
+  background: #222;
+  border-radius: 12px;
+  margin: 8px auto 0 auto;
+  width: fit-content;
+  min-width: 200px;
+  animation: slideDown 0.3s ease-out;
+  transform-origin: top;
+}
+
+.pointsContent > div {
+  background: #1f1f1f;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.pointsContent > div:hover {
+  background: #2a2a2a;
+  color: #4a90e2;
+  box-shadow: 0 0 12px rgba(74,144,226,0.5);
+}
+
+/* Tier highlights toggle — matches .tier-dropdown-toggle */
+.tierToggleBtn {
+  background-color: #b8860b;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  box-shadow: 0 0 15px rgba(184, 134, 11, 0.8);
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  margin: 8px 0;
+  display: block;
+}
+
+.tierToggleBtn:hover {
+  background-color: #d4af37;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.9);
+}
+
+/* Tier dropdown — matches .tier-dropdown-list / .tier-columns */
+.tierColumns {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #3a003f, #9d0047);
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  color: #fff;
+  font-size: 0.95rem;
+  animation: slideDown 0.3s ease-out;
+  transform-origin: top;
+}
+
+.tierColumn {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 14px;
+  min-width: 180px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tierColumn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.tierColumn h3 {
+  margin-bottom: 0.6rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #ffccff;
+  text-shadow: 0 0 8px #ff66cc, 0 0 16px #cc33ff;
+}
+
+.tierPokemon {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.7rem;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 6px rgba(255,255,255,0.1);
+  transition: all 0.2s ease;
+}
+
+.tierPokemon:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 12px rgba(255,255,255,0.25);
+}
+
+.pokemonName {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+  color: #ffd6ff;
+  text-shadow: 0 0 4px #ff99ff;
+}
+
+.pokemonHunters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+.pokemonHunters a,
+.pokemonHunters .playerLink {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 8px;
+  background-color: rgba(255,255,255,0.1);
+  color: #fff;
+  text-shadow: 0 0 2px #ff66cc;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.pokemonHunters a:hover,
+.pokemonHunters .playerLink:hover {
+  background-color: rgba(255,255,255,0.2);
+  box-shadow: 0 0 6px rgba(255,102,204,0.5);
+}
+
+/* Player link default */
+.playerLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.playerLink:hover {
+  text-decoration: none;
+}
+
+/* SHOTM page body */
+.shotmPage {
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.shotmPage h2 {
+  text-align: center;
+}
+
+/* Month navigation */
+.monthNav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.monthTitle {
+  color: #fff;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.monthButtons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.monthBtn {
+  padding: 10px 22px;
+  border-radius: 25px;
+  border: 2px solid #444;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.monthBtn:hover {
+  background: #2a2a2a;
+  border-color: #666;
+  box-shadow: 0 4px 12px rgba(74,144,226,0.5);
+  color: #4a90e2;
+}
+
+.monthBtn:active {
+  background: #111;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Rankings list */
+.shotmList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
+
+/* Player card */
+.playerCard {
+  background: #222;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 90%;
+  margin: auto;
+}
+
+/* Player name heading */
+.playerName {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  justify-content: center;
+  margin: 0;
+}
+
+/* Shiny list */
+.shinyList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+/* Rank arrows */
+.rankArrow {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  vertical-align: middle;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.rankArrowUp {
+  animation: bounceUp 1s ease forwards;
+}
+
+.rankArrowDown {
+  animation: bounceDown 1s ease forwards;
+}
+
+@keyframes bounceUp {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { transform: translateY(-15px); opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes bounceDown {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { transform: translateY(15px); opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+}
+
+.slideUp {
+  animation: slideUp 0.3s ease-out !important;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .alltimeContainer {
+    max-width: 90%;
+    margin-bottom: 20px;
+  }
+
+  .toggleBtn {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+
+  .alltimeList > div {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+
+  .shinyList {
+    justify-content: center;
+  }
+}

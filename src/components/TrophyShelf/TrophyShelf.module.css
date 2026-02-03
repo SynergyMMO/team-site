@@ -1,0 +1,123 @@
+.section {
+  margin-top: 24px;
+}
+
+.heading {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 16px;
+  font-family: Arial, sans-serif;
+  font-size: 1.5rem;
+}
+
+.shelfContainer {
+  padding: 16px 20px 36px;
+  background: linear-gradient(to bottom, #2a2a2a, #1e1e1e);
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: visible;
+  background-image:
+    linear-gradient(120deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(60deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.shelfContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+}
+
+.shelfContainer::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0));
+}
+
+.shelf {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+  z-index: 1;
+}
+
+.trophyWrapper {
+  position: relative;
+}
+
+.trophyWrapper img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+.trophyItem {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trophyItem:hover {
+  transform: translateY(-10px) scale(1.1) rotate(-5deg);
+  box-shadow: 0 6px 15px rgba(255, 215, 0, 0.8);
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: rgba(50, 50, 50, 0.95);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 10;
+  width: max-content;
+  min-width: 200px;
+  max-width: 400px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.trophyWrapper:hover .tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
+  pointer-events: auto;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(50,50,50,0.95) transparent transparent transparent;
+}

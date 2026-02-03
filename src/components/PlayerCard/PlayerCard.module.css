@@ -1,0 +1,90 @@
+.card {
+  background: #222;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 90%;
+  margin: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.nameContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.playerName {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  justify-content: center;
+}
+
+.topPlayer {
+  color: gold;
+}
+
+.highPlayer {
+  color: rgb(255, 84, 255);
+}
+
+.sparkle {
+  animation: sparkle-glow 1.5s infinite alternate;
+}
+
+@keyframes sparkle-glow {
+  from { text-shadow: 0 0 2px #edff49; }
+  to { text-shadow: 0 0 5px #fff67f; }
+}
+
+.playerTrophy {
+  width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.twitchLink {
+  display: inline-flex;
+  align-items: center;
+}
+
+.twitchIcon {
+  width: 22px;
+  height: 22px;
+}
+
+.shinyList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+@media (min-width: 4000px) {
+  .card {
+    max-width: 3000px;
+  }
+}
+
+@media (max-width: 900px) {
+  .card {
+    max-width: 100%;
+  }
+  .shinyList {
+    justify-content: center;
+  }
+}

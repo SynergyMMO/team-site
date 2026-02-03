@@ -1,0 +1,85 @@
+.trophyPage {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.largeTrophy {
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 12px rgba(155, 89, 182, 0.8));
+  animation: glowPulse 2.5s infinite alternate;
+}
+
+@keyframes glowPulse {
+  from {
+    filter: drop-shadow(0 0 8px rgba(155, 89, 182, 0.5));
+  }
+  to {
+    filter: drop-shadow(0 0 18px rgba(155, 89, 182, 1));
+  }
+}
+
+.header h1 {
+  font-size: 1.8rem;
+  color: #d2b4de;
+  text-shadow:
+    0 0 6px rgba(155, 89, 182, 0.9),
+    0 0 12px rgba(155, 89, 182, 0.6);
+}
+
+.playersHeading {
+  color: white;
+  margin-top: 16px;
+}
+
+.playersList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  margin-top: 12px;
+  background: rgba(25, 15, 40, 0.85);
+  border-radius: 14px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  list-style: none;
+}
+
+.playersList li {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(60, 40, 90, 0.85);
+  text-align: center;
+  border-left: 4px solid #9b59b6;
+  transition: background 0.2s ease, transform 0.2s ease;
+  min-width: 140px;
+  max-width: 200px;
+}
+
+.playersList li:hover {
+  background: rgba(90, 60, 130, 0.95);
+  transform: scale(1.03);
+}
+
+.playerLink {
+  text-decoration: none;
+  color: #f2f2f2;
+  font-weight: 600;
+  font-size: 1rem;
+  display: block;
+}
+
+.playerLink:hover {
+  color: #ffffff;
+}

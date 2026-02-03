@@ -1,0 +1,28 @@
+{
+  "trophies": {
+    "Ying Vs Yang Victors": "/images/trophy/yingvsyang.png",
+    "Ying Vs Yang MVP": "/images/trophy/yingvsyangmvp.png",
+    "Official Shiny Wars 2025": "/images/trophy/official_wars_2025.png",
+    "SHOTM July 2025": "/images/trophy/SHOTM_JULY_2025.png",
+    "SHOTM August 2025": "/images/trophy/SHOTM_AUG_2025.png",
+    "SHOTM September 2025": "/images/trophy/SHOTM_SEPT_2025.png",
+    "SHOTM October 2025": "/images/trophy/SHOTM_OCT_2025.png",
+    "SHOTM November 2025": "/images/trophy/SHOTM_NOV_2025.png",
+    "SHOTM December 2025": "/images/trophy/SHOTM_DEC_2025.png",
+    "Darkrai Vs Cresselia MVP": "/images/trophy/darkraivscresseliaMVP.png",
+    "Darkrai Vs Cresselia Victors": "/images/trophy/darkrai_trophy.png"
+  },
+  "trophyAssignments": {
+    "Official Shiny Wars 2025": ["BaldBabyBat","Blaziken","Bloom","Chan","Deeb","Dracula","Ecstasick","Ezra","Hyper","Indica","ItsTurn","Mitchell","MrBanger","Myxtik","NxmDXCO","Pinguh","Saywhatpoke","stinky","strength","tired","torskin","TTVxleJesse","jeysonklm"],
+    "Ying Vs Yang Victors": ["Strength","Saywhatpoke","Baldbabybat","Hyper","Pinguh","Bloom","Chan","Mitchell","ItsTurn","Yikestho","Ecstasick","Torskin","Indica","MrBanger","Tired","LostMonarch","Stinky","Russell","SirJeff","YusukeBeats","PokeTrnrgoku"],
+    "Ying Vs Yang MVP": ["Ecstasick"],
+    "SHOTM July 2025": ["Strength"],
+    "SHOTM August 2025": [ "Torskin"],
+    "SHOTM September 2025": ["Chan"],
+    "SHOTM October 2025": [ "NxmDXCO"],
+    "SHOTM November 2025": ["BaldBabyBat"],
+    "SHOTM December 2025": [ "Nausea"],
+    "Darkrai Vs Cresselia MVP": [ "MiroMMO"],
+    "Darkrai Vs Cresselia Victors": ["MiroMMO","ApparentlyAustin","BaconDonut","BaldBabyBat","Banshee","Brithoffire","ChaoticMon","CloudCloud","Corbs","CSixtyThree","Dammers","Dracula","druichi","Ecstasick","GaryOwnes","Hinya","IamTkTV","KaiDono","Kyamori","MinoriNao","Mintaway","Nausea","psilos","Pupsil","Rafetaga","RedWoodGamer","Russoto","SheepieNei","ShinyWaywee","SilentNovaVGC","Strength","TFastest","Theology","Tired","Vinndubs","Vortex","Zempex","Liiitha","Jeradon"]
+  }
+}

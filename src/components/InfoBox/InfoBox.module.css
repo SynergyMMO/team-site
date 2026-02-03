@@ -1,0 +1,38 @@
+.infoBox {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 8px);
+  transform: translateY(-50%);
+  background: #1f1f1f;
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 10px;
+  width: 220px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, left 0s;
+  z-index: 1000;
+  display: block;
+}
+
+.infoBox strong {
+  display: block;
+  margin-bottom: 6px;
+  text-transform: capitalize;
+}
+
+.detail {
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.reactionLink {
+  color: #4a90e2;
+  text-decoration: underline;
+}
+
+/* Show on parent span hover */
+span:hover .infoBox {
+  opacity: 1;
+  pointer-events: auto;
+}

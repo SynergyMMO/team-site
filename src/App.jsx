@@ -1,0 +1,45 @@
+import { lazy, Suspense } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Navbar from './components/Navbar/Navbar'
+import StarField from './components/StarField/StarField'
+
+const Showcase = lazy(() => import('./pages/Showcase/Showcase'))
+const PlayerPage = lazy(() => import('./pages/PlayerPage/PlayerPage'))
+const SHOTM = lazy(() => import('./pages/SHOTM/SHOTM'))
+const Pokedex = lazy(() => import('./pages/Pokedex/Pokedex'))
+const Streamers = lazy(() => import('./pages/Streamers/Streamers'))
+const TrophyBoard = lazy(() => import('./pages/TrophyBoard/TrophyBoard'))
+const TrophyPage = lazy(() => import('./pages/TrophyPage/TrophyPage'))
+const CounterGenerator = lazy(() => import('./pages/CounterGenerator/CounterGenerator'))
+const RandomPokemon = lazy(() => import('./pages/RandomPokemon/RandomPokemon'))
+const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
+const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
+const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
+
+export default function App() {
+  return (
+    <>
+      <Navbar />
+      <section className="background" />
+      <StarField />
+      <main id="main-container">
+        <Suspense fallback={<div className="message">Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<Showcase />} />
+            <Route path="/player/:playerName" element={<PlayerPage />} />
+            <Route path="/shotm" element={<SHOTM />} />
+            <Route path="/pokedex" element={<Pokedex />} />
+            <Route path="/streamers" element={<Streamers />} />
+            <Route path="/trophy-board" element={<TrophyBoard />} />
+            <Route path="/trophy/:trophyName" element={<TrophyPage />} />
+            <Route path="/counter-generator" element={<CounterGenerator />} />
+            <Route path="/random-pokemon-generator" element={<RandomPokemon />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/panel" element={<AdminPanel />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </main>
+    </>
+  )
+}
