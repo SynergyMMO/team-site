@@ -188,7 +188,7 @@
 .tab {
   flex: 1;
   padding: 10px 14px;
-  margin: 0;
+  margin: 0 !important;
   background: transparent;
   color: #777;
   border: none;
