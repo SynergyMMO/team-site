@@ -16,6 +16,8 @@ export default function ShinyTable({ shinies, onEdit, onDelete }) {
             <th>#</th>
             <th>Sprite</th>
             <th>Pokemon</th>
+            <th>Month</th>
+            <th>Year</th>
             <th>Traits</th>
             <th>Actions</th>
           </tr>
@@ -49,6 +51,8 @@ export default function ShinyTable({ shinies, onEdit, onDelete }) {
                   />
                 </td>
                 <td>{shiny.Pokemon}</td>
+                <td>{shiny.Month || '-'}</td>
+                <td>{shiny.Year || '-'}</td>
                 <td>
                   <div className={styles.traitBadges}>
                     {traits.map(t => (
