@@ -39,6 +39,12 @@ export default function Showcase() {
 
   // Infinite scroll observer with debouncing
   useEffect(() => {
+    // Don't set up observer if all players are already visible
+    if (visibleCount >= filteredPlayers.length) {
+      setIsLoadingMore(false)
+      return
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && visibleCount < filteredPlayers.length && !isLoadingMore) {
@@ -50,7 +56,7 @@ export default function Showcase() {
           }
 
           timeoutRef.current = setTimeout(() => {
-            setVisibleCount(prev => prev + 10)
+            setVisibleCount(prev => Math.min(prev + 10, filteredPlayers.length))
             setIsLoadingMore(false)
           }, 300)
         }
