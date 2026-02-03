@@ -41,7 +41,13 @@ export default function Streamers() {
                 className={styles.cardLink}
               >
                 <div className={`${styles.card} ${styles.live}`}>
-                  <img src={stream.thumbnail_url} alt={`${stream.user_name} thumbnail`} />
+                  <img
+                    src={stream.thumbnail_url}
+                    alt={`${stream.user_name} thumbnail`}
+                    width="256"
+                    height="144"
+                    loading="lazy"
+                  />
                   <p className={styles.playerName}>{stream.user_name}</p>
                   <p className={styles.streamTitle}>{stream.title}</p>
                   <p className={styles.viewerCount}>{stream.viewer_count} viewers</p>
@@ -68,6 +74,9 @@ export default function Streamers() {
                   src={user.profile_image_url}
                   alt={`${user.user_name} profile`}
                   className={styles.offlineProfile}
+                  width="120"
+                  height="120"
+                  loading="lazy"
                 />
                 <p className={styles.playerName}>{user.user_name}</p>
               </div>
