@@ -49,9 +49,9 @@ function PlayerCard({ player, data, rank, streamers }) {
           data-player={player.toLowerCase()}
         >
           #{rank + 1} {player} ({data.shiny_count})
-          {sparkle && <span className={styles.sparkle}>&#10024;</span>}
         </Link>
         {medal && <span className={styles.medal}>{medal}</span>}
+        {sparkle && <span className={styles.sparkle}>&#10024;</span>}
       </div>
       <div className={styles.shinyList}>
         {Object.values(data.shinies).map((s, i) => (
