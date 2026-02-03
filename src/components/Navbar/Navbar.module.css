@@ -120,7 +120,7 @@
   top: 0;
   left: 0;
   width: 400px;
-  height: 100vh;
+  height: 50vh;
   background: rgb(10, 10, 15);
   backdrop-filter: blur(6px);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
