@@ -38,7 +38,7 @@ export default function AddPokemonTab({ db, playerNames, allPokemonNames, onAdd,
         value={player}
         onChange={setPlayer}
         getOptions={() => playerNames}
-        placeholder="hyper"
+        placeholder="Hyper"
       />
 
       {!player.trim() && (
