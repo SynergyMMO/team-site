@@ -193,14 +193,15 @@ export default function SHOTM() {
         {(showAllTime || closingAllTime) && (
           <div className={`${styles.alltimeList} ${closingAllTime ? styles.slideUp : ''}`}>
             {allTimeLeaderboard.map(e => {
-              const trophy = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][e.rank - 1] || ''
+              const medal = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][e.rank - 1] || ''
               return (
                 <div key={e.player}>
-                  {trophy} #{e.rank}{' '}
+                  {medal && <span className={styles.medal}>{medal}</span>}
+                  <span>#{e.rank}</span>
                   <Link to={`/player/${e.player.toLowerCase()}`} className={styles.playerLink}>
                     {e.player}
-                  </Link>{' '}
-                  ({e.points} pts)
+                  </Link>
+                  <span>({e.points} pts)</span>
                 </div>
               )
             })}

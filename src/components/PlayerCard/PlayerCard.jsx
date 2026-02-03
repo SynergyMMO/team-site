@@ -12,14 +12,11 @@ function PlayerCard({ player, data, rank, streamers }) {
         ? styles.highPlayer
         : ''
 
-  const trophyImg =
-    rank === 0
-      ? getAssetUrl('images/Shiny Showcase/gold.png')
-      : rank === 1
-        ? getAssetUrl('images/Shiny Showcase/silver.png')
-        : rank === 2
-          ? getAssetUrl('images/Shiny Showcase/bronze.png')
-          : null
+  const medal =
+    rank === 0 ? '\uD83E\uDD47' : // 🥇 gold
+    rank === 1 ? '\uD83E\uDD48' : // 🥈 silver
+    rank === 2 ? '\uD83E\uDD49' : // 🥉 bronze
+    null
 
   const sparkle = rank >= 3
 
@@ -54,17 +51,7 @@ function PlayerCard({ player, data, rank, streamers }) {
           #{rank + 1} {player} ({data.shiny_count})
           {sparkle && <span className={styles.sparkle}>&#10024;</span>}
         </Link>
-        {trophyImg && (
-          <img
-            src={trophyImg}
-            alt="trophy"
-            className={styles.playerTrophy}
-            width="40"
-            height="40"
-            loading="lazy"
-            decoding="async"
-          />
-        )}
+        {medal && <span className={styles.medal}>{medal}</span>}
       </div>
       <div className={styles.shinyList}>
         {Object.values(data.shinies).map((s, i) => (

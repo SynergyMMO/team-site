@@ -50,11 +50,21 @@
   to { text-shadow: 0 0 5px #fff67f; }
 }
 
-.playerTrophy {
-  width: 20px;
-  height: 20px;
-  margin-left: 6px;
-  vertical-align: middle;
+.medal {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  animation: medal-glow 1.5s infinite alternate;
+}
+
+@keyframes medal-glow {
+  from {
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.8));
+  }
+  to {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 1));
+  }
 }
 
 .twitchLink {
