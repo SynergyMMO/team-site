@@ -122,6 +122,9 @@
 }
 @media (max-width: 900px) {
   .pokemon { width: 32px; height: 32px; }
+  .showcase {
+    padding: 12px 12px 60px 12px;
+  }
 }
 @media (max-width: 600px) {
   .pokemon { width: 24px; height: 24px; }
