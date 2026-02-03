@@ -107,8 +107,14 @@ export default function Pokedex() {
           }
 
           const flatPokemon = speciesGroups.flat()
+          // Deduplicate pokemon (e.g., Wurmple appears in multiple evolution lines)
+          const seenPokemon = new Set()
           const visiblePokemon = flatPokemon.filter(pokemon => {
             const lowerName = pokemon.toLowerCase()
+            // Skip if we've already processed this pokemon
+            if (seenPokemon.has(lowerName)) return false
+            seenPokemon.add(lowerName)
+
             const isComplete = mode === 'shiny' ? speciesCompleteSet.has(lowerName) : globalShinies.has(lowerName)
             if (hideComplete && isComplete) return false
             return true
@@ -120,7 +126,7 @@ export default function Pokedex() {
             <div key={gen}>
               <h2 style={{ textAlign: 'center' }}>{gen}</h2>
               <div className={styles.grid}>
-                {visiblePokemon.map(pokemon => {
+                {visiblePokemon.map((pokemon, idx) => {
                   const normalized = normalizePokemonName(pokemon)
                   const lowerName = pokemon.toLowerCase()
                   const isComplete = mode === 'shiny'
@@ -129,7 +135,7 @@ export default function Pokedex() {
 
                   return (
                     <img
-                      key={pokemon}
+                      key={`${gen}-${pokemon}-${idx}`}
                       src={`https://img.pokemondb.net/sprites/black-white/anim/shiny/${normalized}.gif`}
                       alt={pokemon}
                       className={`${styles.pokemon} ${isComplete ? styles.complete : styles.incomplete}`}
