@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Team Synergy!</title>
   <script>
-    // GitHub Pages SPA redirect
-    var pathSegmentsToKeep = 0;
+    // GitHub Pages SPA redirect with subdirectory support
+    var pathSegmentsToKeep = 1; // Keep 1 segment for /synergy-shiny-showcase/
     var l = window.location;
     l.replace(
       l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
