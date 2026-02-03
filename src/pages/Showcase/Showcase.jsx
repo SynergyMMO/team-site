@@ -39,15 +39,13 @@ export default function Showcase() {
 
   // Infinite scroll observer with debouncing
   useEffect(() => {
-    // Don't set up observer if all players are already visible
-    if (visibleCount >= filteredPlayers.length) {
-      setIsLoadingMore(false)
+    if (!loadMoreRef.current || visibleCount >= filteredPlayers.length) {
       return
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && visibleCount < filteredPlayers.length && !isLoadingMore) {
+        if (entries[0].isIntersecting && !isLoadingMore) {
           setIsLoadingMore(true)
 
           // Debounce to prevent rapid loading
@@ -56,17 +54,22 @@ export default function Showcase() {
           }
 
           timeoutRef.current = setTimeout(() => {
-            setVisibleCount(prev => Math.min(prev + 10, filteredPlayers.length))
+            setVisibleCount(prev => {
+              const newCount = prev + 10
+              // Only update if we haven't reached the end
+              if (prev < filteredPlayers.length) {
+                return Math.min(newCount, filteredPlayers.length)
+              }
+              return prev
+            })
             setIsLoadingMore(false)
-          }, 300)
+          }, 100)
         }
       },
-      { threshold: 0.1, rootMargin: '100px' }
+      { threshold: 0, rootMargin: '200px' }
     )
 
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current)
-    }
+    observer.observe(loadMoreRef.current)
 
     return () => {
       if (loadMoreRef.current) {
