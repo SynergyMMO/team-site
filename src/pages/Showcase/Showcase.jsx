@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
@@ -11,6 +11,7 @@ export default function Showcase() {
   const [search, setSearch] = useState('')
   const [streamers, setStreamers] = useState(null)
   const [visibleCount, setVisibleCount] = useState(10)
+  const loadMoreRef = useRef(null)
 
   // Fetch streamers on first load
   useMemo(() => {
@@ -33,6 +34,33 @@ export default function Showcase() {
     const lower = search.toLowerCase()
     return sortedPlayers.filter(([name]) => name.toLowerCase().includes(lower))
   }, [sortedPlayers, search])
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < filteredPlayers.length) {
+          setVisibleCount(prev => prev + 10)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current)
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current)
+      }
+    }
+  }, [visibleCount, filteredPlayers.length])
+
+  // Reset visible count when search changes
+  useEffect(() => {
+    setVisibleCount(10)
+  }, [search])
 
   if (isLoading) return <div className="message">Loading...</div>
   if (error) return <div className="message">Error loading data</div>
@@ -83,32 +111,10 @@ export default function Showcase() {
       </div>
 
       {visibleCount < filteredPlayers.length && (
-        <div style={{ textAlign: 'center', margin: '30px 0' }}>
-          <button
-            onClick={() => setVisibleCount(prev => prev + 10)}
-            style={{
-              padding: '12px 24px',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              color: '#fff',
-              background: 'linear-gradient(135deg, #9b59b6, #8e44ad)',
-              border: 'none',
-              borderRadius: '25px',
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'scale(1.05)'
-              e.target.style.boxShadow = '0 6px 16px rgba(0,0,0,0.4)'
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'scale(1)'
-              e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)'
-            }}
-          >
-            Load More Players ({filteredPlayers.length - visibleCount} remaining)
-          </button>
+        <div ref={loadMoreRef} style={{ textAlign: 'center', margin: '30px 0', padding: '20px' }}>
+          <p style={{ color: '#aaa', fontSize: '0.9rem' }}>
+            Loading more players...
+          </p>
         </div>
       )}
     </div>
