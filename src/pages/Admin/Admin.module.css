@@ -279,10 +279,15 @@
 }
 
 .shinyTable {
-  min-width: 700px;
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+}
+
+@media (min-width: 701px) {
+  .shinyTable {
+    min-width: 700px;
+  }
 }
 
 .shinyTable th {
