@@ -175,11 +175,10 @@
 .tabBar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 24px;
   padding: 6px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 16px;
   justify-content: space-between;
@@ -187,6 +186,7 @@
 
 .tab {
   flex: 1;
+  min-width: 120px;
   padding: 10px 14px;
   margin: 0 !important;
   background: transparent;
