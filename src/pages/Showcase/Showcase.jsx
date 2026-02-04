@@ -1,25 +1,20 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { useDatabase } from '../../hooks/useDatabase'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { getAssetUrl } from '../../utils/assets'
+import { API } from '../../api/endpoints'
 import styles from './Showcase.module.css'
 
 export default function Showcase() {
   const { data, isLoading, error } = useDatabase()
   const [search, setSearch] = useState('')
-  const [streamers, setStreamers] = useState(null)
-
-  // Fetch streamers on first load
-  useMemo(() => {
-    if (!streamers) {
-      fetch('https://adminpage.hypersmmo.workers.dev/admin/streamers')
-        .then(r => r.json())
-        .then(setStreamers)
-        .catch(() => setStreamers({}))
-    }
-  }, [streamers])
+  const { data: streamers } = useQuery({
+    queryKey: ['streamersList'],
+    queryFn: () => fetch(API.streamers).then(r => r.json()),
+  })
 
   const sortedPlayers = useMemo(() => {
     if (!data) return []

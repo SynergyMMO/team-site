@@ -4,16 +4,8 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { useTierData } from '../../hooks/useTierData'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import { getAssetUrl } from '../../utils/assets'
+import { TRAIT_POINTS, calculateShinyPoints } from '../../utils/points'
 import styles from './SHOTM.module.css'
-
-const TRAIT_POINTS = {
-  Alpha: 50,
-  'Secret Shiny': 10,
-  Egg: 5,
-  Safari: 5,
-  Event: 5,
-  'Honey Tree': 5,
-}
 
 function shiftMonth(month, year, delta) {
   const date = new Date(`${month} 1, ${year}`)
@@ -48,17 +40,6 @@ export default function SHOTM() {
   const { data, isLoading } = useDatabase()
   const { tierPoints, tierLookup } = useTierData()
 
-  const calculateShinyPoints = (shiny) => {
-    if (shiny.Sold?.toLowerCase() === 'yes' || shiny.Flee?.toLowerCase() === 'yes')
-      return 0
-    let total = tierPoints[tierLookup[shiny.Pokemon.toLowerCase()]] || 0
-    total += Object.entries(TRAIT_POINTS).reduce(
-      (acc, [trait, pts]) => acc + (shiny[trait]?.toLowerCase() === 'yes' ? pts : 0),
-      0
-    )
-    return total
-  }
-
   const shotmData = useMemo(() => {
     if (!data) return {}
     const result = {}
@@ -69,7 +50,7 @@ export default function SHOTM() {
         return m === currentMonth && y === String(currentYear)
       })
       if (!monthShinies.length) return
-      const totalPoints = monthShinies.reduce((acc, s) => acc + calculateShinyPoints(s), 0)
+      const totalPoints = monthShinies.reduce((acc, s) => acc + calculateShinyPoints(s, tierPoints, tierLookup), 0)
       result[player] = { shinies: monthShinies, points: totalPoints }
     })
     return result
@@ -87,7 +68,7 @@ export default function SHOTM() {
     const allTime = {}
     Object.entries(data).forEach(([player, playerData]) => {
       allTime[player] = Object.values(playerData.shinies).reduce(
-        (acc, s) => acc + calculateShinyPoints(s),
+        (acc, s) => acc + calculateShinyPoints(s, tierPoints, tierLookup),
         0
       )
     })
@@ -334,7 +315,7 @@ export default function SHOTM() {
                 </h2>
                 <div className={styles.shinyList}>
                   {info.shinies.map((s, i) => {
-                    const pts = calculateShinyPoints(s)
+                    const pts = calculateShinyPoints(s, tierPoints, tierLookup)
                     return pts > 0 ? <ShinyItem key={i} shiny={s} points={pts} /> : null
                   })}
                 </div>

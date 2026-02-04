@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { API } from './api/endpoints'
 import { AdminProvider } from './context/AdminContext'
 import App from './App'
 import './index.css'
@@ -21,7 +22,7 @@ const queryClient = new QueryClient({
 queryClient.prefetchQuery({
   queryKey: ['database'],
   queryFn: () =>
-    fetch('https://adminpage.hypersmmo.workers.dev/admin/database').then(r => r.json()),
+    fetch(API.database).then(r => r.json()),
 })
 
 // SPA redirect restore for GitHub Pages with subdirectory support

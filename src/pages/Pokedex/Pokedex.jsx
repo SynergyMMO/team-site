@@ -2,12 +2,10 @@ import { useState, useMemo, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { getAssetUrl } from '../../utils/assets'
+import { normalizePokemonName } from '../../utils/pokemon'
+import { API } from '../../api/endpoints'
 import generationData from '../../data/generation.json'
 import styles from './Pokedex.module.css'
-
-function normalizePokemonName(name) {
-  return name.trim().toLowerCase().replace(/[.'']/g, '').replace(/\s+/g, '-')
-}
 
 export default function Pokedex() {
   const { data, isLoading } = useDatabase()
@@ -147,7 +145,7 @@ export default function Pokedex() {
                   return (
                     <img
                       key={`${gen}-${pokemon}-${idx}`}
-                      src={`https://img.pokemondb.net/sprites/black-white/anim/shiny/${normalized}.gif`}
+                      src={API.pokemonSprite(normalized)}
                       alt={pokemon}
                       className={`${styles.pokemon} ${isComplete ? styles.complete : styles.incomplete}`}
                       loading="lazy"
