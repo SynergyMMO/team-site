@@ -198,7 +198,7 @@ export default function SHOTM() {
                 <Link key={e.player} to={`/player/${e.player.toLowerCase()}`} className={styles.allTimeItem}>
                   {medal && <span className={styles.medal}>{medal}</span>}
                   <span>#{e.rank}</span>
-                  <span className={styles.playerName}>{e.player}</span>
+                  <span>{e.player}</span>
                   <span>({e.points} pts)</span>
                 </Link>
               )
