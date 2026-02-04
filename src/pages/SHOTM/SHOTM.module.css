@@ -63,12 +63,21 @@
   gap: 6px;
   text-decoration: none;
   cursor: pointer;
+  font-weight: normal;
+}
+
+.allTimeItem * {
+  color: inherit;
 }
 
 .allTimeItem:hover {
   background: #2a2a2a;
   color: #4a90e2;
   box-shadow: 0 0 12px rgba(74,144,226,0.5);
+}
+
+.allTimeItem:hover * {
+  color: inherit;
 }
 
 .medal {
@@ -78,9 +87,6 @@
   align-items: center;
 }
 
-.allTimeItem .playerName {
-  font-weight: 600;
-}
 
 /* Points content — matches .points-content */
 .pointsContent {
