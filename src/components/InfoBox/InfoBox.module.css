@@ -1,8 +1,5 @@
 .infoBox {
-  position: absolute;
-  top: 50%;
-  left: calc(100% + 8px);
-  transform: translateY(-50%);
+  position: fixed;
   background: rgba(31, 31, 31, 0.95);
   border: 1px solid #444;
   padding: 8px 10px;
@@ -10,7 +7,7 @@
   width: 180px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, left 0s;
+  transition: opacity 0.2s ease;
   z-index: 1000;
   display: block;
   font-size: 0.85rem;

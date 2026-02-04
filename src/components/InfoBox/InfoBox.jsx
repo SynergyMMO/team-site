@@ -27,30 +27,36 @@ export default function InfoBox({ shiny, points }) {
     const handleMouseEnter = () => {
       const spanRect = span.getBoundingClientRect()
       const viewportWidth = document.documentElement.clientWidth
+      const viewportHeight = document.documentElement.clientHeight
       const isMobile = window.innerWidth <= 900
       const boxWidth = isMobile ? 100 : 180
+      const boxHeight = box.offsetHeight
 
       const parentDiv = span.parentElement
       const isFavorite = parentDiv && parentDiv.className && parentDiv.className.includes('bigShiny')
 
-      let leftPos
+      let left
 
       if (isFavorite) {
-        leftPos = isMobile ? span.offsetWidth + 25 : span.offsetWidth + 60
+        left = spanRect.right + (isMobile ? 25 : 60)
       } else {
         const fitsRight = spanRect.right + boxWidth + 8 <= viewportWidth
         const fitsLeft = spanRect.left - boxWidth - 8 >= 0
 
         if (fitsRight) {
-          leftPos = span.offsetWidth + 8
+          left = spanRect.right + 8
         } else if (fitsLeft) {
-          leftPos = -boxWidth - 8
+          left = spanRect.left - boxWidth - 8
         } else {
-          leftPos = span.offsetWidth + 8
+          left = spanRect.right + 8
         }
       }
 
-      box.style.left = leftPos + 'px'
+      let top = spanRect.top + spanRect.height / 2 - boxHeight / 2
+      top = Math.max(8, Math.min(top, viewportHeight - boxHeight - 8))
+
+      box.style.left = left + 'px'
+      box.style.top = top + 'px'
     }
 
     span.addEventListener('mouseenter', handleMouseEnter)
