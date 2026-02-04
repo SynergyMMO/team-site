@@ -32,7 +32,7 @@ export default function ShinyTable({ shinies, onEdit, onDelete }) {
             if (shiny['Honey Tree'] === 'Yes') traits.push({ label: 'Honey', cls: 'traitHoney' })
             if (shiny.Sold === 'Yes') traits.push({ label: 'Sold', cls: 'traitSold' })
             if (shiny.Event === 'Yes') traits.push({ label: 'Event', cls: 'traitEvent' })
-            if (shiny.Favourite === 'Yes') traits.push({ label: 'Fav', cls: 'traitFav' })
+            if (shiny.Favourite === 'Yes') traits.push({ label: 'Favourite', cls: 'traitFav' })
             if (shiny.Legendary === 'Yes') traits.push({ label: 'Legend', cls: 'traitLegend' })
             if (shiny.MysteriousBall === 'Yes') traits.push({ label: 'Mystery', cls: 'traitMystery' })
             if (shiny.Reaction === 'Yes') traits.push({ label: 'Reaction', cls: 'traitReaction' })

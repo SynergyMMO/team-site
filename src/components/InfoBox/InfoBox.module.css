@@ -7,7 +7,7 @@
   border: 1px solid #444;
   padding: 8px 10px;
   border-radius: 8px;
-  width: 160px;
+  width: 180px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease, left 0s;
@@ -15,6 +15,16 @@
   display: block;
   font-size: 0.85rem;
   backdrop-filter: blur(4px);
+}
+
+/* Bridge the gap between sprite and InfoBox so hover doesn't break */
+.infoBox::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -12px;
+  width: 12px;
+  height: 100%;
 }
 
 .infoBox strong {
@@ -30,15 +40,95 @@
   line-height: 1.3;
 }
 
-.reactionLink {
-  color: #4a90e2;
-  text-decoration: underline;
+/* Tags container */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
 }
 
-/* Show on parent span hover */
+/* Base tag badge */
+.tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Trait color classes (matching admin panel) */
+.tagSecret {
+  background-color: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.tagAlpha {
+  background-color: rgba(229, 57, 53, 0.2);
+  color: #ef5350;
+  border: 1px solid rgba(229, 57, 53, 0.4);
+}
+
+.tagEgg {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.tagSafari {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #66bb6a;
+  border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.tagHoney {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: #ffa726;
+  border: 1px solid rgba(255, 152, 0, 0.4);
+}
+
+.tagSold {
+  background-color: rgba(158, 158, 158, 0.2);
+  color: #9e9e9e;
+  border: 1px solid rgba(158, 158, 158, 0.4);
+}
+
+.tagEvent {
+  background-color: rgba(0, 188, 212, 0.2);
+  color: #26c6da;
+  border: 1px solid rgba(0, 188, 212, 0.4);
+}
+
+.tagFav {
+  background-color: rgba(233, 30, 99, 0.2);
+  color: #ec407a;
+  border: 1px solid rgba(233, 30, 99, 0.4);
+}
+
+.tagLegend {
+  background-color: rgba(156, 39, 176, 0.2);
+  color: #ba68c8;
+  border: 1px solid rgba(156, 39, 176, 0.4);
+}
+
+.tagMystery {
+  background-color: rgba(63, 81, 181, 0.2);
+  color: #7986cb;
+  border: 1px solid rgba(63, 81, 181, 0.4);
+}
+
+.tagReaction {
+  background-color: rgba(255, 235, 59, 0.15);
+  color: #fff176;
+  border: 1px solid rgba(255, 235, 59, 0.35);
+}
+
+/* Show on parent span hover - pointer-events: auto so users can click links */
 span:hover .infoBox {
   opacity: 1;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 @media (max-width: 900px) {
@@ -55,5 +145,10 @@ span:hover .infoBox {
 
   .detail {
     font-size: 0.65rem;
+  }
+
+  .tag {
+    font-size: 0.55rem;
+    padding: 1px 4px;
   }
 }

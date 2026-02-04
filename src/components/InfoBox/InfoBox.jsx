@@ -1,7 +1,19 @@
 import { useRef, useEffect } from 'react'
 import styles from './InfoBox.module.css'
 
-const TRAIT_CHECKS = ['Alpha', 'Secret Shiny', 'Favourite']
+const TRAIT_CHECKS = [
+  { key: 'Secret Shiny', label: 'Secret', cls: 'tagSecret' },
+  { key: 'Alpha', label: 'Alpha', cls: 'tagAlpha' },
+  { key: 'Egg', label: 'Egg', cls: 'tagEgg' },
+  { key: 'Safari', label: 'Safari', cls: 'tagSafari' },
+  { key: 'Honey Tree', label: 'Honey', cls: 'tagHoney' },
+  { key: 'Sold', label: 'Sold', cls: 'tagSold' },
+  { key: 'Event', label: 'Event', cls: 'tagEvent' },
+  { key: 'Favourite', label: 'Favourite', cls: 'tagFav' },
+  { key: 'Legendary', label: 'Legend', cls: 'tagLegend' },
+  { key: 'MysteriousBall', label: 'Mystery', cls: 'tagMystery' },
+  { key: 'Reaction', label: 'Reaction', cls: 'tagReaction' },
+]
 
 export default function InfoBox({ shiny, points }) {
   const boxRef = useRef(null)
@@ -17,20 +29,16 @@ export default function InfoBox({ shiny, points }) {
       const spanRect = span.getBoundingClientRect()
       const viewportWidth = window.innerWidth
       const isMobile = window.innerWidth <= 900
-      const boxWidth = isMobile ? 100 : 160 // Match CSS width (mobile vs desktop)
+      const boxWidth = isMobile ? 100 : 180
 
-      // Check if this is a favorite Pokemon (parent has bigShiny in class name)
       const parentDiv = span.parentElement
       const isFavorite = parentDiv && parentDiv.className && parentDiv.className.includes('bigShiny')
 
       let leftPos
 
       if (isFavorite) {
-        // For favorites, position to the right to avoid scaled/glowing item
-        // Use smaller offset on mobile since InfoBox is smaller
         leftPos = isMobile ? span.offsetWidth + 25 : span.offsetWidth + 60
       } else {
-        // For normal items, position to the right or left based on viewport
         leftPos = span.offsetWidth + 8
         if (spanRect.right + boxWidth + 8 > viewportWidth) {
           leftPos = -boxWidth - 8
@@ -45,7 +53,7 @@ export default function InfoBox({ shiny, points }) {
   }, [])
 
   const activeTraits = TRAIT_CHECKS.filter(
-    t => shiny[t]?.toLowerCase() === 'yes'
+    t => shiny[t.key]?.toLowerCase() === 'yes'
   )
   const reactionUrl = shiny['Reaction Link']?.trim()
 
@@ -56,13 +64,27 @@ export default function InfoBox({ shiny, points }) {
         <div className={styles.detail}>({points} pts)</div>
       )}
       {activeTraits.length > 0 && (
-        <div className={styles.detail}>{activeTraits.join(', ')}</div>
-      )}
-      {reactionUrl && (
-        <div className={styles.detail}>
-          <a href={reactionUrl} target="_blank" rel="noopener noreferrer" className={styles.reactionLink}>
-            Reaction
-          </a>
+        <div className={styles.tags}>
+          {activeTraits.map(t => {
+            if (t.key === 'Reaction' && reactionUrl) {
+              return (
+                <a
+                  key={t.label}
+                  href={reactionUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.tag} ${styles[t.cls]}`}
+                >
+                  {t.label}
+                </a>
+              )
+            }
+            return (
+              <span key={t.label} className={`${styles.tag} ${styles[t.cls]}`}>
+                {t.label}
+              </span>
+            )
+          })}
         </div>
       )}
     </div>
