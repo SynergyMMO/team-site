@@ -11,8 +11,6 @@
   margin: auto;
   position: relative;
   z-index: 1;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 150px;
 }
 
 .nameContainer {
