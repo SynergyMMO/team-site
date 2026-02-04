@@ -7,7 +7,6 @@ const TRAIT_CHECKS = [
   { key: 'Egg', label: 'Egg', cls: 'tagEgg' },
   { key: 'Safari', label: 'Safari', cls: 'tagSafari' },
   { key: 'Honey Tree', label: 'Honey', cls: 'tagHoney' },
-  { key: 'Sold', label: 'Sold', cls: 'tagSold' },
   { key: 'Event', label: 'Event', cls: 'tagEvent' },
   { key: 'Favourite', label: 'Favourite', cls: 'tagFav' },
   { key: 'Legendary', label: 'Legend', cls: 'tagLegend' },
@@ -27,7 +26,7 @@ export default function InfoBox({ shiny, points }) {
 
     const handleMouseEnter = () => {
       const spanRect = span.getBoundingClientRect()
-      const viewportWidth = window.innerWidth
+      const viewportWidth = document.documentElement.clientWidth
       const isMobile = window.innerWidth <= 900
       const boxWidth = isMobile ? 100 : 180
 
@@ -39,9 +38,15 @@ export default function InfoBox({ shiny, points }) {
       if (isFavorite) {
         leftPos = isMobile ? span.offsetWidth + 25 : span.offsetWidth + 60
       } else {
-        leftPos = span.offsetWidth + 8
-        if (spanRect.right + boxWidth + 8 > viewportWidth) {
+        const fitsRight = spanRect.right + boxWidth + 8 <= viewportWidth
+        const fitsLeft = spanRect.left - boxWidth - 8 >= 0
+
+        if (fitsRight) {
+          leftPos = span.offsetWidth + 8
+        } else if (fitsLeft) {
           leftPos = -boxWidth - 8
+        } else {
+          leftPos = span.offsetWidth + 8
         }
       }
 
