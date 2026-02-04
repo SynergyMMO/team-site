@@ -119,16 +119,18 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 400px;
-  height: 50vh;
+  width: 320px;
+  max-width: 85vw;
+  height: 100vh;
+  height: 100dvh;
   background: rgb(10, 10, 15);
-  backdrop-filter: blur(6px);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  padding: 60px 30px 20px;
+  padding: 70px 20px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  overflow-y: auto;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
   will-change: transform;
@@ -141,10 +143,10 @@
 .mobileLink {
   color: #aaa;
   text-decoration: none;
-  padding: 12px 20px;
+  padding: 14px 16px;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1rem;
   transition: all 0.2s ease;
   display: block;
 }
@@ -166,11 +168,11 @@
   gap: 12px;
   color: #5865F2;
   text-decoration: none;
-  padding: 12px 20px;
+  padding: 14px 16px;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 1.1rem;
-  margin-top: 10px;
+  font-size: 1rem;
+  margin-top: auto;
   border: 2px solid #5865F2;
   transition: all 0.2s ease;
 }
