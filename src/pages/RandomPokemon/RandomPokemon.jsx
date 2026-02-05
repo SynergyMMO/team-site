@@ -31,10 +31,12 @@ export default function RandomPokemon() {
   const { data: shinyDatabase } = useDatabase()
 
   const [currentTab, setCurrentTab] = useState('bingo')
+
   const [enableShiny, setEnableShiny] = useState(true)
   const [allowNormal, setAllowNormal] = useState(false)
   const [allowNature, setAllowNature] = useState(false)
   const [allowIV, setAllowIV] = useState(false)
+  const [activeTeam, setActiveTeam] = useState('team1');
 
   const [tierChecks, setTierChecks] = useState(() => {
     const checks = {}
@@ -53,9 +55,12 @@ export default function RandomPokemon() {
   const [pctIV, setPctIV] = useState(50)
 
   const [bingoSize, setBingoSize] = useState(5)
+  const [customEntries, setCustomEntries] = useState(() =>
+  Array.from({ length: bingoSize * bingoSize }, () => ({ name: '', type: 'normal' }))
+);
   const [activeSize, setActiveSize] = useState(5)
   const [bingoCard, setBingoCard] = useState(null)
-  const [bingoCompleted, setBingoCompleted] = useState([])
+  const [bingoCompleted, setBingoCompleted] = useState({}); 
   const [bingoMilestone, setBingoMilestone] = useState(0)
   const [showOverlay, setShowOverlay] = useState(false)
   const [overlayMessage, setOverlayMessage] = useState('')
@@ -81,6 +86,21 @@ export default function RandomPokemon() {
       setBingoCompleted(saved.completed || [])
     }
   }, [])
+
+  //Initialize Custom Grid
+
+  useEffect(() => {
+    if (currentTab === 'custom') {
+      setCustomEntries(prev => {
+        if (prev.length !== bingoSize * bingoSize) {
+          return Array.from({ length: bingoSize * bingoSize }, () => ({ name: '', type: 'normal' }));
+        }
+        return prev; // keep existing entries
+      });
+    }
+  }, [currentTab, bingoSize]);
+
+
 
   function getExcludedPokemonWithSpecies(userList) {
     if (!generationData || !userList) return []
@@ -244,105 +264,168 @@ export default function RandomPokemon() {
   }
 
   function handleCellClick(idx) {
-    const saved = loadBingo() || { card: bingoCard, size: bingoSize, completed: [] }
-    let newCompleted
-    if (saved.completed.includes(idx)) {
-      newCompleted = saved.completed.filter(i => i !== idx)
-    } else {
-      newCompleted = [...saved.completed, idx]
-    }
-    setBingoCompleted(newCompleted)
-    saveBingo({ card: bingoCard, size: bingoSize, completed: newCompleted })
+    setBingoCompleted(prev => {
+      const copy = { ...prev };
+      if (copy[idx] === activeTeam) {
+        delete copy[idx];
+      } else {
+        copy[idx] = activeTeam;
+      }
+      saveBingo({ card: bingoCard, size: bingoSize, completed: copy });
+      return copy;
+    });
 
-    const totalLines = checkBingo(newCompleted, bingoSize)
-    const allComplete = newCompleted.length === bingoCard.length
+    // Optional: check for bingo milestones as before
+    const completedIndices = Object.keys(bingoCompleted).map(i => parseInt(i, 10));
+    const totalLines = checkBingo(completedIndices, bingoSize);
+    const allComplete = completedIndices.length === bingoCard.length;
 
-    let milestone = 0
-    if (allComplete && bingoMilestone < 3) milestone = 3
-    else if (totalLines >= 2 && bingoMilestone < 2) milestone = 2
-    else if (totalLines >= 1 && bingoMilestone < 1) milestone = 1
+    let milestone = 0;
+    if (allComplete && bingoMilestone < 3) milestone = 3;
+    else if (totalLines >= 2 && bingoMilestone < 2) milestone = 2;
+    else if (totalLines >= 1 && bingoMilestone < 1) milestone = 1;
 
     if (milestone > 0) {
-      setBingoMilestone(milestone)
-      showBingoOverlay(milestone)
+      setBingoMilestone(milestone);
+      showBingoOverlay(milestone);
     }
   }
 
+
+  const handleTeamToggle = (team) => {
+    setActiveTeam(team);
+  };
   function handleGenerate() {
-    const enabledTiers = getEnabledTiers()
-    if (!enabledTiers.length) return
+    const enabledTiers = getEnabledTiers();
 
-    if (!enableShiny && !allowNormal && !allowNature && !allowIV) {
-      showWarning('Please select at least one mode (Shiny, Non-Shiny, Nature, or IV)!')
-      return
-    }
-
+    // ---- Single Mode ----
     if (currentTab === 'single') {
-      const tier = pickTierByWeight(enabledTiers)
-      let pool = [...(normalizedTiers[tier] || [])]
+      if (!enabledTiers.length) return;
+      if (!enableShiny && !allowNormal && !allowNature && !allowIV) {
+        showWarning('Please select at least one mode (Shiny, Non-Shiny, Nature, or IV)!');
+        return;
+      }
+
+      const tier = pickTierByWeight(enabledTiers);
+      let pool = [...(normalizedTiers[tier] || [])];
+
       if (enableShiny && userShinies.length) {
-        const excluded = getExcludedPokemonWithSpecies(userShinies)
-        pool = pool.filter(p => !excluded.includes(p.toLowerCase()))
+        const excluded = getExcludedPokemonWithSpecies(userShinies);
+        pool = pool.filter(p => !excluded.includes(p.toLowerCase()));
       }
+
       if (!pool.length) {
-        showWarning('No eligible Pokemon left for this tier!')
-        return
+        showWarning('No eligible Pokemon left for this tier!');
+        return;
       }
-      const pokeName = pool[Math.floor(Math.random() * pool.length)]
-      const mode = pickModeByWeight()
-      const tierNumber = tier.replace('Tier ', '')
-      setSingleTier(tierNumber)
-      setSinglePokemon({ name: pokeName, mode })
-      setHistory(prev => {
-        const next = [`${formatPokemonName(pokeName)} (Tier ${tierNumber})`, ...prev]
-        return next.slice(0, 10)
-      })
+
+      const pokeName = pool[Math.floor(Math.random() * pool.length)];
+      const mode = pickModeByWeight();
+      const tierNumber = tier.replace('Tier ', '');
+      setSingleTier(tierNumber);
+      setSinglePokemon({ name: pokeName, mode });
+      setHistory(prev => [`${formatPokemonName(pokeName)} (Tier ${tierNumber})`, ...prev].slice(0, 10));
+      return;
     }
 
+    // ---- Bingo Mode ----
     if (currentTab === 'bingo') {
-      const size = bingoSize
-      const card = []
-      const flattenedPool = {}
-      enabledTiers.forEach(tier => {
-        let pool = [...(normalizedTiers[tier] || [])]
-        if (enableShiny && userShinies.length) {
-          const excluded = getExcludedPokemonWithSpecies(userShinies)
-          pool = pool.filter(p => !excluded.includes(p.toLowerCase()))
-        }
-        flattenedPool[tier] = pool
-      })
+      if (!enabledTiers.length) return;
 
-      const totalPoolSize = Object.values(flattenedPool).reduce((sum, arr) => sum + arr.length, 0)
+      const size = bingoSize;
+      const card = [];
+      const flattenedPool = {};
+
+      enabledTiers.forEach(tier => {
+        let pool = [...(normalizedTiers[tier] || [])];
+        if (enableShiny && userShinies.length) {
+          const excluded = getExcludedPokemonWithSpecies(userShinies);
+          pool = pool.filter(p => !excluded.includes(p.toLowerCase()));
+        }
+        flattenedPool[tier] = pool;
+      });
+
+      const totalPoolSize = Object.values(flattenedPool).reduce((sum, arr) => sum + arr.length, 0);
       if (totalPoolSize < size * size) {
-        showWarning('Not enough eligible Pokemon to generate a full bingo card!')
-        return
+        showWarning('Not enough eligible Pokemon to generate a full bingo card!');
+        return;
       }
 
-      let attempts = 0
+      let attempts = 0;
       while (card.length < size * size && attempts < 200) {
-        attempts++
-        const mode = pickModeByWeight()
-        const tier = pickTierByWeight(enabledTiers)
-        const pool = flattenedPool[tier] || []
-        if (!pool.length) continue
-        const pokeName = pool[Math.floor(Math.random() * pool.length)]
+        attempts++;
+        const mode = pickModeByWeight();
+        const tier = pickTierByWeight(enabledTiers);
+        const pool = flattenedPool[tier] || [];
+        if (!pool.length) continue;
+
+        const pokeName = pool[Math.floor(Math.random() * pool.length)];
         if (!card.some(e => e.name === pokeName)) {
-          card.push(generateBingoEntry(pokeName, mode))
+          card.push(generateBingoEntry(pokeName, mode));
         }
       }
 
       if (card.length < size * size) {
-        showWarning('Could not fill the bingo card with enough Pokemon!')
-        return
+        showWarning('Could not fill the bingo card with enough Pokemon!');
+        return;
       }
 
-      setBingoCard(card)
-      setActiveSize(size)
-      setBingoCompleted([])
-      setBingoMilestone(0)
-      saveBingo({ card, size, completed: [] })
+      setBingoCard(card);
+      setActiveSize(size);
+      setBingoCompleted([]);
+      setBingoMilestone(0);
+      saveBingo({ card, size, completed: [] });
+      return;
+    }
+
+    // ---- Custom Mode ----
+    if (currentTab === 'custom') {
+      const size = bingoSize;
+      if (!bingoCard || bingoCard.length !== size * size) {
+        // initialize empty card
+        setBingoCard(Array.from({ length: size * size }, () => ({ name: '', type: 'normal' })));
+      }
+      setActiveSize(size);
+      setBingoCompleted([]);
+      setBingoMilestone(0);
+      return;
     }
   }
+
+    function parseCustomEntryInput(input) {
+      let trimmed = input.trim();
+      if (!trimmed) return { name: '', type: 'normal' }; // empty = normal
+
+      // Check for explicit non-shiny
+      if (/-nonshiny/i.test(trimmed)) {
+        trimmed = trimmed.replace(/-nonshiny/i, '').trim();
+        return { name: trimmed, type: 'normal' };
+      }
+
+      // Check for nature
+      const natureMatch = trimmed.match(/-nature\s+(\w+)/i);
+      if (natureMatch) {
+        const nature = natureMatch[1].charAt(0).toUpperCase() + natureMatch[1].slice(1);
+        const name = trimmed.replace(natureMatch[0], '').trim();
+        return { name, type: 'nature', nature };
+      }
+
+      // Check for IV
+      const ivMatch = trimmed.match(/-iv\s*([<>])\s*(\d+)/i);
+      if (ivMatch) {
+        const target = ivMatch[1] === '>' ? 'HIGHER' : 'LOWER';
+        const roll = parseInt(ivMatch[2], 10);
+        const name = trimmed.replace(ivMatch[0], '').trim();
+        return { name, type: 'iv', iv: { target, roll } };
+      }
+
+      // Default: shiny if just a name is typed
+      return { name: trimmed, type: 'shiny' };
+    }
+
+
+
+
 
   const checkedCount = [enableShiny, allowNormal, allowNature, allowIV].filter(Boolean).length
 
@@ -379,6 +462,13 @@ export default function RandomPokemon() {
         >
           Bingo Card
         </button>
+
+        <button
+          className={`${styles.tabBtn} ${currentTab === 'custom' ? styles.tabActive : ''}`}
+          onClick={() => setCurrentTab('custom')}
+        >
+          Custom Card
+        </button>
       </div>
 
       {currentTab === 'bingo' && (
@@ -389,7 +479,7 @@ export default function RandomPokemon() {
           <label><input type="checkbox" checked={allowIV} onChange={e => setAllowIV(e.target.checked)} /> Allow Random IV Tasks</label>
         </div>
       )}
-
+      {currentTab != 'custom' && (
       <div className={styles.tierFilters}>
         <h3>Shiny Tier Filter</h3>
         <div className={styles.tierCheckboxes}>
@@ -414,10 +504,11 @@ export default function RandomPokemon() {
           ))}
         </div>
       </div>
-
+      )}
       {currentTab === 'single' && (
         <button className={styles.generateBtn} onClick={handleGenerate}>Generate</button>
       )}
+
 
       {currentTab === 'bingo' && (
         <>
@@ -483,6 +574,33 @@ export default function RandomPokemon() {
         </>
       )}
 
+      {currentTab === 'bingo' && (
+        <div className={styles.teamToggleContainer}>
+          <div className={styles.teamToggle}>
+            <div
+              className={styles.teamSlider}
+              style={{
+                transform: activeTeam === 'team1' ? 'translateX(0%)' : 'translateX(100%)',
+                backgroundColor: activeTeam === 'team1' ? '#e63b3b' : '#2b9bff', // team colors
+              }}
+            ></div>
+
+            <span
+              className={`${styles.teamOption} ${activeTeam === 'team1' ? styles.active : ''}`}
+              onClick={() => handleTeamToggle('team1')}
+            >
+              Team 1
+            </span>
+            <span
+              className={`${styles.teamOption} ${activeTeam === 'team2' ? styles.active : ''}`}
+              onClick={() => handleTeamToggle('team2')}
+            >
+              Team 2
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Bingo card */}
       {currentTab === 'bingo' && bingoCard && (
         <div
@@ -492,21 +610,223 @@ export default function RandomPokemon() {
           {bingoCard.map((entry, idx) => (
             <div
               key={idx}
-              className={`${styles.bingoCell} ${bingoCompleted.includes(idx) ? styles.completed : ''}`}
+              className={styles.bingoCell}
               onClick={() => handleCellClick(idx)}
+              style={{
+                backgroundColor: bingoCompleted[idx]
+                  ? bingoCompleted[idx] === 'team1' ? '#e63b3b' : '#2b9bff'
+                  : '', // default unmarked
+              }}
             >
               <img
                 src={getPokemonImageUrl(entry.name, entry.type === 'shiny')}
-                alt={formatPokemonName(entry.name)}
+                alt={entry.name}
                 className={styles.bingoImg}
               />
+
               {entry.type === 'nature' && <div className={styles.bingoText}>Nature: {entry.nature}</div>}
+              {entry.type === 'shiny' && <div className={styles.bingoText}>Shiny</div>}
               {entry.type === 'iv' && <div className={styles.bingoText}>IV {entry.iv.target} than {entry.iv.roll}</div>}
               {entry.type === 'normal' && <div className={styles.bingoText}>Non-Shiny</div>}
             </div>
+
           ))}
         </div>
       )}
+
+
+{currentTab === 'custom' && (
+  <>
+    {/* Card Size Selector */}
+    <div className={styles.bingoSettings}>
+      <label>
+        Card Size:{' '}
+        <select
+          value={bingoSize}
+          onChange={e => setBingoSize(parseInt(e.target.value))}
+          className={styles.bingoSelect}
+        >
+          {[3, 4, 5, 6, 7].map(n => (
+            <option key={n} value={n}>
+              {n}x{n}
+            </option>
+          ))}
+        </select>
+      </label>
+    </div>
+
+    {/* Custom Bingo Grid */}
+    <div
+      className={styles.bingoCard}
+      style={{ gridTemplateColumns: `repeat(${bingoSize}, 1fr)` }}
+    >
+      {customEntries.map((entry, idx) => {
+        const committed = entry.committed; // define inside map
+
+        return (
+          <div
+            key={idx}
+            className={styles.bingoCell}
+            style={{
+              position: 'relative',
+              height: '160px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Preview Image & Label */}
+            {committed && committed.name && (
+              <>
+                <img
+                  src={getPokemonImageUrl(committed.name, committed.type === 'shiny')}
+                  alt={committed.name}
+                  className={styles.bingoImg}
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    width: '80px',
+                    height: '80px',
+                    objectFit: 'contain',
+                  }}
+                />
+
+                {committed.type === 'shiny' && (
+                  <div
+                    className={styles.bingoText}
+                    style={{
+                      position: 'absolute',
+                      bottom: '30px',
+                      width: '100%',
+                      textAlign: 'center',
+                    }}
+                  >
+                    Shiny
+                  </div>
+                )}
+                {committed.type === 'normal' && (
+                  <div
+                    className={styles.bingoText}
+                    style={{
+                      position: 'absolute',
+                      bottom: '30px',
+                      width: '100%',
+                      textAlign: 'center',
+                    }}
+                  >
+                    Non-Shiny
+                  </div>
+                )}
+                {committed.type === 'nature' && (
+                  <div
+                    className={styles.bingoText}
+                    style={{
+                      position: 'absolute',
+                      bottom: '30px',
+                      width: '100%',
+                      textAlign: 'center',
+                    }}
+                  >
+                    Nature: {committed.nature}
+                  </div>
+                )}
+                {committed.type === 'iv' && (
+                  <div
+                    className={styles.bingoText}
+                    style={{
+                      position: 'absolute',
+                      bottom: '30px',
+                      width: '100%',
+                      textAlign: 'center',
+                    }}
+                  >
+                    IV {committed.iv.target} than {committed.iv.roll}
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Input Field */}
+            <input
+              className={styles.customBingoInput}
+              placeholder="Pokemon name (-nature/-iv/-nonshiny)"
+              value={entry.name}
+              onChange={e => {
+                const val = e.target.value;
+                setCustomEntries(prev => {
+                  const copy = [...prev];
+                  copy[idx] = { ...copy[idx], name: val };
+                  return copy;
+                });
+              }}
+              onBlur={() => {
+                setCustomEntries(prev => {
+                  const copy = [...prev];
+                  copy[idx] = {
+                    ...copy[idx],
+                    committed: parseCustomEntryInput(copy[idx].name),
+                  };
+                  return copy;
+                });
+              }}
+              style={{
+                position: 'absolute',
+                bottom: '8px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '75%',
+                textAlign: 'center',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                padding: '4px 6px',
+                borderRadius: '8px',
+                border: '1px solid rgba(155, 89, 182, 0.9)',
+                background: 'rgba(60, 40, 90, 0.9)',
+                color: 'rgb(255, 255, 255)',
+                outline: 'none',
+              }}
+            />
+          </div>
+        );
+      })}
+    </div>
+
+    {/* Start Custom Card Button */}
+    <button
+      className={styles.generateBtn}
+      onClick={() => {
+        const filledEntries = customEntries.map(
+          e => e.committed || parseCustomEntryInput(e.name)
+        );
+        const incomplete = filledEntries.some(e => !e.name.trim());
+
+        if (incomplete) {
+          showWarning('Please fill every square!');
+          return;
+        }
+
+        // Save and start custom card
+        setBingoCard(filledEntries);
+        setActiveSize(bingoSize);
+        setBingoCompleted([]);
+        setBingoMilestone(0);
+
+        saveBingo({
+          card: filledEntries,
+          size: bingoSize,
+          completed: [],
+        });
+
+        setCurrentTab('bingo');
+      }}
+    >
+      Start Custom Card
+    </button>
+  </>
+)}
+
+
 
       {/* Bingo overlay */}
       {showOverlay && (
