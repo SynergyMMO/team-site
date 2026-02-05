@@ -615,7 +615,7 @@ export default function RandomPokemon() {
               style={{
                 backgroundColor: bingoCompleted[idx]
                   ? bingoCompleted[idx] === 'team1' ? '#e63b3b' : '#2b9bff'
-                  : '', // default unmarked
+                  : '', 
               }}
             >
               <img
@@ -661,7 +661,7 @@ export default function RandomPokemon() {
       style={{ gridTemplateColumns: `repeat(${bingoSize}, 1fr)` }}
     >
       {customEntries.map((entry, idx) => {
-        const committed = entry.committed; // define inside map
+        const committed = entry.committed; 
 
         return (
           <div
@@ -806,7 +806,6 @@ export default function RandomPokemon() {
           return;
         }
 
-        // Save and start custom card
         setBingoCard(filledEntries);
         setActiveSize(bingoSize);
         setBingoCompleted([]);
