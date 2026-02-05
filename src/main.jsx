@@ -2,7 +2,6 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { API } from './api/endpoints'
 import { AdminProvider } from './context/AdminContext'
 import App from './App'
 import './index.css'
@@ -18,13 +17,6 @@ const queryClient = new QueryClient({
   },
 })
 
-// Prefetch database on app mount
-queryClient.prefetchQuery({
-  queryKey: ['database'],
-  queryFn: () =>
-    fetch(API.database).then(r => r.json()),
-})
-
 // SPA redirect restore for GitHub Pages with subdirectory support
 ;(function () {
   const l = window.location
@@ -37,8 +29,8 @@ queryClient.prefetchQuery({
   }
 })()
 
-// Register service worker for caching
-if ('serviceWorker' in navigator) {
+// Register service worker for caching (production only)
+if (!import.meta.env.DEV && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/synergy-shiny-showcase/service-worker.js')
       .catch((error) => {
@@ -50,7 +42,7 @@ if ('serviceWorker' in navigator) {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename="/synergy-shiny-showcase" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <BrowserRouter basename={import.meta.env.DEV ? '' : '/synergy-shiny-showcase'} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AdminProvider>
           <App />
         </AdminProvider>
