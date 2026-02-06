@@ -57,13 +57,16 @@ export default function PlayerPage() {
       {favourites.length > 0 && (
         <div className={styles.favouriteList}>
           <h2 className={styles.favouritesHeader}>My Followers</h2>
-          {favourites.map(([id, s]) => (
-            <div key={id} className={styles.bigShinyWrapper}>
-              <ShinyItem shiny={s} />
-            </div>
-          ))}
+          <div className={styles.favouriteGrid}>
+            {favourites.map(([id, s]) => (
+              <div key={id} className={styles.bigShinyWrapper}>
+                <ShinyItem shiny={s} />
+              </div>
+            ))}
+          </div>
         </div>
       )}
+
 
       <div className={styles.shinyList}>
         {normalShinies.map(([id, s]) => (
