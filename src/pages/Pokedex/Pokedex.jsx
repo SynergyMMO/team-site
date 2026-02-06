@@ -43,7 +43,20 @@ export default function Pokedex() {
 
       const pokemonName = target.alt.toLowerCase()
       const owners = ownerMap.get(pokemonName) || []
-      const text = owners.length ? `Owned by: ${owners.join(', ')}` : ''
+
+      const counts = owners.reduce((acc, name) => {
+        acc[name] = (acc[name] || 0) + 1
+        return acc
+      }, {})
+
+      const formattedOwners = Object.entries(counts).map(([name, count]) =>
+        count > 1 ? `${name}\u00A0(${count})` : name
+      )
+
+      const text = formattedOwners.length
+        ? `Owned by: ${formattedOwners.join(', ')}`
+        : ''
+
       setHoverInfo(text)
 
       const rect = target.getBoundingClientRect()
