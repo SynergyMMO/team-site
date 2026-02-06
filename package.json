@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",
+    "framer-motion": "^12.33.0",
     "jszip": "^3.10.1",
     "omggif": "^1.0.10",
     "react": "^19.0.0",
