@@ -50,12 +50,13 @@
     ["koffing","weezing"],
     ["rhyhorn","rhydon","rhyperior"],
     ["tangela","tangrowth"],
+    ["kangaskhan"],
     ["horsea","seadra","kingdra"],
     ["goldeen","seaking"],
     ["staryu","starmie"],
     ["mime-jr","mr-mime"],
     ["scyther","scizor"],
-    ["jynx"],
+    ["smoochum","jynx"],
     ["electabuzz","electivire"],
     ["magby","magmar", "magmortar"],
     ["pinsir"],
@@ -69,8 +70,7 @@
     ["kabuto","kabutops"],
     ["aerodactyl"],
     ["munchlax","snorlax"],
-    ["dratini","dragonair","dragonite"],
-    ["kangaskhan"]
+    ["dratini","dragonair","dragonite"]
   ],
   "Generation 2": [
     ["chikorita","bayleef","meganium"],
@@ -118,7 +118,6 @@
     ["stantler"],
     ["smeargle"],
     ["tyrogue","hitmonlee","hitmonchan","hitmontop"],
-    ["smoochum","jynx"],
     ["elekid","electabuzz","electivire"],
     ["miltank"],
     ["larvitar","pupitar","tyranitar"]
@@ -142,7 +141,7 @@
     ["nincada","ninjask","shedinja"],
     ["whismur","loudred","exploud"],
     ["makuhita","hariyama"],
-    ["nosepass"],
+    ["nosepass", "probopass"],
     ["skitty","delcatty"],
     ["sableye"],
     ["mawile"],
