@@ -1,0 +1,20 @@
+# Allow all crawlers to access most of the site
+User-agent: *
+Disallow: /admin
+Disallow: /admin/panel
+Disallow: /notfound
+# You could also disallow any other sensitive or utility pages
+
+# Allow crawling of everything else
+Allow: /
+
+# Specify location of your sitemap for SEO
+Sitemap: https://synergymmo.com/sitemap.xml
+
+# Optional: Crawl delay (seconds) if you want to reduce server load
+# Crawl-delay: 1
+
+# Notes for search engines
+# - All main site pages are accessible
+# - Admin pages are blocked
+# - Sitemap provided to help search engines index content efficiently
