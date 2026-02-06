@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react'
+import { memo, useMemo } from 'react'
 import InfoBox from '../InfoBox/InfoBox'
 import { getLocalPokemonGif, onGifError } from '../../utils/pokemon'
 import styles from './ShinyItem.module.css'
@@ -23,7 +23,6 @@ const ICON_MAP = {
 }
 
 function ShinyItem({ shiny, points }) {
-  const [hovered, setHovered] = useState(false)
   const shinyGifPath = useMemo(() => getLocalPokemonGif(shiny.Pokemon), [shiny.Pokemon])
 
   // Container CSS classes based on traits
@@ -82,11 +81,7 @@ function ShinyItem({ shiny, points }) {
   const isSold = shiny.Sold?.toLowerCase() === 'yes'
 
   return (
-    <span
-      className={styles.wrapper}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+    <span className={styles.wrapper}>
       <div className={containerClasses}>
         {icons}
         <img
@@ -99,7 +94,7 @@ function ShinyItem({ shiny, points }) {
           onError={onGifError(shiny.Pokemon)}
         />
       </div>
-      {hovered && <InfoBox shiny={shiny} points={points} />}
+      <InfoBox shiny={shiny} points={points} />
     </span>
   )
 }
