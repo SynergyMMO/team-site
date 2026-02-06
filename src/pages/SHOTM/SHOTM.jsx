@@ -78,26 +78,42 @@ export default function SHOTM() {
       .map(([player, points], i) => ({ rank: i + 1, player, points }))
   }, [data, tierPoints, tierLookup])
 
-  const tieredHighlights = useMemo(() => {
-    const tiers = {}
-    Object.entries(shotmData).forEach(([player, info]) => {
-      info.shinies.forEach(s => {
-        if (s.Sold?.toLowerCase() === 'yes' || s.Flee?.toLowerCase() === 'yes') return
-        const tier = tierLookup[s.Pokemon.toLowerCase()]
-        if (!tier || !['Tier 3', 'Tier 2', 'Tier 1', 'Tier 0'].includes(tier)) return
-        const pokemonName = s.Pokemon.charAt(0).toUpperCase() + s.Pokemon.slice(1).toLowerCase()
-        if (!tiers[tier]) tiers[tier] = {}
-        if (!tiers[tier][pokemonName]) tiers[tier][pokemonName] = new Set()
-        tiers[tier][pokemonName].add(player)
-      })
+const tieredHighlights = useMemo(() => {
+  const tiers = {}
+
+  Object.entries(shotmData).forEach(([player, info]) => {
+    info.shinies.forEach(s => {
+      if (s.Sold?.toLowerCase() === 'yes' || s.Flee?.toLowerCase() === 'yes') return
+
+      const tier = tierLookup[s.Pokemon.toLowerCase()]
+      const isTierValid = tier && ['Tier 3', 'Tier 2', 'Tier 1', 'Tier 0'].includes(tier)
+      const isAlpha = s.Alpha?.toLowerCase() === 'yes'
+
+      // Only skip if it's neither a valid tier nor Alpha
+      if (!isTierValid && !isAlpha) return
+
+      const pokemonName = s.Pokemon.charAt(0).toUpperCase() + s.Pokemon.slice(1).toLowerCase()
+
+      // Use actual tier if valid, otherwise use 'Alpha' as a fallback
+      const displayTier = isTierValid ? tier : 'Alpha'
+
+      if (!tiers[displayTier]) tiers[displayTier] = {}
+      if (!tiers[displayTier][pokemonName]) tiers[displayTier][pokemonName] = new Set()
+      tiers[displayTier][pokemonName].add(player)
     })
-    Object.keys(tiers).forEach(t => {
-      Object.keys(tiers[t]).forEach(p => {
-        tiers[t][p] = [...tiers[t][p]].sort()
-      })
+  })
+
+  // Convert sets to sorted arrays
+  Object.keys(tiers).forEach(t => {
+    Object.keys(tiers[t]).forEach(p => {
+      tiers[t][p] = [...tiers[t][p]].sort()
     })
-    return tiers
-  }, [shotmData, tierLookup])
+  })
+
+  return tiers
+}, [shotmData, tierLookup])
+
+
 
   const hasMonthData = (m, y) => {
     if (!data) return false
@@ -238,32 +254,32 @@ export default function SHOTM() {
             </button>
             {(showTiers || closingTiers) && (
               <div className={`${styles.tierColumns} ${closingTiers ? styles.slideUp : ''}`}>
-                {['Tier 3', 'Tier 2', 'Tier 1', 'Tier 0']
-                  .filter(t => tieredHighlights[t])
-                  .map(tier => (
-                    <div key={tier} className={styles.tierColumn}>
-                      <h3>{tier}</h3>
-                      {Object.entries(tieredHighlights[tier])
-                        .sort(([a], [b]) => a.localeCompare(b))
-                        .map(([pokemon, players]) => (
-                          <div key={pokemon} className={styles.tierPokemon}>
-                            <div className={styles.pokemonName}>{pokemon}</div>
-                            <div className={styles.pokemonHunters}>
-                              {players.map(p => (
-                                <Link
-                                  key={p}
-                                  to={`/player/${p.toLowerCase()}`}
-                                  state={{ from: 'shotm' }}
-                                  className={styles.playerLink}
-                                >
-                                  {p}
-                                </Link>
-                              ))}
-                            </div>
+                {['Tier 3', 'Tier 2', 'Tier 1', 'Tier 0', 'Alpha']
+                .filter(t => tieredHighlights[t])
+                .map(tier => (
+                  <div key={tier} className={styles.tierColumn}>
+                    <h3>{tier}</h3>
+                    {Object.entries(tieredHighlights[tier])
+                      .sort(([a], [b]) => a.localeCompare(b))
+                      .map(([pokemon, players]) => (
+                        <div key={pokemon} className={styles.tierPokemon}>
+                          <div className={styles.pokemonName}>{pokemon}</div>
+                          <div className={styles.pokemonHunters}>
+                            {players.map(p => (
+                              <Link
+                                key={p}
+                                to={`/player/${p.toLowerCase()}`}
+                                state={{ from: 'shotm' }}
+                                className={styles.playerLink}
+                              >
+                                {p}
+                              </Link>
+                            ))}
                           </div>
-                        ))}
-                    </div>
-                  ))}
+                        </div>
+                      ))}
+                  </div>
+                ))}
               </div>
             )}
           </>
