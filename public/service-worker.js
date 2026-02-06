@@ -1,4 +1,4 @@
-const CACHE_NAME = 'synergy-showcase-v3'
+const CACHE_NAME = 'synergy-showcase-v4'
 const POKEMON_CACHE = 'pokemon-sprites-v1'
 const API_CACHE = 'api-data-v1'
 
@@ -40,6 +40,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
+
+  // Skip robots.txt and sitemap.xml — let the browser/server handle them directly
+  if (url.pathname === '/robots.txt' || url.pathname === '/sitemap.xml') return
 
   // Aggressive caching for Pokemon sprites — local gifs + remote fallbacks (cache-first, never expire)
   if (url.pathname.startsWith('/images/pokemon_gifs/') || url.hostname === 'img.pokemondb.net') {
