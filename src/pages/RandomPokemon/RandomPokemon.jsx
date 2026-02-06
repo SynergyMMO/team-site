@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useDatabase } from '../../hooks/useDatabase'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getPokemonImageUrl, formatPokemonName, onGifError } from '../../utils/pokemon'
 import { checkBingo, saveBingo, loadBingo } from '../../utils/bingo'
 import randomizerTiers from '../../data/randomizer_tiers.json'
@@ -28,6 +29,12 @@ const normalizedTiers = {
 }
 
 export default function RandomPokemon() {
+  useDocumentHead({
+    title: 'Random Pokemon Generator',
+    description: 'Generate random Pokemon targets for your next PokeMMO shiny hunt. Play bingo, filter by tier, and roll for natures and IVs.',
+    canonicalPath: '/random-pokemon-generator',
+  })
+
   const { data: shinyDatabase } = useDatabase()
 
   const [currentTab, setCurrentTab] = useState('bingo')

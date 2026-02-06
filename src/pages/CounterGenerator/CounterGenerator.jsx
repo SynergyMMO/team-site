@@ -1,7 +1,13 @@
 import { useState, useRef, useCallback } from 'react'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import styles from './CounterGenerator.module.css'
 
 export default function CounterGenerator() {
+  useDocumentHead({
+    title: 'Encounter Counter Generator',
+    description: 'Create custom PokeMMO encounter counter themes. Upload a GIF, resize it, and download a ready-to-use counter theme ZIP.',
+    canonicalPath: '/counter-generator',
+  })
   const [status, setStatus] = useState('')
   const [generateEnabled, setGenerateEnabled] = useState(false)
   const loadedFileRef = useRef(null)

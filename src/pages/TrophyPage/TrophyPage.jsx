@@ -1,5 +1,7 @@
+import { useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTrophies } from '../../hooks/useTrophies'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useDatabase } from '../../hooks/useDatabase'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from './TrophyPage.module.css'
@@ -9,13 +11,24 @@ export default function TrophyPage() {
   const { data: trophiesData, isLoading: loadingTrophies } = useTrophies()
   const { data: shinyData, isLoading: loadingDB } = useDatabase()
 
+  const trophyKey = useMemo(() => {
+    if (!trophiesData) return null
+    return Object.keys(trophiesData.trophies).find(
+      k => k.toLowerCase() === decodeURIComponent(trophyName).toLowerCase()
+    ) || null
+  }, [trophiesData, trophyName])
+
+  useDocumentHead({
+    title: trophyKey ? `${trophyKey} Trophy` : decodeURIComponent(trophyName),
+    description: trophyKey
+      ? `See which Team Synergy members earned the ${trophyKey} trophy in PokeMMO.`
+      : `View trophy details for Team Synergy in PokeMMO.`,
+    canonicalPath: `/trophy/${encodeURIComponent(trophyName.toLowerCase())}`,
+  })
+
   if (loadingTrophies || loadingDB) return <div className="message">Loading...</div>
 
   const { trophies, trophyAssignments } = trophiesData
-
-  const trophyKey = Object.keys(trophies).find(
-    k => k.toLowerCase() === decodeURIComponent(trophyName).toLowerCase()
-  )
 
   if (!trophyKey) {
     return <h2 style={{ color: 'white', textAlign: 'center' }}>Trophy "{trophyName}" not found</h2>

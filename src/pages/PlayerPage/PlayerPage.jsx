@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTrophies } from '../../hooks/useTrophies'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import TrophyShelf from '../../components/TrophyShelf/TrophyShelf'
@@ -13,11 +14,6 @@ export default function PlayerPage() {
   const { data, isLoading } = useDatabase()
   const { data: trophiesData } = useTrophies()
 
-  useEffect(() => {
-    document.body.classList.add('player-page-active')
-    return () => document.body.classList.remove('player-page-active')
-  }, [])
-
   const { realKey, playerData } = useMemo(() => {
     if (!data) return {}
     const key = Object.keys(data).find(
@@ -25,6 +21,19 @@ export default function PlayerPage() {
     )
     return { realKey: key, playerData: key ? data[key] : null }
   }, [data, playerName])
+
+  useDocumentHead({
+    title: realKey ? `${realKey}'s Shinies` : playerName,
+    description: realKey
+      ? `Browse ${realKey}'s shiny Pokemon collection in PokeMMO.`
+      : `View this player's shiny Pokemon collection in PokeMMO.`,
+    canonicalPath: `/player/${playerName.toLowerCase()}`,
+  })
+
+  useEffect(() => {
+    document.body.classList.add('player-page-active')
+    return () => document.body.classList.remove('player-page-active')
+  }, [])
 
   if (isLoading) return <div className="message">Loading...</div>
   if (!playerData) {

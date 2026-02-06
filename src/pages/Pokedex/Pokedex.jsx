@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getAssetUrl } from '../../utils/assets'
 import { normalizePokemonName, onGifError } from '../../utils/pokemon'
 import { API } from '../../api/endpoints'
@@ -8,6 +9,11 @@ import generationData from '../../data/generation.json'
 import styles from './Pokedex.module.css'
 
 export default function Pokedex() {
+  useDocumentHead({
+    title: 'Shiny Dex',
+    description: 'Track every shiny Pokemon caught by Team Synergy in PokeMMO. Browse our community Shiny Dex across all generations.',
+    canonicalPath: '/pokedex',
+  })
   const { data, isLoading } = useDatabase()
   const [mode, setMode] = useState('shiny')
   const [hideComplete, setHideComplete] = useState(false)

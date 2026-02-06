@@ -1,8 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useStreamers } from '../../hooks/useStreamers'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import styles from './Streamers.module.css'
 
 export default function Streamers() {
+  useDocumentHead({
+    title: 'Streamers',
+    description: "Watch Team Synergy members stream PokeMMO live on Twitch. See who's online and find PokeMMO streamers to follow.",
+    canonicalPath: '/streamers',
+  })
   const { data, isLoading, error } = useStreamers()
 
   if (isLoading) {

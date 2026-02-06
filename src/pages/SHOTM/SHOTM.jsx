@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTierData } from '../../hooks/useTierData'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import { getAssetUrl } from '../../utils/assets'
@@ -25,6 +26,12 @@ function isCurrentMonth(month, year) {
 }
 
 export default function SHOTM() {
+  useDocumentHead({
+    title: 'Shiny Hunters of the Month',
+    description: "Monthly rankings for Team Synergy's top shiny hunters in PokeMMO. See who caught the most shinies this month and all-time.",
+    canonicalPath: '/shotm',
+  })
+
   const now = new Date()
   const [currentMonth, setCurrentMonth] = useState(
     now.toLocaleString('default', { month: 'long' }).toLowerCase()

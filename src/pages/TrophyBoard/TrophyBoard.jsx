@@ -1,8 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import { useTrophies } from '../../hooks/useTrophies'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import styles from './TrophyBoard.module.css'
 
 export default function TrophyBoard() {
+  useDocumentHead({
+    title: 'Trophy Board',
+    description: 'View trophies and achievements earned by Team Synergy members in PokeMMO.',
+    canonicalPath: '/trophy-board',
+  })
   const { data, isLoading } = useTrophies()
   const navigate = useNavigate()
 

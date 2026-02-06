@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useDatabase } from '../../hooks/useDatabase'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { getAssetUrl } from '../../utils/assets'
@@ -12,6 +13,11 @@ const INITIAL_COUNT = 5
 const BATCH_SIZE = 5
 
 export default function Showcase() {
+  useDocumentHead({
+    title: 'Shiny Showcase',
+    description: "Meet Team Synergy, a PokeMMO shiny hunting team. Browse our members' shiny Pokemon collections and see who's caught the most shinies.",
+    canonicalPath: '/',
+  })
   const { data, isLoading, error } = useDatabase()
   const [search, setSearch] = useState('')
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT)
