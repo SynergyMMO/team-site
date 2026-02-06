@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTierData } from '../../hooks/useTierData'
+import { useTieredShinies } from '../../hooks/useTieredShinies'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import { getAssetUrl } from '../../utils/assets'
 import { TRAIT_POINTS, calculateShinyPoints } from '../../utils/points'
@@ -47,6 +48,7 @@ export default function SHOTM() {
   const { data, isLoading } = useDatabase()
   const { tierPoints, tierLookup } = useTierData()
 
+  // Filter SHOTM data for current month
   const shotmData = useMemo(() => {
     if (!data) return {}
     const result = {}
@@ -57,16 +59,17 @@ export default function SHOTM() {
         return m === currentMonth && y === String(currentYear)
       })
       if (!monthShinies.length) return
-      const totalPoints = monthShinies.reduce((acc, [, s]) => acc + calculateShinyPoints(s, tierPoints, tierLookup), 0)
+      const totalPoints = monthShinies.reduce(
+        (acc, [, s]) => acc + calculateShinyPoints(s, tierPoints, tierLookup),
+        0
+      )
       result[player] = { shinies: monthShinies, points: totalPoints }
     })
     return result
   }, [data, currentMonth, currentYear, tierPoints, tierLookup])
 
   const rankings = useMemo(
-    () =>
-      Object.entries(shotmData)
-        .sort((a, b) => b[1].points - a[1].points),
+    () => Object.entries(shotmData).sort((a, b) => b[1].points - a[1].points),
     [shotmData]
   )
 
@@ -85,56 +88,16 @@ export default function SHOTM() {
       .map(([player, points], i) => ({ rank: i + 1, player, points }))
   }, [data, tierPoints, tierLookup])
 
-const tieredHighlights = useMemo(() => {
-  const tiers = {}
+  const tieredHighlights = useTieredShinies(shotmData, tierLookup, {
+  onlyCurrentMonth: true, 
+  tiersToInclude: ['Tier 3', 'Tier 2', 'Tier 1', 'Tier 0'],
+  includeAlpha: true,
+  selectedMonth: currentMonth,
+  selectedYear: currentYear,
+})
 
-  Object.entries(shotmData).forEach(([player, info]) => {
-    info.shinies.forEach(([, s]) => {
-      if (s.Sold?.toLowerCase() === 'yes' || s.Flee?.toLowerCase() === 'yes') return
-
-      const tier = tierLookup[s.Pokemon.toLowerCase()]
-      const isTierValid = tier && ['Tier 3', 'Tier 2', 'Tier 1', 'Tier 0'].includes(tier)
-      const isAlpha = s.Alpha?.toLowerCase() === 'yes'
-
-      // Only skip if it's neither a valid tier nor Alpha
-      if (!isTierValid && !isAlpha) return
-
-      const pokemonName = s.Pokemon.charAt(0).toUpperCase() + s.Pokemon.slice(1).toLowerCase()
-
-      // Use actual tier if valid, otherwise use 'Alpha' as a fallback
-      const displayTier = isTierValid ? tier : 'Alpha'
-
-      if (!tiers[displayTier]) tiers[displayTier] = {}
-      if (!tiers[displayTier][pokemonName]) tiers[displayTier][pokemonName] = new Set()
-      tiers[displayTier][pokemonName].add(player)
-    })
-  })
-
-  // Convert sets to sorted arrays
-  Object.keys(tiers).forEach(t => {
-    Object.keys(tiers[t]).forEach(p => {
-      tiers[t][p] = [...tiers[t][p]].sort()
-    })
-  })
-
-  return tiers
-}, [shotmData, tierLookup])
-
-
-
-  const hasMonthData = (m, y) => {
-    if (!data) return false
-    return Object.values(data).some(player =>
-      Object.values(player.shinies || {}).some(
-        s => s.Month?.toLowerCase()?.trim() === m && String(s.Year || '').trim() === String(y)
-      )
-    )
-  }
-
-  // Previous ranks from localStorage - use ref to store snapshot that won't be overwritten
+  // Previous ranks from localStorage
   const previousRanksRef = useRef({})
-
-  // Load previous ranks from localStorage when month changes
   useEffect(() => {
     const monthKey = `shotm-ranks-${currentMonth}-${currentYear}`
     const saved = localStorage.getItem(monthKey)
@@ -145,15 +108,11 @@ const tieredHighlights = useMemo(() => {
     }
   }, [currentMonth, currentYear])
 
-  // Save current ranks to localStorage after rankings are computed
   useEffect(() => {
-    if (rankings.length === 0) return
+    if (!rankings.length) return
     const currentRanks = {}
     rankings.forEach(([player], i) => { currentRanks[player] = i + 1 })
-    localStorage.setItem(
-      `shotm-ranks-${currentMonth}-${currentYear}`,
-      JSON.stringify(currentRanks)
-    )
+    localStorage.setItem(`shotm-ranks-${currentMonth}-${currentYear}`, JSON.stringify(currentRanks))
   }, [rankings, currentMonth, currentYear])
 
   const previousRanks = previousRanksRef.current
@@ -170,32 +129,26 @@ const tieredHighlights = useMemo(() => {
   }
 
   const prev = shiftMonth(currentMonth, currentYear, -1)
-  const hasPrevData = hasMonthData(prev.month, prev.year)
+  const hasPrevData = Object.values(data || {}).some(player =>
+    Object.values(player.shinies || {}).some(
+      s => s.Month?.toLowerCase()?.trim() === prev.month && String(s.Year || '').trim() === String(prev.year)
+    )
+  )
   const isCurrent = isCurrentMonth(currentMonth, currentYear)
-  const hasTierData = Object.keys(tieredHighlights).length > 0
 
   if (isLoading) return <div className="message">Loading...</div>
 
   return (
     <div>
-      <h1>
-        Team Synergy SHOTM
-        <Link to="/admin" className="invisible-link">!</Link>
-      </h1>
+      <h1>Team Synergy SHOTM <Link to="/admin" className="invisible-link">!</Link></h1>
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
       {/* Collapsible sections */}
       <div className={styles.alltimeContainer}>
+        {/* All-Time Leaderboard */}
         <button className={styles.toggleBtn} onClick={() => {
-          if (showAllTime) {
-            setClosingAllTime(true)
-            setTimeout(() => {
-              setShowAllTime(false)
-              setClosingAllTime(false)
-            }, 300)
-          } else {
-            setShowAllTime(true)
-          }
+          if (showAllTime) { setClosingAllTime(true); setTimeout(() => { setShowAllTime(false); setClosingAllTime(false) }, 300) }
+          else { setShowAllTime(true) }
         }}>
           All-Time Leaderboard {showAllTime ? '\u25B2' : '\u25BC'}
         </button>
@@ -204,12 +157,7 @@ const tieredHighlights = useMemo(() => {
             {allTimeLeaderboard.map(e => {
               const medal = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][e.rank - 1] || ''
               return (
-                <Link
-                  key={e.player}
-                  to={`/player/${e.player.toLowerCase()}`}
-                  state={{ from: 'shotm' }}
-                  className={styles.allTimeItem}
-                >
+                <Link key={e.player} to={`/player/${e.player.toLowerCase()}`} state={{ from: 'shotm' }} className={styles.allTimeItem}>
                   {medal && <span className={styles.medal}>{medal}</span>}
                   <span>#{e.rank}</span>
                   <span>{e.player}</span>
@@ -220,48 +168,40 @@ const tieredHighlights = useMemo(() => {
           </div>
         )}
 
+        {/* Points Info */}
         <button className={styles.toggleBtn} onClick={() => {
-          if (showPoints) {
-            setClosingPoints(true)
-            setTimeout(() => {
-              setShowPoints(false)
-              setClosingPoints(false)
-            }, 300)
-          } else {
-            setShowPoints(true)
-          }
+          if (showPoints) { setClosingPoints(true); setTimeout(() => { setShowPoints(false); setClosingPoints(false) }, 300) }
+          else { setShowPoints(true) }
         }}>
           How Points are Calculated {showPoints ? '\u25B2' : '\u25BC'}
         </button>
         {(showPoints || closingPoints) && (
           <div className={`${styles.pointsContent} ${closingPoints ? styles.slideUp : ''}`}>
-            {Object.entries(tierPoints).map(([tier, pts]) => (
-              <div key={tier}>{tier}: {pts}</div>
-            ))}
-            {Object.entries(TRAIT_POINTS).map(([trait, pts]) => (
-              <div key={trait}>{trait}: {pts}</div>
-            ))}
+            {Object.entries(tierPoints).map(([tier, pts]) => <div key={tier}>{tier}: {pts}</div>)}
+            {Object.entries(TRAIT_POINTS).map(([trait, pts]) => <div key={trait}>{trait}: {pts}</div>)}
           </div>
         )}
 
-        {hasTierData && (
-          <>
-            <button className={styles.tierToggleBtn} onClick={() => {
+        {/* Tier Highlights - button always visible */}
+        <>
+          <button
+            className={styles.tierToggleBtn}
+            onClick={() => {
               if (showTiers) {
                 setClosingTiers(true)
-                setTimeout(() => {
-                  setShowTiers(false)
-                  setClosingTiers(false)
-                }, 300)
+                setTimeout(() => { setShowTiers(false); setClosingTiers(false) }, 300)
               } else {
                 setShowTiers(true)
               }
-            }}>
-              ✨ Tier 3+ Shiny Highlights ✨ {showTiers ? '\u25B2' : '\u25BC'}
-            </button>
-            {(showTiers || closingTiers) && (
-              <div className={`${styles.tierColumns} ${closingTiers ? styles.slideUp : ''}`}>
-                {['Tier 3', 'Tier 2', 'Tier 1', 'Tier 0', 'Alpha']
+            }}
+          >
+            ✨ Tier 3+ Shiny Highlights ✨ {showTiers ? '\u25B2' : '\u25BC'}
+          </button>
+
+
+          {(showTiers || closingTiers) && Object.keys(tieredHighlights).length > 0 && (
+            <div className={`${styles.tierColumns} ${closingTiers ? styles.slideUp : ''}`}>
+              {['Tier 3', 'Tier 2', 'Tier 1', 'Tier 0', 'Alpha']
                 .filter(t => tieredHighlights[t])
                 .map(tier => (
                   <div key={tier} className={styles.tierColumn}>
@@ -273,12 +213,7 @@ const tieredHighlights = useMemo(() => {
                           <div className={styles.pokemonName}>{pokemon}</div>
                           <div className={styles.pokemonHunters}>
                             {players.map(p => (
-                              <Link
-                                key={p}
-                                to={`/player/${p.toLowerCase()}`}
-                                state={{ from: 'shotm' }}
-                                className={styles.playerLink}
-                              >
+                              <Link key={p} to={`/player/${p.toLowerCase()}`} state={{ from: 'shotm' }} className={styles.playerLink}>
                                 {p}
                               </Link>
                             ))}
@@ -287,13 +222,12 @@ const tieredHighlights = useMemo(() => {
                       ))}
                   </div>
                 ))}
-              </div>
-            )}
-          </>
-        )}
+            </div>
+          )}
+        </>
       </div>
 
-      {/* Month navigation */}
+      {/* Month navigation and rankings */}
       <div className={styles.shotmPage}>
         <h1>Shiny Hunters of the Month</h1>
         <div className={styles.monthNav}>
@@ -301,16 +235,11 @@ const tieredHighlights = useMemo(() => {
             {currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)} {currentYear}
           </h2>
           <div className={styles.monthButtons}>
-            {hasPrevData && (
-              <button onClick={goPrev} className={styles.monthBtn}>&#9664; Previous</button>
-            )}
-            {!isCurrent && (
-              <button onClick={goNext} className={styles.monthBtn}>Next &#9654;</button>
-            )}
+            {hasPrevData && <button onClick={goPrev} className={styles.monthBtn}>&#9664; Previous</button>}
+            {!isCurrent && <button onClick={goNext} className={styles.monthBtn}>Next &#9654;</button>}
           </div>
         </div>
 
-        {/* Rankings */}
         <div className={styles.shotmList}>
           {rankings.map(([player, info], index) => {
             const trophy = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][index] || ''
@@ -334,11 +263,7 @@ const tieredHighlights = useMemo(() => {
               <div key={player} className={styles.playerCard}>
                 <h2 className={styles.playerName}>
                   {trophy}{' '}
-                  <Link
-                    to={`/player/${player.toLowerCase()}`}
-                    state={{ from: 'shotm' }}
-                    className={styles.playerLink}
-                  >
+                  <Link to={`/player/${player.toLowerCase()}`} state={{ from: 'shotm' }} className={styles.playerLink}>
                     {player}
                   </Link>{' '}
                   ({info.points} pts) {arrow}

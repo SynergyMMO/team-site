@@ -3,6 +3,7 @@ import { useParams, useLocation } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTrophies } from '../../hooks/useTrophies'
+import { grabShinyData } from '../../hooks/useShinyData' 
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import TrophyShelf from '../../components/TrophyShelf/TrophyShelf'
 import BackButton from '../../components/BackButton/BackButton'
@@ -35,6 +36,7 @@ export default function PlayerPage() {
     return () => document.body.classList.remove('player-page-active')
   }, [])
 
+
   if (isLoading) return <div className="message">Loading...</div>
   if (!playerData) {
     return <h2 style={{ color: 'white', textAlign: 'center' }}>Player "{playerName}" not found</h2>
@@ -66,7 +68,6 @@ export default function PlayerPage() {
           </div>
         </div>
       )}
-
 
       <div className={styles.shinyList}>
         {normalShinies.map(([id, s]) => (
