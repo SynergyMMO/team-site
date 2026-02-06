@@ -1,5 +1,7 @@
 import tierPokemon from '../data/tier_pokemon.json'
 
+const VERSION = 1
+
 // Strip apostrophes, dots, and other punctuation from pokemon names
 // e.g. "farfetch'd" -> "farfetchd", "mime-jr." -> "mime-jr", "Mr. Mime" -> "mr-mime"
 function sanitize(name) {
@@ -44,11 +46,11 @@ const GIF_FOLDER_OVERRIDES = {
 export function getLocalPokemonGif(name) {
   const sanitized = sanitize(name)
   if (GIF_FOLDER_OVERRIDES[sanitized]) {
-    return `/images/pokemon_gifs/${GIF_FOLDER_OVERRIDES[sanitized]}/${sanitized}.gif`
+    return `/images/pokemon_gifs/${GIF_FOLDER_OVERRIDES[sanitized]}/${sanitized}.gif?v=${VERSION}`
   }
   const tier = tierLookup[sanitized]
   const folder = tier ? `tier_${tier.replace(/\D/g, '')}` : 'tier_0'
-  return `/images/pokemon_gifs/${folder}/${sanitized}.gif`
+  return `/images/pokemon_gifs/${folder}/${sanitized}.gif?v=${VERSION}`
 }
 
 export function getRemoteFallbackUrl(name, shiny = true) {
