@@ -1,3 +1,24 @@
-public/images/pokemon_gifs/**/*.gif
+
+/images/pokemon_gifs/tier_0/*
   Cache-Control: public, max-age=31536000, immutable
-  Expires: Thu, 06 Feb 2027 00:00:00 GMT
+
+/images/pokemon_gifs/tier_1/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/pokemon_gifs/tier_2/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/pokemon_gifs/tier_3/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/pokemon_gifs/tier_4/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/pokemon_gifs/tier_5/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/pokemon_gifs/tier_6/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/pokemon_gifs/tier_7/*
+  Cache-Control: public, max-age=31536000, immutable
