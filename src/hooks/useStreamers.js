@@ -3,7 +3,7 @@ import { API } from '../api/endpoints'
 
 async function fetchStreamers() {
 
-  const res = await fetch(API.streamers)
+  const res = await fetch(API.twitchStreamers)
 
   if (!res.ok) {
     throw new Error('Failed to load streamer list')
