@@ -1,5 +1,7 @@
 .infoBox {
   position: fixed;
+  top: -9999px;
+  left: -9999px;
   background: rgba(31, 31, 31, 0.95);
   border: 1px solid #444;
   padding: 8px 10px;
@@ -136,6 +138,7 @@ span:hover .infoBox {
     width: 100px;
     padding: 6px 8px;
     font-size: 0.7rem;
+    transition: none;
   }
 
   .infoBox strong {
