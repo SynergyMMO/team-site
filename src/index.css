@@ -95,6 +95,7 @@ h1:hover {
   height: 100%;
   overflow: hidden;
   z-index: 0;
+  pointer-events: none;
   background: url('/images/Shiny Showcase/bg0.jpg') center/cover no-repeat;
   animation: bgZoom 50s linear infinite;
   transform-origin: center;
