@@ -133,6 +133,13 @@ span:hover .infoBox {
   pointer-events: auto;
 }
 
+/* Hide InfoBox while scrolling */
+:global(body.is-scrolling) span:hover .infoBox {
+  opacity: 0;
+  pointer-events: none;
+  transition: none;
+}
+
 @media (max-width: 900px) {
   .infoBox {
     width: 100px;

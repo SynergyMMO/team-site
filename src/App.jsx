@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar/Navbar'
 import StarField from './components/StarField/StarField'
@@ -17,6 +17,20 @@ const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 
 export default function App() {
+  useEffect(() => {
+    let timeout
+    const onScroll = () => {
+      document.body.classList.add('is-scrolling')
+      clearTimeout(timeout)
+      timeout = setTimeout(() => document.body.classList.remove('is-scrolling'), 150)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      clearTimeout(timeout)
+    }
+  }, [])
+
   return (
     <>
       <Navbar />
