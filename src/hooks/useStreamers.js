@@ -11,12 +11,7 @@ async function fetchStreamers() {
 
   const data = await res.json()
 
-  const allStreamers = Object.values(data)
-  const live = allStreamers.filter(s => s.live)
-  const offline = allStreamers.filter(s => !s.live)
-
-
-  return { live, offline }
+  return { live: data.live ?? [], offline: data.offline ?? [] }
 }
 
 
