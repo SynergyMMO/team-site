@@ -4,8 +4,8 @@ import styles from './CounterGenerator.module.css'
 
 export default function CounterGenerator() {
   useDocumentHead({
-    title: 'Encounter Counter Generator',
-    description: 'Custom PokeMMO encounter counter theme generator. Upload a GIF and download a ready-to-use counter theme',
+    title: 'PokeMMO Encounter Counter Theme Generator',
+    description: 'PokeMMO encounter counter theme generator. Upload a GIF, resize it, and download a ready-to-use counter theme ZIP for your shiny hunts.',
     canonicalPath: '/counter-generator',
   })
   

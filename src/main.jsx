@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AdminProvider } from './context/AdminContext'
@@ -39,7 +39,8 @@ if (!import.meta.env.DEV && 'serviceWorker' in navigator) {
   })
 }
 
-createRoot(document.getElementById('root')).render(
+const rootElement = document.getElementById('root')
+const app = (
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
@@ -50,3 +51,12 @@ createRoot(document.getElementById('root')).render(
     </QueryClientProvider>
   </StrictMode>
 )
+
+// If prerendered HTML exists and this is NOT a 404→SPA redirect, hydrate.
+// Otherwise do a fresh render (e.g. dynamic routes like /player/:name).
+if (rootElement.hasChildNodes() && !window.__SPA_REDIRECT) {
+  hydrateRoot(rootElement, app)
+} else {
+  rootElement.innerHTML = ''
+  createRoot(rootElement).render(app)
+}

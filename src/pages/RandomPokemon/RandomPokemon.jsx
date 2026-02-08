@@ -30,8 +30,8 @@ const normalizedTiers = {
 
 export default function RandomPokemon() {
   useDocumentHead({
-    title: 'Random Pokemon Generator',
-    description: 'Generate random Pokemon targets for your next PokeMMO shiny hunt. Play bingo, filter by tier, and roll for natures and IVs.',
+    title: 'PokeMMO Shiny Bingo & Random Pokemon Generator',
+    description: 'PokeMMO shiny bingo and random Pokemon generator. Generate random shiny targets, play bingo, filter by tier, and roll for natures and IVs.',
     canonicalPath: '/random-pokemon-generator',
   })
 
