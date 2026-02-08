@@ -1,20 +1,24 @@
 import { useState, useRef, useCallback } from 'react'
-import { Helmet } from 'react-helmet'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 import styles from './CounterGenerator.module.css'
 
 export default function CounterGenerator() {
+  useDocumentHead({
+    title: 'Encounter Counter Generator',
+    description: 'Custom PokeMMO encounter counter theme generator. Upload a GIF and download a ready-to-use counter theme',
+    canonicalPath: '/counter-generator',
+  })
+  
   const [status, setStatus] = useState('')
   const [generateEnabled, setGenerateEnabled] = useState(false)
   const loadedFileRef = useRef(null)
 
-  // Handle file upload
   const handleFileChange = useCallback((e) => {
     loadedFileRef.current = e.target.files[0]
     setStatus('File loaded. Press Generate to process.')
     setGenerateEnabled(true)
   }, [])
 
-  // Resize image/gif to a blob
   const resizeToBlob = useCallback((fileOrBlob, width, height) => {
     return new Promise((resolve) => {
       const img = new Image()
@@ -32,12 +36,13 @@ export default function CounterGenerator() {
           resolve(blob)
         }, 'image/png')
       }
-      img.onerror = () => URL.revokeObjectURL(url)
+      img.onerror = () => {
+        URL.revokeObjectURL(url)
+      }
       img.src = url
     })
   }, [])
 
-  // Generate counter ZIP
   const handleGenerate = useCallback(async () => {
     const file = loadedFileRef.current
     if (!file) {
@@ -60,6 +65,7 @@ export default function CounterGenerator() {
         const arrayBuffer = await file.arrayBuffer()
         const bytes = new Uint8Array(arrayBuffer)
         const reader = new GifReader(bytes)
+
         const width = reader.width
         const height = reader.height
         const canvas = document.createElement('canvas')
@@ -82,7 +88,7 @@ export default function CounterGenerator() {
           rctx.imageSmoothingQuality = 'high'
           rctx.drawImage(canvas, 0, 0, width, height, 0, 0, w, h)
 
-          const blob = await new Promise((res) => resizedCanvas.toBlob(res, 'image/png'))
+          const blob = await new Promise(res => resizedCanvas.toBlob(res, 'image/png'))
           const duration = (dims.delay || 10) * 10
 
           frames.push({
@@ -101,16 +107,20 @@ export default function CounterGenerator() {
       setStatus(`Extracted ${frames.length} frames. Loading XML templates...`)
 
       const [counterThemeBottom, themeXMLContent, infoXML] = await Promise.all([
-        fetch('/xml/counterThemeBottom.xml').then((r) => r.text()),
-        fetch('/xml/themeContent.xml').then((r) => r.text()),
-        fetch('/xml/info.xml').then((r) => r.text()),
+        fetch('/xml/counterThemeBottom.xml').then(r => r.text()),
+        fetch('/xml/themeContent.xml').then(r => r.text()),
+        fetch('/xml/info.xml').then(r => r.text()),
       ])
 
       const zip = new JSZip()
       const base = 'data/themes/default'
       const animFolder = zip.folder(`${base}/anim`)
-      frames.forEach((frame) => animFolder.file(frame.name, frame.blob))
-      if (frames.length > 0) zip.file('icon.png', frames[0].blob)
+
+      frames.forEach(frame => animFolder.file(frame.name, frame.blob))
+
+      if (frames.length > 0) {
+        zip.file('icon.png', frames[0].blob)
+      }
 
       const minimisedFile = document.getElementById('minimisedFile').files[0]
       const miniW = Number(document.getElementById('miniWidth').value) || 100
@@ -128,7 +138,7 @@ export default function CounterGenerator() {
         unexpandedFolder.file('minimised.png', minimisedBlob)
       }
 
-      // Generate XML
+      // Generate counter XML
       let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<themes>\n\n`
       frames.forEach((frame, index) => {
         const frameNumber = String(index + 1).padStart(5, '0')
@@ -168,17 +178,7 @@ export default function CounterGenerator() {
 
   return (
     <div className={styles.page}>
-      <Helmet>
-        <title>Counter Generator – Synergy MMO</title>
-        <meta
-          name="description"
-          content="Custom PokeMMO encounter counter theme generator. Upload a GIF and download a ready-to-use counter theme"
-        />
-        <link rel="canonical" href="https://synergymmo.com/counter-generator" />
-      </Helmet>
-
-      <h1>PokeMMO Encounter Counter Generator</h1>
-      <p>Upload a GIF or PNG to generate a ready-to-use encounter counter theme for PokeMMO.</p>
+      <h2>PokeMMO Encounter Counter Generator</h2>
 
       <div className={styles.formGroup}>
         <label htmlFor="zipFileInput">Upload a gif or image</label>
