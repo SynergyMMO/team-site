@@ -703,3 +703,27 @@
     gap: 4px;
   }
 }
+
+.panel input[type="datetime-local"] {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background-color: #2b2b3b;
+  color: #f0f0f0;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.panel input[type="datetime-local"]::placeholder {
+  color: #aaa;
+}
+
+.panel input[type="datetime-local"]:focus {
+  outline: none;
+  border-color: #9b59b6;
+  box-shadow: 0 0 8px rgba(155, 89, 182, 0.6);
+  background-color: #3a2b5a;
+  color: #fff;
+}

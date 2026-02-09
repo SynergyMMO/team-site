@@ -220,7 +220,7 @@ export default function EventsDetail() {
       )}
 
       {/* Rules for Catch Events */}
-      {event.type === "catchevent" && (
+      {event.eventType === "catchevent" && (
         <div className={styles.listSection}>
           <h3>Rules and Registration</h3>
           <ul className={styles.rulesList}>

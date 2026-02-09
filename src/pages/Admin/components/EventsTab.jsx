@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import styles from "../Admin.module.css";
 import ConfirmDialog from "./ConfirmDialog";
 
+
 export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutating }) {
   const emptyEvent = {
     title: "",
@@ -263,31 +264,67 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
       ].map(({ label, field }) => (
         <div key={field}>
           <label>{label}:</label>
-          <input
-            type="text"
-            value={eventData[field] || ""}
-            onChange={(e) => setEventData({ ...eventData, [field]: e.target.value })}
-          />
+          {field === "eventType" ? (
+            <select
+              value={eventData[field] || ""}
+              onChange={(e) => setEventData({ ...eventData, [field]: e.target.value })}
+            >
+              <option value="" disabled hidden>
+                Event Type
+              </option>
+              <option value="catchevent">Catch Event</option>
+
+            </select>
+
+          ) : (
+            <input
+              type="text"
+              value={eventData[field] || ""}
+              onChange={(e) => setEventData({ ...eventData, [field]: e.target.value })}
+            />
+          )}
         </div>
       ))}
 
-      {/* Date Inputs */}
-      <div>
-        <label>Start Date & Time:</label>
-        <input
-          type="datetime-local"
-          value={eventData.startDate || ""}
-          onChange={(e) => setEventData({ ...eventData, startDate: e.target.value })}
-        />
-      </div>
-      <div>
-        <label>End Date & Time:</label>
-        <input
-          type="datetime-local"
-          value={eventData.endDate || ""}
-          onChange={(e) => setEventData({ ...eventData, endDate: e.target.value })}
-        />
-      </div>
+
+  {/* Date Inputs */}
+  <div
+    className="datetimeWrapper"
+    onClick={(e) => {
+      const input = e.currentTarget.querySelector("input");
+      input.showPicker?.(); // Open the native datetime picker
+    }}
+  >
+    <label>Start Date & Time:</label>
+    <input
+      type="datetime-local"
+      className="datetimeInput"
+      value={eventData.startDate}
+      onChange={(e) =>
+        setEventData({ ...eventData, startDate: e.target.value })
+      }
+    />
+  </div>
+
+  <div
+    className="datetimeWrapper"
+    onClick={(e) => {
+      const input = e.currentTarget.querySelector("input");
+      input.showPicker?.();
+    }}
+  >
+    <label>End Date & Time:</label>
+    <input
+      type="datetime-local"
+      className="datetimeInput"
+      value={eventData.endDate}
+      onChange={(e) =>
+        setEventData({ ...eventData, endDate: e.target.value })
+      }
+    />
+  </div>
+
+
 
       {/* Nature Bonus */}
       <label>Nature Bonus (Nature → Bonus Points):</label>
