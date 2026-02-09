@@ -22,7 +22,7 @@ const ICON_MAP = {
   Favourite: [`${BASE}images/Shiny Showcase/heart.png`, 'favouriteHeart'],
 }
 
-function ShinyItem({ shiny, points }) {
+function ShinyItem({ shiny, points, userName }) {
   const shinyGifPath = useMemo(() => getLocalPokemonGif(shiny.Pokemon), [shiny.Pokemon])
 
   // Container CSS classes based on traits
@@ -56,7 +56,6 @@ function ShinyItem({ shiny, points }) {
       }
     })
 
-    // Optional reaction icon
     let reactionUrl = shiny['Reaction Link']?.trim()
     if (reactionUrl && !/^https?:\/\//i.test(reactionUrl)) {
       reactionUrl = 'https://' + reactionUrl
@@ -84,6 +83,11 @@ function ShinyItem({ shiny, points }) {
 
   const isSold = shiny.Sold?.toLowerCase() === 'yes'
 
+  // Conditional override for InfoBox text
+  const infoText = userName === 'Strength' && shiny.Pokemon === 'Zorua'
+    ? 'Never forget reactive gas...'
+    : shiny.infoText
+
   return (
     <span className={styles.wrapper}>
       <div className={containerClasses}>
@@ -98,7 +102,7 @@ function ShinyItem({ shiny, points }) {
           onError={onGifError(shiny.Pokemon)}
         />
       </div>
-      <InfoBox shiny={shiny} points={points} />
+      <InfoBox shiny={{ ...shiny, infoText }} points={points} />
     </span>
   )
 }
