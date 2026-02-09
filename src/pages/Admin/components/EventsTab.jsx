@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import styles from "../Admin.module.css";
 import ConfirmDialog from "./ConfirmDialog";
 
-
 export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutating }) {
   const emptyEvent = {
     title: "",
@@ -14,15 +13,14 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     duration: "",
     scoring: "",
     eventType: "",
-    natureBonus: [],       // empty by default
-    validPokemon: [],      // empty by default
+    natureBonus: [],
+    validPokemon: [],
     participatingStaff: [],
     firstPlacePrize: [],
     secondPlacePrize: [],
     thirdPlacePrize: [],
     fourthPlacePrize: [],
   };
-
 
   const [eventData, setEventData] = useState(emptyEvent);
   const [editingId, setEditingId] = useState(null);
@@ -129,12 +127,8 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
       scoring: event.scoring || "",
       eventType: event.eventType || "",
       natureBonus: Array.isArray(event.natureBonus)
-        ? event.natureBonus.map((n) => ({
-            nature: n.nature || "",
-            bonus: n.bonus || "",
-          }))
+        ? event.natureBonus.map((n) => ({ nature: n.nature || "", bonus: n.bonus || "" }))
         : [{ nature: "", bonus: event.natureBonus || "" }],
-
       validPokemon:
         event.validPokemon?.length > 0
           ? event.validPokemon.map((p) => ({ pokemon: p.pokemon || "", bonus: p.bonus || "" }))
@@ -173,8 +167,7 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
   };
 
   const addValidPokemon = () =>
-  setEventData((prev) => ({ ...prev, validPokemon: [...prev.validPokemon, { pokemon: "", bonus: "" }] }));
-
+    setEventData((prev) => ({ ...prev, validPokemon: [...prev.validPokemon, { pokemon: "", bonus: "" }] }));
 
   const updateValidPokemon = (index, key, value) => {
     const updated = [...eventData.validPokemon];
@@ -188,7 +181,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     setEventData((prev) => ({ ...prev, validPokemon: updated }));
   };
 
-  // ---------------- Nature Bonus Helpers ----------------
   const addNatureBonus = () =>
     setEventData((prev) => ({ ...prev, natureBonus: [...prev.natureBonus, { nature: "", bonus: "" }] }));
 
@@ -254,6 +246,21 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     <div>
       <h3>{editingId ? "Edit Event" : "Create Event"}</h3>
 
+      {/* Event Type at the top */}
+      <div>
+        <label>Event Type:</label>
+        <select
+          value={eventData.eventType || ""}
+          onChange={(e) => setEventData({ ...eventData, eventType: e.target.value })}
+        >
+          <option value="" disabled hidden>
+            Select Event Type
+          </option>
+          <option value="catchevent">Catch Event</option>
+          <option value="battleevent">Battle Event</option>
+        </select>
+      </div>
+
       {/* Text Inputs */}
       {[
         { label: "Title", field: "title" },
@@ -261,121 +268,84 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
         { label: "Location", field: "location" },
         { label: "Duration", field: "duration" },
         { label: "Scoring", field: "scoring" },
-        { label: "Event Type", field: "eventType" },
       ].map(({ label, field }) => (
         <div key={field}>
           <label>{label}:</label>
-          {field === "eventType" ? (
-            <select
-              value={eventData[field] || ""}
-              onChange={(e) => setEventData({ ...eventData, [field]: e.target.value })}
-            >
-              <option value="" disabled hidden>
-                Event Type
-              </option>
-              <option value="catchevent">Catch Event</option>
-
-            </select>
-
-          ) : (
-            <input
-              type="text"
-              value={eventData[field] || ""}
-              onChange={(e) => setEventData({ ...eventData, [field]: e.target.value })}
-            />
-          )}
+          <input
+            type="text"
+            value={eventData[field] || ""}
+            onChange={(e) => setEventData({ ...eventData, [field]: e.target.value })}
+          />
         </div>
       ))}
 
+      {/* Date Inputs */}
+      <div className="datetimeWrapper" onClick={(e) => e.currentTarget.querySelector("input").showPicker?.()}>
+        <label>Start Date & Time:</label>
+        <input
+          type="datetime-local"
+          className="datetimeInput"
+          value={eventData.startDate}
+          onChange={(e) => setEventData({ ...eventData, startDate: e.target.value })}
+        />
+      </div>
 
-  {/* Date Inputs */}
-  <div
-    className="datetimeWrapper"
-    onClick={(e) => {
-      const input = e.currentTarget.querySelector("input");
-      input.showPicker?.(); // Open the native datetime picker
-    }}
-  >
-    <label>Start Date & Time:</label>
-    <input
-      type="datetime-local"
-      className="datetimeInput"
-      value={eventData.startDate}
-      onChange={(e) =>
-        setEventData({ ...eventData, startDate: e.target.value })
-      }
-    />
-  </div>
+      <div className="datetimeWrapper" onClick={(e) => e.currentTarget.querySelector("input").showPicker?.()}>
+        <label>End Date & Time:</label>
+        <input
+          type="datetime-local"
+          className="datetimeInput"
+          value={eventData.endDate}
+          onChange={(e) => setEventData({ ...eventData, endDate: e.target.value })}
+        />
+      </div>
 
-  <div
-    className="datetimeWrapper"
-    onClick={(e) => {
-      const input = e.currentTarget.querySelector("input");
-      input.showPicker?.();
-    }}
-  >
-    <label>End Date & Time:</label>
-    <input
-      type="datetime-local"
-      className="datetimeInput"
-      value={eventData.endDate}
-      onChange={(e) =>
-        setEventData({ ...eventData, endDate: e.target.value })
-      }
-    />
-  </div>
+      {/* Conditional Sections based on event type */}
+      {eventData.eventType === "catchevent"  && (
+        <>
+          {/* Nature Bonus */}
+          <label>Nature Bonus (Nature → Bonus Points):</label>
+          {eventData.natureBonus.map((n, i) => (
+            <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "4px" }}>
+              <input
+                type="text"
+                placeholder="Nature"
+                value={n.nature || ""}
+                onChange={(e) => updateNatureBonus(i, "nature", e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Bonus Points"
+                value={n.bonus || ""}
+                onChange={(e) => updateNatureBonus(i, "bonus", e.target.value)}
+              />
+              <button type="button" onClick={() => removeNatureBonus(i)}>Remove</button>
+            </div>
+          ))}
+          <button type="button" onClick={addNatureBonus}>Add Nature</button>
 
-
-
-      {/* Nature Bonus */}
-      <label>Nature Bonus (Nature → Bonus Points):</label>
-      {eventData.natureBonus.map((n, i) => (
-        <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "4px" }}>
-          <input
-            type="text"
-            placeholder="Nature"
-            value={n.nature || ""}
-            onChange={(e) => updateNatureBonus(i, "nature", e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Bonus Points"
-            value={n.bonus || ""}
-            onChange={(e) => updateNatureBonus(i, "bonus", e.target.value)}
-          />
-          <button type="button" onClick={() => removeNatureBonus(i)}>
-            Remove
-          </button>
-        </div>
-      ))}
-      <button type="button" onClick={addNatureBonus}>
-        Add Nature
-      </button>
-
-      {/* Valid Pokemon */}
-      <label>Valid Pokemon (Pokemon → Bonus Points):</label>
-      {eventData.validPokemon.map((p, i) => (
-        <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "4px" }}>
-          <input
-            type="text"
-            placeholder="Pokemon"
-            value={p.pokemon || ""}
-            onChange={(e) => updateValidPokemon(i, "pokemon", e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Bonus Points"
-            value={p.bonus || ""}
-            onChange={(e) => updateValidPokemon(i, "bonus", e.target.value)}
-          />
-          <button type="button" onClick={() => removeValidPokemon(i)}>
-            Remove
-          </button>
-        </div>
-      ))}
-      <button type="button" onClick={addValidPokemon}>
-        Add Pokemon
-      </button>
+          {/* Valid Pokemon */}
+          <label>Valid Pokemon (Pokemon → Bonus Points):</label>
+          {eventData.validPokemon.map((p, i) => (
+            <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "4px" }}>
+              <input
+                type="text"
+                placeholder="Pokemon"
+                value={p.pokemon || ""}
+                onChange={(e) => updateValidPokemon(i, "pokemon", e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Bonus Points"
+                value={p.bonus || ""}
+                onChange={(e) => updateValidPokemon(i, "bonus", e.target.value)}
+              />
+              <button type="button" onClick={() => removeValidPokemon(i)}>Remove</button>
+            </div>
+          ))}
+          <button type="button" onClick={addValidPokemon}>Add Pokemon</button>
+        </>
+      )}
 
       {/* Participating Staff */}
       <label>Participating Staff:</label>
@@ -387,14 +357,10 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
             value={s || ""}
             onChange={(e) => updateListItem("participatingStaff", i, e.target.value)}
           />
-          <button type="button" onClick={() => removeListItem("participatingStaff", i)}>
-            Remove
-          </button>
+          <button type="button" onClick={() => removeListItem("participatingStaff", i)}>Remove</button>
         </div>
       ))}
-      <button type="button" onClick={() => addListItem("participatingStaff")}>
-        Add Staff
-      </button>
+      <button type="button" onClick={() => addListItem("participatingStaff")}>Add Staff</button>
 
       {/* Prizes */}
       {["firstPlacePrize", "secondPlacePrize", "thirdPlacePrize", "fourthPlacePrize"].map((field, idx) => (
@@ -408,14 +374,10 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
                 value={p || ""}
                 onChange={(e) => updateListItem(field, i, e.target.value)}
               />
-              <button type="button" onClick={() => removeListItem(field, i)}>
-                Remove
-              </button>
+              <button type="button" onClick={() => removeListItem(field, i)}>Remove</button>
             </div>
           ))}
-          <button type="button" onClick={() => addListItem(field)}>
-            Add Prize
-          </button>
+          <button type="button" onClick={() => addListItem(field)}>Add Prize</button>
         </div>
       ))}
 

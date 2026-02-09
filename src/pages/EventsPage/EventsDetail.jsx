@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import styles from './EventsDetail.module.css'
 import BackButton from '../../components/BackButton/BackButton'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 
 export default function EventsDetail() {
   const { id } = useParams()
