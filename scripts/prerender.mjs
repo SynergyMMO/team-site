@@ -76,21 +76,27 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   const title = meta.ogTitle || 'Team Synergy - PokeMMO';
   const description = meta.ogDescription || 'Team Synergy is a PokeMMO shiny hunting team.';
   const image = meta.ogImage || 'https://synergymmo.com/favicon.png';
+  const url = meta.route ? `https://synergymmo.com${meta.route}` : 'https://synergymmo.com/';
 
-  // Inject OG tags
-  html = html.replace(/<title>.*<\/title>/, `<title>${title}</title>`);
-  html = html.replace(
-    /<meta property="og:title" content=".*">/,
-    `<meta property="og:title" content="${title}">`
-  );
-  html = html.replace(
-    /<meta property="og:description" content=".*">/,
-    `<meta property="og:description" content="${description}">`
-  );
-  html = html.replace(
-    /<meta property="og:image" content=".*">/,
-    `<meta property="og:image" content="${image}">`
-  );
+    // Inject OG tags
+    html = html.replace(/<title>.*<\/title>/, `<title>${title}</title>`);
+    html = html.replace(
+      /<meta property="og:title" content=".*">/,
+      `<meta property="og:title" content="${title}">`
+    );
+    html = html.replace(
+      /<meta property="og:description" content=".*">/,
+      `<meta property="og:description" content="${description}">`
+    );
+    html = html.replace(
+      /<meta property="og:image" content=".*">/,
+      `<meta property="og:image" content="${image}">`
+    );
+    html = html.replace(
+      /<meta property="og:url" content=".*">/,
+      `<meta property="og:url" content="${url}">`
+    ); 
+
 
   // Inject Twitter tags (mirror OG)
   html = html.replace(
@@ -110,10 +116,24 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
     `<meta name="twitter:card" content="summary_large_image">`
   );
 
+  // --- Canonical link ---
+  if (html.includes('<link rel="canonical"')) {
+    html = html.replace(
+      /<link rel="canonical" href=".*">/,
+      `<link rel="canonical" href="${url}">`
+    );
+  } else {
+    html = html.replace(
+      /<\/head>/,
+      `  <link rel="canonical" href="${url}">\n</head>`
+    );
+  }
+
   await mkdir(join(outPath, '..'), { recursive: true });
   await writeFile(outPath, html, 'utf-8');
   console.log(`→ Prerendered ${outPath}`);
 }
+
 
 
 /* ---------------- MAIN ---------------- */

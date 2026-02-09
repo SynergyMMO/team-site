@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-const SITE_NAME = 'Team Synergy - PokeMMO';
-const BASE_URL = 'https://synergymmo.com';
-const DEFAULT_IMAGE = `${BASE_URL}/favicon.png`;
+const DEFAULT_SITE_NAME = 'Team Synergy - PokeMMO';
+const DEFAULT_BASE_URL = 'https://synergymmo.com';
+const DEFAULT_IMAGE = `${DEFAULT_BASE_URL}/favicon.png`;
 const DEFAULT_DESCRIPTION =
   'Team Synergy is a PokeMMO shiny hunting team. Browse our shiny dex, view shiny collections, watch our streamers, and generate encounter counter themes.';
 
@@ -16,28 +16,31 @@ function setMeta(name, content, attr = 'name') {
   el.setAttribute('content', content);
 }
 
-function setCanonical(path) {
+function setCanonical(url) {
   let el = document.querySelector('link[rel="canonical"]');
   if (!el) {
     el = document.createElement('link');
     el.setAttribute('rel', 'canonical');
     document.head.appendChild(el);
   }
-  el.setAttribute('href', `${BASE_URL}${path}`);
+  el.setAttribute('href', url);
 }
 
 export function useDocumentHead({
   title,
   description,
-  canonicalPath = '/',
+  url,          
+  canonicalPath,  
   ogImage,
   ogType = 'website',
+  siteName = DEFAULT_SITE_NAME,
+  twitterCard = 'summary_large_image', // default to large image for shinies
 } = {}) {
   useEffect(() => {
-    const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
+    const fullTitle = title ? `${title} | ${siteName}` : siteName;
     const desc = description || DEFAULT_DESCRIPTION;
     const image = ogImage || DEFAULT_IMAGE;
-    const url = `${BASE_URL}${canonicalPath}`;
+    const finalUrl = url || `${DEFAULT_BASE_URL}${canonicalPath || '/'}`;
 
     document.title = fullTitle;
 
@@ -48,36 +51,45 @@ export function useDocumentHead({
     setMeta('og:title', fullTitle, 'property');
     setMeta('og:description', desc, 'property');
     setMeta('og:image', image, 'property');
-    setMeta('og:url', url, 'property');
+    setMeta('og:url', finalUrl, 'property');
     setMeta('og:type', ogType, 'property');
-    setMeta('og:site_name', SITE_NAME, 'property');
+    setMeta('og:site_name', siteName, 'property');
 
     // --- Twitter Card (mirror OG tags) ---
-    setMeta('twitter:card', 'summary_large_image'); // use large image for shinies
+    setMeta('twitter:card', twitterCard);
     setMeta('twitter:title', fullTitle);
     setMeta('twitter:description', desc);
     setMeta('twitter:image', image);
 
     // --- Canonical ---
-    setCanonical(canonicalPath);
+    setCanonical(finalUrl);
 
     return () => {
-      // Cleanup back to defaults
-      document.title = SITE_NAME;
+      // Reset all to defaults
+      document.title = siteName;
       setMeta('description', DEFAULT_DESCRIPTION);
-      setMeta('og:title', SITE_NAME, 'property');
+      setMeta('og:title', siteName, 'property');
       setMeta('og:description', DEFAULT_DESCRIPTION, 'property');
       setMeta('og:image', DEFAULT_IMAGE, 'property');
-      setMeta('og:url', BASE_URL, 'property');
+      setMeta('og:url', DEFAULT_BASE_URL, 'property');
       setMeta('og:type', 'website', 'property');
-      setMeta('og:site_name', SITE_NAME, 'property');
+      setMeta('og:site_name', siteName, 'property');
 
       setMeta('twitter:card', 'summary');
-      setMeta('twitter:title', SITE_NAME);
+      setMeta('twitter:title', siteName);
       setMeta('twitter:description', DEFAULT_DESCRIPTION);
       setMeta('twitter:image', DEFAULT_IMAGE);
 
-      setCanonical('/');
+      setCanonical(DEFAULT_BASE_URL);
     };
-  }, [title, description, canonicalPath, ogImage, ogType]);
+  }, [
+    title,
+    description,
+    url,
+    canonicalPath,
+    ogImage,
+    ogType,
+    siteName,
+    twitterCard,
+  ]);
 }
