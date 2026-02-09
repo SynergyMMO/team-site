@@ -14,14 +14,15 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     duration: "",
     scoring: "",
     eventType: "",
-    natureBonus: [{ nature: "", bonus: "" }], // <-- updated to dynamic list
-    validPokemon: [{ pokemon: "", bonus: "" }],
-    participatingStaff: [""],
-    firstPlacePrize: [""],
-    secondPlacePrize: [""],
-    thirdPlacePrize: [""],
-    fourthPlacePrize: [""],
+    natureBonus: [],       // empty by default
+    validPokemon: [],      // empty by default
+    participatingStaff: [],
+    firstPlacePrize: [],
+    secondPlacePrize: [],
+    thirdPlacePrize: [],
+    fourthPlacePrize: [],
   };
+
 
   const [eventData, setEventData] = useState(emptyEvent);
   const [editingId, setEditingId] = useState(null);
