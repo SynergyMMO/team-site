@@ -115,7 +115,16 @@ export default function PlayerPage() {
         <div style={{ marginTop: '2rem', textAlign: 'center' }}>
           <h2>🔴 Live on Twitch</h2>
 
-          <div style={{ position: 'relative', width: '100%', maxWidth: '900px', margin: '0 auto', paddingTop: '56.25%' }}>
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '720px',
+              margin: '24px auto',
+              paddingTop: '56.25%',
+              zIndex: 0,
+            }}
+          >
             <iframe
               src={`https://player.twitch.tv/?channel=${streamerInfo.twitch_username.toLowerCase()}&parent=${parentDomain}`}
               allowFullScreen
