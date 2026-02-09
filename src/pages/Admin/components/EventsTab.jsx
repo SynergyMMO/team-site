@@ -7,14 +7,15 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
   const emptyEvent = {
     title: "",
     imageLink: "",
+    eventType: "",
     startDate: "",
     endDate: "",
     location: "",
     duration: "",
     scoring: "",
-    eventType: "",
     natureBonus: [],
     validPokemon: [],
+    targetPokemon: [],
     participatingStaff: [],
     firstPlacePrize: [],
     secondPlacePrize: [],
@@ -35,6 +36,7 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
   // ---------------- Sync localEvents with parent prop ----------------
   useEffect(() => {
     const eventsWithIds = eventDB.map((e) => ({
+      ...emptyEvent,
       ...e,
       id: e.id || crypto.randomUUID(),
     }));
@@ -42,7 +44,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     categorizeEvents(eventsWithIds);
   }, [eventDB]);
 
-  // ---------------- Helpers ----------------
   const toLocalDateTime = (isoString) => {
     if (!isoString) return "";
     const date = new Date(isoString);
@@ -69,40 +70,20 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     setCategorizedEvents({ ongoing, upcoming, past });
   };
 
-  // ---------------- Form Handlers ----------------
+  // ---------------- Create / Update ----------------
   const handleCreateOrUpdate = async () => {
     if (!eventData.title || !eventData.startDate) return;
-
-    const adminTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const payload = {
       ...eventData,
       startDate: new Date(eventData.startDate).toISOString(),
       endDate: eventData.endDate ? new Date(eventData.endDate).toISOString() : null,
-      timezone: adminTimezone,
-      eventType: eventData.eventType || "",
-      natureBonus: eventData.natureBonus.map(({ nature, bonus }) => ({
-        nature: nature || "",
-        bonus: bonus || "",
-      })),
-      validPokemon: eventData.validPokemon.map(({ pokemon, bonus }) => ({
-        pokemon: pokemon || "",
-        bonus: bonus || "",
-      })),
-      participatingStaff: eventData.participatingStaff.map((s) => s || ""),
-      firstPlacePrize: eventData.firstPlacePrize.map((p) => p || ""),
-      secondPlacePrize: eventData.secondPlacePrize.map((p) => p || ""),
-      thirdPlacePrize: eventData.thirdPlacePrize.map((p) => p || ""),
-      fourthPlacePrize: eventData.fourthPlacePrize.map((p) => p || ""),
     };
 
     let updatedEvents;
-
     if (editingId) {
       await onEdit(editingId, payload);
-      updatedEvents = localEvents.map((e) =>
-        e.id === editingId ? { ...e, ...payload } : e
-      );
+      updatedEvents = localEvents.map((e) => (e.id === editingId ? { ...e, ...payload } : e));
     } else {
       const newEvent = { ...payload, id: crypto.randomUUID() };
       await onCreate(newEvent);
@@ -118,26 +99,18 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
   const handleEdit = (event) => {
     setEditingId(event.id);
     setEventData({
-      title: event.title || "",
-      imageLink: event.imageLink || "",
-      startDate: toLocalDateTime(event.startDate) || "",
-      endDate: toLocalDateTime(event.endDate) || "",
-      location: event.location || "",
-      duration: event.duration || "",
-      scoring: event.scoring || "",
-      eventType: event.eventType || "",
-      natureBonus: Array.isArray(event.natureBonus)
-        ? event.natureBonus.map((n) => ({ nature: n.nature || "", bonus: n.bonus || "" }))
-        : [{ nature: "", bonus: event.natureBonus || "" }],
-      validPokemon:
-        event.validPokemon?.length > 0
-          ? event.validPokemon.map((p) => ({ pokemon: p.pokemon || "", bonus: p.bonus || "" }))
-          : [{ pokemon: "", bonus: "" }],
-      participatingStaff: event.participatingStaff?.length > 0 ? event.participatingStaff : [""],
-      firstPlacePrize: event.firstPlacePrize?.length > 0 ? event.firstPlacePrize : [""],
-      secondPlacePrize: event.secondPlacePrize?.length > 0 ? event.secondPlacePrize : [""],
-      thirdPlacePrize: event.thirdPlacePrize?.length > 0 ? event.thirdPlacePrize : [""],
-      fourthPlacePrize: event.fourthPlacePrize?.length > 0 ? event.fourthPlacePrize : [""],
+      ...emptyEvent,
+      ...event,
+      startDate: toLocalDateTime(event.startDate),
+      endDate: toLocalDateTime(event.endDate),
+      natureBonus: event.natureBonus || [],
+      validPokemon: event.validPokemon || [],
+      targetPokemon: event.targetPokemon || [],
+      participatingStaff: event.participatingStaff || [],
+      firstPlacePrize: event.firstPlacePrize || [],
+      secondPlacePrize: event.secondPlacePrize || [],
+      thirdPlacePrize: event.thirdPlacePrize || [],
+      fourthPlacePrize: event.fourthPlacePrize || [],
     });
   };
 
@@ -151,8 +124,8 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
   };
 
   // ---------------- Dynamic List Helpers ----------------
-  const addListItem = (field) =>
-    setEventData((prev) => ({ ...prev, [field]: [...prev[field], ""] }));
+  const addListItem = (field, defaultValue = "") =>
+    setEventData((prev) => ({ ...prev, [field]: [...prev[field], defaultValue] }));
 
   const updateListItem = (field, index, value) => {
     const updated = [...eventData[field]];
@@ -168,28 +141,37 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
 
   const addValidPokemon = () =>
     setEventData((prev) => ({ ...prev, validPokemon: [...prev.validPokemon, { pokemon: "", bonus: "" }] }));
-
   const updateValidPokemon = (index, key, value) => {
     const updated = [...eventData.validPokemon];
     updated[index][key] = value;
     setEventData((prev) => ({ ...prev, validPokemon: updated }));
   };
-
   const removeValidPokemon = (index) => {
     const updated = [...eventData.validPokemon];
     updated.splice(index, 1);
     setEventData((prev) => ({ ...prev, validPokemon: updated }));
   };
 
+  const addTargetPokemon = () =>
+    setEventData((prev) => ({ ...prev, targetPokemon: [...prev.targetPokemon, { pokemon: "", location: "", duration: "" }] }));
+  const updateTargetPokemon = (index, key, value) => {
+    const updated = [...eventData.targetPokemon];
+    updated[index][key] = value;
+    setEventData((prev) => ({ ...prev, targetPokemon: updated }));
+  };
+  const removeTargetPokemon = (index) => {
+    const updated = [...eventData.targetPokemon];
+    updated.splice(index, 1);
+    setEventData((prev) => ({ ...prev, targetPokemon: updated }));
+  };
+
   const addNatureBonus = () =>
     setEventData((prev) => ({ ...prev, natureBonus: [...prev.natureBonus, { nature: "", bonus: "" }] }));
-
   const updateNatureBonus = (index, key, value) => {
     const updated = [...eventData.natureBonus];
     updated[index][key] = value;
     setEventData((prev) => ({ ...prev, natureBonus: updated }));
   };
-
   const removeNatureBonus = (index) => {
     const updated = [...eventData.natureBonus];
     updated.splice(index, 1);
@@ -199,7 +181,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
   // ---------------- Render Helpers ----------------
   const renderEventList = (events) => {
     if (!events.length) return <p className={styles.hintText}>No events</p>;
-
     return (
       <table className={styles.shinyTable}>
         <thead>
@@ -216,25 +197,11 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
             <tr key={e.id}>
               <td>{e.title}</td>
               <td>{e.eventType}</td>
-              <td>
-                {e.startDate
-                  ? new Date(e.startDate).toLocaleString(undefined, {
-                      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    })
-                  : "-"}
-              </td>
-              <td>
-                {e.endDate
-                  ? new Date(e.endDate).toLocaleString(undefined, {
-                      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    })
-                  : "-"}
-              </td>
-              <td>
-                <button onClick={() => handleEdit(e)}>Edit</button>
-                <button className={styles.deleteBtn} onClick={() => setConfirmDelete(e.id)}>
-                  Delete
-                </button>
+              <td>{e.startDate ? new Date(e.startDate).toLocaleString() : "-"}</td>
+              <td>{e.endDate ? new Date(e.endDate).toLocaleString() : "-"}</td>
+              <td className={styles.actionBtns}>
+                <button className={styles.editBtn} onClick={() => handleEdit(e)}>Edit</button>
+                <button className={styles.deleteBtn} onClick={() => setConfirmDelete(e.id)}>Delete</button>
               </td>
             </tr>
           ))}
@@ -248,148 +215,207 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     <div>
       <h3>{editingId ? "Edit Event" : "Create Event"}</h3>
 
-      {/* Event Type at the top */}
-      <div>
+      <div className={styles.editSection}>
+        {/* Event Type */}
         <label>Event Type:</label>
         <select
+          className={styles.adminInput}
           value={eventData.eventType || ""}
           onChange={(e) => setEventData({ ...eventData, eventType: e.target.value })}
         >
-          <option value="" disabled hidden>
-            Select Event Type
-          </option>
+          <option value="" disabled hidden>Select Event Type</option>
           <option value="catchevent">Catch Event</option>
-          <option value="battleevent">Metronome</option>
+          <option value="metronome">Metronome</option>
+          <option value="grouphunt">Group Hunt</option>
         </select>
-      </div>
 
-      {/* Text Inputs */}
-      {[
-        { label: "Title", field: "title" },
-        { label: "Image Link", field: "imageLink" },
-        { label: "Location", field: "location" },
-        { label: "Duration", field: "duration" },
-        ...(eventData.eventType === "catchevent" ? [{ label: "Scoring", field: "scoring" }] : []),
-      ].map(({ label, field }) => (
-        <div key={field}>
-          <label>{label}:</label>
-          <input
-            type="text"
-            value={eventData[field] || ""}
-            onChange={(e) => setEventData({ ...eventData, [field]: e.target.value })}
-          />
-        </div>
-      ))}
+        {/* Basic Inputs */}
+        <label>Name:</label>
+        <input
+          type="text"
+          className={styles.adminInput}
+          value={eventData.title || ""}
+          onChange={(e) => setEventData({ ...eventData, title: e.target.value })}
+        />
 
+        <label>Image Link:</label>
+        <input
+          type="text"
+          className={styles.adminInput}
+          value={eventData.imageLink || ""}
+          onChange={(e) => setEventData({ ...eventData, imageLink: e.target.value })}
+        />
 
-      {/* Date Inputs */}
-      <div className="datetimeWrapper" onClick={(e) => e.currentTarget.querySelector("input").showPicker?.()}>
+        {/* Location only for non-Group Hunt */}
+        {eventData.eventType !== "grouphunt" && (
+          <>
+            <label>Location:</label>
+            <input
+              type="text"
+              className={styles.adminInput}
+              value={eventData.location || ""}
+              onChange={(e) => setEventData({ ...eventData, location: e.target.value })}
+            />
+          </>
+        )}
+
+        <label>Duration:</label>
+        <input
+          type="text"
+          className={styles.adminInput}
+          value={eventData.duration || ""}
+          onChange={(e) => setEventData({ ...eventData, duration: e.target.value })}
+        />
+
+        {eventData.eventType === "catchevent" && (
+          <>
+            <label>Scoring:</label>
+            <input
+              type="text"
+              className={styles.adminInput}
+              value={eventData.scoring || ""}
+              onChange={(e) => setEventData({ ...eventData, scoring: e.target.value })}
+            />
+          </>
+        )}
+
+        {/* Dates */}
         <label>Start Date & Time:</label>
         <input
           type="datetime-local"
-          className="datetimeInput"
+          className={styles.adminInput}
           value={eventData.startDate}
           onChange={(e) => setEventData({ ...eventData, startDate: e.target.value })}
+          onFocus={(e) => e.target.showPicker?.()}
         />
-      </div>
 
-      <div className="datetimeWrapper" onClick={(e) => e.currentTarget.querySelector("input").showPicker?.()}>
         <label>End Date & Time:</label>
         <input
           type="datetime-local"
-          className="datetimeInput"
+          className={styles.adminInput}
           value={eventData.endDate}
           onChange={(e) => setEventData({ ...eventData, endDate: e.target.value })}
+          onFocus={(e) => e.target.showPicker?.()}
         />
+
+        {/* Catch Event Bonuses */}
+        {eventData.eventType === "catchevent" && (
+          <>
+            <label>Nature Bonus:</label>
+            {eventData.natureBonus.map((n, i) => (
+              <div key={i} className={styles.inputRow}>
+                <input
+                  placeholder="Nature"
+                  className={styles.adminInput}
+                  value={n.nature || ""}
+                  onChange={(e) => updateNatureBonus(i, "nature", e.target.value)}
+                />
+                <input
+                  placeholder="Bonus"
+                  className={styles.adminInput}
+                  value={n.bonus || ""}
+                  onChange={(e) => updateNatureBonus(i, "bonus", e.target.value)}
+                />
+                <button className={styles.deleteBtn} onClick={() => removeNatureBonus(i)}>Remove</button>
+              </div>
+            ))}
+            <button className={styles.editBtn} onClick={addNatureBonus}>Add Nature</button>
+
+            <label>Valid Pokémon:</label>
+            {eventData.validPokemon.map((p, i) => (
+              <div key={i} className={styles.inputRow}>
+                <input
+                  placeholder="Pokémon"
+                  className={styles.adminInput}
+                  value={p.pokemon || ""}
+                  onChange={(e) => updateValidPokemon(i, "pokemon", e.target.value)}
+                />
+                <input
+                  placeholder="Bonus"
+                  className={styles.adminInput}
+                  value={p.bonus || ""}
+                  onChange={(e) => updateValidPokemon(i, "bonus", e.target.value)}
+                />
+                <button className={styles.deleteBtn} onClick={() => removeValidPokemon(i)}>Remove</button>
+              </div>
+            ))}
+            <button className={styles.editBtn} onClick={addValidPokemon}>Add Pokémon</button>
+          </>
+        )}
+
+        {/* Group Hunt Target Pokémon */}
+        {eventData.eventType === "grouphunt" && (
+          <>
+            <label>Target Pokémon(s):</label>
+            {eventData.targetPokemon.map((t, i) => (
+              <div key={i} className={styles.inputRow}>
+                <input
+                  placeholder="Pokémon"
+                  className={styles.adminInput}
+                  value={t.pokemon || ""}
+                  onChange={(e) => updateTargetPokemon(i, "pokemon", e.target.value)}
+                />
+                <input
+                  placeholder="Location"
+                  className={styles.adminInput}
+                  value={t.location || ""}
+                  onChange={(e) => updateTargetPokemon(i, "location", e.target.value)}
+                />
+                <input
+                  placeholder="Duration"
+                  className={styles.adminInput}
+                  value={t.duration || ""}
+                  onChange={(e) => updateTargetPokemon(i, "duration", e.target.value)}
+                />
+                <button className={styles.deleteBtn} onClick={() => removeTargetPokemon(i)}>Remove</button>
+              </div>
+            ))}
+            <button className={styles.editBtn} onClick={addTargetPokemon}>Add Target Pokémon</button>
+          </>
+        )}
+
+        {/* Staff */}
+        <label>Participating Staff:</label>
+        {eventData.participatingStaff.map((s, i) => (
+          <div key={i} className={styles.inputRow}>
+            <input
+              placeholder="Staff Name"
+              className={styles.adminInput}
+              value={s || ""}
+              onChange={(e) => updateListItem("participatingStaff", i, e.target.value)}
+            />
+            <button className={styles.deleteBtn} onClick={() => removeListItem("participatingStaff", i)}>Remove</button>
+          </div>
+        ))}
+        <button className={styles.editBtn} onClick={() => addListItem("participatingStaff")}>Add Staff</button>
+
+        {/* Prizes */}
+        {["firstPlacePrize", "secondPlacePrize", "thirdPlacePrize", "fourthPlacePrize"].map((field, idx) => (
+          <div key={field}>
+            <label>{["1st", "2nd", "3rd", "4th"][idx]} Place Prize(s):</label>
+            {eventData[field].map((p, i) => (
+              <div key={i} className={styles.inputRow}>
+                <input
+                  placeholder="Prize"
+                  className={styles.adminInput}
+                  value={p || ""}
+                  onChange={(e) => updateListItem(field, i, e.target.value)}
+                />
+                <button className={styles.deleteBtn} onClick={() => removeListItem(field, i)}>Remove</button>
+              </div>
+            ))}
+            <button className={styles.editBtn} onClick={() => addListItem(field)}>Add Prize</button>
+          </div>
+        ))}
+
+        <button
+          className={styles.editBtn}
+          onClick={handleCreateOrUpdate}
+          disabled={isMutating || !eventData.title || !eventData.startDate}
+        >
+          {isMutating ? "Saving..." : editingId ? "Save Changes" : "Create Event"}
+        </button>
       </div>
-
-      {/* Conditional Sections based on event type */}
-      {eventData.eventType === "catchevent"  && (
-        <>
-          {/* Nature Bonus */}
-          <label>Nature Bonus (Nature → Bonus Points):</label>
-          {eventData.natureBonus.map((n, i) => (
-            <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "4px" }}>
-              <input
-                type="text"
-                placeholder="Nature"
-                value={n.nature || ""}
-                onChange={(e) => updateNatureBonus(i, "nature", e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Bonus Points"
-                value={n.bonus || ""}
-                onChange={(e) => updateNatureBonus(i, "bonus", e.target.value)}
-              />
-              <button type="button" onClick={() => removeNatureBonus(i)}>Remove</button>
-            </div>
-          ))}
-          <button type="button" onClick={addNatureBonus}>Add Nature</button>
-
-          {/* Valid Pokemon */}
-          <label>Valid Pokemon (Pokemon → Bonus Points):</label>
-          {eventData.validPokemon.map((p, i) => (
-            <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "4px" }}>
-              <input
-                type="text"
-                placeholder="Pokemon"
-                value={p.pokemon || ""}
-                onChange={(e) => updateValidPokemon(i, "pokemon", e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Bonus Points"
-                value={p.bonus || ""}
-                onChange={(e) => updateValidPokemon(i, "bonus", e.target.value)}
-              />
-              <button type="button" onClick={() => removeValidPokemon(i)}>Remove</button>
-            </div>
-          ))}
-          <button type="button" onClick={addValidPokemon}>Add Pokemon</button>
-        </>
-      )}
-
-      {/* Participating Staff */}
-      <label>Participating Staff:</label>
-      {eventData.participatingStaff.map((s, i) => (
-        <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "4px" }}>
-          <input
-            type="text"
-            placeholder="Staff Name"
-            value={s || ""}
-            onChange={(e) => updateListItem("participatingStaff", i, e.target.value)}
-          />
-          <button type="button" onClick={() => removeListItem("participatingStaff", i)}>Remove</button>
-        </div>
-      ))}
-      <button type="button" onClick={() => addListItem("participatingStaff")}>Add Staff</button>
-
-      {/* Prizes */}
-      {["firstPlacePrize", "secondPlacePrize", "thirdPlacePrize", "fourthPlacePrize"].map((field, idx) => (
-        <div key={field}>
-          <label>{["1st", "2nd", "3rd", "4th"][idx]} Place Prize(s):</label>
-          {eventData[field].map((p, i) => (
-            <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "4px" }}>
-              <input
-                type="text"
-                placeholder="Prize"
-                value={p || ""}
-                onChange={(e) => updateListItem(field, i, e.target.value)}
-              />
-              <button type="button" onClick={() => removeListItem(field, i)}>Remove</button>
-            </div>
-          ))}
-          <button type="button" onClick={() => addListItem(field)}>Add Prize</button>
-        </div>
-      ))}
-
-      <button
-        onClick={handleCreateOrUpdate}
-        disabled={isMutating || !eventData.title || !eventData.startDate}
-      >
-        {isMutating ? "Saving..." : editingId ? "Save Changes" : "Create Event"}
-      </button>
 
       {/* Event Lists */}
       <h3>Ongoing Events</h3>

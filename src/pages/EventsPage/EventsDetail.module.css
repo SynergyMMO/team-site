@@ -246,3 +246,52 @@
 .natureBonus {
   font-weight: bold;
 }
+
+.listSection h3 {
+  margin-bottom: 12px;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.pokemonColumn {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px; /* spacing between cards */
+}
+
+.pokemonCard {
+  background-color: #1e1e2f;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 10px;
+  width: 150px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pokemonHeader {
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pokemonName {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #f5f5f5;
+}
+
+.pokemonDuration,
+.pokemonLocation {
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.pokemonImg {
+  width: 64px;
+  height: 64px;
+  margin-top: 6px;
+}

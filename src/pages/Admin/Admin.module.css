@@ -727,3 +727,14 @@
   background-color: #3a2b5a;
   color: #fff;
 }
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.inputRow .adminInput {
+  flex: 1;
+}

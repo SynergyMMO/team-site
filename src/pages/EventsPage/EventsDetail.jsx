@@ -17,7 +17,6 @@ export default function EventsDetail() {
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Correct hook usage
   useDocumentHead({
     title: event?.title || 'Loading event...',
     description: event?.description || 'Check out this Team Synergy event in PokeMMO.',
@@ -46,8 +45,6 @@ export default function EventsDetail() {
     fetchEvent()
   }, [slug])
 
-
-  // Helper function to format dates with ordinal suffix
   function formatEventDate(dateString) {
     const date = new Date(dateString)
     const day = date.getDate()
@@ -98,7 +95,8 @@ export default function EventsDetail() {
           <span>End:</span>
           <div>{formatEventDate(event.endDate)}</div>
         </div>
-        {event.location && (
+        {/* Only show location if not a Group Hunt */}
+        {event.eventType !== 'grouphunt' && event.location && (
           <div className={styles.infoItem}>
             <span>Location:</span>
             <div>{event.location}</div>
@@ -153,6 +151,7 @@ export default function EventsDetail() {
               const name = p.pokemon || p.name
               const imgName = name.toLowerCase().replace(/\s/g, '-')
               const imgUrl = `https://img.pokemondb.net/sprites/black-white/anim/normal/${imgName}.gif`
+              const shinyImg = `https://img.pokemondb.net/sprites/black-white/anim/shiny/${imgName}.gif`
 
               return (
                 <div key={i} className={styles.pokemonCard}>
@@ -181,6 +180,33 @@ export default function EventsDetail() {
           </div>
         </div>
       )}
+
+      {/* Target Pokémon for Group Hunt */}
+        {event.eventType === 'grouphunt' && event.targetPokemon?.length > 0 && (
+          <div className={styles.listSection}>
+            <h3>Target Pokémon</h3>
+            <div className={styles.pokemonColumn}>
+              {event.targetPokemon.map((t, i) => {
+                const name = t.pokemon
+                const imgUrl = `https://img.pokemondb.net/sprites/black-white/anim/shiny/${name.toLowerCase().replace(/\s/g, '-')}.gif`
+                return (
+                  <div key={i} className={styles.pokemonCard}>
+                      <img
+                      src={imgUrl}
+                      alt={name}
+                      className={styles.pokemonImg}
+                      onError={(e) => { e.currentTarget.style.display = 'none' }}
+                    />
+                    <span className={styles.pokemonName}>{name}</span>
+                    {t.location && <span className={styles.pokemonLocation}>Location: {t.location}</span>}
+                    {t.duration && <span className={styles.pokemonDuration}> {t.duration}</span>}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
 
       {/* Participating Staff */}
       {event.participatingStaff?.length > 0 && (
