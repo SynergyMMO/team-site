@@ -4,53 +4,46 @@ import { useDocumentHead } from '../../hooks/useDocumentHead';
 import { useDatabase } from '../../hooks/useDatabase';
 import BackButton from '../../components/BackButton/BackButton';
 import styles from './TrophyPage.module.css';
+import { slugify } from '../../utils/slugify';
 
 export default function TrophyPage() {
-  const { trophyName } = useParams();
+  const { trophySlug } = useParams() || {}; // safe default
   const { data: trophiesData, isLoading: loadingTrophies } = useTrophies();
   const { data: shinyData, isLoading: loadingDB } = useDatabase();
+  const DOMAIN = 'https://synergymmo.com';
 
-  // Safe defaults to ensure hooks order doesn't change
   const trophies = trophiesData?.trophies || {};
   const trophyAssignments = trophiesData?.trophyAssignments || {};
-  const DOMAIN = 'https://synergymmo.com';
-  // Compute trophyKey safely
+
+  // Only attempt to find trophyKey if trophySlug is defined
   const trophyKey =
-    Object.keys(trophies).find(
-      k => k.toLowerCase() === decodeURIComponent(trophyName).toLowerCase()
-    ) || null;
+    trophySlug && Object.keys(trophies).find(name => slugify(name) === trophySlug.toLowerCase()) || null;
 
   const trophyImg = trophyKey ? `${DOMAIN}${trophies[trophyKey]}` : `${DOMAIN}/favicon.png`;
+  const ogUrl = `${DOMAIN}/trophy/${trophySlug || ''}`;
 
-  const ogUrl = `${DOMAIN}/trophy/${encodeURIComponent(trophyName.toLowerCase())}`;
   useDocumentHead({
-    title: trophyKey ? `${trophyKey} Trophy` : decodeURIComponent(trophyName),
+    title: trophyKey ? `${trophyKey} Trophy` : trophySlug || 'Trophy',
     description: trophyKey
       ? `See which Team Synergy members earned the ${trophyKey} trophy in PokeMMO.`
       : `View trophy details for Team Synergy in PokeMMO.`,
     canonicalPath: ogUrl,
     ogImage: trophyImg,
-    url: ogUrl, 
+    url: ogUrl,
   });
 
+  if (loadingTrophies || loadingDB) return <div className="message">Loading...</div>;
 
-  // Loading fallback
-  if (loadingTrophies || loadingDB) {
-    return <div className="message">Loading...</div>;
-  }
-
-  // Trophy not found
   if (!trophyKey) {
     return (
       <h2 style={{ color: 'white', textAlign: 'center' }}>
-        Trophy "{trophyName}" not found
+        Trophy "{trophySlug}" not found
       </h2>
     );
   }
 
-  // Filter players
   const players = (trophyAssignments[trophyKey] || []).filter(player =>
-    Object.keys(shinyData).some(dbKey => dbKey.toLowerCase() === player.toLowerCase())
+    Object.keys(shinyData || {}).some(dbKey => dbKey.toLowerCase() === player.toLowerCase())
   );
 
   return (

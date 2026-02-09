@@ -116,26 +116,23 @@ async function getEvents() {
 
 
 export async function getTrophies() {
-  // Path to local trophies.json
   const trophiesPath = join(__dirname, '../src/data/trophies.json');
-  const trophiesRaw = await readFile(trophiesPath, 'utf-8');
-  const trophiesJson = JSON.parse(trophiesRaw);
+  const raw = await readFile(trophiesPath, 'utf-8');
+  const { trophies } = JSON.parse(raw);
 
-  // Read only the "trophies" object
-  const trophiesData = trophiesJson.trophies;
-
-  return Object.keys(trophiesData).map(trophyName => {
-    const trophyImg = trophiesData[trophyName] || '/favicon.png';
+  return Object.keys(trophies).map(name => {
+    const slug = slugify(name);
+    const img = trophies[name] || '/favicon.png';
+    const DOMAIN = 'https://synergymmo.com';
 
     return {
-      route: `/trophy/${encodeURIComponent(trophyName.toLowerCase())}`,
-      ogTitle: `${trophyName} Trophy | Team Synergy - PokeMMO`,
-      ogDescription: `See which Team Synergy members earned the ${trophyName} trophy in PokeMMO.`,
-      ogImage: `https://synergymmo.com${trophyImg}`,
+      route: `/trophy/${slug}`,
+      ogTitle: `${name} Trophy | Team Synergy - PokeMMO`,
+      ogDescription: `See which Team Synergy members earned the ${name} trophy in PokeMMO.`,
+      ogImage: `${DOMAIN}${img}`,
     };
   });
 }
-
 // ---------------- PRERENDER ----------------
 async function prerenderRoute(templateHtml, outPath, meta = {}) {
   let html = templateHtml;

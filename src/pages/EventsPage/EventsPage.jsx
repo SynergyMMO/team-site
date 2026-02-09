@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './EventsPage.module.css'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
+import { slugify } from '../utils/slugify';
 
 export default function EventsPage() {
   const [events, setEvents] = useState([])
@@ -66,14 +67,6 @@ export default function EventsPage() {
       ))}
     </div>
   )
-
-  function slugify(title) {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with dash
-      .replace(/^-+|-+$/g, '')     // remove leading/trailing dashes
-  }
-
 
   return (
     <div>
