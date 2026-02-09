@@ -6,6 +6,7 @@ const TWITCH_API = 'https://twitch-api.hypersmmo.workers.dev/api/streamers'
 export const API = {
   database: `${WORKER_BASE}/database`,
   streamers: `${WORKER_BASE}/streamers`,
+  events: `${WORKER_BASE}/events`,
   adminCheck: `${WORKER_BASE}/check`,
   updateDatabase: `${WORKER_BASE}/update-database`,
   updateStreamers: `${WORKER_BASE}/update-streamers`,

@@ -9,6 +9,8 @@ const SHOTM = lazy(() => import('./pages/SHOTM/SHOTM'))
 const Pokedex = lazy(() => import('./pages/Pokedex/Pokedex'))
 const Streamers = lazy(() => import('./pages/Streamers/Streamers'))
 const TrophyBoard = lazy(() => import('./pages/TrophyBoard/TrophyBoard'))
+const EventsPage = lazy(() => import('./pages/EventsPage/EventsPage'))
+const EventsDetail = lazy(() => import('./pages/EventsPage/EventsDetail'))
 const TrophyPage = lazy(() => import('./pages/TrophyPage/TrophyPage'))
 const CounterGenerator = lazy(() => import('./pages/CounterGenerator/CounterGenerator'))
 const RandomPokemon = lazy(() => import('./pages/RandomPokemon/RandomPokemon'))
@@ -45,6 +47,8 @@ export default function App() {
             <Route path="/pokedex" element={<Pokedex />} />
             <Route path="/streamers" element={<Streamers />} />
             <Route path="/trophy-board" element={<TrophyBoard />} />
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/event/:id" element={<EventsDetail />} />
             <Route path="/trophy/:trophyName" element={<TrophyPage />} />
             <Route path="/counter-generator" element={<CounterGenerator />} />
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />

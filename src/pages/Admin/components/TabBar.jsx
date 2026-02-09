@@ -4,6 +4,7 @@ const TABS = [
   { key: 'add', label: 'Add Pokemon', shortLabel: 'Add' },
   { key: 'edit', label: 'Edit Player', shortLabel: 'Edit' },
   { key: 'streamers', label: 'Streamers' },
+  { key: 'events', label: 'Events' },
   { key: 'log', label: 'Admin Log', shortLabel: 'Log' },
   { key: 'json', label: 'Advanced (JSON)', shortLabel: 'Advanced' },
 ]

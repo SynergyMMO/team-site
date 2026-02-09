@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { useAdmin } from '../../context/AdminContext'
 import useAdminDatabase from './hooks/useAdminDatabase'
 import useToast from './hooks/useToast'
+
 import TabBar from './components/TabBar'
 import AddPokemonTab from './components/AddPokemonTab'
 import EditPlayerTab from './components/EditPlayerTab'
 import StreamersTab from './components/StreamersTab'
+import EventsTab from './components/EventsTab'
 import AdminLogTab from './components/AdminLogTab'
 import AdvancedJsonTab from './components/AdvancedJsonTab'
 import Toast from './components/Toast'
@@ -19,16 +21,20 @@ export default function AdminPanel() {
   const { toast, show: showToast, dismiss: dismissToast } = useToast()
 
   const db = useAdminDatabase(auth)
+  const events = db.events || []
 
   useEffect(() => {
     if (!auth) navigate('/admin')
-    else db.loadDatabase().catch(err => showToast('Error loading database: ' + err.message, 'error'))
+    else {
+      db.loadDatabase().catch(err => showToast('Error loading database: ' + err.message, 'error'))
+      db.loadEvents().catch(err => showToast('Error loading events: ' + err.message, 'error'))
+    }
   }, [auth])
 
   function withToast(fn, successMsg) {
     return async (...args) => {
       const result = await fn(...args)
-      if (result?.success) {
+      if (result?.success || result?.id) {
         showToast(successMsg || 'Done!', 'success', db.hasSnapshot ? () => handleUndo() : null)
       } else if (result?.error) {
         showToast(result.error, 'error')
@@ -41,6 +47,61 @@ export default function AdminPanel() {
     const ok = await db.undo()
     if (ok) showToast('Undo successful!', 'success')
     else showToast('Undo failed.', 'error')
+  }
+
+  // ---------------- Event Handlers ----------------
+  async function handleCreateEvent(eventData) {
+    db.setMutating(true)
+    try {
+      const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(eventData),
+      })
+      const data = await res.json()
+      if (data.id) db.addEvent(data) // add locally
+      return data
+    } catch (err) {
+      return { success: false, error: err.message }
+    } finally {
+      db.setMutating(false)
+    }
+  }
+
+  async function handleEditEvent(eventId, updatedData) {
+    db.setMutating(true)
+    try {
+      const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events/edit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: eventId, ...updatedData }),
+      })
+      const data = await res.json()
+      if (data.success) db.updateEvent(eventId, updatedData) // update locally
+      return data
+    } catch (err) {
+      return { success: false, error: err.message }
+    } finally {
+      db.setMutating(false)
+    }
+  }
+
+  async function handleDeleteEvent(eventId) {
+    db.setMutating(true)
+    try {
+      const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: eventId }),
+      })
+      const data = await res.json()
+      if (data.success) db.removeEvent(eventId) // remove locally
+      return data
+    } catch (err) {
+      return { success: false, error: err.message }
+    } finally {
+      db.setMutating(false)
+    }
   }
 
   if (db.isLoading) {
@@ -98,9 +159,17 @@ export default function AdminPanel() {
         />
       )}
 
-      {activeTab === 'log' && (
-        <AdminLogTab logData={db.logData} />
+      {activeTab === 'events' && (
+        <EventsTab
+          eventDB={db.eventDB}           
+          onCreate={db.addEvent}    
+          onEdit={db.updateEvent}  
+          onDelete={db.removeEvent}     
+          isMutating={db.isMutating}
+        />
       )}
+
+      {activeTab === 'log' && <AdminLogTab logData={db.logData} />}
 
       {activeTab === 'json' && (
         <AdvancedJsonTab

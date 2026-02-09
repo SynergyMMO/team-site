@@ -26,6 +26,8 @@ export default function useAdminDatabase(auth) {
   const [logData, setLogData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isMutating, setIsMutating] = useState(false)
+  const [eventDB, setEventDB] = useState([])
+
   const snapshotRef = useRef(null)
 
   const postData = useCallback(async (endpoint, payload) => {
@@ -37,6 +39,7 @@ export default function useAdminDatabase(auth) {
     return res.json()
   }, [])
 
+  // ------------------ Load Database ------------------
   const loadDatabase = useCallback(async () => {
     setIsLoading(true)
     try {
@@ -53,17 +56,12 @@ export default function useAdminDatabase(auth) {
         db[p].shiny_count = recalcShinyCount(db[p])
       })
 
-      // Reconstruct raw KV format from processed API response
       const rawStreamers = {}
       Object.entries(str).forEach(([key, val]) => {
-        if (key !== 'live' && key !== 'offline') {
-          rawStreamers[key] = val
-        }
+        if (key !== 'live' && key !== 'offline') rawStreamers[key] = val
       })
       ;[...(str.live || []), ...(str.offline || [])].forEach(s => {
-        if (s.twitch_username) {
-          rawStreamers[s.twitch_username] = s
-        }
+        if (s.twitch_username) rawStreamers[s.twitch_username] = s
       })
 
       setDatabase(db)
@@ -75,19 +73,21 @@ export default function useAdminDatabase(auth) {
     }
   }, [])
 
+  // ------------------ Snapshot / Undo ------------------
   const saveSnapshot = useCallback(() => {
     snapshotRef.current = {
       database: deepClone(database),
       streamersDB: deepClone(streamersDB),
+      eventDB: deepClone(eventDB),
     }
-  }, [database, streamersDB])
+  }, [database, streamersDB, eventDB])
 
   const undo = useCallback(async () => {
     if (!snapshotRef.current || !auth) return false
     setIsMutating(true)
     try {
-      const { database: prevDb, streamersDB: prevStr } = snapshotRef.current
-      const [dbResult, strResult] = await Promise.all([
+      const { database: prevDb, streamersDB: prevStr, eventDB: prevEvents } = snapshotRef.current
+      const [dbResult, strResult, eventsResult] = await Promise.all([
         postData(API.updateDatabase, {
           username: auth.name, password: auth.password,
           data: prevDb, action: 'Undo last action',
@@ -96,10 +96,15 @@ export default function useAdminDatabase(auth) {
           username: auth.name, password: auth.password,
           data: prevStr, action: 'Undo last action (streamers)',
         }),
+        postData(API.events, {
+          username: auth.name, password: auth.password,
+          data: prevEvents, action: 'Undo last action (events)',
+        }),
       ])
-      if (dbResult.success && strResult.success) {
+      if (dbResult.success && strResult.success && eventsResult.success) {
         setDatabase(prevDb)
         setStreamersDB(prevStr)
+        setEventDB(prevEvents)
         snapshotRef.current = null
         return true
       }
@@ -109,6 +114,7 @@ export default function useAdminDatabase(auth) {
     }
   }, [auth, postData])
 
+  // ------------------ Player Management ------------------
   const addShiny = useCallback(async (playerName, shinyData) => {
     if (!auth) return { success: false, error: 'Unauthorized' }
     saveSnapshot()
@@ -121,7 +127,8 @@ export default function useAdminDatabase(auth) {
       db[playerName].shiny_count = recalcShinyCount(db[playerName])
 
       const result = await postData(API.updateDatabase, {
-        username: auth.name, password: auth.password, data: db,
+        username: auth.name, password: auth.password,
+        data: db,
         action: `Added ${shinyData.Pokemon} for ${playerName}`,
       })
       if (result.success) {
@@ -140,14 +147,13 @@ export default function useAdminDatabase(auth) {
     setIsMutating(true)
     try {
       const db = deepClone(database)
-      if (!db[playerName]?.shinies?.[shinyId]) {
-        return { success: false, error: 'Entry not found' }
-      }
+      if (!db[playerName]?.shinies?.[shinyId]) return { success: false, error: 'Entry not found' }
       db[playerName].shinies[shinyId] = shinyData
       db[playerName].shiny_count = recalcShinyCount(db[playerName])
 
       const result = await postData(API.updateDatabase, {
-        username: auth.name, password: auth.password, data: db,
+        username: auth.name, password: auth.password,
+        data: db,
         action: `Edited shiny #${shinyId} (${shinyData.Pokemon}) for ${playerName}`,
       })
       if (result.success) {
@@ -166,16 +172,15 @@ export default function useAdminDatabase(auth) {
     setIsMutating(true)
     try {
       const db = deepClone(database)
-      if (!db[playerName]?.shinies?.[shinyId]) {
-        return { success: false, error: 'Entry not found' }
-      }
+      if (!db[playerName]?.shinies?.[shinyId]) return { success: false, error: 'Entry not found' }
       const pokemonName = db[playerName].shinies[shinyId].Pokemon
       delete db[playerName].shinies[shinyId]
       db[playerName].shinies = reindexShinies(db[playerName].shinies)
       db[playerName].shiny_count = recalcShinyCount(db[playerName])
 
       const result = await postData(API.updateDatabase, {
-        username: auth.name, password: auth.password, data: db,
+        username: auth.name, password: auth.password,
+        data: db,
         action: `Deleted ${pokemonName} (ID ${shinyId}) for ${playerName}`,
       })
       if (result.success) {
@@ -194,13 +199,12 @@ export default function useAdminDatabase(auth) {
     setIsMutating(true)
     try {
       const db = deepClone(database)
-      if (!db[playerName]) {
-        return { success: false, error: 'Player not found' }
-      }
+      if (!db[playerName]) return { success: false, error: 'Player not found' }
       delete db[playerName]
 
       const result = await postData(API.updateDatabase, {
-        username: auth.name, password: auth.password, data: db,
+        username: auth.name, password: auth.password,
+        data: db,
         action: `Deleted all data for player ${playerName}`,
       })
       if (result.success) {
@@ -213,39 +217,24 @@ export default function useAdminDatabase(auth) {
     }
   }, [auth, database, postData, saveSnapshot])
 
+  // ------------------ Streamer Management ------------------
   const addStreamer = useCallback(async (pokeName, twitchName) => {
     if (!auth) return { success: false, error: 'Unauthorized' }
     saveSnapshot()
     setIsMutating(true)
     try {
       const str = deepClone(streamersDB)
-
-      str[pokeName] = {
-        twitch_username: twitchName,
-        profile_image_url: '',   
-        last_stream_title: null,
-        last_viewer_count: 0,
-        live: false
-      }
-
+      str[pokeName] = { twitch_username: twitchName, profile_image_url: '', last_stream_title: null, last_viewer_count: 0, live: false }
       const result = await postData(API.updateStreamers, {
-        username: auth.name,
-        password: auth.password,
-        data: str,
-        action: `Added streamer ${pokeName}`,
+        username: auth.name, password: auth.password, data: str, action: `Added streamer ${pokeName}`,
       })
-
       if (result.success) {
         setStreamersDB(str)
         return { success: true }
       }
-
       return { success: false, error: 'Server rejected update' }
-    } finally {
-      setIsMutating(false)
-    }
+    } finally { setIsMutating(false) }
   }, [auth, streamersDB, postData, saveSnapshot])
-
 
   const deleteStreamer = useCallback(async (pokeName) => {
     if (!auth) return { success: false, error: 'Unauthorized' }
@@ -253,42 +242,32 @@ export default function useAdminDatabase(auth) {
     setIsMutating(true)
     try {
       const str = deepClone(streamersDB)
-      if (!str[pokeName]) {
-        return { success: false, error: 'Streamer not found' }
-      }
+      if (!str[pokeName]) return { success: false, error: 'Streamer not found' }
       delete str[pokeName]
-
       const result = await postData(API.updateStreamers, {
-        username: auth.name, password: auth.password, data: str,
-        action: `Deleted streamer ${pokeName}`,
+        username: auth.name, password: auth.password, data: str, action: `Deleted streamer ${pokeName}`,
       })
       if (result.success) {
         setStreamersDB(str)
         return { success: true }
       }
       return { success: false, error: 'Server rejected update' }
-    } finally {
-      setIsMutating(false)
-    }
+    } finally { setIsMutating(false) }
   }, [auth, streamersDB, postData, saveSnapshot])
 
+  // ------------------ Advanced JSON ------------------
   const updateFullDatabase = useCallback(async (data, action) => {
     if (!auth) return { success: false, error: 'Unauthorized' }
     saveSnapshot()
     setIsMutating(true)
     try {
-      const result = await postData(API.updateDatabase, {
-        username: auth.name, password: auth.password, data,
-        action: action || 'Manual JSON edit (pokemon)',
-      })
+      const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data, action: action || 'Manual JSON edit (pokemon)' })
       if (result.success) {
         setDatabase(data)
         return { success: true }
       }
       return { success: false, error: 'Server rejected update' }
-    } finally {
-      setIsMutating(false)
-    }
+    } finally { setIsMutating(false) }
   }, [auth, postData, saveSnapshot])
 
   const updateFullStreamers = useCallback(async (data, action) => {
@@ -296,39 +275,81 @@ export default function useAdminDatabase(auth) {
     saveSnapshot()
     setIsMutating(true)
     try {
-      const result = await postData(API.updateStreamers, {
-        username: auth.name, password: auth.password, data,
-        action: action || 'Manual JSON edit (streamers)',
-      })
+      const result = await postData(API.updateStreamers, { username: auth.name, password: auth.password, data, action: action || 'Manual JSON edit (streamers)' })
       if (result.success) {
         setStreamersDB(data)
         return { success: true }
       }
       return { success: false, error: 'Server rejected update' }
-    } finally {
-      setIsMutating(false)
-    }
+    } finally { setIsMutating(false) }
   }, [auth, postData, saveSnapshot])
 
+  // ------------------ Event Management ------------------
+  const loadEvents = useCallback(async () => {
+    try {
+      const res = await fetch(API.events)
+      const events = await res.json()
+      setEventDB(events)
+      return events
+    } catch (err) {
+      console.error("Failed to load events:", err)
+      return []
+    }
+  }, [])
+
+  const addEvent = useCallback(async (eventData) => {
+    if (!auth) return { success: false, error: "Unauthorized" }
+    saveSnapshot()
+    setIsMutating(true)
+    try {
+      const payload = { username: auth.name, password: auth.password, ...eventData }
+      const res = await fetch(API.events, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+      const newEvent = await res.json()
+      if (!res.ok) return { success: false, error: newEvent.error || "Failed" }
+
+      setEventDB(prev => [...prev, newEvent])
+      return { success: true }
+    } finally { setIsMutating(false) }
+  }, [auth, eventDB, saveSnapshot])
+
+  const updateEvent = useCallback(async (id, eventData) => {
+    if (!auth) return { success: false, error: "Unauthorized" }
+    saveSnapshot()
+    setIsMutating(true)
+    try {
+      const payload = { username: auth.name, password: auth.password, id, ...eventData }
+      const res = await fetch(`${API.events}/update`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+      const updated = await res.json()
+      if (!res.ok) return { success: false, error: updated.error || "Failed" }
+
+      setEventDB(prev => prev.map(e => e.id === id ? updated : e))
+      return { success: true }
+    } finally { setIsMutating(false) }
+  }, [auth, eventDB, saveSnapshot])
+
+  const removeEvent = useCallback(async (id) => {
+    if (!auth) return { success: false, error: "Unauthorized" }
+    saveSnapshot()
+    setIsMutating(true)
+    try {
+      const payload = { username: auth.name, password: auth.password, id }
+      const res = await fetch(`${API.events}/delete`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+      const deleted = await res.json()
+      if (!res.ok) return { success: false, error: deleted.error || "Failed" }
+
+      setEventDB(prev => prev.filter(e => e.id !== id))
+      return { success: true }
+    } finally { setIsMutating(false) }
+  }, [auth, eventDB, saveSnapshot])
+
+  // ------------------ Helpers ------------------
   const playerNames = useMemo(() => Object.keys(database).sort(), [database])
-
-  const getPlayerShinies = useCallback((name) => {
-    return database[name]?.shinies || {}
-  }, [database])
-
+  const getPlayerShinies = useCallback((name) => database[name]?.shinies || {}, [database])
   const allPokemonNames = useMemo(() => {
     const names = new Map()
-    // Add all pokemon from generation data
-    Object.values(generationData).flat(2).forEach(name => {
-      names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase())
-    })
-    // Merge in any names from the database (may have custom casing)
-    Object.values(database).flatMap(p =>
-      Object.values(p.shinies || {}).map(s => s.Pokemon)
-    ).forEach(name => {
-      if (!names.has(name.toLowerCase())) {
-        names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase())
-      }
+    Object.values(generationData).flat(2).forEach(name => names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()))
+    Object.values(database).flatMap(p => Object.values(p.shinies || {}).map(s => s.Pokemon)).forEach(name => {
+      if (!names.has(name.toLowerCase())) names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase())
     })
     return [...names.values()].sort()
   }, [database])
@@ -338,7 +359,8 @@ export default function useAdminDatabase(auth) {
   return {
     database, streamersDB, logData, isLoading, isMutating, hasSnapshot,
     loadDatabase, addShiny, editShiny, deleteShiny, deletePlayer,
-    addStreamer, deleteStreamer, updateFullDatabase, updateFullStreamers,
-    undo, playerNames, getPlayerShinies, allPokemonNames,
+    addStreamer, deleteStreamer, updateFullDatabase, updateFullStreamers, undo,
+    playerNames, getPlayerShinies, allPokemonNames,
+    eventDB, loadEvents, addEvent, updateEvent, removeEvent,
   }
 }

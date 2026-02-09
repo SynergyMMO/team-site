@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { to: '/pokedex', label: 'PokeDex' },
   { to: '/streamers', label: 'Streamers' },
   { to: '/trophy-board', label: 'Trophy Board' },
+  { to: '/events', label: 'Events' },
   { to: '/counter-generator', label: 'Counter Generator' },
   { to: '/random-pokemon-generator', label: 'Random Pokemon Generator' },
 ]
