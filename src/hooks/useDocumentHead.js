@@ -40,7 +40,10 @@ export function useDocumentHead({
     const fullTitle = title ? `${title} | ${siteName}` : siteName;
     const desc = description || DEFAULT_DESCRIPTION;
     const image = ogImage || DEFAULT_IMAGE;
-    const finalUrl = url || `${DEFAULT_BASE_URL}${canonicalPath || '/'}`;
+    let finalUrl = url || `${DEFAULT_BASE_URL}${canonicalPath || '/'}`;
+
+    // --- REMOVE QUERY STRINGS for clean OG URL and canonical ---
+    finalUrl = finalUrl.split('?')[0];
 
     document.title = fullTitle;
 
@@ -51,7 +54,7 @@ export function useDocumentHead({
     setMeta('og:title', fullTitle, 'property');
     setMeta('og:description', desc, 'property');
     setMeta('og:image', image, 'property');
-    setMeta('og:url', finalUrl, 'property');
+    setMeta('og:url', finalUrl, 'property'); // clean URL
     setMeta('og:type', ogType, 'property');
     setMeta('og:site_name', siteName, 'property');
 
@@ -62,7 +65,7 @@ export function useDocumentHead({
     setMeta('twitter:image', image);
 
     // --- Canonical ---
-    setCanonical(finalUrl);
+    setCanonical(finalUrl); // clean URL
 
     return () => {
       // Reset all to defaults
