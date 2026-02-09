@@ -10,6 +10,8 @@ import BackButton from '../../components/BackButton/BackButton'
 import styles from './PlayerPage.module.css'
 
 export default function PlayerPage() {
+
+  
   const { playerName } = useParams()
   const location = useLocation()
   const { data, isLoading } = useDatabase()
@@ -29,7 +31,9 @@ export default function PlayerPage() {
       ? `Browse ${realKey}'s shiny Pokemon collection in PokeMMO.`
       : `View this player's shiny Pokemon collection in PokeMMO.`,
     canonicalPath: `/player/${playerName.toLowerCase()}`,
+    ogImage: favoriteImage || 'https://synergymmo.com/default-preview.png', // fallback
   })
+
 
   useEffect(() => {
     document.body.classList.add('player-page-active')

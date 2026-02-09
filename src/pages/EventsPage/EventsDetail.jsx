@@ -8,6 +8,15 @@ export default function EventsDetail() {
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  useDocumentHead({
+    title: event ? event.title : 'Loading Event...',
+    description: event
+      ? event.description || DEFAULT_DESCRIPTION
+      : 'Loading event details...',
+    canonicalPath: `/events/${id}`,
+  })
+
+
   // Helper function to format dates in text with ordinal and user timezone
   function formatEventDate(dateString) {
     const date = new Date(dateString)
