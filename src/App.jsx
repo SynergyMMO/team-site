@@ -48,7 +48,7 @@ export default function App() {
             <Route path="/streamers" element={<Streamers />} />
             <Route path="/trophy-board" element={<TrophyBoard />} />
             <Route path="/events" element={<EventsPage />} />
-            <Route path="/event/:id" element={<EventsDetail />} />
+            <Route path="/event/:slug" element={<EventsDetail />} />
             <Route path="/trophy/:trophyName" element={<TrophyPage />} />
             <Route path="/counter-generator" element={<CounterGenerator />} />
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />

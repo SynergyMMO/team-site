@@ -48,7 +48,7 @@ export default function EventsPage() {
         <div
           key={event.id}
           className={styles.item}
-          onClick={() => navigate(`/event/${event.id}`)}
+          onClick={() => navigate(`/event/${slugify(event.title)}`)}
         >
           <img
             src={event.imageLink || '/placeholder.png'}
@@ -66,6 +66,14 @@ export default function EventsPage() {
       ))}
     </div>
   )
+
+  function slugify(title) {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with dash
+      .replace(/^-+|-+$/g, '')     // remove leading/trailing dashes
+  }
+
 
   return (
     <div>

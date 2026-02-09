@@ -4,18 +4,50 @@ import styles from './EventsDetail.module.css'
 import BackButton from '../../components/BackButton/BackButton'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 
+// Helper function to convert title to URL-friendly slug
+function slugify(title) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with dash
+    .replace(/^-+|-+$/g, '')     // remove leading/trailing dashes
+}
+
 export default function EventsDetail() {
-  const { id } = useParams()
+  const { slug } = useParams()
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  // Correct hook usage
   useDocumentHead({
-    title: event ? event.title : 'Loading Event...',
-    canonicalPath: `/events/${id}`,
+    title: event?.title || 'Loading event...',
+    description: event?.description || 'Check out this Team Synergy event in PokeMMO.',
+    canonicalPath: `/events/${slug}`,
+    url: `https://synergymmo.com/events/${slug}?v=2`,
+    ogImage: event?.imageLink || 'https://synergymmo.com/favicon.png',
+    twitterCard: 'summary_large_image',
+    twitterTitle: event?.title || 'Loading event...',
+    twitterDescription: event?.description || 'Check out this Team Synergy event in PokeMMO.',
+    twitterImage: event?.imageLink || 'https://synergymmo.com/favicon.png',
   })
 
+  useEffect(() => {
+    async function fetchEvent() {
+      try {
+        const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events')
+        const data = await res.json()
+        const found = data.find(e => slugify(e.title) === slug)
+        setEvent(found || null)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchEvent()
+  }, [slug])
 
-  // Helper function to format dates in text with ordinal and user timezone
+
+  // Helper function to format dates with ordinal suffix
   function formatEventDate(dateString) {
     const date = new Date(dateString)
     const day = date.getDate()
@@ -41,22 +73,6 @@ export default function EventsDetail() {
       `${day}${daySuffix(day)}`
     )
   }
-
-  useEffect(() => {
-    async function fetchEvent() {
-      try {
-        const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events')
-        const data = await res.json()
-        const found = data.find(e => e.id === id)
-        setEvent(found || null)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchEvent()
-  }, [id])
 
   if (loading) return <div className="message">Loading event...</div>
   if (!event) return <div className="message">Event not found.</div>
@@ -102,7 +118,7 @@ export default function EventsDetail() {
         )}
       </div>
 
-      {/* Nature Bonus (separate section like Pokémon) */}
+      {/* Nature Bonus */}
       {event.natureBonus?.length > 0 && (
         <div className={styles.listSection}>
           <h3>Nature Bonus</h3>

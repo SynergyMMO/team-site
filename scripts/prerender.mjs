@@ -86,21 +86,29 @@ async function getPlayers() {
   });
 }
 
+function slugify(title) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with dash
+    .replace(/^-+|-+$/g, '')     // remove leading/trailing dashes
+}
+
 async function getEvents() {
   const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events');
   const data = await res.json();
 
   return data.map(e => {
     const ogImage = e.imageLink || '/favicon.png';
+    const slug = slugify(e.title);
+
     return {
-      route: `/event/${e.id}`,
+      route: `/event/${slug}`, // updated to slug instead of id
       ogTitle: `${e.title} | Team Synergy - PokeMMO`,
       ogDescription: e.description || `Join the ${e.title} event in PokeMMO.`,
       ogImage: ogImage.startsWith('http') ? ogImage : `https://synergymmo.com${ogImage}`,
     };
   });
 }
-
 // ---------------- PRERENDER ----------------
 async function prerenderRoute(templateHtml, outPath, meta = {}) {
   let html = templateHtml;
