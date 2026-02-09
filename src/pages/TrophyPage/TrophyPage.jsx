@@ -13,14 +13,14 @@ export default function TrophyPage() {
   // Safe defaults to ensure hooks order doesn't change
   const trophies = trophiesData?.trophies || {};
   const trophyAssignments = trophiesData?.trophyAssignments || {};
-
+  const DOMAIN = 'https://synergymmo.com';
   // Compute trophyKey safely
   const trophyKey =
     Object.keys(trophies).find(
       k => k.toLowerCase() === decodeURIComponent(trophyName).toLowerCase()
     ) || null;
 
-  const trophyImg = trophyKey ? trophies[trophyKey] : '/favicon.png';
+const trophyImg = trophyKey ? `${DOMAIN}${trophies[trophyKey]}` : `${DOMAIN}/favicon.png`;
 
   // Call useDocumentHead unconditionally
   useDocumentHead({
