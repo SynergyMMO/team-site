@@ -271,8 +271,10 @@ export default function SHOTM() {
                 <div className={styles.shinyList}>
                   {info.shinies.map(([id, s]) => {
                     const pts = calculateShinyPoints(s, tierPoints, tierLookup)
-                    return pts > 0 ? <ShinyItem key={id} shiny={s} points={pts} /> : null
+                    const isSold = s.Sold?.toLowerCase() === 'yes'
+                    return <ShinyItem key={id} shiny={s} points={isSold ? 0 : pts} />
                   })}
+
                 </div>
               </div>
             )
