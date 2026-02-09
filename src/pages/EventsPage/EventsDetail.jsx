@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import styles from './EventsDetail.module.css'
+import BackButton from '../../components/BackButton/BackButton'
 
 export default function EventsDetail() {
   const { id } = useParams()
@@ -55,6 +56,7 @@ export default function EventsDetail() {
 
   return (
     <div className={styles.container}>
+      <BackButton to="/events" label="&larr; Return to Events" />
       <h1 className={styles.title}>{event.title}</h1>
 
       {event.imageLink && (

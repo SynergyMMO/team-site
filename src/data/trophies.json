@@ -1,5 +1,6 @@
 {
   "trophies": {
+    "Event Hoster": "/images/trophy/event_hoster.png",
     "Ying Vs Yang Victors": "/images/trophy/yingvsyang.png",
     "Ying Vs Yang MVP": "/images/trophy/yingvsyangmvp.png",
     "Official Shiny Wars 2025": "/images/trophy/official_wars_2025.png",
@@ -13,6 +14,7 @@
     "Darkrai Vs Cresselia Victors": "/images/trophy/darkrai_trophy.png"
   },
   "trophyAssignments": {
+    "Event Hoster": ["Hyper", "Saywhatpoke", "MiroMMO", "Nausea", "Gnasty", "russoto", "Pinguh", "BaldBabyBat", "Bloom", "ItsTurn"],
     "Official Shiny Wars 2025": ["BaldBabyBat","Blaziken","Bloom","Chan","Deeb","Dracula","Ecstasick","Ezra","Hyper","Indica","ItsTurn","Mitchell","MrBanger","Myxtik","NxmDXCO","Pinguh","Saywhatpoke","Stinky","Strength","Tired","torskin","TTVxleJesse","jeysonklm"],
     "Ying Vs Yang Victors": ["Strength","Saywhatpoke","Baldbabybat","Hyper","Pinguh","Bloom","Chan","Mitchell","ItsTurn","Yikestho","Ecstasick","Torskin","Indica","MrBanger","Tired","LostMonarch","Stinky","Russell","SirJeff","YusukeBeats","PokeTrnrgoku"],
     "Ying Vs Yang MVP": ["Ecstasick"],
