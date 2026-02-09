@@ -8,6 +8,8 @@ import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import TrophyShelf from '../../components/TrophyShelf/TrophyShelf'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from './PlayerPage.module.css'
+import { getLocalPokemonGif } from '../../utils/pokemon'
+
 
 export default function PlayerPage() {
 
@@ -24,16 +26,6 @@ export default function PlayerPage() {
     )
     return { realKey: key, playerData: key ? data[key] : null }
   }, [data, playerName])
-
-  useDocumentHead({
-    title: realKey ? `${realKey}'s Shinies` : playerName,
-    description: realKey
-      ? `Browse ${realKey}'s shiny Pokemon collection in PokeMMO.`
-      : `View this player's shiny Pokemon collection in PokeMMO.`,
-    canonicalPath: `/player/${playerName.toLowerCase()}`,
-    ogImage: favoriteImage || 'https://synergymmo.com/default-preview.png', // fallback
-  })
-
 
   useEffect(() => {
     document.body.classList.add('player-page-active')
@@ -53,6 +45,30 @@ export default function PlayerPage() {
   const fromSHOTM = location.state?.from === 'shotm'
   const backTo = fromSHOTM ? '/shotm' : '/'
   const backLabel = fromSHOTM ? '\u2190 Back to SHOTM' : '\u2190 Back to Showcase'
+
+  const firstFavouriteShiny = favourites[0]?.[1]
+  const firstNormalShiny = normalShinies[0]?.[1]
+
+const ogImage =
+  (firstFavouriteShiny && `${window.location.origin}${getLocalPokemonGif(firstFavouriteShiny.Pokemon)}`) ||
+  (firstNormalShiny && `${window.location.origin}${getLocalPokemonGif(firstNormalShiny.Pokemon)}`) ||
+  'https://synergymmo.com/favicon.png'
+
+    console.log(ogImage)
+
+
+  useDocumentHead({
+    title: realKey ? `${realKey}'s Shinies` : playerName,
+    description: realKey
+      ? `Browse ${realKey}'s shiny Pokemon collection in PokeMMO.`
+      : `View this player's shiny Pokemon collection in PokeMMO.`,
+    canonicalPath: `/player/${playerName.toLowerCase()}`,
+    ogImage,
+  })
+
+
+
+
 
   return (
     <div className={styles.playerPage}>

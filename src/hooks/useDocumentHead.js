@@ -15,6 +15,7 @@ function setMeta(name, content, attr = 'name') {
   el.setAttribute('content', content)
 }
 
+
 function setCanonical(path) {
   let el = document.querySelector('link[rel="canonical"]')
   if (!el) {
@@ -30,6 +31,7 @@ export function useDocumentHead({ title, description, canonicalPath = '/', ogIma
     const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME
     const desc = description || DEFAULT_DESCRIPTION
     const image = ogImage || DEFAULT_IMAGE
+    console.log('Setting OG image to', ogImage)
     const url = `${BASE_URL}${canonicalPath}`
 
     document.title = fullTitle
