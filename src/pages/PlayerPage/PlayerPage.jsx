@@ -49,11 +49,10 @@ export default function PlayerPage() {
   const firstFavouriteShiny = favourites[0]?.[1]
   const firstNormalShiny = normalShinies[0]?.[1]
 
-const ogImage =
-  (firstFavouriteShiny && `${window.location.origin}${getLocalPokemonGif(firstFavouriteShiny.Pokemon)}`) ||
-  (firstNormalShiny && `${window.location.origin}${getLocalPokemonGif(firstNormalShiny.Pokemon)}`) ||
-  'https://synergymmo.com/favicon.png'
-
+  const ogImage =
+    (firstFavouriteShiny && getLocalPokemonGif(firstFavouriteShiny.Pokemon)) ||
+    (firstNormalShiny && getLocalPokemonGif(firstNormalShiny.Pokemon)) ||
+    'https://synergymmo.com/favicon.png'
     console.log(ogImage)
 
 
