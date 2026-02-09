@@ -55,7 +55,7 @@
   line-height: 1.25;
 }
 
-h1, h2 {
+#eventTitle {
   text-align: center;
   color: #b96dff;     
   margin-top: 20px;
