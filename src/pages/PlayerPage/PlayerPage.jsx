@@ -168,6 +168,8 @@ export default function PlayerPage() {
     <div className={styles.playerPage}>
       <BackButton to={backTo} label={backLabel} />
 
+      {renderTwitchSection()}
+      
       <h1>{safeRealKey}'s Shiny Collection &#10024;</h1>
       <p>Total Shinies: {playerData.shiny_count ?? 0}</p>
 
@@ -191,8 +193,6 @@ export default function PlayerPage() {
           ))}
         </div>
       )}
-
-      {renderTwitchSection()}
 
       {trophiesData && (
         <TrophyShelf
