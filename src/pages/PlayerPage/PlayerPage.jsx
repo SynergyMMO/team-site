@@ -115,14 +115,22 @@ export default function PlayerPage() {
         <div style={{ marginTop: '2rem', textAlign: 'center' }}>
           <h2>🔴 Live on Twitch</h2>
 
-          <iframe
-            src={`https://player.twitch.tv/?channel=${streamerInfo.twitch_username.toLowerCase()}&parent=${parentDomain}`}
-            height="378"
-            width="620"
-            allowFullScreen
-            loading="lazy"
-            style={{ borderRadius: '12px', border: 'none' }}
-          />
+          <div style={{ position: 'relative', width: '100%', maxWidth: '900px', margin: '0 auto', paddingTop: '56.25%' }}>
+            <iframe
+              src={`https://player.twitch.tv/?channel=${streamerInfo.twitch_username.toLowerCase()}&parent=${parentDomain}`}
+              allowFullScreen
+              loading="lazy"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                borderRadius: '12px',
+                border: 'none',
+              }}
+            />
+          </div>
         </div>
       )
     }
@@ -168,10 +176,10 @@ export default function PlayerPage() {
     <div className={styles.playerPage}>
       <BackButton to={backTo} label={backLabel} />
 
-      {renderTwitchSection()}
-      
       <h1>{safeRealKey}'s Shiny Collection &#10024;</h1>
       <p>Total Shinies: {playerData.shiny_count ?? 0}</p>
+
+      {renderTwitchSection()}
 
       {safeFavourites.length > 0 && (
         <div className={styles.favouriteList}>
