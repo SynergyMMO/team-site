@@ -145,7 +145,9 @@ export default function EventsDetail() {
       {event.validPokemon?.length > 0 && (
         <div className={styles.listSection}>
           <h3>Valid Pokémon</h3>
-          <div className={styles.pokemonColumn}>
+          <div
+            className={`${styles.pokemonColumn} ${event.validPokemon.length === 1 ? styles.singlePokemonColumn : ''}`}
+          >
             {event.validPokemon.map((p, i) => {
               const bonus = Number(p.bonus || 0)
               const name = p.pokemon || p.name
@@ -185,7 +187,9 @@ export default function EventsDetail() {
         {event.eventType === 'grouphunt' && event.targetPokemon?.length > 0 && (
           <div className={styles.listSection}>
             <h3>Target Pokémon</h3>
-            <div className={styles.pokemonColumn}>
+            <div
+              className={`${styles.pokemonColumn} ${event.targetPokemon.length === 1 ? styles.singlePokemonColumn : ''}`}
+            >
               {event.targetPokemon.map((t, i) => {
                 const name = t.pokemon
                 const imgUrl = `https://img.pokemondb.net/sprites/black-white/anim/shiny/${name.toLowerCase().replace(/\s/g, '-')}.gif`

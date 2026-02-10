@@ -214,9 +214,10 @@
 
 .natureColumn {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 12px;
-  align-items: center;
+  align-items: stretch;
+  justify-content: center;
 }
 
 .natureCard {
@@ -259,6 +260,19 @@
   gap: 16px; /* spacing between cards */
 }
 
+.singlePokemonColumn {
+  justify-content: center;
+}
+
+.singlePokemonColumn .pokemonCard {
+  width: 260px;
+}
+
+.singlePokemonColumn .pokemonImg {
+  width: 96px;
+  height: 96px;
+}
+
 .pokemonCard {
   background-color: #1e1e2f;
   border: 1px solid #444;
@@ -294,4 +308,7 @@
   width: 64px;
   height: 64px;
   margin-top: 6px;
+  object-fit: contain;
+  object-position: center;
+  display: block;
 }
