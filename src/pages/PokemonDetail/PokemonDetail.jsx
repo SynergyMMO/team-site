@@ -386,8 +386,112 @@ export default function PokemonDetail() {
               ))}
             </div>
           </div>
+
+          {/* Evolution */}
+          {pokemon.evolution_chain?.chain?.evolves_to && pokemon.evolution_chain.chain.evolves_to.length > 0 && (
+            <div className={styles.infoCard}>
+              <h2 className={styles.cardTitle}>Evolves Into</h2>
+              <div className={styles.evolutionContainer}>
+                {pokemon.evolution_chain.chain.evolves_to.map((evolution, index) => (
+                  <div key={index}>
+                    {index > 0 && <span className={styles.evolutionOr}> or </span>}
+                    <button
+                      onClick={() => navigate(`/pokemon/${evolution.species.name}`)}
+                      className={styles.evolutionLink}
+                      title={`View ${evolution.species.name}`}
+                    >
+                      {evolution.species.name.charAt(0).toUpperCase() + evolution.species.name.slice(1).replace('-', ' ')}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       </div>
+      {/* Breeding & Catch Info */}
+      <section className={styles.infoCard}>
+        <h2 className={styles.cardTitle}>Breeding & Catch Information</h2>
+        <div className={styles.additionalInfo}>
+          <div className={styles.infoGroup}>
+            <span className={styles.label}>Egg Groups</span>
+            <span className={styles.value}>
+              {pokemon.eggGroups.length > 0
+                ? pokemon.eggGroups.map(g => g.replace('-', ' ')).join(', ')
+                : 'None'}
+            </span>
+          </div>
+          <div className={styles.infoGroup}>
+            <span className={styles.label}>Catch Rate</span>
+            <span className={styles.value}>{pokemon.catchRate}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Gender Ratio */}
+      {pokemon.genderRate !== undefined && (
+        <section className={styles.infoCard}>
+          <h2 className={styles.cardTitle}>Gender Ratio</h2>
+          <div className={styles.genderContainer}>
+            {pokemon.genderRate === -1 ? (
+              <p className={styles.noGenderText}>Genderless</p>
+            ) : (
+              <>
+                <div className={styles.genderRatio}>
+                  <span className={styles.genderLabel}>Male</span>
+                  <div className={styles.genderBar}>
+                    <div 
+                      className={styles.genderFill} 
+                      style={{
+                        width: `${(8 - pokemon.genderRate) / 8 * 100}%`,
+                        backgroundColor: '#667eea'
+                      }}
+                    />
+                  </div>
+                  <span className={styles.genderPercent}>{((8 - pokemon.genderRate) / 8 * 100).toFixed(1)}%</span>
+                </div>
+                <div className={styles.genderRatio}>
+                  <span className={styles.genderLabel}>Female</span>
+                  <div className={styles.genderBar}>
+                    <div 
+                      className={styles.genderFill} 
+                      style={{
+                        width: `${pokemon.genderRate / 8 * 100}%`,
+                        backgroundColor: '#f085b3'
+                      }}
+                    />
+                  </div>
+                  <span className={styles.genderPercent}>{(pokemon.genderRate / 8 * 100).toFixed(1)}%</span>
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+      )}
+
+      
+      {/* Owners */}
+      {Object.keys(owners).length > 0 && (
+        <section className={styles.ownersSection}>
+          <h2 className={styles.cardTitle}>Owned By</h2>
+          <div className={styles.ownersList}>
+            {Object.entries(owners)
+              .sort(([, a], [, b]) => b - a) // Sort by count descending
+              .map(([playerName, count]) => (
+                <button
+                  key={playerName}
+                  className={styles.ownerCard}
+                  onClick={() => navigate(`/player/${playerName.toLowerCase()}`, { state: { from: 'pokemon' } })}
+                >
+                  <p className={styles.ownerName}>{playerName}</p>
+                  <p className={styles.ownerCount}>
+                    {count} Caught
+                  </p>
+                </button>
+              ))}
+          </div>
+        </section>
+      )}
 
       {/* Locations */}
       {pokemon?.locations && pokemon.locations.length > 0 && (
@@ -418,30 +522,6 @@ export default function PokemonDetail() {
                 </div>
               </div>
             ))}
-          </div>
-        </section>
-      )}
-
-      
-      {/* Owners */}
-      {Object.keys(owners).length > 0 && (
-        <section className={styles.ownersSection}>
-          <h2 className={styles.cardTitle}>Owned By</h2>
-          <div className={styles.ownersList}>
-            {Object.entries(owners)
-              .sort(([, a], [, b]) => b - a) // Sort by count descending
-              .map(([playerName, count]) => (
-                <button
-                  key={playerName}
-                  className={styles.ownerCard}
-                  onClick={() => navigate(`/player/${playerName.toLowerCase()}`, { state: { from: 'pokemon' } })}
-                >
-                  <p className={styles.ownerName}>{playerName}</p>
-                  <p className={styles.ownerCount}>
-                    {count} Caught
-                  </p>
-                </button>
-              ))}
           </div>
         </section>
       )}
@@ -508,30 +588,7 @@ export default function PokemonDetail() {
         )}
       </section>
 
-            {/* Description */}
-      <section className={styles.descriptionCard}>
-        <h2 className={styles.cardTitle}>Pokédex Entry</h2>
-        <p className={styles.description}>{pokemon.description}</p>
-      </section>
 
-      {/* Breeding & Catch Info */}
-      <section className={styles.infoCard}>
-        <h2 className={styles.cardTitle}>Breeding & Catch Information</h2>
-        <div className={styles.additionalInfo}>
-          <div className={styles.infoGroup}>
-            <span className={styles.label}>Egg Groups</span>
-            <span className={styles.value}>
-              {pokemon.eggGroups.length > 0
-                ? pokemon.eggGroups.map(g => g.replace('-', ' ')).join(', ')
-                : 'None'}
-            </span>
-          </div>
-          <div className={styles.infoGroup}>
-            <span className={styles.label}>Catch Rate</span>
-            <span className={styles.value}>{pokemon.catchRate}</span>
-          </div>
-        </div>
-      </section>
     </article>
   )
 }

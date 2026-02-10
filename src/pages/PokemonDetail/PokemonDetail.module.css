@@ -66,10 +66,8 @@
   font-weight: 700;
   margin: 0;
   text-transform: capitalize;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
 }
 
 .pokemonId {
@@ -212,7 +210,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  min-height: 400px;
+  height: 500px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -230,19 +228,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
   width: 100%;
-  min-height: 0;
+  height: 350px;
+  position: relative;
 }
 
 .pokemonImage {
-  max-width: 100%;
-  height: auto;
-  max-height: 350px;
+  position: absolute;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  position: relative;
   z-index: 1;
+}
+
+.pokemonImage[src*="img.pokemondb.net"] {
+  max-width: 95%;
+  max-height: 360px;
+}
+
+.pokemonImage[src*="raw.githubusercontent.com"] {
+  max-width: 60%;
+  max-height: 240px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .spriteNavigation {
@@ -250,11 +258,13 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: auto;
   position: relative;
   z-index: 2;
   flex-wrap: wrap;
-  padding: 0.5rem 0;
+  padding: 1rem 0 0 0;
+  border-top: 1px solid rgba(102, 126, 234, 0.2);
+  width: 100%;
 }
 
 .spriteButton {
@@ -418,6 +428,51 @@
 .hiddenAbility {
   border-left-color: rgba(255, 215, 0, 0.5) !important;
   background: rgba(255, 215, 0, 0.05) !important;
+}
+
+/* Evolution */
+.evolutionContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.evolutionContainer > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.evolutionOr {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.evolutionLink {
+  background: rgba(102, 126, 234, 0.2);
+  border: 1px solid rgba(102, 126, 234, 0.5);
+  color: #ffffff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.evolutionLink:hover {
+  background: rgba(102, 126, 234, 0.35);
+  border-color: rgba(102, 126, 234, 0.8);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transform: translateY(-2px);
+}
+
+.evolutionLink:active {
+  transform: translateY(0);
 }
 
 /* Stats */
@@ -703,6 +758,57 @@
 
 .locationDetail strong {
   color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+}
+
+/* Gender Ratio */
+.genderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.noGenderText {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.genderRatio {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.genderLabel {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  min-width: 60px;
+  font-size: 0.95rem;
+  text-transform: capitalize;
+}
+
+.genderBar {
+  flex: 1;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+
+.genderFill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 12px;
+}
+
+.genderPercent {
+  min-width: 50px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
