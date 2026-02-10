@@ -173,10 +173,20 @@ async function prerender() {
 
   const templateHtml = await readFile(join(DIST, 'index.html'), 'utf-8');
 
+  // Static route OG overrides
+  const STATIC_META = {
+    '/shiny-war-2025': {
+      route: '/shiny-war-2025',
+      ogTitle: 'Shiny War 2025 Results | Team Synergy - PokeMMO',
+      ogDescription: 'Team Synergy placed #25 in the Official PokeMMO Shiny Wars 2025 with 1060 points and 111 shinies. View every catch with tier breakdowns and point totals.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/piplup.gif',
+    },
+  };
+
   // Static routes
   for (const route of STATIC_ROUTES) {
     const outPath = route === '/' ? join(DIST, 'index.html') : join(DIST, route.slice(1), 'index.html');
-    await prerenderRoute(templateHtml, outPath);
+    await prerenderRoute(templateHtml, outPath, STATIC_META[route]);
   }
 
   // Player pages
