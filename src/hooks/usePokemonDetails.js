@@ -26,7 +26,10 @@ export function usePokemonDetails(pokemonName) {
       
       // Normalize the name for lookup
       const normalizedName = pokemonName.toLowerCase().trim()
-      let lookupName = normalizedName
+      const aliasMap = {
+        darmanitan: 'darmanitan-standard'
+      }
+      let lookupName = aliasMap[normalizedName] || normalizedName
       
       // Handle gendered suffixes that are not separate entries in the data
       if (!pokemonData[lookupName] && /-(f|m)$/.test(lookupName)) {
@@ -141,7 +144,7 @@ export function usePokemonDetails(pokemonName) {
       
       const femaleSpriteOverrides = {
         'frillish-f': 'https://img.pokemondb.net/sprites/home/normal/frillish-f.png',
-        'jellicent-f': 'https://img.pokemondb.net/sprites/home/normal/jellicent-f.png',
+        'jellicent-f': 'https://img.pokemondb.net/sprites/home/normal/jellicent-f.png'
       }
 
       // Get sprite from sprites

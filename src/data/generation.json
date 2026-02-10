@@ -202,7 +202,7 @@
     ["pachirisu"],
     ["buizel","floatzel"],
     ["cherubi","cherrim"],
-    ["shellos","gastrodon-east","gastrodon-west"],
+    [ "shellos-east","shellos","gastrodon-east","gastrodon-west"],
     ["drifloon","drifblim"],
     ["buneary","lopunny"],
     ["glameow","purugly"],

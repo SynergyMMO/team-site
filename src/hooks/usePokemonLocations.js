@@ -10,7 +10,11 @@ export function usePokemonLocations(pokemonName) {
     if (!pokemonName) return []
 
     const pokemonLower = pokemonName.toLowerCase()
-    const pokemon = pokemonData[pokemonLower]
+    const aliasMap = {
+      darmanitan: 'darmanitan-standard'
+    }
+    const lookupName = aliasMap[pokemonLower] || pokemonLower
+    const pokemon = pokemonData[lookupName]
 
     if (!pokemon) return []
 

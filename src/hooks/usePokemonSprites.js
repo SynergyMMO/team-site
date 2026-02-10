@@ -31,6 +31,16 @@ export function usePokemonSprites(pokemonName) {
           normal: 'https://img.pokemondb.net/sprites/home/normal/jellicent-f.png',
         },
       },
+      'unfezant-f': {
+        animated: {
+          shiny: 'https://img.pokemondb.net/sprites/black-white/anim/shiny/unfezant-f.gif',
+          normal: 'https://img.pokemondb.net/sprites/black-white/anim/normal/unfezant-f.gif',
+        },
+        official: {
+          shiny: 'https://img.pokemondb.net/sprites/home/shiny/unfezant-f.png',
+          normal: 'https://img.pokemondb.net/sprites/home/normal/unfezant-f.png',
+        },
+      },
     }
     const femaleOverride = femaleOverrides[pokemonLower]
     if (femaleOverride) {

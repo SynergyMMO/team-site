@@ -8203,6 +8203,20 @@
     "name": "unfezant",
     "id": 521
   },
+  "unfezant-f": {
+    "sprites": {
+      "animated": {
+        "shiny": "https://img.pokemondb.net/sprites/black-white/anim/shiny/unfezant-f.gif",
+        "normal": "https://img.pokemondb.net/sprites/black-white/anim/normal/unfezant-f.gif"
+      },
+      "official": {
+        "shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/521.png",
+        "normal": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/521.png"
+      }
+    },
+    "name": "unfezant",
+    "id": 521
+  },
   "blitzle": {
     "sprites": {
       "animated": {
@@ -8682,8 +8696,8 @@
   "darmanitan-standard": {
     "sprites": {
       "animated": {
-        "shiny": "https://img.pokemondb.net/sprites/black-white/anim/shiny/darmanitan-standard.gif",
-        "normal": "https://img.pokemondb.net/sprites/black-white/anim/normal/darmanitan-standard.gif"
+        "shiny": "https://img.pokemondb.net/sprites/black-white/anim/shiny/darmanitan-standard-mode.gif",
+        "normal": "https://img.pokemondb.net/sprites/black-white/anim/normal/darmanitan-standard-mode.gif"
       },
       "official": {
         "shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/555.png",
@@ -8691,6 +8705,20 @@
       }
     },
     "name": "darmanitan-standard",
+    "id": 555
+  },
+  "darmanitan": {
+    "sprites": {
+      "animated": {
+        "shiny": "https://img.pokemondb.net/sprites/black-white/anim/shiny/darmanitan-standard-mode.gif",
+        "normal": "https://img.pokemondb.net/sprites/black-white/anim/normal/darmanitan-standard-mode.gif"
+      },
+      "official": {
+        "shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/555.png",
+        "normal": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/555.png"
+      }
+    },
+    "name": "darmanitan",
     "id": 555
   },
   "darmanitan-zen": {
