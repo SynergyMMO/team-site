@@ -137,6 +137,13 @@ export default function PokemonDetail() {
     return ownerMap
   }, [databaseData, pokemonName])
 
+  // Get animated shiny GIF for OG image
+  const animatedShinyGif = useMemo(() => {
+    if (!pokemonName) return 'https://synergymmo.com/favicon.png'
+    const name = pokemonName.toLowerCase().replace(/\s/g, '-')
+    return `https://img.pokemondb.net/sprites/black-white/anim/shiny/${name}.gif`
+  }, [pokemonName])
+
   // Set document head with SEO
   useDocumentHead({
     title: pokemon ? `${pokemon.displayName} - Shiny Dex` : 'Pokémon Details - Shiny Dex',
@@ -144,8 +151,14 @@ export default function PokemonDetail() {
       ? `${pokemon.displayName} - Type: ${pokemon.types.join(', ')}. ${pokemon.description.substring(0, 150)}...`
       : 'View detailed Pokémon information',
     canonicalPath: `/pokemon/${pokemonName}`,
-    ogImage: pokemon?.sprite,
+    ogImage: animatedShinyGif,
     url: `https://synergymmo.com/pokemon/${pokemonName?.toLowerCase()}`,
+    twitterCard: 'summary_large_image',
+    twitterTitle: pokemon ? `${pokemon.displayName} - Shiny Dex` : 'Pokémon Details - Shiny Dex',
+    twitterDescription: pokemon
+      ? `${pokemon.displayName} - Type: ${pokemon.types.join(', ')}. ${pokemon.description.substring(0, 150)}...`
+      : 'View detailed Pokémon information',
+    twitterImage: animatedShinyGif,
   })
 
   if (isLoading) {

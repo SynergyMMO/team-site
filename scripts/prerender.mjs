@@ -115,6 +115,27 @@ async function getEvents() {
   });
 }
 
+async function getPokemon() {
+  const pokemonPath = join(__dirname, '../src/data/pokemmo_data/pokemon-data.json');
+  const raw = await readFile(pokemonPath, 'utf-8');
+  const pokemonData = JSON.parse(raw);
+
+  return Object.entries(pokemonData).map(([key, pokemon]) => {
+    const name = pokemon.displayName || key;
+    const sanitized = key.toLowerCase().replace(/\s/g, '-');
+    const animatedShinyGif = `https://img.pokemondb.net/sprites/black-white/anim/shiny/${sanitized}.gif`;
+    const description = pokemon.description ? pokemon.description.substring(0, 150) : `${name} Pokémon details`;
+    const types = pokemon.types ? pokemon.types.join(', ') : 'Unknown';
+
+    return {
+      route: `/pokemon/${sanitized}`,
+      ogTitle: `${name} - Shiny Dex | Team Synergy - PokeMMO`,
+      ogDescription: `${name} - Type: ${types}. ${description}...`,
+      ogImage: animatedShinyGif,
+    };
+  });
+}
+
 
 export async function getTrophies() {
   const trophiesPath = join(__dirname, '../src/data/trophies.json');
@@ -208,6 +229,19 @@ async function prerender() {
   for (const t of trophies) {
     const outPath = join(DIST, t.route.slice(1), 'index.html');
     await prerenderRoute(templateHtml, outPath, t);
+  }
+
+  // Pokemon pages
+  console.log('Fetching Pokemon data for prerender...');
+  try {
+    const pokemon = await getPokemon();
+    console.log(`Prerendering ${pokemon.length} Pokemon pages...`);
+    for (const p of pokemon) {
+      const outPath = join(DIST, p.route.slice(1), 'index.html');
+      await prerenderRoute(templateHtml, outPath, p);
+    }
+  } catch (err) {
+    console.warn('Failed to prerender Pokemon pages:', err.message);
   }
 
   console.log('Prerender complete!');
