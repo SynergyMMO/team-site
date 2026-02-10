@@ -63,9 +63,15 @@ export default function TrophyPage() {
       <ul className={styles.playersList}>
         {players.map(player => (
           <li key={player}>
-            <Link to={`/player/${player.toLowerCase()}`} className={styles.playerLink}>
-              {player}
-            </Link>
+            {trophySlug === 'official-shiny-wars-2025' ? (
+              <Link to={`/shiny-war-2025#${player}`} className={styles.playerLink}>
+                {player}
+              </Link>
+            ) : (
+              <Link to={`/player/${player.toLowerCase()}`} className={styles.playerLink}>
+                {player}
+              </Link>
+            )}
           </li>
         ))}
       </ul>

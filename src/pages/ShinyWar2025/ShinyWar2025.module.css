@@ -1,0 +1,279 @@
+.teamHeader {
+  text-align: center;
+  margin: 10px 0 30px;
+}
+
+.teamHeader h2 {
+  font-size: 2rem;
+  margin: 0 0 10px;
+}
+
+.teamLink {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: #9b59b6;
+  text-underline-offset: 4px;
+}
+
+.teamLink:hover {
+  text-decoration-color: #b870d1;
+}
+
+.teamStatsStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.teamPoints {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #9b59b6, #6c3483);
+  padding: 4px 16px;
+  border-radius: 20px;
+}
+
+.teamCount {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.playerList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.playerCard {
+  background: #222;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 90%;
+  margin: auto;
+  width: 100%;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+.highlight {
+  animation: highlight-pulse 3s ease-out;
+}
+
+@keyframes highlight-pulse {
+  0%, 30% {
+    box-shadow: 0 0 0 3px #9b59b6, 0 0 25px rgba(155, 89, 182, 0.8);
+    background: #2a1a3a;
+  }
+  100% {
+    box-shadow: none;
+    background: #222;
+  }
+}
+
+.nameContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.playerName {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  justify-content: center;
+}
+
+.topPlayer {
+  color: gold;
+}
+
+.highPlayer {
+  color: rgb(255, 84, 255);
+}
+
+.medal {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  animation: medal-glow 1.5s infinite alternate;
+}
+
+@keyframes medal-glow {
+  from { filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.8)); }
+  to { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 1)); }
+}
+
+.sparkle {
+  animation: sparkle-glow 1.5s infinite alternate;
+}
+
+@keyframes sparkle-glow {
+  from { text-shadow: 0 0 2px #edff49; }
+  to { text-shadow: 0 0 5px #fff67f; }
+}
+
+.playerStats {
+  font-size: 14px;
+  color: #aaa;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.pokemonGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.pokemonCard {
+  position: relative;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #1a1a2e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 8px 4px 6px;
+  transition: transform 0.2s, border-color 0.2s;
+  overflow: visible;
+}
+
+.pokemonCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--tier-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.tierBadge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--tier-color);
+  color: #000;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 1px 8px;
+  border-radius: 8px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.eggIcon {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.secretIcon {
+  position: absolute;
+  bottom: 30px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.secretGlow {
+  box-shadow:
+    0 0 8px gold,
+    0 0 16px rgba(255, 200, 0, 0.7),
+    0 0 22px rgba(200, 100, 255, 0.7);
+}
+
+.pokemonGif {
+  max-width: 70px;
+  max-height: 70px;
+  width: auto;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.pokemonInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  margin-top: 2px;
+}
+
+.pokemonName {
+  font-size: 11px;
+  color: #ccc;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.pointsBadge {
+  font-size: 10px;
+  font-weight: bold;
+  color: var(--tier-color);
+}
+
+@media (min-width: 4000px) {
+  .playerCard {
+    max-width: 3000px;
+  }
+}
+
+@media (max-width: 900px) {
+  .playerCard {
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .pokemonCard {
+    width: 75px;
+    padding: 6px 2px 4px;
+  }
+
+  .pokemonGif {
+    max-width: 50px;
+    max-height: 50px;
+  }
+
+  .pokemonName {
+    font-size: 9px;
+  }
+
+  .pointsBadge {
+    font-size: 9px;
+  }
+
+  .tierBadge {
+    font-size: 9px;
+    padding: 1px 6px;
+  }
+
+  .eggIcon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .secretIcon {
+    width: 14px;
+    height: 14px;
+  }
+}

@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: '/streamers', label: 'Streamers' },
   { to: '/trophy-board', label: 'Trophy Board' },
   { to: '/events', label: 'Events' },
+  { to: '/shiny-war-2025', label: 'Shiny War 2025' },
   { to: '/counter-generator', label: 'Counter Generator' },
   { to: '/random-pokemon-generator', label: 'Random Pokemon Generator' },
 ]

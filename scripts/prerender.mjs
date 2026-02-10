@@ -22,6 +22,7 @@ const STATIC_ROUTES = [
   '/events',
   '/counter-generator',
   '/random-pokemon-generator',
+  '/shiny-war-2025',
 ];
 
 
