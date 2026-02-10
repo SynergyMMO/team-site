@@ -153,14 +153,18 @@ Routes are defined in `src/App.jsx` using React Router v6.
 |-------|-----------|-------------|
 | `/` | `Showcase` | Home page - player card grid |
 | `/player/:playerName` | `PlayerPage` | Individual player's shiny collection |
+| `/pokemon/:pokemonName` | `PokemonDetail` | Individual Pokémon details with locations & encounters |
 | `/shotm` | `SHOTM` | Shiny Hunters of the Month leaderboard |
-| `/pokedex` | `Pokedex` | Pokemon dex tracker (shiny & living dex) |
+| `/pokedex` | `Pokedex` | Pokemon dex tracker (shiny & living dex) with advanced filtering |
 | `/streamers` | `Streamers` | Team streamers with Twitch status |
+| `/events` | `EventsPage` | Events listing page |
+| `/event/:slug` | `EventsDetail` | Individual event details |
 | `/trophy-board` | `TrophyBoard` | Trophy grid showcase |
-| `/trophy/:trophyName` | `TrophyPage` | Individual trophy details |
+| `/trophy/:trophySlug` | `TrophyPage` | Individual trophy details |
 | `/counter-generator` | `CounterGenerator` | GIF to ZIP converter tool |
 | `/random-pokemon-generator` | `RandomPokemon` | Random Pokemon + bingo game |
-| `/admin` | `Admin` | Admin login page |
+| `/shiny-war-2025` | `ShinyWar2025` | 2025 Shiny War leaderboard |
+| `/admin` | `AdminLogin` | Admin login page |
 | `/admin/panel` | `AdminPanel` | Admin management interface (protected) |
 | `*` | `NotFound` | 404 fallback |
 
@@ -278,6 +282,37 @@ Located in `src/data/tier_pokemon.json` and `src/data/tier_points.json`:
 }
 ```
 
+### Generation Data
+
+Located in `src/data/generation.json` - Pokémon organized by generation with evolution lines:
+
+```javascript
+{
+  "Generation 1": [
+    ["Bulbasaur", "Ivysaur", "Venusaur"],  // Evolution line
+    ["Charmander", "Charmeleon", "Charizard"],
+    ...
+  ],
+  // Generations 1-9
+}
+```
+
+### Events Data
+
+Located in `src/data/` - Events stored in JSON format with:
+- Event name, slug, and description
+- Start/end dates
+- Participant information
+- Event type (competition, showcase, etc.)
+
+### Shiny War 2025 Data
+
+Located in `src/data/shinywar2025.json` - Contains:
+- Participant names and shiny counts
+- Tier breakdowns
+- Ranking information
+- Real-time update timestamps
+
 ---
 
 ## Key Components
@@ -296,7 +331,11 @@ Renders an individual shiny Pokemon with sprite and traits.
 ### `<Navbar />`
 Main navigation with responsive mobile hamburger menu.
 - **Location:** `src/components/Navbar/`
-- **Features:** Active link highlighting, mobile menu toggle
+- **Features:** 
+  - Active link highlighting
+  - Mobile menu toggle with hamburger icon
+  - Responsive design (mobile/tablet/desktop)
+  - Logo and branding
 
 ### `<TrophyShelf />`
 Displays trophies for a player.
@@ -311,6 +350,17 @@ Hover tooltip for additional information.
 ### `<BackButton />`
 Context-aware back navigation (handles referrer-based routing).
 - **Location:** `src/components/BackButton/`
+
+### `<SearchBar />`
+Reusable search input with auto-complete suggestions and dropdown.
+- **Location:** `src/components/SearchBar/`
+- **Props:** `value`, `onChange`, `placeholder`, `suggestions`, `onSuggestionSelect`
+- **Features:** Filtered suggestions up to 8 results, click-outside detection
+
+### `<StarField />`
+Animated background with parallax star effect.
+- **Location:** `src/components/StarField/`
+- **Features:** Canvas-based animation, performance optimized
 
 ---
 
@@ -368,9 +418,62 @@ Groups shinies by tier for SHOTM displays, with optional month/year filtering.
 const tiers = useTieredShinies(shotmData, tierLookup, { onlyCurrentMonth: true });
 ```
 
+### `usePokemonDetails()`
+Fetches detailed information for a single Pokémon (types, stats, abilities, moves).
+
+```javascript
+const { pkdata, spritePath, isLoading } = usePokemonDetails(pokemonName);
+```
+
+### `usePokemonLocations()`
+Retrieves encounter locations and rarity data for a Pokémon.
+
+```javascript
+const { locations, rarities, isLoading } = usePokemonLocations(pokemonName);
+```
+
+### `usePokemonOrder()`
+Gets the canonical Pokémon order/ID from the Pokédex.
+
+```javascript
+const { order, isLoading } = usePokemonOrder(pokemonName);
+```
+
+### `usePokemonSprites()`
+Loads and caches Pokémon sprite image paths with fallback handling.
+
+```javascript
+const { spriteUrl, shinySpriteUrl, isLoading } = usePokemonSprites(pokemonName);
+```
+
 ---
 
 ## Utilities
+
+### Image Loading & Error Handling
+
+The application implements a two-tier image loading strategy:
+
+1. **Local GIFs:** Served from `public/images/pokemon_gifs/` organized by tier
+2. **Remote Fallback:** Falls back to PokemonDB.net (`img.pokemondb.net/sprites/black-white/anim/`) on local failure
+3. **Legendary/Mythical Special Handling:** Automatically fetches ~95 legendary Pokémon from remote source, bypassing local folder lookup
+
+**Error Handling Flow:**
+```
+Request Local GIF
+  ↓
+  [Found] → Load & Display
+  ↓
+  [Not Found] → onGifError() callback
+  ↓
+  Fetch Remote Fallback
+  ↓
+  Load from PokemonDB.net
+```
+
+This ensures legendary Pokémon and any missing local assets always load successfully.
+
+---
 
 ### `src/utils/assets.js`
 Handles base path for assets in both dev and production.
@@ -389,13 +492,22 @@ const points = calculateShinyPoints(shiny, tierPoints, tierLookup);
 ```
 
 ### `src/utils/pokemon.js`
-Pokemon name normalization and local GIF resolution with remote fallback.
+Pokemon name normalization and local GIF resolution with remote fallback. Automatically handles legendary/mythical Pokémon by fetching from remote source.
 
 ```javascript
-import { getLocalPokemonGif, onGifError, normalizePokemonName } from '../utils/pokemon';
+import { getLocalPokemonGif, onGifError, normalizePokemonName, LEGENDARY_MYTHICAL } from '../utils/pokemon';
 const gifPath = getLocalPokemonGif('pikachu'); // /images/pokemon_gifs/tier_7/pikachu.gif?v=1
+const legendaryGif = getLocalPokemonGif('mewtwo'); // https://img.pokemondb.net/sprites/black-white/anim/shiny/mewtwo.gif
 const normalized = normalizePokemonName("Nidoran♂"); // "nidoran-m"
+
+// Legendary/Mythical Pokémon detected automatically:
+// Includes: Articuno, Zapdos, Moltres, Mewtwo, Dialga, Palkia, Giratina, Kyurem, etc.
 ```
+
+**Features:**
+- **Legendary/Mythical Detection:** ~95 legendary and mythical Pokémon automatically use remote sprite source
+- **Remote Fallback:** Gracefully falls back to PokemonDB.net on local GIF failures
+- **Name Normalization:** Handles special characters (♂, ♀, apostrophes, hyphens)
 
 ### `src/utils/bingo.js`
 Bingo card game logic for Random Pokemon Generator.
@@ -535,6 +647,56 @@ import { getAssetUrl } from '../utils/assets';
 3. Add navigation link in `src/components/Navbar/` if needed
 4. Create CSS module for styling
 
+### Route Scroll Behavior
+
+The app automatically scrolls to the top when navigating between routes via `useLocation()` hook in `App.jsx`. This ensures users see page content immediately on route changes.
+
+```javascript
+// In App.jsx
+const location = useLocation();
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, [location.pathname]);
+```
+
+### Pokedex Filtering Features
+
+The Pokedex component (`src/pages/Pokedex/Pokedex.jsx`) includes comprehensive filtering:
+
+**Available Filters:**
+- **Encounter Types:** Rarity levels (Very Common → Very Rare)
+- **Tiers:** Pokemon rarity tiers (Tier 0 → Tier 7)
+- **Egg Groups:** Filter by breeding groups, including Legendary group
+- **Types:** Single or multiple type filtering
+- **Moves:** Search by up to 4 move names
+- **Abilities:** Filter by ability name
+- **Locations:** Search by specific encounter locations
+- **Stats:** Minimum stat values (HP, Attack, Defense, Sp.Atk, Sp.Def, Speed)
+- **Shiny/Living Dex Modes:** Track shiny or complete dex
+
+**Features:**
+- Real-time suggestions from generation data
+- Progress tracking with percentage bar
+- Hide/show completed Pokémon toggle
+- Location-based encounter type grouping
+- Synergy data toggle to show/hide legendary Pokémon
+
+### React Rendering Best Practices
+
+**SearchBar Component:** 
+- Computed suggestions directly in render instead of state to avoid infinite re-render loops
+- Only `isOpen` state is tracked for dropdown visibility
+- Filtering happens during render without triggering state updates
+
+**useMemo Dependencies:**
+- Always include all variables used inside useMemo in the dependency array
+- Example: `searchSuggestions` useMemo must include both `generationData` and `eggGroupOptions`
+- Missing dependencies cause stale closures and unexpected behavior
+
+**Key Props in Lists:**
+- Use stable, unique identifiers as keys (e.g., destructured object keys from `Object.entries()`)
+- Avoid using array indices or non-unique properties as keys
+
 ### Adding New API Endpoints
 
 1. Add endpoint to `src/api/endpoints.js`
@@ -551,6 +713,38 @@ import { getAssetUrl } from '../utils/assets';
 - Rank changes tracked via localStorage
 - Month navigation with arrow indicators for rank movement
 
+### Shiny War 2025
+
+- Team competition leaderboard
+- Shiny data loaded from shinywar2025.json in data directory
+- Displays participant rankings with shiny counts and tier breakdowns
+
+### Events
+
+- Dynamic event listing with individual event detail pages
+- Event data stored in `src/data/` directory
+- Event slugs used for URL-friendly routing
+- Supports event descriptions, dates, and participant information
+
+### Pokedex
+
+- Advanced multi-filter support (tier, rarity, type, ability, location, stats)
+- Lazy loading for images
+- Generation data from `src/data/generation.json`
+- Supports both shiny dex and living dex tracking
+- Real-time search with generation name suggestions
+- Location-based encounter grouping by encounter type
+- Synergy data mode to hide/show legendary Pokémon
+
+### Pokemon Detail Page
+
+- Individual Pokémon information display
+- Type and stat breakdowns
+- Move lists and ability details
+- Location/encounter information for finding in-game
+- Shiny status tracking across team members
+- Back navigation with referrer awareness
+
 ### Counter Generator
 
 - Parses GIF frames using `omggif`
@@ -565,15 +759,29 @@ import { getAssetUrl } from '../utils/assets';
 - Canvas fireworks animation on win
 - Integration with Shinyboard.net for user shiny data
 
-### Pokedex
-
-- Lazy loading for images
-- Generation data from `src/data/generation.json`
-- Supports both shiny dex and living dex tracking
-
 ---
 
-## Troubleshooting
+## Recent Improvements & Bug Fixes
+
+### Legendary Pokémon GIF Loading (v1.1+)
+**Issue:** Legendary Pokémon (Mewtwo, Dialga, etc.) returned 404 errors when loading local GIFs.
+**Fix:** Added automatic detection of ~95 legendary/mythical Pokémon in `src/utils/pokemon.js`. These bypass local folder lookup and fetch directly from PokemonDB.net remote source.
+
+### Scroll-to-Top on Route Navigation (v1.1+)
+**Issue:** When navigating between pages via React Router, content didn't load in viewport if page was scrolled down.
+**Fix:** Added `useLocation()` hook in `App.jsx` that calls `window.scrollTo(0, 0)` on every route change.
+
+### SearchBar Infinite Re-render Loop (v1.1+)
+**Issue:** SearchBar component threw "Maximum update depth exceeded" error due to state-based filtering with effect-based recalculation.
+**Fix:** Removed `filteredSuggestions` state and its effect. Filtering now happens directly during render as a computed variable, eliminating the infinite loop.
+
+### useMemo Dependency Issues (v1.1+)
+**Issue:** `searchSuggestions` useMemo in Pokedex was missing `generationData` dependency, causing stale suggestions.
+**Fix:** Added `generationData` to dependency array: `[generationData, eggGroupOptions]`.
+
+### React Key Warnings (v1.1+)
+**Issue:** PlayerCard component used non-unique or incorrect key props in lists.
+**Fix:** Changed to use destructured object key from `Object.entries()` instead of nested properties.
 
 ### Common Issues
 
