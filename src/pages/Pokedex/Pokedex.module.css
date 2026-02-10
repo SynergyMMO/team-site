@@ -578,3 +578,58 @@
   background: linear-gradient(90deg, transparent, rgba(127, 95, 255, 0.4), transparent);
   border-radius: 1px;
 }
+
+.locationSearchInput {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  border: 2px solid #444;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.locationSearchInput:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(74,144,226,0.5);
+  background: #222;
+}
+
+.locationSearchInput::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .locationSearchInput {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+.locationSearchClear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.locationSearchClear:hover {
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(74, 144, 226, 0.1);
+}
+
+.locationSearchClear:active {
+  transform: translateY(-50%) scale(0.95);
+}

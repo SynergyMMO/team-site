@@ -29,6 +29,7 @@ export default function Pokedex() {
   const [selectedTypes, setSelectedTypes] = useState([])
   const [movesToFilterBy, setMovesToFilterBy] = useState(['', '', '', ''])
   const [abilitySearch, setAbilitySearch] = useState('')
+  const [locationSearch, setLocationSearch] = useState('')
   const [statMinimums, setStatMinimums] = useState({
     hp: '',
     attack: '',
@@ -195,29 +196,6 @@ export default function Pokedex() {
         group.forEach(pokemon => {
           suggestions.add(pokemon)
         })
-      })
-    })
-    
-    // Add all unique moves
-    Object.entries(pokemonData).forEach(([_, details]) => {
-      const moves = details.moves || []
-      moves.forEach(m => {
-        if (typeof m === 'string') {
-          suggestions.add(m)
-        } else if (m.name && typeof m.name === 'string') {
-          suggestions.add(m.name)
-        } else if (m.move && typeof m.move === 'string') {
-          suggestions.add(m.move)
-        }
-      })
-    })
-    
-    // Add locations and regions
-    Object.entries(pokemonData).forEach(([_, details]) => {
-      const encounters = details.location_area_encounters || []
-      encounters.forEach(encounter => {
-        if (encounter.location) suggestions.add(encounter.location)
-        if (encounter.region_name) suggestions.add(encounter.region_name)
       })
     })
     
@@ -757,6 +735,29 @@ export default function Pokedex() {
             </div>
           )}
         </div>
+
+        {/* Location Search */}
+        <div className={styles.dropdown} style={{ flex: '0.5' }}>
+          <label style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.8)', fontWeight: '500', whiteSpace: 'nowrap', marginBottom: '8px', display: 'block' }}>
+            Location:
+          </label>
+          <input
+            type="text"
+            placeholder="Search location..."
+            value={locationSearch}
+            onChange={(e) => setLocationSearch(e.target.value)}
+            className={styles.locationSearchInput}
+          />
+          {locationSearch && (
+            <button
+              onClick={() => setLocationSearch('')}
+              className={styles.locationSearchClear}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+        
         <div className={styles.dropdown} ref={statSearchMenuRef}>
           <button
             type="button"
@@ -966,9 +967,11 @@ export default function Pokedex() {
               const matchesSearch =
                 lowerName.includes(searchTerm)
                 || normalized.includes(searchTerm)
-                || locationEntry.locationText.includes(searchTerm)
-                || movesList.includes(searchTerm)
               if (!matchesSearch) return
+            }
+            if (locationSearch.trim()) {
+              const locationText = locationEntry?.locationText || ''
+              if (!locationText.includes(locationSearch.toLowerCase())) return
             }
             if (selectedRarities.length > 0) {
               const matchesRarity = selectedRarities.some(value => locationEntry.raritySet.has(value))
@@ -998,10 +1001,11 @@ export default function Pokedex() {
             if (abilitySearch.trim()) {
               const pokemonAbilitiesRaw = pokemonDetails.abilities || []
               const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.ability_name).filter(Boolean)
-              const searchLower = abilitySearch.toLowerCase()
-              const matchesAbility = pokemonAbilityNames.some(pokemonAbility => 
-                pokemonAbility.toLowerCase().includes(searchLower)
-              )
+              const searchNormalized = abilitySearch.toLowerCase().replace(/[\s-]/g, '')
+              const matchesAbility = pokemonAbilityNames.some(pokemonAbility => {
+                const abilityNormalized = pokemonAbility.toLowerCase().replace(/[\s-]/g, '')
+                return abilityNormalized.includes(searchNormalized)
+              })
               if (!matchesAbility) return
             }
             if (!matchesStatSearch(pokemonDetails)) return
@@ -1123,9 +1127,11 @@ export default function Pokedex() {
               const matchesSearch =
                 lowerName.includes(searchTerm)
                 || normalized.includes(searchTerm)
-                || locationEntry.locationText.includes(searchTerm)
-                || movesList.includes(searchTerm)
               if (!matchesSearch) return false
+            }
+            if (locationSearch.trim()) {
+              const locationText = locationEntry?.locationText || ''
+              if (!locationText.includes(locationSearch.toLowerCase())) return false
             }
             if (selectedRarities.length > 0) {
               const matchesRarity = selectedRarities.some(value => locationEntry.raritySet.has(value))

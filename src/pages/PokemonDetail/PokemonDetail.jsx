@@ -42,25 +42,26 @@ const TIER_COLORS = {
 
 // Type effectiveness chart - what types are weak to/resistant to
 const TYPE_EFFECTIVENESS = {
-  normal: { weak: ['fighting'], resists: [], immune: ['ghost'] },
-  fire: { weak: ['water', 'ground', 'rock'], resists: ['fire', 'grass', 'ice', 'bug', 'steel', 'fairy'], immune: [] },
-  water: { weak: ['electric', 'grass'], resists: ['steel', 'fire', 'water', 'ice'], immune: [] },
-  electric: { weak: ['ground'], resists: ['flying', 'steel', 'electric'], immune: [] },
-  grass: { weak: ['fire', 'ice', 'poison', 'flying', 'bug'], resists: ['ground', 'water', 'grass', 'electric'], immune: [] },
-  ice: { weak: ['fire', 'fighting', 'rock', 'steel'], resists: ['ice'], immune: [] },
-  fighting: { weak: ['flying', 'psychic', 'fairy'], resists: ['rock', 'bug', 'dark'], immune: [] },
-  poison: { weak: ['ground', 'psychic'], resists: ['fighting', 'poison', 'bug', 'grass'], immune: [] },
-  ground: { weak: ['water', 'grass', 'ice'], resists: ['poison', 'rock'], immune: ['electric'] },
-  flying: { weak: ['electric', 'ice', 'rock'], resists: ['fighting', 'bug', 'grass'], immune: [] },
-  psychic: { weak: ['bug', 'ghost', 'dark'], resists: ['fighting', 'psychic'], immune: [] },
-  bug: { weak: ['fire', 'flying', 'rock'], resists: ['fighting', 'ground', 'grass'], immune: [] },
-  rock: { weak: ['water', 'grass', 'fighting', 'ground', 'steel'], resists: ['normal', 'flying', 'poison', 'fire'], immune: [] },
-  ghost: { weak: ['ghost', 'dark'], resists: ['poison', 'bug'], immune: ['normal', 'fighting'] },
-  dragon: { weak: ['ice', 'dragon', 'fairy'], resists: ['fire', 'water', 'grass', 'electric'], immune: [] },
-  dark: { weak: ['fighting', 'bug', 'fairy'], resists: ['ghost', 'dark'], immune: ['psychic'] },
-  steel: { weak: ['fire', 'water', 'ground'], resists: ['normal', 'flying', 'rock', 'bug', 'steel', 'grass', 'psychic', 'ice', 'dragon', 'fairy'], immune: ['poison'] },
-  fairy: { weak: ['poison', 'steel'], resists: ['fighting', 'bug', 'dark'], immune: [] },
+  normal:   { weak: ['fighting'], resists: [], immune: ['ghost'] },
+  fire:     { weak: ['water','ground','rock'], resists: ['fire','grass','ice','bug','steel'], immune: [] },
+  water:    { weak: ['electric','grass'], resists: ['steel','fire','water','ice'], immune: [] },
+  electric: { weak: ['ground'], resists: ['flying','steel','electric'], immune: [] },
+  grass:    { weak: ['fire','ice','poison','flying','bug'], resists: ['ground','water','grass','electric'], immune: [] },
+  ice:      { weak: ['fire','fighting','rock','steel'], resists: ['ice'], immune: [] },
+
+  fighting: { weak: ['flying','psychic'], resists: ['bug','rock','dark'], immune: [] },
+  poison:   { weak: ['ground','psychic'], resists: ['fighting','poison','bug','grass'], immune: [] },
+  ground:   { weak: ['water','grass','ice'], resists: ['poison','rock'], immune: ['electric'] },
+  flying:   { weak: ['electric','ice','rock'], resists: ['fighting','bug','grass'], immune: ['ground'] },
+  psychic:  { weak: ['bug','ghost','dark'], resists: ['fighting','psychic'], immune: [] },
+  bug:      { weak: ['fire','flying','rock'], resists: ['ground','grass','fighting'], immune: [] },
+  rock:     { weak: ['water','grass','fighting','ground','steel'], resists: ['normal','flying','poison','fire'], immune: [] },
+  ghost:    { weak: ['ghost','dark'], resists: ['poison','bug'], immune: ['normal','fighting'] },
+  dragon:   { weak: ['ice','dragon'], resists: ['fire','water','grass','electric'], immune: [] },
+  dark:     { weak: ['fighting','bug'], resists: ['ghost','dark'], immune: ['psychic'] },
+  steel:    { weak: ['fire','water','ground'], resists: ['normal','flying','rock','bug','steel','grass','psychic','ice','dragon'], immune: ['poison'] },
 }
+
 
 /**
  * Get human-readable label for move learning method
@@ -183,84 +184,62 @@ function formatEncounterTime(time) {
  * @returns {Object} Organized effectiveness data with weak, resist, and immune arrays
  */
 function calculateCombinedTypeEffectiveness(types) {
-  if (!types || types.length === 0) return { weak: [], resist: [], immune: [] }
-  
-  // Track effectiveness for each attacking type
-  const effectivenessMap = {}
-  
-  // Initialize all types with their effectiveness scores
-  Object.keys(TYPE_EFFECTIVENESS).forEach(attackType => {
-    effectivenessMap[attackType] = {
-      weakCount: 0,      // Number of defensive types weak to this
-      resistCount: 0,    // Number of defensive types resisting this
-      immuneCount: 0     // Number of defensive types immune to this
+  if (!types || types.length === 0) {
+    return {
+      fourxWeak: [],
+      twoXWeak: [],
+      neutral: [],
+      halfDmg: [],
+      quarterDmg: [],
+      immune: []
     }
-  })
-  
-  // For each Pokemon type, add its effectiveness data
-  types.forEach(defenseType => {
-    const typeData = TYPE_EFFECTIVENESS[defenseType.toLowerCase()]
-    if (!typeData) return
-    
-    // Mark types this defense type is weak to
-    typeData.weak.forEach(weakType => {
-      effectivenessMap[weakType].weakCount++
-    })
-    
-    // Mark types this defense type resists
-    typeData.resists.forEach(resistType => {
-      effectivenessMap[resistType].resistCount++
-    })
-    
-    // Mark types this defense type is immune to
-    typeData.immune.forEach(immuneType => {
-      effectivenessMap[immuneType].immuneCount++
-    })
-  })
-  
-  // Calculate final effectiveness
-  const result = {
-    fourxWeak: [],  // Weak to attack (all defensive types weak to it)
-    twoXWeak: [],   // Weak to attack (some defensive types weak to it)
-    neutral: [],    // Normal damage
-    halfDmg: [],    // Resists attack (some defensive types resist)
-    quarterDmg: [], // Resists attack (all defensive types resist)
-    immune: []      // Immune to attack
   }
-  
-  Object.entries(effectivenessMap).forEach(([attackType, data]) => {
-    // If immune, it always takes no damage (immunity overrides weakness)
-    if (data.immuneCount > 0) {
+
+  const result = {
+    fourxWeak: [],
+    twoXWeak: [],
+    neutral: [],
+    halfDmg: [],
+    quarterDmg: [],
+    immune: []
+  }
+
+  Object.keys(TYPE_EFFECTIVENESS).forEach(attackType => {
+    let multiplier = 1
+
+    types.forEach(defenseType => {
+      const typeData = TYPE_EFFECTIVENESS[defenseType.toLowerCase()]
+      if (!typeData) return
+
+      if (typeData.immune.includes(attackType)) {
+        multiplier *= 0
+      } else if (typeData.weak.includes(attackType)) {
+        multiplier *= 2
+      } else if (typeData.resists.includes(attackType)) {
+        multiplier *= 0.5
+      }
+    })
+
+    // Categorize final multiplier
+    if (multiplier === 0) {
       result.immune.push(attackType)
-    }
-    // If weak but no immunity
-    else if (data.weakCount > 0 && data.resistCount === 0) {
-      if (data.weakCount >= types.length) {
-        result.fourxWeak.push(attackType)
-      } else {
-        result.twoXWeak.push(attackType)
-      }
-    }
-    // If resist but no weakness or immunity
-    else if (data.resistCount > 0 && data.weakCount === 0) {
-      if (data.resistCount >= types.length) {
-        result.quarterDmg.push(attackType)
-      } else {
-        result.halfDmg.push(attackType)
-      }
-    }
-    // If both weak and resist, they cancel out to neutral
-    else if (data.weakCount > 0 && data.resistCount > 0) {
-      result.neutral.push(attackType)
-    }
-    // Otherwise neutral
-    else if (!data.immuneCount) {
+    } else if (multiplier === 4) {
+      result.fourxWeak.push(attackType)
+    } else if (multiplier === 2) {
+      result.twoXWeak.push(attackType)
+    } else if (multiplier === 0.5) {
+      result.halfDmg.push(attackType)
+    } else if (multiplier === 0.25) {
+      result.quarterDmg.push(attackType)
+    } else {
       result.neutral.push(attackType)
     }
   })
-  
+
+  console.log(result)
   return result
 }
+
 
 export default function PokemonDetail() {
   const { pokemonName } = useParams()
@@ -273,6 +252,9 @@ export default function PokemonDetail() {
   const [currentSpriteIndex, setCurrentSpriteIndex] = useState(0)
   const [loadedSpriteUrl, setLoadedSpriteUrl] = useState('')
   const [wildLevel, setWildLevel] = useState('')
+  const [routeSearch, setRouteSearch] = useState('')
+  const [selectedRoute, setSelectedRoute] = useState(null)
+  const [showRoutesSuggestions, setShowRoutesSuggestions] = useState(false)
   const [audioRef] = useState(new Audio())
   const spriteAliasMap = useMemo(() => ({
     wormadam: 'wormadam-plant',
@@ -723,9 +705,9 @@ useDocumentHead({
                   
                   {combined.halfDmg.length > 0 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>Resists:</span>
+                      <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>Resists: (1/2 Damage)</span>
                       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        {combined.halfDmg.map(type => (
+                        {combined.quarterDmg.map(type => (
                           <span key={type} style={{ padding: '0.4rem 0.8rem', background: 'rgba(74, 222, 128, 0.2)', border: '1px solid rgba(74, 222, 128, 0.5)', borderRadius: '6px', fontSize: '0.9rem', color: '#86efac', textTransform: 'capitalize' }}>
                             {type}
                           </span>
@@ -738,7 +720,7 @@ useDocumentHead({
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>Resists (1/4 Damage):</span>
                       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        {combined.quarterDmg.map(type => (
+                        {combined.halfDmg.map(type => (
                           <span key={type} style={{ padding: '0.4rem 0.8rem', background: 'rgba(74, 222, 128, 0.3)', border: '2px solid rgba(74, 222, 128, 0.7)', borderRadius: '6px', fontSize: '0.9rem', fontWeight: '600', color: '#86efac', textTransform: 'capitalize' }}>
                             {type}
                           </span>
