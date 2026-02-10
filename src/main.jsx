@@ -29,6 +29,16 @@ const queryClient = new QueryClient({
   }
 })()
 
+// Auto-reload once when Vite chunks 404 after a deploy (stale asset hashes)
+window.addEventListener('vite:preloadError', () => {
+  if (!sessionStorage.getItem('chunk-reload')) {
+    sessionStorage.setItem('chunk-reload', '1')
+    window.location.reload()
+  } else {
+    sessionStorage.removeItem('chunk-reload')
+  }
+})
+
 // Register service worker for caching (production only)
 if (!import.meta.env.DEV && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {

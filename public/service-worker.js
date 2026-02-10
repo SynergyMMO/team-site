@@ -66,15 +66,12 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Cache strategy for local static assets (cache-first)
+  // Images — cache-first (filenames rarely change)
   if (
     request.destination === 'image' ||
-    request.url.includes('/assets/') ||
     request.url.includes('.png') ||
     request.url.includes('.jpg') ||
-    request.url.includes('.gif') ||
-    request.url.includes('.css') ||
-    request.url.includes('.js')
+    request.url.includes('.gif')
   ) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
@@ -89,6 +86,30 @@ self.addEventListener('fetch', (event) => {
             })
           }
           return response
+        })
+      })
+    )
+    return
+  }
+
+  // JS/CSS assets — network-first so deploys are picked up immediately
+  if (
+    request.url.includes('/assets/') ||
+    request.url.includes('.css') ||
+    request.url.includes('.js')
+  ) {
+    event.respondWith(
+      fetch(request).then((response) => {
+        if (response.status === 200) {
+          const responseToCache = response.clone()
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache)
+          })
+        }
+        return response
+      }).catch(() => {
+        return caches.match(request).then((cachedResponse) => {
+          return cachedResponse || new Response('', { status: 404 })
         })
       })
     )
