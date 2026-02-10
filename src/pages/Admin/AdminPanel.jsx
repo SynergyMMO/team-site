@@ -120,6 +120,7 @@ export default function AdminPanel() {
         <AdvancedJsonTab
           database={db.database}
           streamersDB={db.streamersDB}
+          eventsDB={db.eventDB}
           onUpdateDatabase={withToast(db.updateFullDatabase, 'Database updated!')}
           onUpdateStreamers={withToast(db.updateFullStreamers, 'Streamers updated!')}
           isMutating={db.isMutating}

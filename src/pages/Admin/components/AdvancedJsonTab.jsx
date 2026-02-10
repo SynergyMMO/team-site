@@ -59,19 +59,38 @@ function validateStreamersSchema(data) {
   return errors
 }
 
+// Simple validation for events DB: root must be object
+function validateEventsSchema(data) {
+  const errors = []
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+    errors.push('Root must be an object with event names as keys.')
+  }
+  return errors
+}
+
 function computeChangeSummary(oldData, newData, mode) {
   const changes = []
-  if (mode === 'pokemon') {
-    const oldKeys = new Set(Object.keys(oldData))
-    const newKeys = new Set(Object.keys(newData))
-    for (const k of newKeys) {
-      if (!oldKeys.has(k)) changes.push(`+ Added player "${k}"`)
-    }
-    for (const k of oldKeys) {
-      if (!newKeys.has(k)) changes.push(`- Removed player "${k}"`)
-    }
-    for (const k of newKeys) {
-      if (oldKeys.has(k)) {
+  const oldKeys = new Set(Object.keys(oldData))
+  const newKeys = new Set(Object.keys(newData))
+
+  for (const k of newKeys) {
+    if (!oldKeys.has(k)) changes.push(
+      mode === 'pokemon' ? `+ Added player "${k}"` :
+      mode === 'streamers' ? `+ Added streamer "${k}"` :
+      `+ Added event "${k}"`
+    )
+  }
+  for (const k of oldKeys) {
+    if (!newKeys.has(k)) changes.push(
+      mode === 'pokemon' ? `- Removed player "${k}"` :
+      mode === 'streamers' ? `- Removed streamer "${k}"` :
+      `- Removed event "${k}"`
+    )
+  }
+
+  for (const k of newKeys) {
+    if (oldKeys.has(k)) {
+      if (mode === 'pokemon') {
         const oldCount = Object.keys(oldData[k]?.shinies || {}).length
         const newCount = Object.keys(newData[k]?.shinies || {}).length
         if (oldCount !== newCount) {
@@ -79,28 +98,23 @@ function computeChangeSummary(oldData, newData, mode) {
         } else if (JSON.stringify(oldData[k]) !== JSON.stringify(newData[k])) {
           changes.push(`~ "${k}": data modified`)
         }
-      }
-    }
-  } else {
-    const oldKeys = new Set(Object.keys(oldData))
-    const newKeys = new Set(Object.keys(newData))
-    for (const k of newKeys) {
-      if (!oldKeys.has(k)) changes.push(`+ Added streamer "${k}"`)
-    }
-    for (const k of oldKeys) {
-      if (!newKeys.has(k)) changes.push(`- Removed streamer "${k}"`)
-    }
-    for (const k of newKeys) {
-      if (oldKeys.has(k) && JSON.stringify(oldData[k]) !== JSON.stringify(newData[k])) {
+      } else if (JSON.stringify(oldData[k]) !== JSON.stringify(newData[k])) {
         changes.push(`~ "${k}": data modified`)
       }
     }
   }
+
   return changes
 }
 
 export default function AdvancedJsonTab({
-  database, streamersDB, onUpdateDatabase, onUpdateStreamers, isMutating,
+  database,
+  streamersDB,
+  eventsDB,
+  onUpdateDatabase,
+  onUpdateStreamers,
+  onUpdateEvents,
+  isMutating,
 }) {
   const [mode, setMode] = useState('pokemon')
   const [editingJson, setEditingJson] = useState('')
@@ -110,7 +124,13 @@ export default function AdvancedJsonTab({
   const [showConfirm, setShowConfirm] = useState(false)
   const [parsedData, setParsedData] = useState(null)
 
-  const currentData = mode === 'pokemon' ? database : streamersDB
+  const currentData = useMemo(() => {
+    if (mode === 'pokemon') return database
+    if (mode === 'streamers') return streamersDB
+    if (mode === 'events') return eventsDB
+    return {}
+  }, [mode, database, streamersDB, eventsDB])
+
   const previewText = useMemo(() => JSON.stringify(currentData, null, 2), [currentData])
 
   function openEditor() {
@@ -129,9 +149,10 @@ export default function AdvancedJsonTab({
       return
     }
 
-    const errors = mode === 'pokemon'
-      ? validateDatabaseSchema(parsed)
-      : validateStreamersSchema(parsed)
+    const errors =
+      mode === 'pokemon' ? validateDatabaseSchema(parsed) :
+      mode === 'streamers' ? validateStreamersSchema(parsed) :
+      validateEventsSchema(parsed)
 
     if (errors.length > 0) {
       setValidationErrors(errors)
@@ -147,9 +168,14 @@ export default function AdvancedJsonTab({
 
   async function handleConfirmSave() {
     if (!parsedData) return
-    const result = mode === 'pokemon'
-      ? await onUpdateDatabase(parsedData, `Manual JSON edit (pokemon)`)
-      : await onUpdateStreamers(parsedData, `Manual JSON edit (streamers)`)
+    let result
+    if (mode === 'pokemon') {
+      result = await onUpdateDatabase(parsedData, `Manual JSON edit (pokemon)`)
+    } else if (mode === 'streamers') {
+      result = await onUpdateStreamers(parsedData, `Manual JSON edit (streamers)`)
+    } else if (mode === 'events') {
+      result = await onUpdateEvents(parsedData, `Manual JSON edit (events)`)
+    }
 
     if (result?.success) {
       setIsEditing(false)
@@ -164,9 +190,14 @@ export default function AdvancedJsonTab({
     <div>
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}>
         <label style={{ margin: 0 }}>Data Source:</label>
-        <select value={mode} onChange={e => { setMode(e.target.value); setIsEditing(false) }} style={{ width: 'auto' }}>
+        <select
+          value={mode}
+          onChange={e => { setMode(e.target.value); setIsEditing(false) }}
+          style={{ width: 'auto' }}
+        >
           <option value="pokemon">Pokemon Database</option>
           <option value="streamers">Streamers Database</option>
+          <option value="events">Events Database</option>
         </select>
       </div>
 
@@ -182,10 +213,7 @@ export default function AdvancedJsonTab({
           <textarea
             className={styles.jsonEditor}
             value={editingJson}
-            onChange={e => {
-              setEditingJson(e.target.value)
-              setValidationErrors([])
-            }}
+            onChange={e => { setEditingJson(e.target.value); setValidationErrors([]) }}
             spellCheck={false}
           />
 
