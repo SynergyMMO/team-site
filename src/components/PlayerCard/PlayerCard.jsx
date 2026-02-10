@@ -53,7 +53,7 @@ function PlayerCard({ player, data, rank, streamers }) {
       </div>
       <div className={styles.shinyList}>
         {Object.entries(data.shinies).map(([id, s]) => (
-          <ShinyItem key={s.id} shiny={s} userName={player} />
+          <ShinyItem key={id} shiny={s} userName={player} />
         ))}
       </div>
     </div>

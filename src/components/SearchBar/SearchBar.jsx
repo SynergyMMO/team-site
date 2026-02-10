@@ -9,23 +9,15 @@ export default function SearchBar({
   onSuggestionSelect
 }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [filteredSuggestions, setFilteredSuggestions] = useState([])
   const inputRef = useRef(null)
   const containerRef = useRef(null)
 
-  useEffect(() => {
-    if (value.trim() && suggestions.length > 0) {
-      const searchLower = value.toLowerCase()
-      const filtered = suggestions
-        .filter(s => s.toLowerCase().includes(searchLower))
-        .slice(0, 8) // Limit to 8 suggestions
-      setFilteredSuggestions(filtered)
-      setIsOpen(filtered.length > 0)
-    } else {
-      setFilteredSuggestions([])
-      setIsOpen(false)
-    }
-  }, [value, suggestions])
+  // Calculate filtered suggestions directly, no state needed
+  const filteredSuggestions = value.trim() && suggestions.length > 0
+    ? suggestions
+        .filter(s => s.toLowerCase().includes(value.toLowerCase()))
+        .slice(0, 8)
+    : []
 
   useEffect(() => {
     const handleClickOutside = (event) => {

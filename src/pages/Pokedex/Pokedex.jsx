@@ -441,7 +441,7 @@ export default function Pokedex() {
     })
     
     return Array.from(suggestions).sort()
-  }, [eggGroupOptions])
+  }, [generationData, eggGroupOptions])
   
   const { globalShinies, ownerMap } = useMemo(() => {
     if (!data) return { globalShinies: new Set(), ownerMap: new Map() }

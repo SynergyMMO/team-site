@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar/Navbar'
 import StarField from './components/StarField/StarField'
 
@@ -21,6 +21,13 @@ const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 
 export default function App() {
+  const location = useLocation()
+
+  // Scroll to top when route changes
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
+
   useEffect(() => {
     let timeout
     const onScroll = () => {
