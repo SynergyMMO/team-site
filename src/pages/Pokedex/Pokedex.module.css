@@ -412,6 +412,32 @@
   }
 }
 
+.pokemonContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.pokemonContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: url('/images/Shiny Showcase/sparkle.gif') center/cover no-repeat;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 12px;
+}
+
+.pokemonContainer:hover::after {
+  opacity: 1;
+}
+
 .pokemon {
   width: 100%;
   height: 100%;

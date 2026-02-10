@@ -48,7 +48,6 @@ const TYPE_EFFECTIVENESS = {
   electric: { weak: ['ground'], resists: ['flying','steel','electric'], immune: [] },
   grass:    { weak: ['fire','ice','poison','flying','bug'], resists: ['ground','water','grass','electric'], immune: [] },
   ice:      { weak: ['fire','fighting','rock','steel'], resists: ['ice'], immune: [] },
-
   fighting: { weak: ['flying','psychic'], resists: ['bug','rock','dark'], immune: [] },
   poison:   { weak: ['ground','psychic'], resists: ['fighting','poison','bug','grass'], immune: [] },
   ground:   { weak: ['water','grass','ice'], resists: ['poison','rock'], immune: ['electric'] },
@@ -255,6 +254,7 @@ export default function PokemonDetail() {
   const [routeSearch, setRouteSearch] = useState('')
   const [selectedRoute, setSelectedRoute] = useState(null)
   const [showRoutesSuggestions, setShowRoutesSuggestions] = useState(false)
+  const [particleAnimationKey, setParticleAnimationKey] = useState(0)
   const [audioRef] = useState(new Audio())
   const spriteAliasMap = useMemo(() => ({
     wormadam: 'wormadam-plant',
@@ -271,6 +271,29 @@ export default function PokemonDetail() {
   useEffect(() => {
     setLoadedSpriteUrl('')
   }, [pokemonName, currentSpriteIndex])
+
+  // Trigger shiny particle animation twice on page load
+  useEffect(() => {
+    // Reset to 0 to ensure particle unmounts completely
+    setParticleAnimationKey(0)
+    
+    // Small delay to ensure React processes the unmount
+    const resetTimer = setTimeout(() => {
+      // First animation plays immediately
+      setParticleAnimationKey(1)
+      
+      // Second animation after first completes (1000ms + 100ms buffer)
+      const secondTimer = setTimeout(() => {
+        setParticleAnimationKey(2)
+      }, 1150)
+      
+      return () => clearTimeout(secondTimer)
+    }, 10)
+    
+    return () => {
+      clearTimeout(resetTimer)
+    }
+  }, [pokemonName])
 
   // Get owners of this pokemon from the database
   const owners = useMemo(() => {
@@ -504,6 +527,15 @@ useDocumentHead({
                 >
                   🔊
                 </button>
+              )}
+              {particleAnimationKey > 0 && (
+                <img
+                  key={`particle-${particleAnimationKey}`}
+                  src={`/images/shiny_particle.gif?t=${particleAnimationKey}`}
+                  alt="Shiny particle effect"
+                  className={styles.shinyParticle}
+                  aria-hidden="true"
+                />
               )}
             </div>
             {sprites.length > 1 && (

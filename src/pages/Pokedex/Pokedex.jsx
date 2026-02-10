@@ -1863,29 +1863,30 @@ export default function Pokedex() {
                       : globalShinies.has(lowerName)
 
                   return (
-                    <img
-                      key={`${gen}-${pokemon}-${idx}`}
-                      src={API.pokemonSprite(normalized)}
-                      alt={pokemon}
-                      className={`${styles.pokemon} ${
-                        synergyDataToggle
-                          ? (isComplete ? styles.complete : styles.incomplete)
-                          : styles.complete
-                      }`}
-                      width="50"
-                      height="50"
-                      loading="lazy"
-                      onError={onGifError(normalized)}
-                      onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
-                      style={{ cursor: 'pointer' }}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          navigate(`/pokemon/${pokemon.toLowerCase()}`)
-                        }
-                      }}
-                    />
+                    <div key={`${gen}-${pokemon}-${idx}`} className={styles.pokemonContainer}>
+                      <img
+                        src={API.pokemonSprite(normalized)}
+                        alt={pokemon}
+                        className={`${styles.pokemon} ${
+                          synergyDataToggle
+                            ? (isComplete ? styles.complete : styles.incomplete)
+                            : styles.complete
+                        }`}
+                        width="50"
+                        height="50"
+                        loading="lazy"
+                        onError={onGifError(normalized)}
+                        onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
+                        style={{ cursor: 'pointer' }}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            navigate(`/pokemon/${pokemon.toLowerCase()}`)
+                          }
+                        }}
+                      />
+                    </div>
                   )
                 })}
             </div>

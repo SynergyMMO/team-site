@@ -305,6 +305,29 @@
   transform: scale(0.95);
 }
 
+.shinyParticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  pointer-events: none;
+  z-index: 5;
+  animation: shinyParticleBurst 1s ease-out forwards;
+}
+
+@keyframes shinyParticleBurst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
 .pokemonImage[src*="raw.githubusercontent.com"] {
   max-width: 60%;
   max-height: 480px;
