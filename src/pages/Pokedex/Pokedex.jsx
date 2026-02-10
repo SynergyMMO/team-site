@@ -60,6 +60,7 @@ export default function Pokedex() {
         if (rawRarity) raritySet.add(formatRarityKey(rawRarity))
         if (rawType.includes('rod')) raritySet.add('fishing')
         if(rawType.includes(`fossil`)) raritySet.add('Fossil')
+        if(rawType.includes(`headbutt`)) raritySet.add('Headbutt')
       })
       if (locationText || raritySet.size) {
         index.set(key, {
