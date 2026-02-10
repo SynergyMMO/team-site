@@ -46,10 +46,12 @@ export default function Pokedex() {
   const [isTypesOpen, setIsTypesOpen] = useState(false)
   const [isMovesOpen, setIsMovesOpen] = useState(false)
   const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false)
+  const [isLocationOpen, setIsLocationOpen] = useState(false)
   const [isStatSearchOpen, setIsStatSearchOpen] = useState(false)
   const [synergyDataToggle, setSynergyDataToggle] = useState(false)
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
+  const [locationSuggestions, setLocationSuggestions] = useState([])
   const infoBoxRef = useRef(null)
   const rarityMenuRef = useRef(null)
   const tierMenuRef = useRef(null)
@@ -57,6 +59,7 @@ export default function Pokedex() {
   const typesMenuRef = useRef(null)
   const movesMenuRef = useRef(null)
   const abilitiesMenuRef = useRef(null)
+  const locationMenuRef = useRef(null)
   const statSearchMenuRef = useRef(null)
   const searchTerm = search.trim().toLowerCase()
   const formatRarityKey = (value) => value.toLowerCase().trim().replace(/\s+/g, '_')
@@ -187,6 +190,21 @@ export default function Pokedex() {
     return ['all', ...sorted]
   }, [abilityIndex])
   
+  const locationOptions = useMemo(() => {
+    const options = new Set()
+    Object.entries(pokemonData).forEach(([_, details]) => {
+      const encounters = details.location_area_encounters || []
+      encounters.forEach(encounter => {
+        if (encounter.location && encounter.region_name) {
+          const locationText = `${encounter.location} - ${encounter.region_name}`
+          options.add(locationText)
+        }
+      })
+    })
+    const sorted = Array.from(options).sort()
+    return sorted
+  }, [])
+  
   const searchSuggestions = useMemo(() => {
     const suggestions = new Set()
     
@@ -243,6 +261,9 @@ export default function Pokedex() {
       }
       if (abilitiesMenuRef.current && !abilitiesMenuRef.current.contains(event.target)) {
         setIsAbilitiesOpen(false)
+      }
+      if (locationMenuRef.current && !locationMenuRef.current.contains(event.target)) {
+        setIsLocationOpen(false)
       }
       if (statSearchMenuRef.current && !statSearchMenuRef.current.contains(event.target)) {
         setIsStatSearchOpen(false)
@@ -441,6 +462,7 @@ export default function Pokedex() {
               setIsEggGroupOpen(false)
               setIsTypesOpen(false)
               setIsStatSearchOpen(false)
+              setIsLocationOpen(false)
             }}
             aria-expanded={isTierOpen}
             aria-haspopup="listbox"
@@ -490,6 +512,7 @@ export default function Pokedex() {
               setIsTierOpen(false)
               setIsTypesOpen(false)
               setIsStatSearchOpen(false)
+              setIsLocationOpen(false)
             }}
             aria-expanded={isEggGroupOpen}
             aria-haspopup="listbox"
@@ -539,6 +562,7 @@ export default function Pokedex() {
               setIsTierOpen(false)
               setIsEggGroupOpen(false)
               setIsStatSearchOpen(false)
+              setIsLocationOpen(false)
             }}
             aria-expanded={isTypesOpen}
             aria-haspopup="listbox"
@@ -589,6 +613,7 @@ export default function Pokedex() {
               setIsEggGroupOpen(false)
               setIsTypesOpen(false)
               setIsStatSearchOpen(false)
+              setIsLocationOpen(false)
             }}
             aria-expanded={isMovesOpen}
             aria-haspopup="listbox"
@@ -670,6 +695,7 @@ export default function Pokedex() {
               setIsTypesOpen(false)
               setIsMovesOpen(false)
               setIsStatSearchOpen(false)
+              setIsLocationOpen(false)
             }}
             aria-expanded={isAbilitiesOpen}
             aria-haspopup="listbox"
@@ -736,25 +762,131 @@ export default function Pokedex() {
           )}
         </div>
 
-        {/* Location Search */}
-        <div className={styles.dropdown} style={{ flex: '0.5' }}>
-          <label style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.8)', fontWeight: '500', whiteSpace: 'nowrap', marginBottom: '8px', display: 'block' }}>
-            Location:
-          </label>
-          <input
-            type="text"
-            placeholder="Search location..."
-            value={locationSearch}
-            onChange={(e) => setLocationSearch(e.target.value)}
-            className={styles.locationSearchInput}
-          />
-          {locationSearch && (
-            <button
-              onClick={() => setLocationSearch('')}
-              className={styles.locationSearchClear}
-            >
-              Clear
-            </button>
+        <div className={styles.dropdown} ref={locationMenuRef}>
+          <button
+            type="button"
+            className={styles.dropdownButton}
+            onClick={() => {
+              setIsLocationOpen((prev) => !prev)
+              setIsRarityOpen(false)
+              setIsTierOpen(false)
+              setIsEggGroupOpen(false)
+              setIsTypesOpen(false)
+              setIsMovesOpen(false)
+              setIsStatSearchOpen(false)
+              setIsAbilitiesOpen(false)
+            }}
+            aria-expanded={isLocationOpen}
+            aria-haspopup="listbox"
+          >
+            <span className={styles.dropdownLabel}>Locations</span>
+            <span className={styles.dropdownValue}>
+              {locationSearch.trim() ? locationSearch : 'All Locations'}
+            </span>
+            <span className={styles.dropdownCaret}>▾</span>
+          </button>
+          {isLocationOpen  && (
+            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true" style={{ minWidth: '340px', columnCount: 1 }}>
+              <div style={{ padding: '12px' }}>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '12px' }}>
+                  Search for a location (leave blank for no filter):
+                </div>
+                <input
+                  type="text"
+                  placeholder="Type location name..."
+                  value={locationSearch}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setLocationSearch(value)
+                    if (value.trim()) {
+                      const filtered = locationOptions.filter(loc =>
+                        loc.toLowerCase().includes(value.toLowerCase())
+                      )
+                      setLocationSuggestions(filtered.slice(0, 8))
+                    } else {
+                      setLocationSuggestions([])
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(102, 126, 234, 0.5)',
+                    borderRadius: '4px',
+                    color: 'white',
+                    fontSize: '0.9rem',
+                    boxSizing: 'border-box'
+                  }}
+                  autoFocus
+                />
+                {locationSuggestions.length > 0 && (
+                  <div style={{ marginTop: '8px', maxHeight: '200px', overflowY: 'auto', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '8px' }}>
+                    {locationSuggestions.map((location) => (
+                      <button
+                        key={location}
+                        onClick={() => {
+                          setLocationSearch(location)
+                          setLocationSuggestions([])
+                        }}
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          textAlign: 'left',
+                          padding: '6px 8px',
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#667eea',
+                          fontSize: '0.9rem',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          marginBottom: '4px',
+                          borderRadius: '2px'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'rgba(102, 126, 234, 0.2)'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'transparent'
+                        }}
+                      >
+                        {location}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {locationSearch.trim() && (
+                  <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <button
+                      onClick={() => {
+                        setLocationSearch('')
+                        setLocationSuggestions([])
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '6px 10px',
+                        background: 'rgba(102, 126, 234, 0.2)',
+                        border: '1px solid rgba(102, 126, 234, 0.5)',
+                        borderRadius: '4px',
+                        color: '#667eea',
+                        fontSize: '0.85rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = 'rgba(102, 126, 234, 0.3)'
+                        e.target.style.borderColor = 'rgba(102, 126, 234, 0.7)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'rgba(102, 126, 234, 0.2)'
+                        e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
+                      }}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
         </div>
         
@@ -770,6 +902,7 @@ export default function Pokedex() {
               setIsTypesOpen(false)
               setIsMovesOpen(false)
               setIsAbilitiesOpen(false)
+              setIsLocationOpen(false)
             }}
             aria-expanded={isStatSearchOpen}
             aria-haspopup="listbox"
@@ -864,7 +997,7 @@ export default function Pokedex() {
       <SearchBar
         value={search}
         onChange={setSearch}
-        placeholder="Search Pokemon, location, region, or moves..."
+        placeholder="Search Pokemon"
         suggestions={searchSuggestions}
       />
 
@@ -971,7 +1104,8 @@ export default function Pokedex() {
             }
             if (locationSearch.trim()) {
               const locationText = locationEntry?.locationText || ''
-              if (!locationText.includes(locationSearch.toLowerCase())) return
+              const normalizedSearch = locationSearch.toLowerCase().replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
+              if (!locationText.includes(normalizedSearch)) return
             }
             if (selectedRarities.length > 0) {
               const matchesRarity = selectedRarities.some(value => locationEntry.raritySet.has(value))
@@ -1131,7 +1265,8 @@ export default function Pokedex() {
             }
             if (locationSearch.trim()) {
               const locationText = locationEntry?.locationText || ''
-              if (!locationText.includes(locationSearch.toLowerCase())) return false
+              const normalizedSearch = locationSearch.toLowerCase().replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
+              if (!locationText.includes(normalizedSearch)) return false
             }
             if (selectedRarities.length > 0) {
               const matchesRarity = selectedRarities.some(value => locationEntry.raritySet.has(value))
