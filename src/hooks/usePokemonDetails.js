@@ -26,9 +26,15 @@ export function usePokemonDetails(pokemonName) {
       
       // Normalize the name for lookup
       const normalizedName = pokemonName.toLowerCase().trim()
+      let lookupName = normalizedName
+      
+      // Handle gendered suffixes that are not separate entries in the data
+      if (!pokemonData[lookupName] && /-(f|m)$/.test(lookupName)) {
+        lookupName = lookupName.slice(0, -2)
+      }
       
       // Get pokemon from local data
-      const pokemon = pokemonData[normalizedName]
+      const pokemon = pokemonData[lookupName]
       
       if (!pokemon) {
         throw new Error(`Pokémon "${pokemonName}" not found in database.`)
@@ -133,8 +139,14 @@ export function usePokemonDetails(pokemonName) {
         return 'Generation IX'
       }
       
+      const femaleSpriteOverrides = {
+        'frillish-f': 'https://img.pokemondb.net/sprites/home/normal/frillish-f.png',
+        'jellicent-f': 'https://img.pokemondb.net/sprites/home/normal/jellicent-f.png',
+      }
+
       // Get sprite from sprites
-      const sprite = pokemon.sprites?.front_default 
+      const sprite = femaleSpriteOverrides[normalizedName]
+        || pokemon.sprites?.front_default 
         || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`
       
       // Format the data for component use

@@ -185,48 +185,51 @@ export default function PokemonDetail() {
     return `https://img.pokemondb.net/sprites/black-white/anim/shiny/${name}.gif`
   }, [pokemonName])
 
-  // Capitalise Pokémon name
-  const formatName = (name) =>
-    name ? name.charAt(0).toUpperCase() + name.slice(1) : "";
+// Capitalize first letter helper
+const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
 
-  // Build readable generation text
-  const buildGenerationText = (pokemon) => {
-    if (!pokemon) {
-      return "Browse Pokémon details, shiny forms, typings, and generation info.";
-    }
+// Convert types array to "Title Case / Title Case"
+const formatTypes = (types) =>
+  types.map(type => capitalize(type)).join(" / ");
 
-    const name = formatName(pokemon.displayName);
-    const types = pokemon.types.join(" / ");
-    const generation = pokemon.generation
-      ? `from Generation ${pokemon.generation}`
-      : "from an unknown generation";
+// Convert egg groups array to readable string: "Egg1 & Egg2"
+const formatEggGroups = (eggs) =>
+  eggs?.length ? eggs.map(capitalize).join(" & ") : "Unknown Egg Group";
 
-    return `${name} is a ${types}-type Pokémon ${generation}. View shiny forms, stats, and more.`;
-  };
+// Build description text using types and egg groups
+const buildDescription = (pokemon) => {
+  if (!pokemon) return "Explore Pokémon shiny forms, stats, moves, and egg groups in our Shiny Dex.";
 
-  useDocumentHead({
-    title: pokemon
-      ? `${formatName(pokemon.displayName)} | Shiny Dex`
-      : "Pokémon Details | Shiny Dex",
+  const name = capitalize(pokemon.displayName);
+  const types = formatTypes(pokemon.types);
+  const eggGroups = formatEggGroups(pokemon.eggGroups);
 
-    description: buildGenerationText(pokemon),
+  return `${name} is a ${types}-type Pokémon from the ${eggGroups}. Explore its shiny forms, stats, and moves in our Shiny Dex.`;
+};
 
-    canonicalPath: `/pokemon/${pokemonName?.toLowerCase()}`,
+useDocumentHead({
+  title: pokemon
+    ? `${capitalize(pokemon.displayName)} | ${formatEggGroups(pokemon.eggGroups)} | Shiny Dex`
+    : "Pokémon Shiny Dex",
 
-    url: `https://synergymmo.com/pokemon/${pokemonName?.toLowerCase()}`,
+  description: buildDescription(pokemon),
 
-    ogImage: animatedShinyGif,
+  canonicalPath: `/pokemon/${pokemonName?.toLowerCase()}`,
 
-    twitterCard: "summary_large_image",
+  url: `https://synergymmo.com/pokemon/${pokemonName?.toLowerCase()}`,
 
-    twitterTitle: pokemon
-      ? `${formatName(pokemon.displayName)} | Shiny Dex`
-      : "Pokémon Details | Shiny Dex",
+  ogImage: animatedShinyGif,
 
-    twitterDescription: buildGenerationText(pokemon),
+  twitterCard: "summary_large_image",
 
-    twitterImage: animatedShinyGif,
-  });
+  twitterTitle: pokemon
+    ? `${capitalize(pokemon.displayName)} | ${formatEggGroups(pokemon.eggGroups)} | Shiny Dex`
+    : "Pokémon Shiny Dex",
+
+  twitterDescription: buildDescription(pokemon),
+
+  twitterImage: animatedShinyGif,
+});
 
 
 
@@ -633,7 +636,7 @@ export default function PokemonDetail() {
       )}
 
       {/* Moves */}
-      <section className={styles.infoCard}>
+      <section className={styles.infoCard} key={`moves-${pokemonName}`}>
         <h2 className={styles.cardTitle}>Learnable Moves</h2>
         {pokemon.moves && pokemon.moves.length > 0 ? (
           (() => {
@@ -652,14 +655,15 @@ export default function PokemonDetail() {
                   if (moves.length === 0) return null
                   
                   return (
-                    <div key={method} className={styles.moveGroup}>
+                    <div key={`${pokemonName}-${method}`} className={styles.moveGroup}>
                       <h3 className={styles.moveGroupTitle}>{methodLabels[method]}</h3>
                       <div className={styles.movesGrid}>
-                        {moves.map(move => {
+                        {moves.map((move, moveIndex) => {
                           const primaryMethod = move.methods?.[0]
                           const methodLabel = getMoveLearningMethod(primaryMethod?.method, primaryMethod?.level)
+                          const moveKey = `${move.name}-${primaryMethod?.method || 'unknown'}-${primaryMethod?.level || 0}-${moveIndex}`
                           return (
-                            <div key={move.name} className={styles.moveTag} title={methodLabel}>
+                            <div key={moveKey} className={styles.moveTag} title={methodLabel}>
                               <div>{move.name}</div>
                               <div className={styles.moveMethod}>{methodLabel}</div>
                             </div>
@@ -670,14 +674,15 @@ export default function PokemonDetail() {
                   )
                 })}
                 {groupedMoves.other.length > 0 && (
-                  <div className={styles.moveGroup}>
+                  <div className={styles.moveGroup} key={`${pokemonName}-other`}>
                     <h3 className={styles.moveGroupTitle}>Other Moves</h3>
                     <div className={styles.movesGrid}>
-                      {groupedMoves.other.map(move => {
+                      {groupedMoves.other.map((move, moveIndex) => {
                         const primaryMethod = move.methods?.[0]
                         const methodLabel = getMoveLearningMethod(primaryMethod?.method, primaryMethod?.level)
+                        const moveKey = `${move.name}-${primaryMethod?.method || 'unknown'}-${primaryMethod?.level || 0}-${moveIndex}`
                         return (
-                          <div key={move.name} className={styles.moveTag} title={methodLabel}>
+                          <div key={moveKey} className={styles.moveTag} title={methodLabel}>
                             <div>{move.name}</div>
                             <div className={styles.moveMethod}>{methodLabel}</div>
                           </div>
