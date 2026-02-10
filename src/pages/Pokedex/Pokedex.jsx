@@ -30,6 +30,7 @@ export default function Pokedex() {
   const [movesToFilterBy, setMovesToFilterBy] = useState(['', '', '', ''])
   const [abilitySearch, setAbilitySearch] = useState('')
   const [locationSearch, setLocationSearch] = useState('')
+  const [locationSearchInput, setLocationSearchInput] = useState('')
   const [statMinimums, setStatMinimums] = useState({
     hp: '',
     attack: '',
@@ -570,9 +571,32 @@ export default function Pokedex() {
     if (e.target.tagName === 'IMG') setHoverInfo(null)
   }, [])
 
-  const matchesStatSearch = (pokemonDetails) => {
-    // Hide unobtainable pokemon
-    if (pokemonDetails.obtainable === false) return false
+  const hasActiveFilters = () => {
+    return (
+      searchTerm ||
+      selectedRarities.length > 0 ||
+      selectedTiers.length > 0 ||
+      selectedEggGroups.length > 0 ||
+      selectedTypes.length > 0 ||
+      movesToFilterBy.some(m => m.trim()) ||
+      abilitySearch.trim() ||
+      Object.values(statMinimums).some(v => v && v !== '0') ||
+      locationSearch.trim()
+    )
+  }
+
+  const shouldHideUnobtainable = () => {
+    // If Legendary egg group is selected, don't hide unobtainable
+    if (selectedEggGroups.some(group => group.toLowerCase() === 'legendary')) {
+      return false
+    }
+    // Otherwise, hide unobtainable only when other filters are active
+    return hasActiveFilters()
+  }
+
+  const matchesStatSearch = (pokemonDetails, hideUnobtainable = true) => {
+    // Hide unobtainable pokemon only when filters are active
+    if (hideUnobtainable && pokemonDetails.obtainable === false) return false
     
     // Handle stats as array (from raw pokemonData)
     const statsArray = pokemonDetails.stats || []
@@ -1011,10 +1035,10 @@ export default function Pokedex() {
                 <input
                   type="text"
                   placeholder="Type location name..."
-                  value={locationSearch}
+                  value={locationSearchInput}
                   onChange={(e) => {
                     const value = e.target.value
-                    setLocationSearch(value)
+                    setLocationSearchInput(value)
                     if (value.trim()) {
                       const filtered = locationOptions.filter(loc =>
                         loc.toLowerCase().includes(value.toLowerCase())
@@ -1042,6 +1066,7 @@ export default function Pokedex() {
                       <button
                         key={location}
                         onClick={() => {
+                          setLocationSearchInput(location)
                           setLocationSearch(location)
                           setLocationSuggestions([])
                         }}
@@ -1076,6 +1101,7 @@ export default function Pokedex() {
                     <button
                       onClick={() => {
                         setLocationSearch('')
+                        setLocationSearchInput('')
                         setLocationSuggestions([])
                       }}
                       style={{
@@ -1218,20 +1244,22 @@ export default function Pokedex() {
         suggestions={searchSuggestions}
       />
 
-      <div style={{ textAlign: 'center', margin: '20px 0' }}>
-        <button
-          className={`${styles.toggleCompleteBtn} ${synergyDataToggle ? styles.active : ''}`}
-          onClick={() => setSynergyDataToggle(!synergyDataToggle)}
-          style={{
-            backgroundColor: synergyDataToggle ? '#4a90e2' : '#666',
-            transition: 'background-color 0.3s ease'
-          }}
-        >
-          {synergyDataToggle ? 'Synergy PokeDex Data: ON' : 'Synergy PokeDex Data: OFF'}
-        </button>
-      </div>
+      {!(locationSearch.trim() && locationOptions.includes(locationSearch)) && (
+        <div style={{ textAlign: 'center', margin: '20px 0' }}>
+          <button
+            className={`${styles.toggleCompleteBtn} ${synergyDataToggle ? styles.active : ''}`}
+            onClick={() => setSynergyDataToggle(!synergyDataToggle)}
+            style={{
+              backgroundColor: synergyDataToggle ? '#4a90e2' : '#666',
+              transition: 'background-color 0.3s ease'
+            }}
+          >
+            {synergyDataToggle ? 'Synergy PokeDex Data: ON' : 'Synergy PokeDex Data: OFF'}
+          </button>
+        </div>
+      )}
 
-      {synergyDataToggle && (
+      {synergyDataToggle && !(locationSearch.trim() && locationOptions.includes(locationSearch)) && (
         <>
           <div className={styles.toggleContainer}>
             <div className={styles.toggle}>
@@ -1265,7 +1293,7 @@ export default function Pokedex() {
         </>
       )}
 
-      {synergyDataToggle && (() => {
+      {synergyDataToggle && !(locationSearch.trim() && locationOptions.includes(locationSearch)) && (() => {
         // Calculate progress stats
         let totalPokemon = 0
         let completedPokemon = 0
@@ -1330,8 +1358,14 @@ export default function Pokedex() {
             }
             if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return
             if (selectedEggGroups.length > 0) {
-              const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
-              if (!matchesEggGroup) return
+              const isLegendarySelected = selectedEggGroups.some(group => group.toLowerCase() === 'legendary')
+              const isLegendaryOrMythical = pokemonDetails.is_legendary || pokemonDetails.is_mythical
+              if (isLegendarySelected && isLegendaryOrMythical) {
+                // Pass - Legendary selected and this is legendary/mythical
+              } else {
+                const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
+                if (!matchesEggGroup) return
+              }
             }
             if (selectedTypes.length > 0) {
               const pokemonTypes = pokemonDetails.types || []
@@ -1359,7 +1393,7 @@ export default function Pokedex() {
               })
               if (!matchesAbility) return
             }
-            if (!matchesStatSearch(pokemonDetails)) return
+            if (!matchesStatSearch(pokemonDetails, shouldHideUnobtainable())) return
             
             totalPokemon++
             if (isComplete) completedPokemon++
@@ -1429,7 +1463,7 @@ export default function Pokedex() {
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
       >
-        {locationSearch.trim() ? (
+        {locationSearch.trim() && locationOptions.includes(locationSearch) ? (
           // Render grouped by Encounter Type when location search is active
           (() => {
             const encounterTypeMap = {}
@@ -1473,8 +1507,14 @@ export default function Pokedex() {
                 }
                 if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return
                 if (selectedEggGroups.length > 0) {
-                  const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
-                  if (!matchesEggGroup) return
+                  const isLegendarySelected = selectedEggGroups.some(group => group.toLowerCase() === 'legendary')
+                  const isLegendaryOrMythical = pokemonDetails.is_legendary || pokemonDetails.is_mythical
+                  if (isLegendarySelected && isLegendaryOrMythical) {
+                    // Pass - Legendary selected and this is legendary/mythical
+                  } else {
+                    const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
+                    if (!matchesEggGroup) return
+                  }
                 }
                 if (selectedTypes.length > 0) {
                   const pokemonTypes = pokemonDetails.types || []
@@ -1504,7 +1544,7 @@ export default function Pokedex() {
                   if (!matchesAbility) return
                 }
                 
-                if (!matchesStatSearch(pokemonDetails)) return
+                if (!matchesStatSearch(pokemonDetails, shouldHideUnobtainable())) return
 
                 const encounterTypes = getEncounterTypeForPokemon(normalized, locationSearch)
                 encounterTypes.forEach(type => {
@@ -1522,9 +1562,18 @@ export default function Pokedex() {
               })
             })
 
-            return encounterTypeOrder
-              .filter(type => encounterTypeMap[type] && encounterTypeMap[type].length > 0)
-              .map(type => {
+            // Extract route name and region
+            const routeName = locationSearch.split(' - ')[0]
+            const regionName = locationSearch.split(' - ')[1]
+
+            return [
+              <div key="route-header" style={{ marginBottom: '20px', paddingBottom: '12px', borderBottom: '2px solid rgba(102, 126, 234, 0.5)' }}>
+                <h1 style={{ fontSize: '1.5rem', color: '#667eea', margin: '0 0 4px 0' }}>{routeName}</h1>
+                <p style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.6)', margin: '0' }}>{regionName}</p>
+              </div>,
+              ...encounterTypeOrder
+                .filter(type => encounterTypeMap[type] && encounterTypeMap[type].length > 0)
+                .map(type => {
                 // Sort Singles by rarity (Very Common → Very Rare)
                 let pokemonList = encounterTypeMap[type]
                 if (type === 'Singles') {
@@ -1699,6 +1748,7 @@ export default function Pokedex() {
                 </div>
               )
               })
+            ]
           })()
         ) : (
           // Original rendering by generation when no location search
@@ -1759,8 +1809,14 @@ export default function Pokedex() {
               }
               if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return false
               if (selectedEggGroups.length > 0) {
-                const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
-                if (!matchesEggGroup) return false
+                const isLegendarySelected = selectedEggGroups.some(group => group.toLowerCase() === 'legendary')
+                const isLegendaryOrMythical = pokemonDetails.is_legendary || pokemonDetails.is_mythical
+                if (isLegendarySelected && isLegendaryOrMythical) {
+                  // Pass - Legendary selected and this is legendary/mythical
+                } else {
+                  const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
+                  if (!matchesEggGroup) return false
+                }
               }
               if (selectedTypes.length > 0) {
                 const pokemonTypes = pokemonDetails.types || []
@@ -1787,7 +1843,7 @@ export default function Pokedex() {
                 )
                 if (!matchesAbility) return false
               }
-              if (!matchesStatSearch(pokemonDetails)) return false
+              if (!matchesStatSearch(pokemonDetails, shouldHideUnobtainable())) return false
               return true
             })
 
