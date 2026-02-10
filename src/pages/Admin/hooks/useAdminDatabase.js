@@ -46,6 +46,11 @@ export default function useAdminDatabase(auth) {
   // ---------------- LOGGING ----------------
   const logAdminAction = useCallback(async (action) => {
     if (!auth) return;
+
+    // Optimistically add a local log entry so UI updates immediately
+    const optimisticEntry = { admin: auth.name, action, time: new Date().toISOString() };
+    setLogData(prev => [optimisticEntry, ...(prev || [])]);
+
     try {
       await fetch(API.adminLog, {
         method: 'POST',
@@ -133,7 +138,11 @@ export default function useAdminDatabase(auth) {
       db[playerName].shiny_count = recalcShinyCount(db[playerName]);
 
       const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: `Added ${shinyData.Pokemon} for ${playerName}` });
-      if (result.success) { setDatabase(db); return { success: true }; }
+      if (result.success) {
+        setDatabase(db);
+        await logAdminAction(`Added ${shinyData.Pokemon} for ${playerName}`);
+        return { success: true };
+      }
       return { success: false, error: 'Server rejected update' };
     } finally { setIsMutating(false); }
   }, [auth, database, postData, saveSnapshot]);
@@ -148,7 +157,11 @@ export default function useAdminDatabase(auth) {
       db[playerName].shiny_count = recalcShinyCount(db[playerName]);
 
       const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: `Edited shiny #${shinyId} (${shinyData.Pokemon}) for ${playerName}` });
-      if (result.success) { setDatabase(db); return { success: true }; }
+      if (result.success) {
+        setDatabase(db);
+        await logAdminAction(`Edited shiny #${shinyId} (${shinyData.Pokemon}) for ${playerName}`);
+        return { success: true };
+      }
       return { success: false, error: 'Server rejected update' };
     } finally { setIsMutating(false); }
   }, [auth, database, postData, saveSnapshot]);
@@ -165,7 +178,11 @@ export default function useAdminDatabase(auth) {
       db[playerName].shiny_count = recalcShinyCount(db[playerName]);
 
       const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: `Deleted ${pokemonName} (ID ${shinyId}) for ${playerName}` });
-      if (result.success) { setDatabase(db); return { success: true }; }
+      if (result.success) {
+        setDatabase(db);
+        await logAdminAction(`Deleted ${pokemonName} (ID ${shinyId}) for ${playerName}`);
+        return { success: true };
+      }
       return { success: false, error: 'Server rejected update' };
     } finally { setIsMutating(false); }
   }, [auth, database, postData, saveSnapshot]);
@@ -179,7 +196,11 @@ export default function useAdminDatabase(auth) {
       delete db[playerName];
 
       const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: `Deleted all data for player ${playerName}` });
-      if (result.success) { setDatabase(db); return { success: true }; }
+      if (result.success) {
+        setDatabase(db);
+        await logAdminAction(`Deleted all data for player ${playerName}`);
+        return { success: true };
+      }
       return { success: false, error: 'Server rejected update' };
     } finally { setIsMutating(false); }
   }, [auth, database, postData, saveSnapshot]);
@@ -192,7 +213,11 @@ export default function useAdminDatabase(auth) {
       const str = deepClone(streamersDB);
       str[pokeName] = { twitch_username: twitchName, profile_image_url: '', last_stream_title: null, last_viewer_count: 0, live: false };
       const result = await postData(API.updateStreamers, { username: auth.name, password: auth.password, data: str, action: `Added streamer ${pokeName}` });
-      if (result.success) { setStreamersDB(str); return { success: true }; }
+      if (result.success) {
+        setStreamersDB(str);
+        await logAdminAction(`Added streamer ${pokeName}`);
+        return { success: true };
+      }
       return { success: false, error: 'Server rejected update' };
     } finally { setIsMutating(false); }
   }, [auth, streamersDB, postData, saveSnapshot]);
@@ -205,7 +230,11 @@ export default function useAdminDatabase(auth) {
       if (!str[pokeName]) return { success: false, error: 'Streamer not found' };
       delete str[pokeName];
       const result = await postData(API.updateStreamers, { username: auth.name, password: auth.password, data: str, action: `Deleted streamer ${pokeName}` });
-      if (result.success) { setStreamersDB(str); return { success: true }; }
+      if (result.success) {
+        setStreamersDB(str);
+        await logAdminAction(`Deleted streamer ${pokeName}`);
+        return { success: true };
+      }
       return { success: false, error: 'Server rejected update' };
     } finally { setIsMutating(false); }
   }, [auth, streamersDB, postData, saveSnapshot]);
