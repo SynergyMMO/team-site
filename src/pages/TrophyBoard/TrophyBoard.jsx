@@ -6,8 +6,8 @@ import { slugify } from '../../utils/slugify'; // fixed path to your utils
 
 export default function TrophyBoard() {
   useDocumentHead({
-    title: 'Trophy Board',
-    description: 'View trophies and achievements earned by Team Synergy members in PokeMMO.',
+    title: 'Team Synergy Trophy Board',
+    description: 'Explore trophies and achievements earned by Team Synergy members in PokeMMO. View championship awards, milestone accomplishments, and community recognition. Celebrate team success and member achievements.',
     canonicalPath: '/trophy-board',
   });
 

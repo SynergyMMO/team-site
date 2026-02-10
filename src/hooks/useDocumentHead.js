@@ -67,24 +67,11 @@ export function useDocumentHead({
     // --- Canonical ---
     setCanonical(finalUrl); // clean URL
 
-    return () => {
-      // Reset all to defaults
-      document.title = siteName;
-      setMeta('description', DEFAULT_DESCRIPTION);
-      setMeta('og:title', siteName, 'property');
-      setMeta('og:description', DEFAULT_DESCRIPTION, 'property');
-      setMeta('og:image', DEFAULT_IMAGE, 'property');
-      setMeta('og:url', DEFAULT_BASE_URL, 'property');
-      setMeta('og:type', 'website', 'property');
-      setMeta('og:site_name', siteName, 'property');
-
-      setMeta('twitter:card', 'summary');
-      setMeta('twitter:title', siteName);
-      setMeta('twitter:description', DEFAULT_DESCRIPTION);
-      setMeta('twitter:image', DEFAULT_IMAGE);
-
-      setCanonical(DEFAULT_BASE_URL);
-    };
+    // Note: Removed aggressive cleanup that was resetting tags on unmount.
+    // This was causing issues with React Router where the cleanup would fire
+    // before the new page's hook could set tags, briefly showing defaults.
+    // Since each page calls useDocumentHead with its own values, we don't need
+    // to reset tags here. The next page will properly set its own.
   }, [
     title,
     description,

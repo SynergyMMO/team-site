@@ -13,8 +13,8 @@ import styles from './Pokedex.module.css'
 
 export default function Pokedex() {
   useDocumentHead({
-    title: 'Shiny Dex',
-    description: 'Track every shiny Pokemon caught by Team Synergy in PokeMMO. Browse our community Shiny Dex across all generations.',
+    title: 'Fully Updated, Detailed PokeMMO PokeDex! - Team Synergy\'s Shiny & Living Dex', 
+    description: 'Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering & Track Team Synergy\'s complete Pokédex in PokeMMO. ',
     canonicalPath: '/pokedex',
   })
   const navigate = useNavigate()
