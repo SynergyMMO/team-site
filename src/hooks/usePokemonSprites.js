@@ -88,43 +88,65 @@ export function usePokemonSprites(pokemonName) {
     }
     const spriteData = spritesData[lookupName]
 
-    if (!spriteData || !spriteData.sprites) return []
+    if (!spriteData) return []
 
     const sprites = []
-    const { animated, official } = spriteData.sprites
-
+    
+    // Extract sprite URLs from new JSON structure
+    // Animated sprites from Generation V (Black-White) with animations
+    const animatedGen5 = spriteData.versions?.['generation-v']?.['black-white']?.animated
+    const otherSprites = spriteData.other
+    
     // Animated Shiny (DEFAULT - comes first)
-    if (animated?.shiny) {
+    if (animatedGen5?.front_shiny) {
       sprites.push({
-        url: animated.shiny,
+        url: animatedGen5.front_shiny,
         label: 'Animated Shiny',
         type: 'gif'
       })
     }
 
     // Animated Normal
-    if (animated?.normal) {
+    if (animatedGen5?.front_default) {
       sprites.push({
-        url: animated.normal,
+        url: animatedGen5.front_default,
         label: 'Animated',
         type: 'gif'
       })
     }
 
     // Official Artwork Shiny
-    if (official?.shiny) {
+    if (otherSprites?.['official-artwork']?.front_shiny) {
       sprites.push({
-        url: official.shiny,
+        url: otherSprites['official-artwork'].front_shiny,
         label: 'Official Artwork Shiny',
         type: 'image'
       })
     }
 
     // Official Artwork Normal
-    if (official?.normal) {
+    if (otherSprites?.['official-artwork']?.front_default) {
       sprites.push({
-        url: official.normal,
+        url: otherSprites['official-artwork'].front_default,
         label: 'Official Artwork',
+        type: 'image'
+      })
+    }
+
+    // Home (newer official artwork) Shiny
+    if (otherSprites?.home?.front_shiny) {
+      sprites.push({
+        url: otherSprites.home.front_shiny,
+        label: 'Home Shiny',
+        type: 'image'
+      })
+    }
+
+    // Home (newer official artwork) Normal
+    if (otherSprites?.home?.front_default) {
+      sprites.push({
+        url: otherSprites.home.front_default,
+        label: 'Home Artwork',
         type: 'image'
       })
     }
