@@ -135,7 +135,7 @@ export default function Pokedex() {
   const getEncounterTypeDesc = (type) => {
     const descriptions = {
       'Horde': 'All Pokemon found within Hordes on the route',
-      'Lure Encounters': 'Any Pokemon found within a "Lure" type',
+      'Lure Encounters': 'Any Pokemon using a lure',
       'Singles': 'All Pokemon found in singles (Very Common, Common, Uncommon, Rare, Very Rare)',
       'Fishing Encounters': 'Any Pokemon caught within "Fishing"',
       'Headbutt': 'Any Pokemon found by using Headbutt on trees',
@@ -1446,14 +1446,13 @@ export default function Pokedex() {
             }
             if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return
             if (selectedEggGroups.length > 0) {
-              const isLegendarySelected = selectedEggGroups.some(group => group.toLowerCase() === 'legendary')
-              const isLegendaryOrMythical = pokemonDetails.is_legendary || pokemonDetails.is_mythical
-              if (isLegendarySelected && isLegendaryOrMythical) {
-                // Pass - Legendary selected and this is legendary/mythical
-              } else {
-                const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
-                if (!matchesEggGroup) return
-              }
+              const matchesAllGroups = selectedEggGroups.every(group => {
+                if (group.toLowerCase() === 'legendary') {
+                  return pokemonDetails.is_legendary || pokemonDetails.is_mythical
+                }
+                return pokemonEggGroups.includes(group)
+              })
+              if (!matchesAllGroups) return
             }
             if (selectedTypes.length > 0) {
               const pokemonTypes = pokemonDetails.types || []
@@ -1595,14 +1594,13 @@ export default function Pokedex() {
                 }
                 if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return
                 if (selectedEggGroups.length > 0) {
-                  const isLegendarySelected = selectedEggGroups.some(group => group.toLowerCase() === 'legendary')
-                  const isLegendaryOrMythical = pokemonDetails.is_legendary || pokemonDetails.is_mythical
-                  if (isLegendarySelected && isLegendaryOrMythical) {
-                    // Pass - Legendary selected and this is legendary/mythical
-                  } else {
-                    const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
-                    if (!matchesEggGroup) return
-                  }
+                  const matchesAllGroups = selectedEggGroups.every(group => {
+                    if (group.toLowerCase() === 'legendary') {
+                      return pokemonDetails.is_legendary || pokemonDetails.is_mythical
+                    }
+                    return pokemonEggGroups.includes(group)
+                  })
+                  if (!matchesAllGroups) return
                 }
                 if (selectedTypes.length > 0) {
                   const pokemonTypes = pokemonDetails.types || []
@@ -1957,14 +1955,13 @@ export default function Pokedex() {
               }
               if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return false
               if (selectedEggGroups.length > 0) {
-                const isLegendarySelected = selectedEggGroups.some(group => group.toLowerCase() === 'legendary')
-                const isLegendaryOrMythical = pokemonDetails.is_legendary || pokemonDetails.is_mythical
-                if (isLegendarySelected && isLegendaryOrMythical) {
-                  // Pass - Legendary selected and this is legendary/mythical
-                } else {
-                  const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
-                  if (!matchesEggGroup) return false
-                }
+                const matchesAllGroups = selectedEggGroups.every(group => {
+                  if (group.toLowerCase() === 'legendary') {
+                    return pokemonDetails.is_legendary || pokemonDetails.is_mythical
+                  }
+                  return pokemonEggGroups.includes(group)
+                })
+                if (!matchesAllGroups) return false
               }
               if (selectedTypes.length > 0) {
                 const pokemonTypes = pokemonDetails.types || []
