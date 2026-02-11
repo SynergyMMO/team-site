@@ -1183,7 +1183,7 @@
   justify-content: flex-start;
   overflow: visible;
   height: 100%;
-  flex-wrap: wrap;
+  flex-direction: row;
 }
 
 @media (max-width: 480px) {
