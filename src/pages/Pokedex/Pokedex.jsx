@@ -1819,7 +1819,18 @@ export default function Pokedex() {
                             </div>
                           )}
                           
-                          <div className={styles.pokemonContainer}>
+                          <div 
+                            className={styles.pokemonContainer}
+                            onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                navigate(`/pokemon/${pokemon.toLowerCase()}`)
+                              }
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          >
                             <img
                               src={API.pokemonSprite(normalized)}
                               alt={pokemon}
@@ -1832,15 +1843,7 @@ export default function Pokedex() {
                               height="50"
                               loading="lazy"
                               onError={onGifError(normalized)}
-                              onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
-                              style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
-                              role="button"
-                              tabIndex={0}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                  navigate(`/pokemon/${pokemon.toLowerCase()}`)
-                                }
-                              }}
+                              style={{ position: 'relative', zIndex: 1 }}
                             />
                           </div>
                           
@@ -2056,7 +2059,19 @@ export default function Pokedex() {
                       : globalShinies.has(lowerName)
 
                   return (
-                    <div key={`${gen}-${pokemon}-${idx}`} className={styles.pokemonContainer}>
+                    <div 
+                      key={`${gen}-${pokemon}-${idx}`} 
+                      className={styles.pokemonContainer}
+                      onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          navigate(`/pokemon/${pokemon.toLowerCase()}`)
+                        }
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <img
                         src={API.pokemonSprite(normalized)}
                         alt={pokemon}
@@ -2067,15 +2082,6 @@ export default function Pokedex() {
                         }`}
                         loading="lazy"
                         onError={onGifError(normalized)}
-                        onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
-                        style={{ cursor: 'pointer' }}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            navigate(`/pokemon/${pokemon.toLowerCase()}`)
-                          }
-                        }}
                       />
                     </div>
                   )
