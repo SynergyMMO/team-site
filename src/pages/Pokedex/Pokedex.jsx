@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTierData } from '../../hooks/useTierData'
@@ -18,6 +18,7 @@ export default function Pokedex() {
     canonicalPath: '/pokedex',
   })
   const navigate = useNavigate()
+  const location = useLocation()
   const { data, isLoading } = useDatabase()
   const { tierPokemon, tierLookup } = useTierData()
   const [mode, setMode] = useState('shiny')
@@ -504,6 +505,14 @@ export default function Pokedex() {
       setSelectedEggGroups([])
     }
   }, [synergyDataToggle])
+
+  // Handle location search from navigation state (from PokemonDetail)
+  useEffect(() => {
+    if (location.state?.locationSearch) {
+      setLocationSearchInput(location.state.locationSearch)
+      setLocationSearch(location.state.locationSearch)
+    }
+  }, [location.state?.locationSearch])
 
   const formatSelectionSummary = (selected, options, labelFn, emptyLabel) => {
     if (selected.length === 0) return emptyLabel
@@ -1568,7 +1577,7 @@ export default function Pokedex() {
 
             return [
               <div key="route-header" style={{ marginBottom: '20px', paddingBottom: '12px', borderBottom: '2px solid rgba(102, 126, 234, 0.5)' }}>
-                <h1 style={{ fontSize: '1.5rem', color: '#667eea', margin: '0 0 4px 0' }}>{routeName}</h1>
+                <h1 style={{ fontSize: '1.5rem', color: '#ea66cd', margin: '0 0 4px 0' }}>{routeName}</h1>
                 <p style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.6)', margin: '0' }}>{regionName}</p>
               </div>,
               ...encounterTypeOrder

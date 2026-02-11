@@ -922,6 +922,13 @@
   padding: 1rem;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
 }
 
 .locationCard:hover {
@@ -1047,6 +1054,22 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+/* Info Section (Translations, Forms) */
+.infoSection {
+  background: rgba(20, 20, 35, 0.8);
+  border: 1px solid rgba(102, 126, 234, 0.25);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.infoSection:hover {
+  border-color: rgba(102, 126, 234, 0.5);
+  background: rgba(20, 20, 35, 0.95);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
 }
 
 /* Name Translations */

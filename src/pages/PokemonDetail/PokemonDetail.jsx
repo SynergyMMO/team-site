@@ -683,7 +683,7 @@ useDocumentHead({
 
                 return (
                   <div key={stat.label} className={styles.statRow}>
-                    <span className={styles.statLabel}>{stat.label}</span>
+                    <span className={styles.statLabel} style={{ color: statColor }}>{stat.label}</span>
                     <div className={styles.statBarContainer}>
                       <div
                         className={styles.statBar}
@@ -694,7 +694,7 @@ useDocumentHead({
                         }}
                       />
                     </div>
-                    <span className={styles.statValue}>{stat.value}</span>
+                    <span className={styles.statValue} style={{ color: statColor }}>{stat.value}</span>
                   </div>
                 )
               })}
@@ -931,7 +931,12 @@ useDocumentHead({
               {sortedLocations.map((location, index) => {
                 const encounterIcon = getEncounterIcon(location.rarity, location.type)
                 return (
-                  <div key={index} className={styles.locationCard}>
+                  <button 
+                    key={index} 
+                    className={styles.locationCard}
+                    onClick={() => navigate('/pokedex', { state: { locationSearch: `${location.location} - ${location.region_name}` } })}
+                    title={`Search for Pokémon at ${location.location}`}
+                  >
                     <div className={styles.locationHeader}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <h3 className={styles.locationName}>{location.location}</h3>
@@ -955,7 +960,7 @@ useDocumentHead({
                         </span>
                       )}
                     </div>
-                  </div>
+                  </button>
                 )
               })}
             </div>
