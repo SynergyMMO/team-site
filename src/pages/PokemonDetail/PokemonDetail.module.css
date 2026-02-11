@@ -1622,6 +1622,22 @@
   }
 }
 
+.statBarContainer {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  height: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.statBar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  min-width: 2px;
+  box-shadow: 0 0 10px currentColor;
+}
+
 /* Description */
 .descriptionCard {
   background: rgba(20, 20, 35, 0.8);
