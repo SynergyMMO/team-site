@@ -178,6 +178,61 @@ To add more data (e.g., evolution chain, abilities details):
   ```
 - Pre-fetch popular Pokémon on page load
 
+## Catch Rate Calculator Feature (NEW)
+
+### Overview
+The PokéAPI Detail page now includes an interactive catch rate calculator that shows catch percentages for various Pokémon balls and conditions based on the Gen 5 capture formula.
+
+### Implementation
+
+#### Helper Functions
+**`calculateCatchChance(catchRate, ballRate, hpPercent, statusModifier)`**
+- Implements Gen 5 capture formula
+- Parameters:
+  - `catchRate`: Base catch rate (0-255) from Pokemon data
+  - `ballRate`: Ball multiplier (e.g., Pokéball=1.0, Ultra Ball=2.0, Dusk Ball=3.5)
+  - `hpPercent`: Current HP as percentage (0-100)
+  - `statusModifier`: Status effect multiplier (1.0=none, 1.5=poison/burn, 2.0=sleep/freeze)
+- Returns: Catch percentage (0-100)
+- Formula: `A = [(3×MaxHP - 2×CurrentHP) / (3×MaxHP)] × BallRate × CatchRate × StatusMod`
+
+**`calculateBestCatchMethod(catchRate)`**
+- Analyzes all ball types and conditions
+- Balances: catch rate, turns needed (0-2), ball cost
+- Returns: `{ bestMethod, secondBestMethod }` objects with:
+  - Ball name
+  - Catch chance percentage
+  - HP condition and status benefits
+  - Turns required
+  - Calculated efficiency score
+
+### UI Component
+
+#### Catch Rate Tooltip
+- **Trigger**: Hover over catch rate bar
+- **Display**: Interactive table with all ball types
+  - Rows: Pokéball, Great Ball, Ultra Ball, Dusk Ball (night), Timer Ball (turn 11+), Safari Ball
+  - Columns: 100% HP, 1% HP, Sleep 100% HP, Sleep 1% HP
+- **Highlights**: 100% catch chance cells
+- **Best Method Row**: Shows recommended ball + condition combo
+- **Formula Display**: Shows calculation formula at bottom
+
+#### Move Level Filter
+- Collapsible on mobile via gear icon (⚙️)
+- Single input field for filtering level-up moves by wild Pokémon level
+- Persists across interactions
+
+### Data Dependencies
+- Pokemon `catchRate` from PokéAPI
+- `maxWildLevel` calculated from location encounter data
+
+### State Variables
+```javascript
+const [showCatchRateTooltip, setShowCatchRateTooltip] = useState(false)
+const [maxWildLevel, setMaxWildLevel] = useState(0)
+const [showMobileFilters, setShowMobileFilters] = useState(false)
+```
+
 ## Styling & Theming
 
 ### Color System

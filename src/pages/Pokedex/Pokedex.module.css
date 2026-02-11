@@ -169,11 +169,24 @@
     left: 8px;
     right: 8px;
     max-height: 50vh;
+    overflow-y: auto;
     column-count: 1;
     border-radius: 12px;
     max-width: calc(100vw - 16px);
     z-index: 1001;
     min-width: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .dropdownMenu {
+    max-height: 65vh !important;
+    overflow-y: auto !important;
+    top: auto;
+    bottom: 12px;
+    transform: none;
+    column-count: 2;
+    column-gap: 12px;
   }
 }
 
@@ -715,5 +728,94 @@
     right: -5px;
     border: 1px solid rgba(0, 0, 0, 0.3);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+/* Mobile Collapsible Filter Menu */
+.filterMenuButton {
+  display: none;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin: 15px auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  z-index: 100;
+}
+
+.filterMenuButton:focus {
+  outline: none;
+}
+
+.filterMenuButton span {
+  display: block;
+  width: 28px;
+  height: 3px;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.filterMenuButton[aria-expanded="true"] span:nth-child(1) {
+  transform: rotate(45deg) translate(10px, 10px);
+}
+
+.filterMenuButton[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.filterMenuButton[aria-expanded="true"] span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+@media (max-width: 600px) {
+  .filterMenuButton {
+    display: flex;
+  }
+  
+  .filterRow {
+    display: none !important;
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    gap: 8px;
+    margin: 0;
+    padding: 12px 12px;
+    box-sizing: border-box;
+    animation: slideDown 0.3s ease forwards;
+    border-top: 1px solid rgba(102, 126, 234, 0.2);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    position: relative;
+    z-index: 150;
+  }
+
+  .filterRow.mobileOpen {
+    display: grid !important;
+  }
+
+  .filterRow .dropdownMenu {
+    z-index: 9999 !important;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    to {
+      opacity: 1;
+      max-height: 1000px;
+      overflow: visible;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
   }
 }

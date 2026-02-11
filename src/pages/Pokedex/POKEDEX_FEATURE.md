@@ -51,6 +51,40 @@ const [abilitySearch, setAbilitySearch] = useState('')
 - Grid layouts for Pokemon display
 - Filter panel styling
 - Responsive design for mobile
+- Mobile collapsible filter menu (≤600px)
+  - Hamburger menu button with animated icon
+  - Dropdown menus configured for 2-column layout on phone
+  - Proper z-index stacking to prevent content overlap
+
+### Mobile Responsiveness Features
+
+#### Collapsible Filter Menu (Phones ≤600px)
+- **Hamburger Button**: Animated 3-line menu icon that transforms to X when opened
+- **Auto-Close**: Menu closes when:
+  - User clicks outside the filter area
+  - Window is resized to desktop size
+- **Dropdown Menu Positioning**: 
+  - Fixed at bottom of screen to avoid covering other content
+  - 2-column layout for better space utilization
+  - Max-height: 65vh with scrollable overflow
+  - Z-index stacking ensures menus appear above Pokemon grid
+
+**CSS Class Structure:**
+```css
+.filterMenuButton          /* Hamburger button (hidden on desktop) */
+.filterRow.mobileOpen      /* Filter row when menu is open */
+.dropdownMenu (mobile)     /* 2-column layout, positioned at bottom */
+```
+
+**JavaScript State:**
+```javascript
+const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
+
+// Automatically handled by useEffect:
+// - Closes menu on resize to desktop
+// - Closes menu on click-outside
+// - Removes event listeners on unmount
+```
 
 ### Custom Helper Functions
 
@@ -109,6 +143,19 @@ const [abilitySearch, setAbilitySearch] = useState('')
 - Debounced search input
 - Real-time filtering
 - Maintains filter state across navigation
+
+### Mobile Collapsible Filter Menu (NEW)
+- Automatically activates on screens ≤600px width
+- **Hamburger Button**: Animated 3-line icon transforming to X
+- **Auto-Close Behavior**:
+  - Closes when clicking outside the menu
+  - Closes when resizing browser to desktop size
+- **Dropdown Menu Optimization**:
+  - 2-column layout for Types, Egg Groups, Tiers, and Encounter Types
+  - Positioned at bottom of screen (12px gap) to prevent overlap with content
+  - Max-height 65vh with scrollable content
+  - Z-index stacking ensures dropdowns appear above Pokemon grid
+- **Non-Destructive**: All filter selections preserved while menu is closed
 
 ## Data Files Referenced
 

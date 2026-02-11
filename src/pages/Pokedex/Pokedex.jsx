@@ -51,6 +51,7 @@ export default function Pokedex() {
   const [isLocationOpen, setIsLocationOpen] = useState(false)
   const [isStatSearchOpen, setIsStatSearchOpen] = useState(false)
   const [synergyDataToggle, setSynergyDataToggle] = useState(false)
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
   const [locationSuggestions, setLocationSuggestions] = useState([])
@@ -548,6 +549,38 @@ export default function Pokedex() {
     }
   }, [location.state?.locationSearch])
 
+  // Close filter menu on resize to desktop and handle click-outside on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 600) {
+        setIsFilterMenuOpen(false)
+      }
+    }
+
+    const handleClickOutside = (e) => {
+      // Check if clicking on elements inside the filter row
+      const filterRow = document.querySelector('[data-filter-row]')
+      const filterButton = document.querySelector('[data-filter-button]')
+      
+      if ((filterRow && filterRow.contains(e.target)) || (filterButton && filterButton.contains(e.target))) {
+        return
+      }
+      
+      // Close the menu if clicking outside on mobile
+      if (isFilterMenuOpen && window.innerWidth <= 600) {
+        setIsFilterMenuOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    document.addEventListener('click', handleClickOutside)
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [isFilterMenuOpen])
+
   const formatSelectionSummary = (selected, options, labelFn, emptyLabel) => {
     if (selected.length === 0) return emptyLabel
     const ordered = options.filter(option => selected.includes(option))
@@ -686,7 +719,19 @@ export default function Pokedex() {
       </h1>
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
-      <div className={styles.filterRow}>
+      <button 
+        className={styles.filterMenuButton}
+        onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
+        aria-label="Toggle filters"
+        aria-expanded={isFilterMenuOpen}
+        data-filter-button
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div className={`${styles.filterRow} ${isFilterMenuOpen ? styles.mobileOpen : ''}`} data-filter-row>
         <div className={styles.dropdown} ref={rarityMenuRef}>
           <button
             type="button"
