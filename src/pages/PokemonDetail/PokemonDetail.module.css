@@ -523,12 +523,14 @@
   padding: 1.5rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
+  overflow: visible;
 }
 
 .evolutionSection {
   background: rgba(20, 20, 35, 0.85);
   border: 1px solid rgba(102, 126, 234, 0.3);
   height: 400px;
+  overflow: visible;
 }
 
 .infoCard:hover {
@@ -666,6 +668,41 @@
   border-top: 6px solid rgba(20, 20, 35, 0.98);
 }
 
+.evolutionTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 8px;
+  padding: 0.75rem;
+  background: rgba(20, 20, 35, 0.98);
+  border: 1px solid rgba(102, 126, 234, 0.5);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: normal;
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: tooltipFadeIn 0.2s ease;
+  max-width: 200px;
+  text-align: center;
+}
+
+.evolutionTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(20, 20, 35, 0.98);
+}
+
 /* Evolution */
 .evolutionContainer {
   display: flex;
@@ -718,6 +755,7 @@
   align-items: center;
   gap: 2rem;
   padding: 1rem;
+  overflow: visible;
 }
 
 .evolutionLineContainerHorizontal {
@@ -725,7 +763,7 @@
   flex-direction: row;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -742,7 +780,7 @@
 .evolutionLineContainerLinear {
   align-items: center;
   justify-content: flex-start;
-  overflow-x: auto;
+  overflow: visible;
   height: 100%;
 }
 
@@ -751,6 +789,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  overflow: visible;
 }
 
 .chainNodeHorizontal {
@@ -823,7 +862,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .branchedEvolutions .chainPokemon {
@@ -865,6 +904,7 @@
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
+  overflow: visible;
 }
 
 .chainBranch {
@@ -895,6 +935,7 @@
   gap: 2rem;
   justify-content: center;
   flex-wrap: wrap;
+  overflow: visible;
 }
 
 .chainChild {

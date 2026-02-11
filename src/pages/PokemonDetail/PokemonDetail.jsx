@@ -256,6 +256,12 @@ function formatEvolutionDetails(details) {
   if (!details || details.length === 0) return 'Unknown'
   
   const detail = details[0]
+  
+  // Special case for level-up with location requirement
+  if (detail.trigger?.name === 'level-up' && detail.location?.name) {
+    return 'Level up near the respective stone'
+  }
+  
   const parts = []
   
   if (detail.trigger?.name) {
@@ -305,10 +311,11 @@ function formatEvolutionDetails(details) {
 /**
  * Recursively render evolution chain
  */
-function renderEvolutionChain(chainLink, navigate) {
+function renderEvolutionChain(chainLink, navigate, hoveredEvolution, setHoveredEvolution, parentSpeciesName = null) {
   if (!chainLink) return null
   
   const { species, evolves_to, evolution_details } = chainLink
+  const evolutionId = `${parentSpeciesName || 'root'}-${species?.name}`
   
   return (
     <div key={species?.name} className={styles.chainNode}>
@@ -316,12 +323,19 @@ function renderEvolutionChain(chainLink, navigate) {
         onClick={() => navigate(`/pokemon/${species.name}`, { state: { fromPokemon: true } })}
         className={styles.chainPokemon}
         title={`View ${species.name}`}
+        onMouseEnter={() => evolution_details && evolution_details.length > 0 && setHoveredEvolution(evolutionId)}
+        onMouseLeave={() => setHoveredEvolution(null)}
       >
         <span className={styles.chainPokemonName}>
           {species.name.charAt(0).toUpperCase() + species.name.slice(1).replace('-', ' ')}
         </span>
         {evolution_details && evolution_details.length > 0 && (
           <span className={styles.chainCondition}>{formatEvolutionDetails(evolution_details)}</span>
+        )}
+        {hoveredEvolution === evolutionId && evolution_details && evolution_details.length > 0 && (
+          <div className={styles.evolutionTooltip}>
+            {formatEvolutionDetails(evolution_details)}
+          </div>
         )}
       </button>
       
@@ -332,7 +346,7 @@ function renderEvolutionChain(chainLink, navigate) {
             {evolves_to.map((child, index) => (
               <div key={child.species?.name} className={styles.chainChild}>
                 {evolves_to.length > 1 && <span className={styles.branchLabel}>{index === 0 ? 'Option A' : 'Option B'}</span>}
-                {renderEvolutionChain(child, navigate)}
+                {renderEvolutionChain(child, navigate, hoveredEvolution, setHoveredEvolution, species?.name)}
               </div>
             ))}
           </div>
@@ -342,7 +356,7 @@ function renderEvolutionChain(chainLink, navigate) {
   )
 }
 
-// Pokemon with branching evolutions
+// Pokemon with advanced branching evolutions
 const BRANCHING_EVOLUTION_POKEMON = ['eevee', 'vaporeon', 'jolteon', 'flareon', 'espeon', 'umbreon', 'leafeon', 'glaceon', 'sylveon', 'tyrogue', 'hitmonlee', 'hitmonchan', 'hitmontop']
 
 /**
@@ -355,7 +369,7 @@ function hasBranchingEvolutions(pokemonName) {
 /**
  * Render simple linear evolution chain with basic branching support
  */
-function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName) {
+function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName, hoveredEvolution, setHoveredEvolution) {
   if (!chainLink) return null
   
   // Build the chain array
@@ -383,14 +397,17 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName) {
         
         const hasSimpleBranch = link.evolves_to && link.evolves_to.length > 1
         const isCurrent = link.species?.name === currentPokemonName?.toLowerCase()
+        const evolutionId = `linear-${index}-${link.species?.name}`
         
         return (
-          <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
             <button
               onClick={() => navigate(`/pokemon/${link.species.name}`, { state: { fromPokemon: true } })}
               className={`${styles.chainPokemon} ${isCurrent ? styles.chainPokemonCurrent : ''}`}
               style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
               title={`View ${link.species.name}`}
+              onMouseEnter={() => link.evolution_details && link.evolution_details.length > 0 && setHoveredEvolution(evolutionId)}
+              onMouseLeave={() => setHoveredEvolution(null)}
             >
               <span className={styles.chainPokemonName}>
                 {link.species.name.charAt(0).toUpperCase() + link.species.name.slice(1).replace('-', ' ')}
@@ -400,6 +417,11 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName) {
                   {formatEvolutionDetails(link.evolution_details)}
                 </span>
               )}
+              {hoveredEvolution === evolutionId && link.evolution_details && link.evolution_details.length > 0 && (
+                <div className={styles.evolutionTooltip}>
+                  {formatEvolutionDetails(link.evolution_details)}
+                </div>
+              )}
             </button>
             
             {hasSimpleBranch ? (
@@ -408,6 +430,7 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName) {
                 <div className={styles.simpleBranchedEvolutions}>
                   {link.evolves_to.map((branch) => {
                     const branchIsCurrent = branch.species?.name === currentPokemonName?.toLowerCase()
+                    const branchEvolutionId = `linear-branch-${index}-${branch.species?.name}`
                     return (
                       <button
                         key={branch.species?.name}
@@ -415,6 +438,8 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName) {
                         className={`${styles.chainPokemon} ${branchIsCurrent ? styles.chainPokemonCurrent : ''}`}
                         style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
                         title={`View ${branch.species.name}`}
+                        onMouseEnter={() => branch.evolution_details && branch.evolution_details.length > 0 && setHoveredEvolution(branchEvolutionId)}
+                        onMouseLeave={() => setHoveredEvolution(null)}
                       >
                         <span className={styles.chainPokemonName}>
                           {branch.species.name.charAt(0).toUpperCase() + branch.species.name.slice(1).replace('-', ' ')}
@@ -423,6 +448,11 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName) {
                           <span className={styles.chainCondition} style={{ maxWidth: '140px', fontSize: '0.7rem' }}>
                             {formatEvolutionDetails(branch.evolution_details)}
                           </span>
+                        )}
+                        {hoveredEvolution === branchEvolutionId && branch.evolution_details && branch.evolution_details.length > 0 && (
+                          <div className={styles.evolutionTooltip}>
+                            {formatEvolutionDetails(branch.evolution_details)}
+                          </div>
                         )}
                       </button>
                     )
@@ -442,7 +472,7 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName) {
 /**
  * Recursively render evolution chain horizontally with branching support
  */
-function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName) {
+function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName, hoveredEvolution, setHoveredEvolution) {
   if (!chainLink) return null
   
   // Build the chain array following the first evolution path
@@ -470,14 +500,17 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName)
         
         const isCurrent = link.species?.name === currentPokemonName?.toLowerCase()
         const hasBranches = link.evolves_to && link.evolves_to.length > 1
+        const evolutionId = `horizontal-${index}-${link.species?.name}`
         
         return (
-          <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative' }}>
             <button
               onClick={() => navigate(`/pokemon/${link.species.name}`, { state: { fromPokemon: true } })}
               className={`${styles.chainPokemon} ${isCurrent ? styles.chainPokemonCurrent : ''}`}
               style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
               title={`View ${link.species.name}`}
+              onMouseEnter={() => link.evolution_details && link.evolution_details.length > 0 && setHoveredEvolution(evolutionId)}
+              onMouseLeave={() => setHoveredEvolution(null)}
             >
               <span className={styles.chainPokemonName}>
                 {link.species.name.charAt(0).toUpperCase() + link.species.name.slice(1).replace('-', ' ')}
@@ -487,6 +520,11 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName)
                   {formatEvolutionDetails(link.evolution_details)}
                 </span>
               )}
+              {hoveredEvolution === evolutionId && link.evolution_details && link.evolution_details.length > 0 && (
+                <div className={styles.evolutionTooltip}>
+                  {formatEvolutionDetails(link.evolution_details)}
+                </div>
+              )}
             </button>
             
             {hasBranches ? (
@@ -495,6 +533,7 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName)
                 <div className={styles.branchedEvolutions}>
                   {link.evolves_to.map((branch) => {
                     const branchIsCurrent = branch.species?.name === currentPokemonName?.toLowerCase()
+                    const branchEvolutionId = `horizontal-branch-${index}-${branch.species?.name}`
                     return (
                       <button
                         key={branch.species?.name}
@@ -502,6 +541,8 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName)
                         className={`${styles.chainPokemon} ${branchIsCurrent ? styles.chainPokemonCurrent : ''}`}
                         style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
                         title={`View ${branch.species.name}`}
+                        onMouseEnter={() => branch.evolution_details && branch.evolution_details.length > 0 && setHoveredEvolution(branchEvolutionId)}
+                        onMouseLeave={() => setHoveredEvolution(null)}
                       >
                         <span className={styles.chainPokemonName}>
                           {branch.species.name.charAt(0).toUpperCase() + branch.species.name.slice(1).replace('-', ' ')}
@@ -510,6 +551,11 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName)
                           <span className={styles.chainCondition} style={{ maxWidth: '140px', fontSize: '0.7rem' }}>
                             {formatEvolutionDetails(branch.evolution_details)}
                           </span>
+                        )}
+                        {hoveredEvolution === branchEvolutionId && branch.evolution_details && branch.evolution_details.length > 0 && (
+                          <div className={styles.evolutionTooltip}>
+                            {formatEvolutionDetails(branch.evolution_details)}
+                          </div>
                         )}
                       </button>
                     )
@@ -544,6 +590,7 @@ export default function PokemonDetail() {
   const [particleAnimationKey, setParticleAnimationKey] = useState(0)
   const [audioRef] = useState(new Audio())
   const [hoveredAbility, setHoveredAbility] = useState(null)
+  const [hoveredEvolution, setHoveredEvolution] = useState(null)
   const [branchCount, setBranchCount] = useState(0)
   const evolutionContainerRef = useRef(null)
   const spriteAliasMap = useMemo(() => ({
@@ -982,8 +1029,8 @@ useDocumentHead({
                 ref={hasBranchingEvolutions(pokemon?.name) ? evolutionContainerRef : null}
               >
                 {hasBranchingEvolutions(pokemon?.name) 
-                  ? renderEvolutionChainHorizontal(pokemon.evolution_chain.chain, navigate, pokemon.name)
-                  : renderEvolutionChainLinear(pokemon.evolution_chain.chain, navigate, pokemon.name)
+                  ? renderEvolutionChainHorizontal(pokemon.evolution_chain.chain, navigate, pokemon.name, hoveredEvolution, setHoveredEvolution)
+                  : renderEvolutionChainLinear(pokemon.evolution_chain.chain, navigate, pokemon.name, hoveredEvolution, setHoveredEvolution)
                 }
               </div>
             </div>
