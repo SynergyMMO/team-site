@@ -272,6 +272,25 @@ Shows the complete evolution chain for this Pokémon:
 - **Egg Groups** - Which egg groups this Pokémon belongs to
   - Determines which Pokémon it can breed with
   - Example: Both must share an Egg Group (or one must be Ditto)
+- **Catch Rate Bar** - Visual indicator of how easy this Pokémon is to catch
+  - Ranges from 1 (hardest) to 255 (easiest)
+  - Color-coded: 🔴 Hard, 🟠 Moderate, 🟡 Easy, 🟢 Very Easy
+  - **Hover for Details**: Move your mouse over the catch rate bar to see an interactive calculator
+    - Shows catch chance percentage for different Pokéballs
+    - Displays effectiveness of various conditions (100% HP, lowered HP, asleep)
+    - Recommends the best catching method based on efficiency
+    - Includes formula and turn count calculations
+  - **Catch Rate Information Includes:**
+    - Pokéball types: Pokéball, Great Ball, Ultra Ball, Dusk Ball, Timer Ball, Safari Ball
+    - Conditions: 100% HP, 1% HP (lowered), Sleep variations
+    - Best method: Automatically recommends most efficient ball + condition
+    - Max wild level: Shows the highest level this Pokémon appears in the wild
+
+**Understanding Catch Rates:**
+- Catch rate 1-50: Very hard to catch (usually Legendary/Mythical)
+- Catch rate 51-100: Moderate difficulty
+- Catch rate 101-200: Easy to catch
+- Catch rate 201-255: Very easy to catch (common Pokémon)
 
 
 #### 8. **Locations** 🎯
@@ -352,6 +371,26 @@ Shows which team members have caught this Pokémon as a shiny:
 - Filter by type to build balanced team
 - Use stats filter to find strong stats
 - Combine with Gen filter to plan evolution strategies
+
+### Mobile Users - Filter Menu Guide
+
+**1. Accessing Filters on Phone (≤600px width)**
+- Look for the **hamburger menu button** (☰) at the top of the page
+- Tap it to reveal the filter buttons
+- Tap again to hide and free up screen space
+- Menu automatically closes when you resize browser to desktop size
+
+**2. Using Dropdown Menus on Mobile**
+- Dropdowns use a **2-column layout** to fit all options on screen
+- Scroll within dropdown to see all choices
+- Dropdowns open at the bottom to avoid covering other content
+- Click outside the menu or on another filter to close
+- All your selections are saved when menu is closed
+
+**3. Mobile Tips**
+- Filters take up less space when closed - great for viewing Pokémon
+- Use portrait orientation for best mobile experience
+- All filter types work the same on mobile and desktop
 
 ### Pokémon Detail Pro Tips
 
@@ -447,7 +486,16 @@ A: Check:
 ### Technical Questions
 
 **Q: Does the page work on mobile?**
-A: Yes! All features are mobile-responsive. Filters move to dropdown on smaller screens.
+A: Yes! The Pokédex is fully mobile-optimized:
+
+- **Filters on phones (≤600px)**: Hidden behind a hamburger menu (☰) button to save screen space
+- **Opening filters**: Tap the hamburger button to expand/collapse the filter menu
+- **Dropdown menus**: Automatically arranged in 2-column layout on mobile for better visibility
+- **Menu positioning**: Dropdowns appear at the bottom of screen to prevent covering Pokémon content
+- **Auto-close**: Menu closes when clicking outside or when resizing to desktop size
+- **No data loss**: All filter selections are preserved while menu is closed
+
+See [Mobile Users - Filter Menu Guide](#mobile-users---filter-menu-guide) above for detailed instructions.
 
 **Q: Can I access this page offline?**
 A: No, page requires internet to fetch Pokémon data from servers.
