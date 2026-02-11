@@ -1,5 +1,5 @@
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { useMemo, useState, useEffect } from 'react'
+import { useRef,useMemo, useState, useEffect } from 'react'
 import { usePokemonDetails } from '../../hooks/usePokemonDetails'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useDatabase } from '../../hooks/useDatabase'
@@ -342,20 +342,21 @@ function renderEvolutionChain(chainLink, navigate) {
   )
 }
 
+// Pokemon with branching evolutions
+const BRANCHING_EVOLUTION_POKEMON = ['eevee', 'vaporeon', 'jolteon', 'flareon', 'espeon', 'umbreon', 'leafeon', 'glaceon', 'sylveon', 'tyrogue', 'hitmonlee', 'hitmonchan', 'hitmontop']
+
 /**
- * Recursively render evolution chain horizontally
+ * Check if a Pokemon has branching evolutions
  */
-function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName) {
+function hasBranchingEvolutions(pokemonName) {
+  return BRANCHING_EVOLUTION_POKEMON.includes(pokemonName?.toLowerCase())
+}
+
+/**
+ * Render simple linear evolution chain with basic branching support
+ */
+function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName) {
   if (!chainLink) return null
-  
-  const { species, evolves_to } = chainLink
-  
-  // For horizontal layout, we need to flatten the chain and show only the main line
-  const getFirstEvolution = (link) => {
-    if (!link.evolves_to || link.evolves_to.length === 0) return link
-    // If there are multiple paths, just follow the first one for the horizontal chain
-    return getFirstEvolution(link.evolves_to[0])
-  }
   
   // Build the chain array
   const buildChainArray = (link, arr = []) => {
@@ -369,10 +370,20 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName)
   
   const chainArray = buildChainArray(chainLink)
   
+  // Find the index where branching occurs (if any)
+  const branchingIndex = chainArray.findIndex(link => link.evolves_to && link.evolves_to.length > 1)
+  
   return (
     <>
       {chainArray.map((link, index) => {
+        // Stop rendering after we've shown the branching point
+        if (branchingIndex !== -1 && index > branchingIndex) {
+          return null
+        }
+        
+        const hasSimpleBranch = link.evolves_to && link.evolves_to.length > 1
         const isCurrent = link.species?.name === currentPokemonName?.toLowerCase()
+        
         return (
           <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <button
@@ -390,9 +401,124 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName)
                 </span>
               )}
             </button>
-            {index < chainArray.length - 1 && (
+            
+            {hasSimpleBranch ? (
+              <>
+                <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
+                <div className={styles.simpleBranchedEvolutions}>
+                  {link.evolves_to.map((branch) => {
+                    const branchIsCurrent = branch.species?.name === currentPokemonName?.toLowerCase()
+                    return (
+                      <button
+                        key={branch.species?.name}
+                        onClick={() => navigate(`/pokemon/${branch.species.name}`, { state: { fromPokemon: true } })}
+                        className={`${styles.chainPokemon} ${branchIsCurrent ? styles.chainPokemonCurrent : ''}`}
+                        style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
+                        title={`View ${branch.species.name}`}
+                      >
+                        <span className={styles.chainPokemonName}>
+                          {branch.species.name.charAt(0).toUpperCase() + branch.species.name.slice(1).replace('-', ' ')}
+                        </span>
+                        {branch.evolution_details && branch.evolution_details.length > 0 && (
+                          <span className={styles.chainCondition} style={{ maxWidth: '140px', fontSize: '0.7rem' }}>
+                            {formatEvolutionDetails(branch.evolution_details)}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </>
+            ) : index < branchingIndex || (branchingIndex === -1 && index < chainArray.length - 1) ? (
               <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
-            )}
+            ) : null}
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+/**
+ * Recursively render evolution chain horizontally with branching support
+ */
+function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName) {
+  if (!chainLink) return null
+  
+  // Build the chain array following the first evolution path
+  const buildChainArray = (link, arr = []) => {
+    if (!link) return arr
+    arr.push(link)
+    if (link.evolves_to && link.evolves_to.length > 0) {
+      return buildChainArray(link.evolves_to[0], arr)
+    }
+    return arr
+  }
+  
+  const chainArray = buildChainArray(chainLink)
+  
+  // Find the index where branching occurs
+  const branchingIndex = chainArray.findIndex(link => link.evolves_to && link.evolves_to.length > 1)
+  
+  return (
+    <>
+      {chainArray.map((link, index) => {
+        // Stop rendering after we've shown the branching point
+        if (branchingIndex !== -1 && index > branchingIndex) {
+          return null
+        }
+        
+        const isCurrent = link.species?.name === currentPokemonName?.toLowerCase()
+        const hasBranches = link.evolves_to && link.evolves_to.length > 1
+        
+        return (
+          <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button
+              onClick={() => navigate(`/pokemon/${link.species.name}`, { state: { fromPokemon: true } })}
+              className={`${styles.chainPokemon} ${isCurrent ? styles.chainPokemonCurrent : ''}`}
+              style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
+              title={`View ${link.species.name}`}
+            >
+              <span className={styles.chainPokemonName}>
+                {link.species.name.charAt(0).toUpperCase() + link.species.name.slice(1).replace('-', ' ')}
+              </span>
+              {link.evolution_details && link.evolution_details.length > 0 && (
+                <span className={styles.chainCondition} style={{ maxWidth: '140px', fontSize: '0.7rem' }}>
+                  {formatEvolutionDetails(link.evolution_details)}
+                </span>
+              )}
+            </button>
+            
+            {hasBranches ? (
+              <>
+                <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
+                <div className={styles.branchedEvolutions}>
+                  {link.evolves_to.map((branch) => {
+                    const branchIsCurrent = branch.species?.name === currentPokemonName?.toLowerCase()
+                    return (
+                      <button
+                        key={branch.species?.name}
+                        onClick={() => navigate(`/pokemon/${branch.species.name}`, { state: { fromPokemon: true } })}
+                        className={`${styles.chainPokemon} ${branchIsCurrent ? styles.chainPokemonCurrent : ''}`}
+                        style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
+                        title={`View ${branch.species.name}`}
+                      >
+                        <span className={styles.chainPokemonName}>
+                          {branch.species.name.charAt(0).toUpperCase() + branch.species.name.slice(1).replace('-', ' ')}
+                        </span>
+                        {branch.evolution_details && branch.evolution_details.length > 0 && (
+                          <span className={styles.chainCondition} style={{ maxWidth: '140px', fontSize: '0.7rem' }}>
+                            {formatEvolutionDetails(branch.evolution_details)}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </>
+            ) : index < chainArray.length - 1 && branchingIndex === -1 ? (
+              <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
+            ) : null}
           </div>
         )
       })}
@@ -418,6 +544,8 @@ export default function PokemonDetail() {
   const [particleAnimationKey, setParticleAnimationKey] = useState(0)
   const [audioRef] = useState(new Audio())
   const [hoveredAbility, setHoveredAbility] = useState(null)
+  const [branchCount, setBranchCount] = useState(0)
+  const evolutionContainerRef = useRef(null)
   const spriteAliasMap = useMemo(() => ({
     wormadam: 'wormadam-plant',
     'gastrodon-west': 'gastrodon',
@@ -425,6 +553,70 @@ export default function PokemonDetail() {
   }), [])
   const spriteName = spriteAliasMap[pokemonName?.toLowerCase()] || pokemonName
 
+  // Calculate branch count from evolution chain (only for branching Pokemon)
+  useEffect(() => {
+    if (!hasBranchingEvolutions(pokemon?.name)) {
+      setBranchCount(0)
+      return
+    }
+    
+    if (!pokemon?.evolution_chain?.chain) {
+      setBranchCount(0)
+      return
+    }
+    
+    // Find the branching point
+    const findBranchingLink = (link) => {
+      if (!link) return null
+      if (link.evolves_to && link.evolves_to.length > 1) return link
+      if (link.evolves_to && link.evolves_to.length > 0) {
+        return findBranchingLink(link.evolves_to[0])
+      }
+      return null
+    }
+    
+    const branchingLink = findBranchingLink(pokemon.evolution_chain.chain)
+    const maxBranches = branchingLink?.evolves_to?.length || 0
+    setBranchCount(maxBranches)
+  }, [pokemon?.evolution_chain, pokemon?.name])
+
+  // Calculate and resize evolution cards to fit in container without overflow (only for branching Pokemon)
+  useEffect(() => {
+    if (!hasBranchingEvolutions(pokemon?.name) || !evolutionContainerRef.current || branchCount === 0) return
+    
+    const container = evolutionContainerRef.current
+    const evolutionSection = container.parentElement
+    
+    if (!evolutionSection) return
+    
+    // Get the actual available height by measuring the section minus the title
+    const sectionHeight = evolutionSection.clientHeight
+    const cardTitleElement = evolutionSection.querySelector(`.${styles.cardTitle}`)
+    const cardTitleHeight = cardTitleElement ? cardTitleElement.clientHeight : 50 // fallback to 50px if not found
+    
+    // Calculate the gap between title and container
+    const sectionPadding = 16 // infoCard padding (1rem)
+    const titleBottomGap = 12 // gap between title and container
+    
+    // Available height = section height - title - section padding - gap
+    const availableHeight = sectionHeight - cardTitleHeight - sectionPadding * 2 - titleBottomGap
+    
+    // Gap between evolution cards
+    const gapBetweenCards = 6 // 0.375rem gap in CSS = 6px
+    
+    // Total gap space (gaps = branchCount - 1)
+    const totalGapSpace = gapBetweenCards * Math.max(0, branchCount - 1)
+    
+    // Container internal padding
+    const containerPaddingVertical = 12 // 0.75rem = 12px top and bottom
+    
+    // Height per card
+    const cardHeight = Math.floor((availableHeight - containerPaddingVertical * 2 - totalGapSpace) / branchCount)
+    
+    // Set CSS variable - use max-height to prevent overflow
+    container.style.setProperty('--evolution-card-height', `${Math.max(cardHeight, 35)}px`);
+  }, [branchCount, pokemon?.evolution_chain]);
+  
   // Reset sprite index when pokemon changes
   useEffect(() => {
     setCurrentSpriteIndex(0)
@@ -785,8 +977,14 @@ useDocumentHead({
           {pokemon.evolution_chain?.chain && (
             <div className={`${styles.infoCard} ${styles.evolutionSection}`}>
               <h2 className={styles.cardTitle}>Evolution Line</h2>
-              <div className={styles.evolutionLineContainerHorizontal}>
-                {renderEvolutionChainHorizontal(pokemon.evolution_chain.chain, navigate, pokemon.name)}
+              <div 
+                className={`${styles.evolutionLineContainerHorizontal} ${hasBranchingEvolutions(pokemon?.name) ? styles.evolutionLineContainerBranching : styles.evolutionLineContainerLinear}`} 
+                ref={hasBranchingEvolutions(pokemon?.name) ? evolutionContainerRef : null}
+              >
+                {hasBranchingEvolutions(pokemon?.name) 
+                  ? renderEvolutionChainHorizontal(pokemon.evolution_chain.chain, navigate, pokemon.name)
+                  : renderEvolutionChainLinear(pokemon.evolution_chain.chain, navigate, pokemon.name)
+                }
               </div>
             </div>
           )}
