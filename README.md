@@ -835,9 +835,11 @@ The Pokedex component (`src/pages/Pokedex/Pokedex.jsx`) includes comprehensive f
 ### Pokemon Detail Page
 
 - Individual Pokémon information display
-- Type and stat breakdowns
+- Type and stat breakdowns with color-coded performance (red = low, green = high)
 - Move lists and ability details
-- Location/encounter information for finding in-game
+- Location/encounter information with clickable location cards
+  - Click any location card to filter Pokédex by that route
+  - Shows all Pokémon found at that specific location
 - Shiny status tracking across team members
 - Back navigation with referrer awareness
 
@@ -878,6 +880,12 @@ The Pokedex component (`src/pages/Pokedex/Pokedex.jsx`) includes comprehensive f
 ### React Key Warnings (v1.1+)
 **Issue:** PlayerCard component used non-unique or incorrect key props in lists.
 **Fix:** Changed to use destructured object key from `Object.entries()` instead of nested properties.
+
+### Clickable Location Cards (v1.2+)
+**Feature:** Location cards in Pokemon Detail page are now interactive.
+**Implementation:** Click any location card to navigate to Pokedex with that location pre-filtered. Format: "ROUTE 3 - Kanto"
+**Files Modified:** `PokemonDetail.jsx`, `Pokedex.jsx`
+**Details:** Uses React Router navigation state to pass location to Pokedex, automatically applying location filter.
 
 ### Common Issues
 
