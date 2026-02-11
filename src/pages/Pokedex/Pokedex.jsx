@@ -707,6 +707,30 @@ export default function Pokedex() {
     return true
   }
 
+  const clearAllFilters = () => {
+    setSearch('')
+    setSelectedRarities([])
+    setSelectedTiers([])
+    setSelectedEggGroups([])
+    setSelectedTypes([])
+    setMovesToFilterBy(['', '', '', ''])
+    setAbilitySearch('')
+    setLocationSearch('')
+    setLocationSearchInput('')
+    setLocationSuggestions([])
+    setStatMinimums({
+      hp: '',
+      attack: '',
+      defense: '',
+      spAtk: '',
+      spDef: '',
+      speed: ''
+    })
+    setStatSearchInput('')
+    setHideComplete(false)
+    setIsFilterMenuOpen(false)
+  }
+
   const sliderIndex = mode === 'shiny' ? 0 : 1
 
   if (isLoading) return <div className="message">Loading...</div>
@@ -730,6 +754,28 @@ export default function Pokedex() {
         <span></span>
         <span></span>
       </button>
+
+      <div style={{ textAlign: 'center', margin: '10px 0 15px 0' }}>
+        <button
+          className={styles.toggleCompleteBtn}
+          onClick={clearAllFilters}
+          style={{
+            backgroundColor: '#8b5cf6',
+            border: '2px solid #a78bfa',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#a78bfa'
+            e.target.style.transform = 'scale(1.05)'
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = '#8b5cf6'
+            e.target.style.transform = 'scale(1)'
+          }}
+        >
+          Clear All Filters
+        </button>
+      </div>
 
       <div className={`${styles.filterRow} ${isFilterMenuOpen ? styles.mobileOpen : ''}`} data-filter-row>
         <div className={styles.dropdown} ref={rarityMenuRef}>
@@ -1718,7 +1764,7 @@ export default function Pokedex() {
                       }
 
                       return (
-                        <div key={`${type}-${pokemon}-${idx}`} style={{ position: 'relative', display: 'inline-block', ...getTimeBasedStyle() }}>
+                        <div key={`${type}-${pokemon}-${idx}`} className={styles.locationPokemonItem} style={{ position: 'relative', display: 'inline-block', ...getTimeBasedStyle() }}>
                           {/* Grass Type Separator */}
                           {hasMultipleGrassTypes && (
                             <div style={{
@@ -1773,28 +1819,30 @@ export default function Pokedex() {
                             </div>
                           )}
                           
-                          <img
-                            src={API.pokemonSprite(normalized)}
-                            alt={pokemon}
-                            className={`${styles.pokemon} ${
-                              synergyDataToggle
-                                ? (isComplete ? styles.complete : styles.incomplete)
-                                : styles.complete
-                            }`}
-                            width="50"
-                            height="50"
-                            loading="lazy"
-                            onError={onGifError(normalized)}
-                            onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
-                            style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                navigate(`/pokemon/${pokemon.toLowerCase()}`)
-                              }
-                            }}
-                          />
+                          <div className={styles.pokemonContainer}>
+                            <img
+                              src={API.pokemonSprite(normalized)}
+                              alt={pokemon}
+                              className={`${styles.pokemon} ${
+                                synergyDataToggle
+                                  ? (isComplete ? styles.complete : styles.incomplete)
+                                  : styles.complete
+                              }`}
+                              width="50"
+                              height="50"
+                              loading="lazy"
+                              onError={onGifError(normalized)}
+                              onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
+                              style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  navigate(`/pokemon/${pokemon.toLowerCase()}`)
+                                }
+                              }}
+                            />
+                          </div>
                           
                           {/* Time Label - Display if time is not "ALL" */}
                           {pokemonData.time && pokemonData.time !== 'ALL' && (
@@ -2017,8 +2065,6 @@ export default function Pokedex() {
                             ? (isComplete ? styles.complete : styles.incomplete)
                             : styles.complete
                         }`}
-                        width="50"
-                        height="50"
                         loading="lazy"
                         onError={onGifError(normalized)}
                         onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
