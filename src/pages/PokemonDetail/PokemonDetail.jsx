@@ -1991,26 +1991,6 @@ useDocumentHead({
         </section>
       )}
 
-      {/* Alternative Forms */}
-      {pokemon.varieties && pokemon.varieties.length > 1 && (
-        <section className={styles.infoSection}>
-          <h2 className={styles.cardTitle}>Forms</h2>
-          <div className={styles.formsGrid}>
-            {pokemon.varieties.map((form) => (
-              <button
-                key={form.name}
-                onClick={() => navigate(`/pokemon/${form.name}`)}
-                className={styles.formButton}
-                title={`View ${form.name}`}
-              >
-                <span className={styles.formName}>{form.name.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</span>
-                {form.is_default && <span className={styles.formBadge}>Default</span>}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
     </article>
   )
 }

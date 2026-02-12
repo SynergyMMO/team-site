@@ -6,6 +6,11 @@ import spritesData from '../data/pokemmo_data/pokemon-sprites.json'
  */
 function getFormDisplayLabel(formName) {
   const displayNameMap = {
+    meloetta: 'Aria',
+    'meloetta-aria': 'Aria',
+    'meloetta-pirouette': 'Pirouette',
+    'keldeo-ordinary': 'Ordinary',
+    'keldeo-resolute': 'Resolute',
     unown: 'A',
     'unown-a': 'A',
     'unown-b': 'B',
@@ -55,12 +60,24 @@ export function usePokemonForms(pokemonName) {
 
     const pokemonLower = pokemonName.toLowerCase()
     
+    // Special cases where the standard form has a hyphen in its name
+    const specialStandardForms = {
+      'meloetta-aria': 'meloetta',
+      'meloetta-pirouette': 'meloetta',
+      'keldeo-ordinary': 'keldeo',
+      'keldeo-resolute': 'keldeo'
+    }
+    
     // Extract base name by finding all variants and determining the common base
     // This ensures rotom-fan shows all rotom forms, frillish-f shows all frillish variants, etc.
     let baseName = pokemonLower
     
+    // Check for special cases where standard form has a hyphen (e.g., meloetta-aria)
+    if (specialStandardForms[pokemonLower]) {
+      baseName = specialStandardForms[pokemonLower]
+    }
     // Check if current name is a known variant in sprites data
-    if (spritesData[pokemonLower]) {
+    else if (spritesData[pokemonLower]) {
       // It exists in sprites, use it or find its base
       // Try to find the base by checking if removing a suffix gives us another variant
       const parts = pokemonLower.split('-')
@@ -91,13 +108,15 @@ export function usePokemonForms(pokemonName) {
     // Collect all variants for this base Pokemon
     const variants = []
     
-    // Add the base form first
-    variants.push({
-      name: baseName,
-      label: getFormDisplayLabel(baseName) + ' (Male)',
-      type: 'gender',
-      displayLabel: getFormDisplayLabel(baseName)
-    })
+    // Add the base form first (only if it exists in sprites data)
+    if (spritesData[baseName]) {
+      variants.push({
+        name: baseName,
+        label: getFormDisplayLabel(baseName) + ' (Male)',
+        type: 'gender',
+        displayLabel: getFormDisplayLabel(baseName)
+      })
+    }
 
     // Scan all sprites for variants of this base name
     Object.keys(spritesData).forEach(key => {

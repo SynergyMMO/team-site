@@ -8,10 +8,16 @@ import spriteData from '../data/pokemmo_data/pokemon-sprites.json'
  */
 export function usePokemonOrder() {
   return useMemo(() => {
+    // Define forms that are actually the standard/base form for navigation purposes
+    const standardFormExceptions = {
+      'meloetta-aria': true,
+      'keldeo-ordinary': true
+    }
+
     // Create array of base pokemon only (exclude forms - those with hyphens)
     // Sort by Pokedex ID
     const allPokemon = Object.entries(spriteData)
-      .filter(([name]) => !name.includes('-')) // Only base forms, no variants
+      .filter(([name]) => !name.includes('-') || standardFormExceptions[name]) // Include base forms and exceptions
       .map(([name, data]) => ({
         name,
         id: data.id
@@ -22,6 +28,10 @@ export function usePokemonOrder() {
     // Get base form name (strip off form suffixes)
     const getBasePokemonName = (pokemonName) => {
       const lower = pokemonName.toLowerCase()
+      // Special cases for forms that map to a specific standard form
+      if (lower === 'meloetta-pirouette') return 'meloetta-aria'
+      if (lower === 'keldeo-resolute') return 'keldeo-ordinary'
+      
       // If it's a form (contains hyphen), try to find the base form
       if (lower.includes('-')) {
         // Check if base exists by progressively removing suffixes
