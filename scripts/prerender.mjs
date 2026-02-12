@@ -269,7 +269,7 @@ async function prerender() {
     '/about': {
       route: '/about',
       ogTitle: 'About SynergyMMO | Team Synergy - PokeMMO',
-      ogDescription: 'Learn about Team Synergy, a PokeMMO shiny hunting community. Discover our story, how to apply, and recent updates.',
+      ogDescription: 'Learn about Team Synergy, a PokeMMO shiny hunting community. Learn how to apply, and recent updates.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
     },
   };
