@@ -11,6 +11,12 @@ function getFormDisplayLabel(formName) {
     'meloetta-pirouette': 'Pirouette',
     'keldeo-ordinary': 'Ordinary',
     'keldeo-resolute': 'Resolute',
+    'tornadus-incarnate': 'Incarnate',
+    'tornadus-therian': 'Therian',
+    'thundurus-incarnate': 'Incarnate',
+    'thundurus-therian': 'Therian',
+    'landorus-incarnate': 'Incarnate',
+    'landorus-therian': 'Therian',
     unown: 'A',
     'unown-a': 'A',
     'unown-b': 'B',
@@ -65,7 +71,13 @@ export function usePokemonForms(pokemonName) {
       'meloetta-aria': 'meloetta',
       'meloetta-pirouette': 'meloetta',
       'keldeo-ordinary': 'keldeo',
-      'keldeo-resolute': 'keldeo'
+      'keldeo-resolute': 'keldeo',
+      'tornadus-incarnate': 'tornadus',
+      'tornadus-therian': 'tornadus',
+      'thundurus-incarnate': 'thundurus',
+      'thundurus-therian': 'thundurus',
+      'landorus-incarnate': 'landorus',
+      'landorus-therian': 'landorus'
     }
     
     // Extract base name by finding all variants and determining the common base

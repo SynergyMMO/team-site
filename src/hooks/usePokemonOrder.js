@@ -11,7 +11,10 @@ export function usePokemonOrder() {
     // Define forms that are actually the standard/base form for navigation purposes
     const standardFormExceptions = {
       'meloetta-aria': true,
-      'keldeo-ordinary': true
+      'keldeo-ordinary': true,
+      'tornadus-incarnate': true,
+      'thundurus-incarnate': true,
+      'landorus-incarnate': true
     }
 
     // Create array of base pokemon only (exclude forms - those with hyphens)
@@ -31,6 +34,9 @@ export function usePokemonOrder() {
       // Special cases for forms that map to a specific standard form
       if (lower === 'meloetta-pirouette') return 'meloetta-aria'
       if (lower === 'keldeo-resolute') return 'keldeo-ordinary'
+      if (lower === 'tornadus-therian') return 'tornadus-incarnate'
+      if (lower === 'thundurus-therian') return 'thundurus-incarnate'
+      if (lower === 'landorus-therian') return 'landorus-incarnate'
       
       // If it's a form (contains hyphen), try to find the base form
       if (lower.includes('-')) {
