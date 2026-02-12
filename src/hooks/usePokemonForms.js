@@ -17,6 +17,9 @@ function getFormDisplayLabel(formName) {
     'thundurus-therian': 'Therian',
     'landorus-incarnate': 'Incarnate',
     'landorus-therian': 'Therian',
+    'wormadam-plant': 'Plant',
+    'wormadam-sandy': 'Sandy',
+    'wormadam-trash': 'Trash',
     unown: 'A',
     'unown-a': 'A',
     'unown-b': 'B',
@@ -77,7 +80,10 @@ export function usePokemonForms(pokemonName) {
       'thundurus-incarnate': 'thundurus',
       'thundurus-therian': 'thundurus',
       'landorus-incarnate': 'landorus',
-      'landorus-therian': 'landorus'
+      'landorus-therian': 'landorus',
+      'wormadam-plant': 'wormadam',
+      'wormadam-sandy': 'wormadam',
+      'wormadam-trash': 'wormadam'
     }
     
     // Extract base name by finding all variants and determining the common base

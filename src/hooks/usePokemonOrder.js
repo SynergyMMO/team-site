@@ -14,7 +14,8 @@ export function usePokemonOrder() {
       'keldeo-ordinary': true,
       'tornadus-incarnate': true,
       'thundurus-incarnate': true,
-      'landorus-incarnate': true
+      'landorus-incarnate': true,
+      'wormadam-plant': true
     }
 
     // Create array of base pokemon only (exclude forms - those with hyphens)
@@ -37,6 +38,8 @@ export function usePokemonOrder() {
       if (lower === 'tornadus-therian') return 'tornadus-incarnate'
       if (lower === 'thundurus-therian') return 'thundurus-incarnate'
       if (lower === 'landorus-therian') return 'landorus-incarnate'
+      if (lower === 'wormadam-sandy') return 'wormadam-plant'
+      if (lower === 'wormadam-trash') return 'wormadam-plant'
       
       // If it's a form (contains hyphen), try to find the base form
       if (lower.includes('-')) {
