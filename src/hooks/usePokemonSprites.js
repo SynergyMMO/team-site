@@ -51,6 +51,7 @@ export function usePokemonSprites(pokemonName) {
             if (animatedData.front_shiny) {
               genSprites.push({
                 url: animatedData.front_shiny,
+                backUrl: animatedData.back_shiny || animatedData.front_shiny,
                 label: `${version.replace('-', ' ').toUpperCase()} - Animated Shiny`,
                 type: 'gif'
               })
@@ -58,6 +59,7 @@ export function usePokemonSprites(pokemonName) {
             if (animatedData.front_default) {
               genSprites.push({
                 url: animatedData.front_default,
+                backUrl: animatedData.back_default || animatedData.front_default,
                 label: `${version.replace('-', ' ').toUpperCase()} - Animated`,
                 type: 'gif'
               })
@@ -66,6 +68,7 @@ export function usePokemonSprites(pokemonName) {
             if (animatedData.front_shiny_female) {
               genSprites.push({
                 url: animatedData.front_shiny_female,
+                backUrl: animatedData.back_shiny_female || animatedData.front_shiny_female,
                 label: `${version.replace('-', ' ').toUpperCase()} - Animated Shiny (Female)`,
                 type: 'gif'
               })
@@ -73,6 +76,7 @@ export function usePokemonSprites(pokemonName) {
             if (animatedData.front_female) {
               genSprites.push({
                 url: animatedData.front_female,
+                backUrl: animatedData.back_female || animatedData.front_female,
                 label: `${version.replace('-', ' ').toUpperCase()} - Animated (Female)`,
                 type: 'gif'
               })
@@ -84,6 +88,7 @@ export function usePokemonSprites(pokemonName) {
               if (versionData.front_shiny_transparent) {
                 genSprites.push({
                   url: versionData.front_shiny_transparent,
+                  backUrl: versionData.back_shiny_transparent || versionData.front_shiny_transparent,
                   label: `${version.replace('-', ' ').toUpperCase()} - Shiny`,
                   type: 'png'
                 })
@@ -91,6 +96,7 @@ export function usePokemonSprites(pokemonName) {
               if (versionData.front_transparent) {
                 genSprites.push({
                   url: versionData.front_transparent,
+                  backUrl: versionData.back_transparent || versionData.front_transparent,
                   label: `${version.replace('-', ' ').toUpperCase()} - Normal`,
                   type: 'png'
                 })
@@ -99,6 +105,7 @@ export function usePokemonSprites(pokemonName) {
               if (versionData.front_shiny_transparent_female) {
                 genSprites.push({
                   url: versionData.front_shiny_transparent_female,
+                  backUrl: versionData.back_shiny_transparent_female || versionData.front_shiny_transparent_female,
                   label: `${version.replace('-', ' ').toUpperCase()} - Shiny (Female)`,
                   type: 'png'
                 })
@@ -106,6 +113,7 @@ export function usePokemonSprites(pokemonName) {
               if (versionData.front_transparent_female) {
                 genSprites.push({
                   url: versionData.front_transparent_female,
+                  backUrl: versionData.back_transparent_female || versionData.front_transparent_female,
                   label: `${version.replace('-', ' ').toUpperCase()} - Normal (Female)`,
                   type: 'png'
                 })
@@ -115,6 +123,7 @@ export function usePokemonSprites(pokemonName) {
               if (versionData.front_shiny) {
                 genSprites.push({
                   url: versionData.front_shiny,
+                  backUrl: versionData.back_shiny || versionData.front_shiny,
                   label: `${version.replace('-', ' ').toUpperCase()} - Shiny`,
                   type: 'png'
                 })
@@ -122,6 +131,7 @@ export function usePokemonSprites(pokemonName) {
               if (versionData.front_default) {
                 genSprites.push({
                   url: versionData.front_default,
+                  backUrl: versionData.back_default || versionData.front_default,
                   label: `${version.replace('-', ' ').toUpperCase()} - Normal`,
                   type: 'png'
                 })
@@ -130,6 +140,7 @@ export function usePokemonSprites(pokemonName) {
               if (versionData.front_shiny_female) {
                 genSprites.push({
                   url: versionData.front_shiny_female,
+                  backUrl: versionData.back_shiny_female || versionData.front_shiny_female,
                   label: `${version.replace('-', ' ').toUpperCase()} - Shiny (Female)`,
                   type: 'png'
                 })
@@ -137,6 +148,7 @@ export function usePokemonSprites(pokemonName) {
               if (versionData.front_female) {
                 genSprites.push({
                   url: versionData.front_female,
+                  backUrl: versionData.back_female || versionData.front_female,
                   label: `${version.replace('-', ' ').toUpperCase()} - Normal (Female)`,
                   type: 'png'
                 })
@@ -151,6 +163,7 @@ export function usePokemonSprites(pokemonName) {
             if (official.front_shiny) {
               genSprites.push({
                 url: official.front_shiny,
+                backUrl: official.front_shiny, // Artwork doesn't have back variants
                 label: 'Official Artwork - Shiny',
                 type: 'png'
               })
@@ -158,6 +171,7 @@ export function usePokemonSprites(pokemonName) {
             if (official.front_default) {
               genSprites.push({
                 url: official.front_default,
+                backUrl: official.front_default, // Artwork doesn't have back variants
                 label: 'Official Artwork - Normal',
                 type: 'png'
               })
@@ -166,6 +180,7 @@ export function usePokemonSprites(pokemonName) {
             if (official.front_shiny_female) {
               genSprites.push({
                 url: official.front_shiny_female,
+                backUrl: official.front_shiny_female, // Artwork doesn't have back variants
                 label: 'Official Artwork - Shiny (Female)',
                 type: 'png'
               })
@@ -173,6 +188,7 @@ export function usePokemonSprites(pokemonName) {
             if (official.front_female) {
               genSprites.push({
                 url: official.front_female,
+                backUrl: official.front_female, // Artwork doesn't have back variants
                 label: 'Official Artwork - Normal (Female)',
                 type: 'png'
               })

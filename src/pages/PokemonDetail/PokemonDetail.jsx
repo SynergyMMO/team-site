@@ -708,6 +708,7 @@ export default function PokemonDetail() {
   const [selectedForm, setSelectedForm] = useState(null)
   const [selectedGender, setSelectedGender] = useState('male')
   const [loadedSpriteUrl, setLoadedSpriteUrl] = useState('')
+  const [showBack, setShowBack] = useState(false)
   const [wildLevel, setWildLevel] = useState('')
   const [routeSearch, setRouteSearch] = useState('')
   const [selectedRoute, setSelectedRoute] = useState(null)
@@ -841,12 +842,14 @@ export default function PokemonDetail() {
     setSelectedForm(pokemonName)
     setSelectedGeneration('generation-v')
     setSelectedGender('male')
+    setShowBack(false)
   }, [pokemonName])
   
   // Reset sprite index when generation changes
   useEffect(() => {
     setCurrentSpriteIndex(0)
     setSelectedGender('male')
+    setShowBack(false)
   }, [selectedGeneration])
   
   useEffect(() => {
@@ -1046,8 +1049,8 @@ useDocumentHead({
   const prevPokemon = getPreviousPokemon(pokemonName)
   const currentSprite = (filteredSprites.length > 0 && filteredSprites[validSpriteIndex])
     ? filteredSprites[validSpriteIndex]
-    : { url: pokemon.sprite, label: pokemon.displayName, type: 'png' }
-  const currentSpriteUrl = currentSprite?.url
+    : { url: pokemon.sprite, label: pokemon.displayName, type: 'png', backUrl: pokemon.sprite }
+  const currentSpriteUrl = showBack ? (currentSprite?.backUrl || currentSprite?.url) : currentSprite?.url
   const isSpriteLoaded = loadedSpriteUrl === currentSpriteUrl
   
   const handlePrevious = () => {
@@ -1151,6 +1154,16 @@ useDocumentHead({
                   🔊
                 </button>
               )}
+              {currentSprite?.backUrl && currentSprite.backUrl !== currentSprite?.url && (
+                <button
+                  onClick={() => setShowBack(!showBack)}
+                  className={styles.reverseButton}
+                  title={showBack ? "Show front sprite" : "Show back sprite"}
+                  aria-label={showBack ? "Show front sprite" : "Show back sprite"}
+                >
+                  🔄
+                </button>
+              )}
               {particleAnimationKey > 0 && (
                 <img
                   key={`particle-${particleAnimationKey}`}
@@ -1182,7 +1195,7 @@ useDocumentHead({
                 </div>
               </div>
             )}
-            {availableGenerations.length > 0 && (
+            {(availableGenerations.length > 1 || filteredSprites.length > 1) && (
               <div className={styles.spriteNavigationContainer}>
                 {availableGenerations.length > 1 && (
                   <div className={styles.generationSelector}>
@@ -1201,7 +1214,7 @@ useDocumentHead({
                   </div>
                 )}
                 
-                {hasFemaleVariants && (
+                {hasFemaleVariants && availableGenerations.includes('generation-v') && (
                   <div className={styles.genderSelector}>
                     <label className={styles.genderLabel}>Gender:</label>
                     <div className={styles.genderButtons}>
