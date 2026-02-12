@@ -133,7 +133,9 @@ function PokemonStats({ pokemonName }) {
 export default PokemonStats
 ```
 
-## Available Data from `usePokemonDetails`
+## Available Hooks for Pokémon Data
+
+### `usePokemonDetails(pokemonName)`
 
 The hook returns an object with this structure:
 
@@ -157,16 +159,202 @@ The hook returns an object with this structure:
     spDef: number,
     speed: number
   },
-  moves: string[],               // Array of move names
-  sprite: string,                // Official artwork URL
+  moves: [                        // Array of move objects
+    {
+      name: string,              // Move name
+      methods: [                 // How it's learned
+        {
+          level: number,         // Level learned (0 if not level-up)
+          method: string         // 'level-up', 'machine', 'tutor', etc.
+        }
+      ]
+    }
+  ],
+  sprite: string,                // Best available sprite URL (from JSON-based system)
   generation: string,            // e.g., 'generation-v'
   description: string,           // Pokédex entry
   color: string,                 // Color name
   baseExperience: number,        // Base experience points
   eggGroups: string[],           // Breeding groups
-  catchRate: number,             // Catch rate value
-  hatchCounter: number           // Egg cycles to hatch
+  catchRate: number,             // Catch rate value (1-255)
+  hatchCounter: number,          // Egg cycles to hatch
+  isLegendary: boolean,          // Is legendary Pokemon
+  isMythical: boolean,           // Is mythical Pokemon
+  obtainable: boolean,           // Can be obtained in-game
+  locations: [                   // Where to find this Pokemon
+    {
+      location: string,
+      region_name: string,
+      min_level: number,
+      max_level: number,
+      rarity: string,
+      time: string               // 'ALL', 'Day/Morning', etc.
+    }
+  ]
 }
+```
+
+### `usePokemonSprites(pokemonName)` - NEW SYSTEM (v2.0+)
+
+**Returns:** Object with sprites organized by generation
+
+```javascript
+const spritesByGeneration = usePokemonSprites(pokemonName);
+// Result:
+{
+  'generation-i': [
+    {
+      url: string,               // Image URL
+      label: string,             // e.g., "Red-Blue - Normal"
+      type: string               // 'png' or 'gif'
+    },
+    // ... more sprites
+  ],
+  'generation-v': [
+    {
+      url: string,
+      label: string,             // e.g., "Black-White - Animated Shiny (Female)"
+      type: string               // 'gif' for animated
+    },
+    // ... more sprites
+  ]
+  // ... other generations
+}
+```
+
+**Key Features:**
+- Sprites automatically organized by generation
+- Includes gender variants when available
+- Animated GIFs in Generation V
+- Transparent sprites for Generation I & II
+- Official artwork as fallback
+
+### `usePokemonForms(pokemonName)` - DYNAMIC FORM DISCOVERY (v2.0+)
+
+**Returns:** Array of available forms and variants
+
+```javascript
+const forms = usePokemonForms(pokemonName);
+// Result:
+[
+  {
+    name: 'bulbasaur',           // Internal form name
+    label: 'Bulbasaur (Male)',   // User-friendly label
+    type: 'gender',              // 'form' or 'gender'
+    displayLabel: 'Bulbasaur'    // Short label
+  },
+  {
+    name: 'rotom-heat',
+    label: 'Heat',
+    type: 'form',
+    displayLabel: 'Heat'
+  },
+  // ... more forms
+]
+```
+
+### `usePokemonLocations(pokemonName)`
+
+**Returns:** Array of location objects where Pokemon can be found
+
+```javascript
+const locations = usePokemonLocations(pokemonName);
+// Result:
+[
+  {
+    pokemon: string,
+    pokemon_id: number,          // Correct ID for form variants
+    location: string,            // e.g., "ROUTE 3"
+    region_name: string,         // e.g., "Kanto"
+    type: string,                // Encounter type (Grass, Water, etc.)
+    min_level: number,
+    max_level: number,
+    rarity: string,              // Common, Uncommon, Rare, etc.
+    time: string                 // 'ALL', 'Day/Morning', etc.
+  }
+]
+```
+
+### `usePokemonOrder()`
+
+**Returns:** Navigation helpers for Pokemon ordering
+
+```javascript
+const { 
+  allPokemon,              // Array of base Pokemon names in ID order
+  getPokemonIndex,         // Function: Get index of Pokemon
+  getNextPokemon,          // Function: Get next Pokemon name
+  getPreviousPokemon       // Function: Get previous Pokemon name
+} = usePokemonOrder();
+```
+```
+
+## New Sprite System Integration (v2.0+)
+
+The sprite system has been refactored to use a JSON-based approach in `src/data/pokemmo_data/pokemon-sprites.json`. This provides several advantages:
+
+### Features
+- **Generation-Based Organization:** Sprites organized by game generation
+- **Gender Variants:** Female variants auto-detected and displayed separately
+- **Animated Sprites:** Generation V includes GIF animations
+- **Multiple Variants per Generation:** Normal, Shiny, Transparent, Official Artwork
+- **Dynamic Form Discovery:** Forms and variants discovered automatically
+
+### Using the New System
+
+```jsx
+import { usePokemonSprites } from '../../hooks/usePokemonSprites'
+import { usePokemonForms } from '../../hooks/usePokemonForms'
+
+function PokemonViewer({ pokemonName }) {
+  const spritesByGeneration = usePokemonSprites(pokemonName)
+  const availableForms = usePokemonForms(pokemonName)
+  
+  const [selectedGen, setSelectedGen] = useState('generation-v')
+  const [selectedGender, setSelectedGender] = useState('male')
+  
+  const genSprites = spritesByGeneration[selectedGen] || []
+  const filteredSprites = genSprites.filter(s => {
+    if (selectedGender === 'female') return s.label.includes('(Female)')
+    return !s.label.includes('(Female)')
+  })
+  
+  return (
+    <div>
+      {/* Generation selector */}
+      <select onChange={(e) => setSelectedGen(e.target.value)}>
+        {Object.keys(spritesByGeneration).map(gen => (
+          <option key={gen} value={gen}>{gen}</option>
+        ))}
+      </select>
+      
+      {/* Gender selector */}
+      <button onClick={() => setSelectedGender('male')}>Male</button>
+      <button onClick={() => setSelectedGender('female')}>Female</button>
+      
+      {/* Display sprites */}
+      {filteredSprites.map((sprite, idx) => (
+        <img key={idx} src={sprite.url} alt={sprite.label} />
+      ))}
+    </div>
+  )
+}
+```
+
+### Migration from Old System
+
+If you were using the old sprite system:
+
+**Before (Flat Array):**
+```javascript
+const sprites = usePokemonSprites(pokemon)
+// Returns: [{url, label, type}, ...]
+```
+
+**Now (Generation-Organized):**
+```javascript
+const spritesByGeneration = usePokemonSprites(pokemon)
+// Returns: {'generation-i': [...], 'generation-v': [...], ...}
 ```
 
 ## Navigation Routes
@@ -180,6 +368,8 @@ Examples:
 - `/pokemon/pikachu`
 - `/pokemon/charizard`
 - `/pokemon/bulbasaur`
+- `/pokemon/rotom-heat` (forms included)
+- `/pokemon/frillish-f` (gender variants)
 
 The name in the URL can be any valid Pokémon name from the official Pokédex.
 

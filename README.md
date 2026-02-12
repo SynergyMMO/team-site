@@ -381,33 +381,68 @@ Located in `src/data/pokemmo_data/pokemon-data.json` - Comprehensive Pokémon me
 - `is_legendary`/`is_mythical`: Boolean flags for legendary detection
 - `obtainable`: Whether Pokémon can be obtained in-game
 
-### Pokemon Sprites
+### Pokemon Sprites (JSON-Based System - v2.0+)
 
-Located in `src/data/pokemmo_data/pokemon-sprites.json` - Image asset paths:
+Located in `src/data/pokemmo_data/pokemon-sprites.json` - Comprehensive sprite data organized by generation:
 
 ```javascript
 {
   "bulbasaur": {
-    normal_male: "/images/pokemon_gifs/tier_x/bulbasaur.gif",
-    normal_female: "/images/pokemon_gifs/tier_x/bulbasaur-female.gif",
-    shiny_male: "/images/pokemon_gifs/tier_x/bulbasaur-shiny.gif",
-    shiny_female: "/images/pokemon_gifs/tier_x/bulbasaur-shiny-female.gif",
-    front_default: "/sprites/front/bulbasaur.png",
-    front_shiny: "/sprites/front_shiny/bulbasaur.png"
+    id: 1,
+    sprites: {
+      versions: {
+        'generation-i': {
+          'red-blue': {
+            front_default: 'url',
+            front_shiny: 'url',
+            front_transparent: 'url',
+            // ... transparent variants
+          }
+        },
+        'generation-v': {
+          'black-white': {
+            animated: {
+              front_default: 'url',
+              front_shiny: 'url',
+              front_female: 'url',
+              front_shiny_female: 'url'
+            },
+            front_default: 'url',
+            front_shiny: 'url',
+            // ... static versions
+          }
+        }
+      },
+      other: {
+        'official-artwork': {
+          front_default: 'url',
+          front_shiny: 'url',
+          front_female: 'url',
+          front_shiny_female: 'url'
+        }
+      }
+    }
   }
   // ... more Pokémon
 }
 ```
 
-**Key Fields:**
-- `normal_male`/`normal_female`: Standard sprite paths
-- `shiny_male`/`shiny_female`: Shiny variant paths
-- `front_default`/`front_shiny`: Alternative sprite variants
-- Paths use fallback to remote source if local files don't exist
+**Key Features:**
+- **Generation-Based:** Sprites organized by generation (generation-i through generation-v)
+- **Animated Support:** Generation V includes animated sprites with automatic gender detection
+- **Transparent Sprites:** Generation I & II include transparent variants for better display
+- **Official Artwork:** Latest official artwork fallback for all generations
+- **Female Variants:** Auto-detects female variants (front_female, front_shiny_female) per version
+- **Dynamic Discovery:** Forms and variants discovered from sprite data automatically
+
+**Removed Legacy Features:**
+- No more hardcoded female sprite URLs (img.pokemondb.net overrides removed)
+- No more external sprite source dependencies
+- Forms and gender variants discovered dynamically
 
 **Backup Data:**
-- `pokemon-data-save.json`: Backup copy of pokemon-data.json
-- `pokemon-sprites-save.json`: Backup copy of pokemon-sprites.json
+- `pokemon-data_save.json`: Backup copy of pokemon-data.json
+- `pokemon-sprites copy.json`: Backup copy of pokemon-sprites.json
 
 ---
 
@@ -515,32 +550,76 @@ const tiers = useTieredShinies(shotmData, tierLookup, { onlyCurrentMonth: true }
 ```
 
 ### `usePokemonDetails()`
-Fetches detailed information for a single Pokémon (types, stats, abilities, moves).
+Fetches detailed information for a single Pokémon (types, stats, abilities, moves, and sprite).
 
 ```javascript
-const { pkdata, spritePath, isLoading } = usePokemonDetails(pokemonName);
+const { data, isLoading, error } = usePokemonDetails(pokemonName);
+// Returns: { id, name, displayName, types, abilities, stats, moves, sprite, generation, ... }
 ```
 
+**Features:**
+- Extracts correct Pokedex ID for form variants
+- Selects sprite from JSON-based sprite system with fallbacks
+- Handles form variants and gender-specific entries
+- Returns comprehensive Pokemon metadata
+
 ### `usePokemonLocations()`
-Retrieves encounter locations and rarity data for a Pokémon.
+Retrieves encounter locations and rarity data for a Pokémon, with correct ID handling for form variants.
 
 ```javascript
-const { locations, rarities, isLoading } = usePokemonLocations(pokemonName);
+const locations = usePokemonLocations(pokemonName);
+// Returns array of location objects with region, level, rarity, time info
 ```
 
 ### `usePokemonOrder()`
-Gets the canonical Pokémon order/ID from the Pokédex.
+Gets the canonical Pokémon order sorted by Pokedex ID from sprite data.
 
 ```javascript
-const { order, isLoading } = usePokemonOrder(pokemonName);
+const { allPokemon, getNextPokemon, getPreviousPokemon } = usePokemonOrder();
 ```
+
+**Features:**
+- Uses pokemon-sprites.json as source of truth for Pokemon ordering
+- Base forms only (no variants in navigation)
+- Sorted by Pokedex ID
+- Form variants map to their base form for navigation
 
 ### `usePokemonSprites()`
-Loads and caches Pokémon sprite image paths with fallback handling.
+**REFACTORED** - Now returns sprites organized by generation instead of a flat array.
+
+Loads and organizes Pokémon sprite image paths by generation with gender variant support.
 
 ```javascript
-const { spriteUrl, shinySpriteUrl, isLoading } = usePokemonSprites(pokemonName);
+const spritesByGeneration = usePokemonSprites(pokemonName);
+// Returns: {
+//   'generation-i': [{url, label, type}, ...],
+//   'generation-ii': [{url, label, type}, ...],
+//   'generation-v': [{url, label, type}, ...],
+//   ...
+// }
 ```
+
+**Features:**
+- Returns sprites organized by generation (Gen I through Gen V)
+- Supports animated Gen V sprites with highest priority
+- Handles transparent sprites for Gen I/II
+- Includes official artwork
+- Auto-detects female variants per generation
+- Removed hardcoded female sprite overrides
+
+### `usePokemonForms()`
+Gets all available forms and gender variants for a Pokémon dynamically.
+
+```javascript
+const forms = usePokemonForms(pokemonName);
+// Returns: [{ name, label, type, displayLabel }, ...]
+```
+
+**Features:**
+- Dynamically discovers forms from sprite data
+- Removed hardcoded female overrides (frillish-f, jellicent-f, unfezant-f)
+- Handles edge cases like Unown letter forms
+- Separates form variants from gender variants
 
 ---
 

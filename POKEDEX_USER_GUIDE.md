@@ -194,9 +194,37 @@ The Pokémon Detail page shows comprehensive information about a single Pokémon
 - **Back Button** - Arrow to return to previous page or Pokédex
 - **Navigation Arrows** - Arrows to go to previouis or next pokedex number.
 
-#### 2. **Basic Information Card**
+#### 2. **Image Display & Sprite Selectors**
+
+**Main Image Display:**
+- Large sprite/image of the Pokémon
+- Shows different forms and gender variants
+- Animated GIFs when available
+
+**Generation Selector** (Dropdown)
+- Choose which Pokémon generation's sprites to view
+- Options: Generation I through Generation V (if available)
+- Defaults to Generation V (modern sprites)
+- Automatically resets sprite counter when changed
+
+**Gender Selector** (Buttons - Only shows when available)
+- ♂ Male button - View male sprite variants
+- ♀ Female button - View female sprite variants
+- Only appears if current generation has gender-specific sprites
+- Resets when switching generations or forms
+
+**Sprite Navigation**
+- ❮ ❯ Buttons - Navigate through different sprites/variants in current generation
+- Shows sprite count (e.g., "3/5") indicating current position
+- Filters automatically to show only selected gender variants
+
+**Example Workflow:**
+1. Select "Generation V" to view modern sprites
+2. For Frillish, select "♀ Female" to see female variant
+3. Use navigation arrows to see different sprite versions (Normal, Shiny, etc.)
+
+#### 3. **Basic Information Card**
 Shows core Pokémon data:
-- **Official Art** - Large sprite/image
 - **Height** - in meters (m)
 - **Weight** - in kilograms (kg)
 - **Gender Ratio** - Visual breakdown of male/female distribution (if applicable)
@@ -207,7 +235,7 @@ Shows core Pokémon data:
 - Red bar = Female percentage
 - "Genderless" = This Pokémon has no gender
 
-#### 3. **Type & Ability Section**
+#### 4. **Type & Ability Section**
 - **Types** - Colored badges showing primary and secondary types
   - Click type badges to see other Pokémon of that type (if implemented)
 
@@ -221,7 +249,7 @@ Shows core Pokémon data:
   - Example: Hovering over Pikachu's "Static" shows "Has a 30% chance of paralyzing on contact with the opposing Pokémon."
 - **What's the difference?** Hidden abilities are rarer, can only be obtained through Alpha swarms or Mystery balls, can sometimes have better abilities locked behind them.
 
-#### 4. **Base Stats Chart** 
+#### 5. **Base Stats Chart** 
 Compares this Pokémon's stats to others:
 
 **Stats Displayed:**
@@ -245,7 +273,7 @@ Compares this Pokémon's stats to others:
 **Example:** Alakazam has high SP.ATK (green) but low DEF (red) - glass cannon!
 
 
-#### 5. **Evolution Line**
+#### 6. **Evolution Line**
 Shows the complete evolution chain for this Pokémon:
 
 **How to Read the Evolution Line:**
@@ -268,7 +296,7 @@ Shows the complete evolution chain for this Pokémon:
 - Hover for a subtle highlight effect
 
 
-#### 6. **Breeding Information**
+#### 7. **Breeding Information**
 - **Egg Groups** - Which egg groups this Pokémon belongs to
   - Determines which Pokémon it can breed with
   - Example: Both must share an Egg Group (or one must be Ditto)
@@ -295,6 +323,7 @@ Shows the complete evolution chain for this Pokémon:
 
 #### 8. **Locations** 🎯
 Shows where to find this Pokémon in the game:
+Shows where to find this Pokémon in the game:
 
 **Location Card Details:**
 - **Location Name** - Route or area (e.g., "ROUTE 3")
@@ -315,6 +344,7 @@ Shows where to find this Pokémon in the game:
 - Example: "ROUTE 3 - Kanto" (NOT just "ROUTE 3")
 
 #### 9. **Learnable Moves**
+Lists moves this Pokémon can learn:
 Lists moves this Pokémon can learn:
 
 **Move Columns:**
@@ -345,32 +375,43 @@ Shows which team members have caught this Pokémon as a shiny:
 
 ### Pokédex Pro Tips
 
-**1. Narrow Down Quickly**
+**1. Understanding Sprite Generations**
+- **Generation I-II**: Classic pixel art sprites with transparent backgrounds
+- **Generation V**: Modern animated sprites (GIFs) - most detailed
+- View different eras of Pokémon game visuals
+- Female variants sometimes have different appearance (Frillish, Unfezant, etc.)
+
+**2. Narrow Down Quickly**
 - Start with type filter (Fire, Water, etc.)
 - Add location filter if hunting
 - Add tier filter for difficulty level
 - Combine: Gen 1 + Fire type + Rare = Specific Pokémon subset
 
-**2. Finding "Specific" Pokémon**
+**3. Finding "Specific" Pokémon**
 - Know the location? Use location filter
 - Know the type? Use type filter
 - Know the name? Use search bar
 - Know nothing? Use tier filter to narrow by difficulty
 
-**3. Location Hunting**
+**4. Location Hunting**
 - Use location filter: "ROUTE 3 - Kanto"
 - Shows all Pokémon available there
 - Sort by rarity to see easiest catches first
 
-**4. Breeding Preparation**
+**5. Breeding Preparation**
 - Use egg group filter
 - See all Pokémon you can breed with
 - Check compatibility before catching
 
-**5. Team Building**
+**6. Team Building**
 - Filter by type to build balanced team
 - Use stats filter to find strong stats
 - Combine with Gen filter to plan evolution strategies
+
+**7. Sprite Viewing Tips**
+- Use generation selector to compare how Pokémon looked across game eras
+- Switch gender to see sexual dimorphism (Frillish, Unfezant, etc.)
+- Use sprite navigation arrows to see Normal, Shiny, and Official Artwork variants
 
 ### Mobile Users - Filter Menu Guide
 
@@ -394,28 +435,47 @@ Shows which team members have caught this Pokémon as a shiny:
 
 ### Pokémon Detail Pro Tips
 
-**1. Navigation**
+**1. Viewing Different Sprite Versions**
+- Switch generations to see how Pokémon looked in different game eras
+- Generation V sprites are most detailed and animated
+- Use gender selector to see sexual dimorphism (some Pokémon differ by gender)
+- Navigation arrows cycle through different sprite variants in current generation
+
+**2. Generation Selector Tips**
+- Default is Generation V (modern, most detailed)
+- Earlier generations show simpler pixel art
+- Some Pokémon only available in later generations
+- Missing generations mean that Pokémon wasn't in that era
+
+**3. Gender Selector Tips**
+- Not all Pokémon have gender differences
+- Gender button only appears when variants exist for that generation
+- Example: Frillish has different appearance when female
+- Resets when you change generation or form
+
+**4. Navigation**
 - Back button remembers previous page
 - Share Pokémon link with friends: `/pokemon/pikachu`
 - Bookmark favorite Pokémon
+- Use prev/next arrows in header to navigate by Pokedex ID
 
-**2. Understanding Location Data**
+**5. Understanding Location Data**
 - Each location lists all encounter types
 - Click location to see other Pokémon there
 - "Horde" = Multiple Pokémon in one battle
 - "Fishing" = Requires fishing rod
 
-**3. Move Analysis**
+**6. Move Analysis**
 - Sort moves by level to see natural progression
 - High power + high accuracy = best moves
 - Status moves (like Thunder Wave) useful even with 0 power
 
-**4. Evolution Planning**
+**7. Evolution Planning**
 - Check evolution requirements before catching
 - Some evolve at specific levels
 - Some need stones or friendship - plan accordingly
 
-**5. Optimal Stat Combinations**
+**8. Optimal Stat Combinations**
 - Pikachu line: Best SP.ATK, low DEF = Special sweeper role
 - Onix: High DEF, low SP.DEF = Physical wall
 - Alakazam: High SPD + SP.ATK = Lead/Sweeper
@@ -447,6 +507,20 @@ A: Pokédex clears search when you apply filters. This is intentional to show fu
 
 **Q: Can I export or print the filtered results?**
 A: Not built-in, but you can screenshot or use browser's print function (Ctrl+P).
+
+### Sprite & Generation Questions
+
+**Q: Why are there different generations of sprites?**
+A: Pokémon games evolved over time. Earlier games (Gen I-II) had pixel art sprites, while newer games have higher quality art. The Gen V sprites are from the most modern era with animations.
+
+**Q: Can I see shiny versions?**
+A: Yes, some sprite variants are shiny versions. Use the sprite navigation arrows to cycle through different variants in each generation (Normal, Shiny, Official Artwork, etc.).
+
+**Q: Why doesn't my Pokémon have female variants?**
+A: Many Pokémon don't have visual gender differences. Female variants only appear if the game designers made them look different (like Frillish, Unfezant, etc.).
+
+**Q: What if a generation doesn't exist for this Pokémon?**
+A: That's because the Pokémon wasn't released in earlier games. For example, Pokémon from Generation VIII won't have Gen I sprites. The dropdown only shows available generations.
 
 ### Pokémon Detail Questions
 
