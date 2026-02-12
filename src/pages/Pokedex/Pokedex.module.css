@@ -480,7 +480,7 @@
 
 @media (max-width: 600px) {
   .locationGrid {
-    grid-template-columns: repeat(5, 65px);
+    grid-template-columns: repeat(auto-fit, 65px);
     gap: 10px;
     row-gap: 80px;
     padding: 15px 0;
@@ -491,7 +491,7 @@
 
 @media (max-width: 400px) {
   .locationGrid {
-    grid-template-columns: repeat(4, 70px);
+    grid-template-columns: repeat(auto-fit, 70px);
     gap: 8px;
     row-gap: 35px;
     padding: 10px 0;
@@ -932,7 +932,7 @@
 @media (max-width: 600px) {
   .locationPokemonItem {
     display: block !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     max-width: 100% !important;
     max-height: 100% !important;
     box-sizing: border-box !important;
@@ -950,7 +950,7 @@
 @media (max-width: 400px) {
   .locationPokemonItem {
     display: block !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     max-width: 100% !important;
     max-height: 100% !important;
     box-sizing: border-box !important;
