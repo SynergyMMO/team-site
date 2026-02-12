@@ -20,6 +20,12 @@ function getFormDisplayLabel(formName) {
     'wormadam-plant': 'Plant',
     'wormadam-sandy': 'Sandy',
     'wormadam-trash': 'Trash',
+    'deoxys-normal': 'Normal',
+    'deoxys-attack': 'Attack',
+    'deoxys-defense': 'Defense',
+    'deoxys-speed': 'Speed',
+    'shaymin-land': 'Land',
+    'shaymin-sky': 'Sky',
     unown: 'A',
     'unown-a': 'A',
     'unown-b': 'B',
@@ -83,7 +89,13 @@ export function usePokemonForms(pokemonName) {
       'landorus-therian': 'landorus',
       'wormadam-plant': 'wormadam',
       'wormadam-sandy': 'wormadam',
-      'wormadam-trash': 'wormadam'
+      'wormadam-trash': 'wormadam',
+      'deoxys-normal': 'deoxys',
+      'deoxys-attack': 'deoxys',
+      'deoxys-defense': 'deoxys',
+      'deoxys-speed': 'deoxys',
+      'shaymin-land': 'shaymin',
+      'shaymin-sky': 'shaymin'
     }
     
     // Extract base name by finding all variants and determining the common base
