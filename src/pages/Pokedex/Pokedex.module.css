@@ -419,8 +419,6 @@
     gap: 8px;
     row-gap: 20px;
     justify-content: center;
-    justify-items: center;
-    align-items: center;
     max-width: calc(100% - 20px);
     margin: 0 auto;
   }
@@ -433,8 +431,6 @@
     gap: 8px;
     row-gap: 20px;
     justify-content: center;
-    justify-items: center;
-    align-items: center;
     max-width: calc(100% - 16px);
     margin: 0 auto;
   }
@@ -880,8 +876,8 @@
 
 @media (max-width: 600px) {
   .locationPokemonItem {
-    width: 35px !important;
-    height: 35px !important;
+    width: 45px !important;
+    height: 45px !important;
     margin: 0 2px 20px 2px !important;
   }
 
@@ -893,13 +889,6 @@
   .locationPokemonItem > div[style*="bottom: -22px"] > div {
     font-size: 0.55rem !important;
   }
-
-  .locationPokemonItem > div[style*="bottom: -30px"] {
-    font-size: 0.48rem !important;
-    padding: 2px 4px !important;
-    min-width: 40px !important;
-    max-width: 80px !important;
-  }
 }
 
 @media (max-width: 400px) {
@@ -907,21 +896,5 @@
     width: 25px !important;
     height: 25px !important;
     margin: 0 2px 20px 2px !important;
-  }
-
-  .locationPokemonItem > div[style*="bottom: -22px"] {
-    font-size: 0.45rem !important;
-    width: 45px !important;
-  }
-
-  .locationPokemonItem > div[style*="bottom: -22px"] > div {
-    font-size: 0.45rem !important;
-  }
-
-  .locationPokemonItem > div[style*="bottom: -30px"] {
-    font-size: 0.4rem !important;
-    padding: 1px 3px !important;
-    min-width: 30px !important;
-    max-width: 60px !important;
   }
 }
