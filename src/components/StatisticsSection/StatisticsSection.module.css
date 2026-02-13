@@ -1,0 +1,714 @@
+/* Statistics Section Container */
+.statisticsSection {
+  margin: 3rem 0;
+  padding: 0;
+  text-align: left;
+}
+
+.mainTitle {
+  color: #fff;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+/* Collapsible Sections */
+.collapsibleSection {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 100%);
+  border: 2px solid #00d4ff;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.collapsibleSection:hover {
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
+}
+
+.sectionHeader {
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 212, 255, 0.05) 100%);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 2px solid #00d4ff;
+}
+
+.sectionHeader:hover {
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 212, 255, 0.1) 100%);
+}
+
+.icon {
+  font-size: 1.3rem;
+  min-width: 30px;
+}
+
+.title {
+  flex: 1;
+  text-align: left;
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.arrow {
+  transition: transform 0.3s ease;
+  color: #00d4ff;
+  font-size: 0.9rem;
+}
+
+.arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.sectionContent {
+  padding: 1.5rem;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 2000px;
+  }
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.statCard {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(51, 134, 255, 0.1) 100%);
+  border: 2px solid #00d4ff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.1);
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.25);
+  border-color: #ffbe0b;
+}
+
+.statLabel {
+  color: #b0b0b0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.statValue {
+  color: #00d4ff;
+  font-size: 2rem;
+  font-weight: 900;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.statSubtext {
+  color: #888;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Methods List */
+.methodsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.methodItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: rgba(0, 212, 255, 0.05);
+  border-radius: 8px;
+  border-left: 4px solid #00d4ff;
+}
+
+.methodName {
+  min-width: 120px;
+  color: #fff;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.methodBar {
+  flex: 1;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #00d4ff;
+}
+
+.methodFill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #00d4ff, #3a86ff);
+  border-radius: 12px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.methodCount {
+  min-width: 40px;
+  text-align: right;
+  color: #00d4ff;
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+/* Methods Table */
+.methodsTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(0, 212, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.methodsHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15) 0%, rgba(51, 134, 255, 0.1) 100%);
+  border-bottom: 2px solid #00d4ff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #00d4ff;
+}
+
+.methodsHeaderCell {
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.methodsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+  align-items: center;
+  transition: background 0.3s ease;
+}
+
+.methodsRow:hover {
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.methodsRow:last-child {
+  border-bottom: none;
+}
+
+.methodsCell {
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  text-transform: capitalize;
+}
+
+.methodsCell:last-child {
+  color: #00d4ff;
+  font-weight: 700;
+}
+
+/* Charts */
+.chartContainer {
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background: rgba(0, 212, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.chartTitle {
+  color: #00d4ff;
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.chart {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  padding: 0;
+}
+
+.chartLabel {
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+}
+
+/* Pie Chart */
+.pieChartWrapper {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.pieChart {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.2));
+}
+
+.pieLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(0, 212, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  min-width: 200px;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.legendColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.legendLabel {
+  color: #e0e0e0;
+}
+
+/* Line Chart */
+.lineChartWrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding: 1rem 0;
+  border-radius: 8px;
+}
+
+.lineChart {
+  width: 100%;
+  height: auto;
+  min-height: 350px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  padding: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .statisticsSection {
+    margin: 2rem 0;
+  }
+
+  .mainTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sectionHeader {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .sectionContent {
+    padding: 1rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .statCard {
+    padding: 1rem;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  .pieChartWrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pieLegend {
+    min-width: 100%;
+    max-height: none;
+  }
+
+  .methodsTable {
+    font-size: 0.9rem;
+  }
+
+  .methodsHeader {
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .methodsRow {
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .methodsCell,
+  .methodsHeaderCell {
+    font-size: 0.85rem;
+  }
+
+  .chartContainer {
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .chartTitle {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .chart {
+    min-height: 450px;
+  }
+
+  .lineChart {
+    min-height: 450px;
+  }
+
+  .pieChart {
+    max-width: 280px;
+  }
+
+  /* Switch to table on tablet and below */
+  .encounterGraphsDesktop {
+    display: none;
+    grid-template-columns: 1fr;
+  }
+
+  .encounterTableMobile {
+    display: block;
+  }
+
+  .zoomIndicator {
+    display: none;
+  }
+
+  .graphsZoomButton {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    flex: none;
+  }
+
+  .graphsButtonContainer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .tableHeader {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .tableRow {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .tableCell,
+  .tableHeaderCell {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .statisticsSection {
+    margin: 1.5rem 0;
+  }
+
+  .mainTitle {
+    font-size: 1.3rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .statCard {
+    padding: 0.75rem;
+  }
+
+  .statValue {
+    font-size: 1.3rem;
+  }
+
+  .methodsTable {
+    font-size: 0.8rem;
+  }
+
+  .methodsHeader {
+    grid-template-columns: auto 1fr 1fr;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .methodsRow {
+    grid-template-columns: auto 1fr 1fr;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .methodsCell,
+  .methodsHeaderCell {
+    font-size: 0.75rem;
+  }
+
+  .methodsHeaderCell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pieChartWrapper {
+    gap: 0.5rem;
+  }
+
+  .chartContainer {
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .chartTitle {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .chart,
+  .lineChart {
+    min-height: 400px;
+  }
+
+  .pieChart {
+    max-width: 220px;
+  }
+
+  /* Table styling on mobile */
+  .tableHeader {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .tableRow {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .tableCell,
+  .tableHeaderCell {
+    font-size: 0.8rem;
+  }
+}
+
+/* Encounter Analysis Responsive */
+.encounterGraphsDesktop {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.encounterGraphsDesktop > div {
+  position: relative;
+  width: 100%;
+}
+
+.encounterTableMobile {
+  display: none;
+}
+
+.encounterTableMobile button {
+  display: inline-block;
+}
+
+.graphsButtonContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Encounter Data Table */
+.encounterTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(0, 212, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  margin-bottom: 1.5rem;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15) 0%, rgba(51, 134, 255, 0.1) 100%);
+  border-bottom: 2px solid #00d4ff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #00d4ff;
+}
+
+.tableHeaderCell {
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+  align-items: center;
+  transition: background 0.3s ease;
+}
+
+.tableRow:hover {
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableCell {
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.tableCell:last-child {
+  color: #00d4ff;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Scrollbar Styling */
+.pieLegend::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pieLegend::-webkit-scrollbar-track {
+  background: rgba(0, 212, 255, 0.1);
+  border-radius: 8px;
+}
+
+.pieLegend::-webkit-scrollbar-thumb {
+  background: #00d4ff;
+  border-radius: 8px;
+}
+
+.pieLegend::-webkit-scrollbar-thumb:hover {
+  background: #ffbe0b;
+}
+/* Zoom Indicator for Mobile */
+.zoomIndicator {
+  display: none;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background: rgba(0, 212, 255, 0.9);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  z-index: 10;
+}
+
+/* Graphs Zoom Button for Mobile */
+.graphsZoomButton {
+  display: none;
+  flex: 1;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(51, 134, 255, 0.2) 100%);
+  border: 2px solid #00d4ff;
+  color: #00d4ff;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+}
+
+.graphsZoomButton:hover {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(51, 134, 255, 0.3) 100%);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.graphsZoomButton:active {
+  transform: translateY(0);
+}

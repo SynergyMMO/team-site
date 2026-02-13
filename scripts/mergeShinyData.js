@@ -142,6 +142,45 @@ function normalizeUsername(name) {
 }
 
 /**
+ * Normalizes Pokémon names by removing known form suffixes.
+ * This allows matching Pokémon with variants during merge.
+ * 
+ * Examples:
+ *   - "frillish-f" → "frillish"
+ *   - "jellicent-f" → "jellicent"
+ *   - "gastrodon-east" → "gastrodon"
+ *   - "rotom-heat" → "rotom"
+ *   - "pikachu" → "pikachu" (no change if no suffix)
+ */
+function normalizePokemonName(name) {
+  if (!name) return name;
+  
+  const normalized = name.toLowerCase();
+  
+  // Remove known form suffixes
+  // Patterns: -f (female), -east/-west (regional), -north/-south, 
+  // -alola, -galar, -heat, -wash, -frost, -fan, -mow, etc.
+  const suffixes = [
+    /-[a-z]+$/i  // Remove any hyphen followed by letters (catches all variants)
+  ];
+  
+  let result = normalized;
+  for (const suffix of suffixes) {
+    // Only remove if it looks like a form suffix (not the main name)
+    const match = result.match(suffix);
+    if (match) {
+      const baseName = result.replace(suffix, '');
+      // Only remove if we'd have a reasonable base name left
+      if (baseName && baseName.length > 1) {
+        result = baseName;
+      }
+    }
+  }
+  
+  return result;
+}
+
+/**
  * Logs with colors (basic ANSI colors)
  */
 function log(message, type = 'info') {
@@ -331,6 +370,7 @@ function extractApiFields(apiShiny, fieldsToMerge) {
 /**
  * Merges API data into Cloudflare data for a single user.
  * Also removes any mergeable fields that are no longer in fieldsToMerge.
+ * Uses normalized Pokémon names for matching to handle form variants (-f, -east, etc).
  */
 function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
   if (!cloudflareUserData || !cloudflareUserData.shinies) {
@@ -340,7 +380,8 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
   // Determine which fields to remove (API fields not in current merge list)
   const fieldsToRemove = new Set(ALL_MERGEABLE_FIELDS.filter(f => !fieldsToMerge.includes(f)));
 
-  // Create a map of Pokémon names to their API data (ordered by appearance)
+  // Create a map of normalized Pokémon names to their API data (ordered by appearance)
+  // This allows matching Pokémon with variants like "frillish-f" to "frillish"
   const pokemonToApiData = {};
   const pokemonCount = {};
 
@@ -348,13 +389,16 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
     const pokemonName = apiShiny.pokemon_name;
     if (!pokemonName) return;
 
-    if (!pokemonCount[pokemonName]) {
-      pokemonCount[pokemonName] = 0;
-      pokemonToApiData[pokemonName] = [];
+    // Normalize the name for matching purposes
+    const normalizedName = normalizePokemonName(pokemonName);
+
+    if (!pokemonCount[normalizedName]) {
+      pokemonCount[normalizedName] = 0;
+      pokemonToApiData[normalizedName] = [];
     }
 
-    pokemonToApiData[pokemonName][pokemonCount[pokemonName]] = apiShiny;
-    pokemonCount[pokemonName]++;
+    pokemonToApiData[normalizedName][pokemonCount[normalizedName]] = apiShiny;
+    pokemonCount[normalizedName]++;
   });
 
   // Merge: Iterate through Cloudflare shinies and add API data
@@ -363,6 +407,9 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
   Object.keys(mergedShinies).forEach((shinyIndex) => {
     const cloudflareShiny = mergedShinies[shinyIndex];
     const pokemonName = cloudflareShiny.Pokemon.toLowerCase();
+    
+    // Normalize the Cloudflare Pokémon name for matching
+    const normalizedName = normalizePokemonName(pokemonName);
 
     // Start with existing shiny and remove fields that are no longer being merged
     let newShiny = { ...cloudflareShiny };
@@ -371,10 +418,10 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
     });
 
     if (
-      pokemonToApiData[pokemonName] &&
-      pokemonToApiData[pokemonName].length > 0
+      pokemonToApiData[normalizedName] &&
+      pokemonToApiData[normalizedName].length > 0
     ) {
-      const apiShiny = pokemonToApiData[pokemonName].shift();
+      const apiShiny = pokemonToApiData[normalizedName].shift();
       const apiFields = extractApiFields(apiShiny, fieldsToMerge);
       newShiny = {
         ...newShiny,

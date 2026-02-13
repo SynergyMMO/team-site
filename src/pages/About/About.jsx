@@ -73,6 +73,8 @@ export default function About() {
               <li><strong>Shiny Data Merge System Added</strong> - New NPM scripts for syncing ShinyBoard API data</li>
               <li>Configurable field merging (IVs, nature, location, encounter method, date caught, encounter count, nickname, variant)</li>
               <li>Grabs information using the API, Users must match the evolutions and names for Pokemon to match correctly.</li>
+              <li>Fixed info box display on hover - shows pokemon that are not included</li>
+              <li>Pokemon variant forms like frillish-f and gastrodon-east now merge correctly</li>
             </ul>
           </div>
           <div className={styles.changelogEntry}>

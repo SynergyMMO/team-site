@@ -6,6 +6,7 @@ import { useTrophies } from '../../hooks/useTrophies'
 import { useStreamers } from '../../hooks/useStreamers'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import TrophyShelf from '../../components/TrophyShelf/TrophyShelf'
+import StatisticsSection from '../../components/StatisticsSection/StatisticsSection'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from './PlayerPage.module.css'
 import { getLocalPokemonGif } from '../../utils/pokemon'
@@ -122,6 +123,26 @@ export default function PlayerPage() {
     }
   }, [playerData, safeShinies])
 
+  // --- Check if should show statistics section ---
+  const showStatisticsSection = useMemo(() => {
+    if (!playerData || safeShinies.length === 0) return false
+
+    // Check encounter data: need 50% or more with encounter_count > 0
+    const shiniesWithEncounters = safeShinies.filter(
+      ([, s]) => typeof s.encounter_count === 'number' && s.encounter_count > 0
+    )
+    const encounterPercentage = (shiniesWithEncounters.length / safeShinies.length) * 100
+
+    // Check location data: need 50% or more with location
+    const shiniesWithLocation = safeShinies.filter(
+      ([, s]) => s.location && typeof s.location === 'string' && s.location.trim() !== ''
+    )
+    const locationPercentage = (shiniesWithLocation.length / safeShinies.length) * 100
+
+    // Only show if both encounter AND location have at least 50%
+    return encounterPercentage >= 50 && locationPercentage >= 50
+  }, [playerData, safeShinies])
+
   const parentDomain = typeof window !== 'undefined' ? window.location.hostname : 'synergymmo.com'
 
   // --- Loading / not found ---
@@ -224,19 +245,7 @@ export default function PlayerPage() {
         </div>
       )}
 
-      {encountersData && (
-        <div className={styles.encountersSection}>
-          <h2>📊 Encounter Statistics</h2>
-          <div className={styles.encountersCard}>
-            <p className={styles.averageEncounters}>
-              Average: <span className={styles.numberHighlight}>{encountersData.average}</span> encounters per shiny
-            </p>
-            <p className={styles.encountersIndicator}>
-              Based on encounter data {encountersData.count}/{encountersData.total} Pokémon
-            </p>
-          </div>
-        </div>
-      )}
+      {showStatisticsSection && <StatisticsSection playerData={playerData} playerName={safeRealKey} />}
       
       {renderTwitchSection()}
 

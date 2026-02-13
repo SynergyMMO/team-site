@@ -1,0 +1,50 @@
+.tooltipContainer {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  border-bottom: 1px dotted #00d4ff;
+  z-index: 999;
+}
+
+.tooltip {
+  visibility: visible;
+  background-color: rgba(0, 0, 0, 0.95);
+  color: #e0e0e0;
+  text-align: left;
+  padding: 1rem;
+  border-radius: 8px;
+  position: fixed;
+  z-index: 10000;
+  white-space: normal;
+  width: 300px;
+  font-size: 0.85rem;
+  border: 2px solid #00d4ff;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.tooltipArrow {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.95) transparent transparent transparent;
+}
+
+@media (max-width: 768px) {
+  .tooltip {
+    width: 200px;
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .tooltipArrow {
+    margin-left: -3px;
+    border-width: 3px;
+  }
+}
