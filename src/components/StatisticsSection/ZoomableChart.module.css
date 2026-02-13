@@ -22,10 +22,21 @@
   display: block;
   transform-origin: 0 0;
   will-change: transform;
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 .zoomableContent > div {
   width: 100%;
+}
+
+.zoomableContent svg,
+.zoomableContent img {
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  backface-visibility: hidden;
 }
 
 .zoomControls {
