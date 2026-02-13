@@ -27,11 +27,37 @@ const API_FIELDS = [
 ]
 
 // Format date to readable format
-function formatDate(dateStr) {
+function formatDate(dateStr, localize = true) {
   if (!dateStr) return null
   try {
-    const date = new Date(dateStr)
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+    if (!localize) {
+      // Non-localized: parse directly without timezone conversion
+      const parts = dateStr.split('-')
+      if (parts.length === 3) {
+        const year = parseInt(parts[0], 10)
+        const month = parseInt(parts[1], 10)
+        const day = parseInt(parts[2], 10)
+        
+        if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+          const monthName = monthNames[month - 1] || ''
+          return `${monthName} ${day}, ${year}`
+        }
+      }
+      
+      // Fallback: try parsing as UTC
+      const date = new Date(dateStr + 'T00:00:00Z')
+      if (!isNaN(date.getTime())) {
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        return `${monthNames[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
+      }
+    } else {
+      // Localized: convert to user timezone
+      const date = new Date(dateStr)
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+    }
+    
+    return null
   } catch {
     return null
   }
@@ -43,7 +69,7 @@ function formatEncounterCount(count) {
   return count.toLocaleString()
 }
 
-export default function InfoBox({ shiny, points, customText }) {
+export default function InfoBox({ shiny, points, customText, localizeDates = true }) {
   const boxRef = useRef(null)
 
   useEffect(() => {
@@ -105,12 +131,12 @@ export default function InfoBox({ shiny, points, customText }) {
     }).map(field => ({
       ...field,
       value: field.key === 'date_caught' 
-        ? formatDate(shiny[field.key])
+        ? formatDate(shiny[field.key], localizeDates)
         : field.key === 'encounter_count'
         ? formatEncounterCount(shiny[field.key])
         : shiny[field.key]
     }))
-  }, [shiny])
+  }, [shiny, localizeDates])
 
   let reactionUrl = shiny['Reaction Link']?.trim()
   if (reactionUrl && !/^https?:\/\//i.test(reactionUrl)) {

@@ -23,7 +23,7 @@ const ICON_MAP = {
   Favourite: [`${BASE}images/Shiny Showcase/heart.png`, 'favouriteHeart'],
 }
 
-function ShinyItem({ shiny, points, userName }) {
+function ShinyItem({ shiny, points, userName, localizeDates = true }) {
   const navigate = useNavigate()
   const shinyGifPath = useMemo(() => getLocalPokemonGif(shiny.Pokemon), [shiny.Pokemon])
 
@@ -112,7 +112,7 @@ function ShinyItem({ shiny, points, userName }) {
           }}
         />
       </div>
-      <InfoBox shiny={shiny} points={points} customText={infoText} />
+      <InfoBox shiny={shiny} points={points} customText={infoText} localizeDates={localizeDates} />
     </span>
   )
 }

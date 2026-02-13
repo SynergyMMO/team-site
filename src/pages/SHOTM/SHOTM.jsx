@@ -272,7 +272,7 @@ export default function SHOTM() {
                   {info.shinies.map(([id, s]) => {
                     const pts = calculateShinyPoints(s, tierPoints, tierLookup)
                     const isSold = s.Sold?.toLowerCase() === 'yes'
-                    return <ShinyItem key={id} shiny={s} points={isSold ? 0 : pts} />
+                    return <ShinyItem key={id} shiny={s} points={isSold ? 0 : pts} localizeDates={false} />
                   })}
 
                 </div>
