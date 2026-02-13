@@ -92,6 +92,36 @@ export default function PlayerPage() {
     )
   }, [streamersData, safeRealKey])
 
+  // --- Calculate average encounters per shiny ---
+  const encountersData = useMemo(() => {
+    if (!playerData || safeShinies.length === 0) return null
+
+    const shiniesWithEncounters = safeShinies.filter(
+      ([, s]) => typeof s.encounter_count === 'number' && s.encounter_count > 0
+    )
+
+    const countWithEncounters = shiniesWithEncounters.length
+    const totalShinies = safeShinies.length
+    const percentageWithEncounters = (countWithEncounters / totalShinies) * 100
+
+    // Only show if 50% or more have encounter data
+    if (percentageWithEncounters < 50) return null
+
+    const totalEncounters = shiniesWithEncounters.reduce(
+      (sum, [, s]) => sum + s.encounter_count,
+      0
+    )
+
+    const averageEncounters = Math.round(totalEncounters / countWithEncounters)
+
+    return {
+      average: averageEncounters,
+      count: countWithEncounters,
+      total: totalShinies,
+      percentage: Math.round(percentageWithEncounters),
+    }
+  }, [playerData, safeShinies])
+
   const parentDomain = typeof window !== 'undefined' ? window.location.hostname : 'synergymmo.com'
 
   // --- Loading / not found ---
@@ -191,6 +221,20 @@ export default function PlayerPage() {
           {safeNormalShinies.map(([id, s]) => (
             <ShinyItem key={id} shiny={s} userName={safeRealKey} />
           ))}
+        </div>
+      )}
+
+      {encountersData && (
+        <div className={styles.encountersSection}>
+          <h2>📊 Encounter Statistics</h2>
+          <div className={styles.encountersCard}>
+            <p className={styles.averageEncounters}>
+              Average: <span className={styles.numberHighlight}>{encountersData.average}</span> encounters per shiny
+            </p>
+            <p className={styles.encountersIndicator}>
+              Based on encounter data {encountersData.count}/{encountersData.total} Pokémon
+            </p>
+          </div>
         </div>
       )}
       

@@ -3,11 +3,15 @@
 /**
  * Node.js script to merge ShinyBoard API data with Cloudflare database and push updates.
  * 
+ * This script automatically loads all users from the Cloudflare database and merges their
+ * ShinyBoard API data. You can customize username mappings in the USERNAME_MAPPING config.
+ * 
  * Usage:
- *   node scripts/mergeShinyData.js              # Merges configured users and pushes to Cloudflare
+ *   node scripts/mergeShinyData.js              # Merges all users from database and pushes to Cloudflare
  *   node scripts/mergeShinyData.js --test       # Outputs to file for verification (no push)
- *   node scripts/mergeShinyData.js --users Hyper,Jesse  # Custom users
- *   node scripts/mergeShinyData.js --fields ivs,nature  # Custom fields
+ *   node scripts/mergeShinyData.js --users Hyper,Jesse  # Custom users only (overrides database list)
+ *   node scripts/mergeShinyData.js --fields ivs,nature  # Custom fields to merge
+ *   node scripts/mergeShinyData.js --test --fields ivs,nature  # Test with custom fields
  */
 
 // ============================================================================
@@ -43,110 +47,35 @@ const ALL_MERGEABLE_FIELDS = [
 ];
 
 /**
- * Users to fetch and merge data for.
- * ONLY THESE USERS will have API data merged. Others remain unchanged.
+ * Username mapping for ShinyBoard API lookups.
+ * 
+ * If a user's name in the database doesn't match their ShinyBoard username,
+ * add an entry here to tell the script which ShinyBoard username to use.
+ * 
+ * Format: "DatabaseName": "ShinyBoardUsername"
+ * 
+ * Example:
+ *   "Matty": "Matt",        // Uses "Matt" when fetching from ShinyBoard API for "Matty"
+ *   "Jay": "JayStorm",      // Uses "JayStorm" when fetching from ShinyBoard API for "Jay"
+ * 
+ * Users NOT in this map will use their database name as-is on ShinyBoard.
+ * Leave empty {} if all database names match ShinyBoard names exactly.
  */
-const USERS_TO_PROCESS = [
-  'Blaziken',
-  'BaldBabyBat',
-  'KaiDono',
-  'Pinguh',
-  'Hyper',
-  'TTVxleJesse',
-  'MiroMMO',
-  'AceZ',
-  'Ultrazipper',
-  'Ecstasick',
-  'RedWoodGamer',
-  'Mitchell',
-  'NuttyProfessor',
-  'Ezra',
-  'Tired',
-  'Bloom',
-  'SheepieNei',
-  'MinoriNao',
-  'deeb',
-  'Cozyhood',
-  'ItsTurn',
-  'Stinky',
-  'psilos',
-  'Zempex',
-  'GaryOwnes',
-  'NxmDXCO',
-  'Chan',
-  'PWCC',
-  'Russoto',
-  'SteamyRayVaughn',
-  'Indica',
-  'Clutchthegod',
-  'pupsil',
-  'magicseed',
-  'Yikestho',
-  'PezDispenser',
-  'Dammers',
-  'Shamandarah',
-  'CSixtyThree',
-  'MelanieMartinez',
-  'Dollcasket',
-  'Demon',
-  'Dracula',
-  'Jeysonoklm',
-  'Bacondonut',
-  'Nausea',
-  'BigGrnWhoopyCush',
-  'TFastest',
-  'Mishrachan',
-  'Brakence',
-  'thxvi',
-  'Yanillionaire',
-  'CantSin',
-  'CloudCloudGuy',
-  'DarkIrish',
-  'Faia',
-  'Formen',
-  'Gromtark',
-  'platyknn',
-  'Machimoto',
-  'ApparentlyAustin',
-  'Vhailor',
-  'BlackCatXIII',
-  'saywhatpoke',
-  'DoppioMovimento',
-  'TaiganarT',
-  'glawksy',
-  'Anvixiel',
-  'SilentNovaVGC',
-  'CathedralTerra',
-  'japansaintt',
-  'Corbs',
-  'zTopher',
-  'gregu',
-  'OmniDad',
-  'Eriku',
-  'Smakouille',
-  'ACEVietNam',
-  'vXylo',
-  'Vinndubs',
-  'mudd',
-  'lilohs',
-  'Myxtik',
-  'WolvenPanicc',
-  'MugRootBeer',
-  'thaarjaa',
-  'Lumenoxis',
-  'Dawdster',
-  'Theology',
-  'ShinyWaywee',
-  'Gnasty',
-  'TheBiggestT',
-  'Bushtire',
-  'LivelyBaileigh',
-  'TheGrimestReaper',
-  'Wraxx',
-  'Swoll',
-  'Yashiii',
-  'Unitty'
-];
+const USERNAME_MAPPING = {
+  // Add overrides here as needed
+  // Example: "Hyper": "HyperTheKing",
+};
+
+/**
+ * Users to fetch and merge data for.
+ * 
+ * DYNAMIC: This list is automatically populated from the Cloudflare database.
+ * All users in the database's shiny_database key will be processed.
+ * 
+ * This can be overridden via command-line:
+ *   node scripts/mergeShinyData.js --users User1,User2,User3
+ */
+let USERS_TO_PROCESS = [];
 
 
 /**
@@ -181,7 +110,7 @@ const __dirname = path.dirname(__filename);
 function parseArgs(args) {
   const parsed = {
     mode: DEFAULT_MODE,
-    users: USERS_TO_PROCESS,
+    users: [],  // Start with empty - will be populated from database if not provided
     fields: FIELDS_TO_MERGE,
   };
 
@@ -526,18 +455,33 @@ async function updateCloudflareDatabase(updatedDatabase, username, password) {
  * Main function that orchestrates the entire merge process.
  */
 async function mergeShinyData(users, fields, mode, outputPath, username = null, password = null) {
-  log('🚀 Starting shiny data merge process...', 'info');
-  log(`📋 Processing users: ${users.join(', ')}`, 'info');
-  log(`📦 Fields to merge: ${fields.join(', ')}`, 'info');
-  log(`⚙️  Mode: ${mode === 'test' ? 'TEST (output to file)' : 'UPDATE (real database)'}`, 'warning');
-
   try {
+    // Step 0: Fetch Cloudflare database early to extract users if needed
+    log('🚀 Starting shiny data merge process...', 'info');
+    log('\n📥 Fetching Cloudflare database...', 'info');
+    const cloudflareDb = await fetchCloudflareDatabase();
+    log(`  ✓ Database loaded (${Object.keys(cloudflareDb).length} users)`, 'success');
+
+    // If users were not provided via CLI, extract them from the database
+    if (!users || users.length === 0) {
+      users = Object.keys(cloudflareDb);
+      log(`📋 Automatically using all ${users.length} users from database`, 'info');
+    } else {
+      log(`📋 Processing configured users: ${users.join(', ')}`, 'info');
+    }
+
+    log(`📦 Fields to merge: ${fields.join(', ')}`, 'info');
+    log(`⚙️  Mode: ${mode === 'test' ? 'TEST (output to file)' : 'UPDATE (real database)'}`, 'warning');
+
     // Step 1: Fetch API data for all users IN PARALLEL
+    // Apply USERNAME_MAPPING to get the correct ShinyBoard username
     log('\n📥 Fetching API data...', 'info');
     const userPromises = users.map(async (user) => {
-      process.stdout.write(`  → Fetching ${user}...`);
+      // Check if this user has a mapped ShinyBoard name
+      const shinyboardUsername = USERNAME_MAPPING[user] || user;
+      process.stdout.write(`  → Fetching ${shinyboardUsername}${USERNAME_MAPPING[user] ? ` (mapped from "${user}")` : ''}...`);
       try {
-        const data = await grabShinyData(user);
+        const data = await grabShinyData(shinyboardUsername);
         log(` ✓ (${data.length} shinies)`, 'success');
         return [user, data];
       } catch (error) {
@@ -549,12 +493,8 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
     const userResults = await Promise.all(userPromises);
     const apiDataMap = Object.fromEntries(userResults);
 
-    // Step 2: Fetch Cloudflare database
-    log('\n📥 Fetching Cloudflare database...', 'info');
-    const cloudflareDb = await fetchCloudflareDatabase();
-    log(`  ✓ Database loaded (${Object.keys(cloudflareDb).length} users)`, 'success');
-
-    // Create a mapping from normalized names to actual database names
+    // Step 2: Create mapping from normalized names to actual database names
+    log('\n🔍 Creating name mappings...', 'info');
     const normalizedToActualName = {};
     Object.keys(cloudflareDb).forEach(actualName => {
       const normalized = normalizeUsername(actualName);

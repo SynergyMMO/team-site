@@ -43,3 +43,5 @@ lerna-debug.log*
 nul
 
 src/data/pokemmo_data/pokemon-data-save.json
+
+merged_shiny_data.json
