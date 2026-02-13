@@ -172,7 +172,13 @@ span:hover .infoBox {
   left: auto;
 }
 
-/* Hide InfoBox while scrolling */
+/* Hide InfoBox while scrolling on all devices */
+:global(body.is-scrolling) .infoBox {
+  opacity: 0;
+  pointer-events: none;
+  transition: none;
+}
+
 :global(body.is-scrolling) span:hover .infoBox {
   opacity: 0;
   pointer-events: none;

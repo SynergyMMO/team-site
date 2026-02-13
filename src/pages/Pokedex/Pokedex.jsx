@@ -42,28 +42,13 @@ export default function Pokedex() {
   })
   const [statSearchMode, setStatSearchMode] = useState('form') // 'form' or 'typing'
   const [statSearchInput, setStatSearchInput] = useState('')
-  const [isRarityOpen, setIsRarityOpen] = useState(false)
-  const [isTierOpen, setIsTierOpen] = useState(false)
-  const [isEggGroupOpen, setIsEggGroupOpen] = useState(false)
-  const [isTypesOpen, setIsTypesOpen] = useState(false)
-  const [isMovesOpen, setIsMovesOpen] = useState(false)
-  const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false)
-  const [isLocationOpen, setIsLocationOpen] = useState(false)
-  const [isStatSearchOpen, setIsStatSearchOpen] = useState(false)
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [synergyDataToggle, setSynergyDataToggle] = useState(false)
-  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
   const [locationSuggestions, setLocationSuggestions] = useState([])
   const infoBoxRef = useRef(null)
-  const rarityMenuRef = useRef(null)
-  const tierMenuRef = useRef(null)
-  const eggGroupMenuRef = useRef(null)
-  const typesMenuRef = useRef(null)
-  const movesMenuRef = useRef(null)
-  const abilitiesMenuRef = useRef(null)
-  const locationMenuRef = useRef(null)
-  const statSearchMenuRef = useRef(null)
+  const filterPanelRef = useRef(null)
   const searchTerm = search.trim().toLowerCase()
   const formatRarityKey = (value) => value.toLowerCase().trim().replace(/\s+/g, '_')
   const formatRarityLabel = (value) => {
@@ -503,29 +488,14 @@ export default function Pokedex() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (rarityMenuRef.current && !rarityMenuRef.current.contains(event.target)) {
-        setIsRarityOpen(false)
+      // Don't close if clicking the filter button itself
+      const filterButton = document.querySelector('[data-filter-button]')
+      if (filterButton && filterButton.contains(event.target)) {
+        return
       }
-      if (tierMenuRef.current && !tierMenuRef.current.contains(event.target)) {
-        setIsTierOpen(false)
-      }
-      if (eggGroupMenuRef.current && !eggGroupMenuRef.current.contains(event.target)) {
-        setIsEggGroupOpen(false)
-      }
-      if (typesMenuRef.current && !typesMenuRef.current.contains(event.target)) {
-        setIsTypesOpen(false)
-      }
-      if (movesMenuRef.current && !movesMenuRef.current.contains(event.target)) {
-        setIsMovesOpen(false)
-      }
-      if (abilitiesMenuRef.current && !abilitiesMenuRef.current.contains(event.target)) {
-        setIsAbilitiesOpen(false)
-      }
-      if (locationMenuRef.current && !locationMenuRef.current.contains(event.target)) {
-        setIsLocationOpen(false)
-      }
-      if (statSearchMenuRef.current && !statSearchMenuRef.current.contains(event.target)) {
-        setIsStatSearchOpen(false)
+      
+      if (filterPanelRef.current && !filterPanelRef.current.contains(event.target)) {
+        setIsFilterPanelOpen(false)
       }
     }
 
@@ -566,7 +536,7 @@ export default function Pokedex() {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 600) {
-        setIsFilterMenuOpen(false)
+        setIsFilterPanelOpen(false)
       }
     }
 
@@ -580,8 +550,8 @@ export default function Pokedex() {
       }
       
       // Close the menu if clicking outside on mobile
-      if (isFilterMenuOpen && window.innerWidth <= 600) {
-        setIsFilterMenuOpen(false)
+      if (isFilterPanelOpen && window.innerWidth <= 600) {
+        setIsFilterPanelOpen(false)
       }
     }
 
@@ -592,7 +562,7 @@ export default function Pokedex() {
       window.removeEventListener('resize', handleResize)
       document.removeEventListener('click', handleClickOutside)
     }
-  }, [isFilterMenuOpen])
+  }, [isFilterPanelOpen])
 
   const formatSelectionSummary = (selected, options, labelFn, emptyLabel) => {
     if (selected.length === 0) return emptyLabel
@@ -741,7 +711,7 @@ export default function Pokedex() {
     })
     setStatSearchInput('')
     setHideComplete(false)
-    setIsFilterMenuOpen(false)
+    setIsFilterPanelOpen(false)
   }
 
   const sliderIndex = mode === 'shiny' ? 0 : 1
@@ -757,633 +727,310 @@ export default function Pokedex() {
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
       <button 
-        className={styles.filterMenuButton}
-        onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
+        className={`${styles.filterToggleButton} ${isFilterPanelOpen ? styles.active : ''}`}
+        onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
         aria-label="Toggle filters"
-        aria-expanded={isFilterMenuOpen}
+        aria-expanded={isFilterPanelOpen}
         data-filter-button
       >
-        <span></span>
-        <span></span>
-        <span></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+        <span>Filters</span>
+        <span className={styles.filterToggleIcon}></span>
       </button>
 
-      <div style={{ textAlign: 'center', margin: '10px 0 15px 0' }}>
-        <button
-          className={styles.toggleCompleteBtn}
-          onClick={clearAllFilters}
-          style={{
-            backgroundColor: '#8b5cf6',
-            border: '2px solid #a78bfa',
-            transition: 'all 0.3s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#a78bfa'
-            e.target.style.transform = 'scale(1.05)'
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = '#8b5cf6'
-            e.target.style.transform = 'scale(1)'
-          }}
-        >
-          Clear All Filters
-        </button>
-      </div>
+      {isFilterPanelOpen && (
+        <div className={styles.filterPanel} ref={filterPanelRef} data-filter-panel>
+          <div className={styles.filterPanelContent}>
+            {/* Header with Clear All */}
+            <div className={styles.filterPanelHeader}>
+              <h3>Filter Pokédex</h3>
+              <button
+                className={styles.clearAllFiltersBtn}
+                onClick={clearAllFilters}
+              >
+                Clear All
+              </button>
+            </div>
 
-      <div className={`${styles.filterRow} ${isFilterMenuOpen ? styles.mobileOpen : ''}`} data-filter-row>
-        <div className={styles.dropdown} ref={rarityMenuRef}>
-          <button
-            type="button"
-            className={styles.dropdownButton}
-            onClick={() => {
-              setIsRarityOpen((prev) => !prev)
-              setIsTierOpen(false)
-              setIsEggGroupOpen(false)
-              setIsTypesOpen(false)
-              setIsStatSearchOpen(false)
-            }}
-            aria-expanded={isRarityOpen}
-            aria-haspopup="listbox"
-          >
-            <span className={styles.dropdownLabel}>Encounter Types</span>
-            <span className={styles.dropdownValue}>
-              {formatSelectionSummary(selectedRarities, rarityOptions, formatRarityLabel, 'All Encounter Types')}
-            </span>
-            <span className={styles.dropdownCaret}>▾</span>
-          </button>
-          {isRarityOpen && (
-            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true">
-              <label className={styles.dropdownOption}>
-                <input
-                  type="checkbox"
-                  checked={selectedRarities.length === 0}
-                  onChange={() => setSelectedRarities([])}
-                />
-                <span>All Encounter Types</span>
-              </label>
-              {rarityOptions.filter(option => option !== 'all').map(option => (
-                <label key={option} className={styles.dropdownOption}>
+            {/* All Filters Visible */}
+            <div className={styles.filterGrid}>
+              {/* Encounter Types */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Encounter Types</h4>
+                <label className={styles.filterCheckboxLabel}>
                   <input
                     type="checkbox"
-                    checked={selectedRarities.includes(option)}
-                    onChange={(e) => {
-                      setSelectedRarities(prev => (
-                        e.target.checked
-                          ? [...prev, option]
-                          : prev.filter(value => value !== option)
-                      ))
-                    }}
+                    checked={selectedRarities.length === 0}
+                    onChange={() => setSelectedRarities([])}
                   />
-                  <span>{formatRarityLabel(option)}</span>
+                  <span>All</span>
                 </label>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className={styles.dropdown} ref={tierMenuRef}>
-          <button
-            type="button"
-            className={styles.dropdownButton}
-            onClick={() => {
-              setIsTierOpen((prev) => !prev)
-              setIsRarityOpen(false)
-              setIsEggGroupOpen(false)
-              setIsTypesOpen(false)
-              setIsStatSearchOpen(false)
-              setIsLocationOpen(false)
-            }}
-            aria-expanded={isTierOpen}
-            aria-haspopup="listbox"
-          >
-            <span className={styles.dropdownLabel}>Tiers</span>
-            <span className={styles.dropdownValue}>
-              {formatSelectionSummary(selectedTiers, tierOptions, (value) => value, 'All Tiers')}
-            </span>
-            <span className={styles.dropdownCaret}>▾</span>
-          </button>
-          {isTierOpen && (
-            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true">
-              <label className={styles.dropdownOption}>
-                <input
-                  type="checkbox"
-                  checked={selectedTiers.length === 0}
-                  onChange={() => setSelectedTiers([])}
-                />
-                <span>All Tiers</span>
-              </label>
-              {tierOptions.filter(option => option !== 'all').map(option => (
-                <label key={option} className={styles.dropdownOption}>
-                  <input
-                    type="checkbox"
-                    checked={selectedTiers.includes(option)}
-                    onChange={(e) => {
-                      setSelectedTiers(prev => (
-                        e.target.checked
-                          ? [...prev, option]
-                          : prev.filter(value => value !== option)
-                      ))
-                    }}
-                  />
-                  <span>{option}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className={styles.dropdown} ref={eggGroupMenuRef}>
-          <button
-            type="button"
-            className={styles.dropdownButton}
-            onClick={() => {
-              setIsEggGroupOpen((prev) => !prev)
-              setIsRarityOpen(false)
-              setIsTierOpen(false)
-              setIsTypesOpen(false)
-              setIsStatSearchOpen(false)
-              setIsLocationOpen(false)
-            }}
-            aria-expanded={isEggGroupOpen}
-            aria-haspopup="listbox"
-          >
-            <span className={styles.dropdownLabel}>Egg Groups</span>
-            <span className={styles.dropdownValue}>
-              {formatSelectionSummary(selectedEggGroups, eggGroupOptions, formatEggGroupName, 'All Egg Groups')}
-            </span>
-            <span className={styles.dropdownCaret}>▾</span>
-          </button>
-          {isEggGroupOpen && (
-            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true">
-              <label className={styles.dropdownOption}>
-                <input
-                  type="checkbox"
-                  checked={selectedEggGroups.length === 0}
-                  onChange={() => setSelectedEggGroups([])}
-                />
-                <span>All Egg Groups</span>
-              </label>
-              {eggGroupOptions.filter(option => option !== 'all').map(option => (
-                <label key={option} className={styles.dropdownOption}>
-                  <input
-                    type="checkbox"
-                    checked={selectedEggGroups.includes(option)}
-                    onChange={(e) => {
-                      setSelectedEggGroups(prev => (
-                        e.target.checked
-                          ? [...prev, option]
-                          : prev.filter(value => value !== option)
-                      ))
-                    }}
-                  />
-                  <span>{formatEggGroupName(option)}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className={styles.dropdown} ref={typesMenuRef}>
-          <button
-            type="button"
-            className={styles.dropdownButton}
-            onClick={() => {
-              setIsTypesOpen((prev) => !prev)
-              setIsRarityOpen(false)
-              setIsTierOpen(false)
-              setIsEggGroupOpen(false)
-              setIsStatSearchOpen(false)
-              setIsLocationOpen(false)
-            }}
-            aria-expanded={isTypesOpen}
-            aria-haspopup="listbox"
-          >
-            <span className={styles.dropdownLabel}>Types</span>
-            <span className={styles.dropdownValue}>
-              {formatSelectionSummary(selectedTypes, typeOptions, (value) => value.charAt(0).toUpperCase() + value.slice(1), 'All Types')}
-            </span>
-            <span className={styles.dropdownCaret}>▾</span>
-          </button>
-          {isTypesOpen && (
-            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true">
-              <label className={styles.dropdownOption}>
-                <input
-                  type="checkbox"
-                  checked={selectedTypes.length === 0}
-                  onChange={() => setSelectedTypes([])}
-                />
-                <span>All Types</span>
-              </label>
-              {typeOptions.filter(option => option !== 'all').map(option => (
-                <label key={option} className={styles.dropdownOption}>
-                  <input
-                    type="checkbox"
-                    checked={selectedTypes.includes(option)}
-                    onChange={(e) => {
-                      setSelectedTypes(prev => (
-                        e.target.checked
-                          ? [...prev, option]
-                          : prev.filter(value => value !== option)
-                      ))
-                    }}
-                  />
-                  <span>{option.charAt(0).toUpperCase() + option.slice(1)}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className={styles.dropdown} ref={movesMenuRef}>
-          <button
-            type="button"
-            className={styles.dropdownButton}
-            onClick={() => {
-              setIsMovesOpen((prev) => !prev)
-              setIsRarityOpen(false)
-              setIsTierOpen(false)
-              setIsEggGroupOpen(false)
-              setIsTypesOpen(false)
-              setIsStatSearchOpen(false)
-              setIsLocationOpen(false)
-            }}
-            aria-expanded={isMovesOpen}
-            aria-haspopup="listbox"
-          >
-            <span className={styles.dropdownLabel}>Moves</span>
-            <span className={styles.dropdownValue}>
-              {movesToFilterBy.filter(m => m.trim()).length === 0 ? 'All Moves' : `${movesToFilterBy.filter(m => m.trim()).length} Moves`}
-            </span>
-            <span className={styles.dropdownCaret}>▾</span>
-          </button>
-          {isMovesOpen && (
-            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true" style={{ minWidth: '340px', columnCount: 1 }}>
-              <div style={{ padding: '12px' }}>
-                <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '12px' }}>
-                  Type up to 4 move names (leave blank for no filter):
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px', marginBottom: '12px' }}>
-                  {[0, 1, 2, 3].map((index) => (
+                {rarityOptions.filter(option => option !== 'all').map(option => (
+                  <label key={option} className={styles.filterCheckboxLabel}>
                     <input
-                      key={index}
-                      type="text"
-                      placeholder={`Move ${index + 1}`}
-                      value={movesToFilterBy[index]}
+                      type="checkbox"
+                      checked={selectedRarities.includes(option)}
                       onChange={(e) => {
-                        const newMoves = [...movesToFilterBy]
-                        newMoves[index] = e.target.value
-                        setMovesToFilterBy(newMoves)
-                      }}
-                      style={{
-                        padding: '6px 8px',
-                        background: 'rgba(0, 0, 0, 0.3)',
-                        border: '1px solid rgba(102, 126, 234, 0.5)',
-                        borderRadius: '4px',
-                        color: 'white',
-                        fontSize: '0.9rem'
+                        setSelectedRarities(prev => (
+                          e.target.checked
+                            ? [...prev, option]
+                            : prev.filter(value => value !== option)
+                        ))
                       }}
                     />
-                  ))}
-                </div>
-                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                  <button
-                    onClick={() => setMovesToFilterBy(['', '', '', ''])}
-                    style={{
-                      width: '100%',
-                      padding: '6px 10px',
-                      background: 'rgba(102, 126, 234, 0.2)',
-                      border: '1px solid rgba(102, 126, 234, 0.5)',
-                      borderRadius: '4px',
-                      color: '#667eea',
-                      fontSize: '0.85rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'rgba(102, 126, 234, 0.3)'
-                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.7)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'rgba(102, 126, 234, 0.2)'
-                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
-                    }}
-                  >
-                    Clear All
-                  </button>
-                </div>
+                    <span>{formatRarityLabel(option)}</span>
+                  </label>
+                ))}
               </div>
-            </div>
-          )}
-        </div>
-        <div className={styles.dropdown} ref={abilitiesMenuRef}>
-          <button
-            type="button"
-            className={styles.dropdownButton}
-            onClick={() => {
-              setIsAbilitiesOpen((prev) => !prev)
-              setIsRarityOpen(false)
-              setIsTierOpen(false)
-              setIsEggGroupOpen(false)
-              setIsTypesOpen(false)
-              setIsMovesOpen(false)
-              setIsStatSearchOpen(false)
-              setIsLocationOpen(false)
-            }}
-            aria-expanded={isAbilitiesOpen}
-            aria-haspopup="listbox"
-          >
-            <span className={styles.dropdownLabel}>Abilities</span>
-            <span className={styles.dropdownValue}>
-              {abilitySearch.trim() ? abilitySearch : 'All Abilities'}
-            </span>
-            <span className={styles.dropdownCaret}>▾</span>
-          </button>
-          {isAbilitiesOpen && (
-            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true" style={{ minWidth: '340px', columnCount: 1 }}>
-              <div style={{ padding: '12px' }}>
-                <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '12px' }}>
-                  Search for an ability (leave blank for no filter):
-                </div>
-                <input
-                  type="text"
-                  placeholder="Type ability name..."
-                  value={abilitySearch}
-                  onChange={(e) => setAbilitySearch(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    background: 'rgba(0, 0, 0, 0.3)',
-                    border: '1px solid rgba(102, 126, 234, 0.5)',
-                    borderRadius: '4px',
-                    color: 'white',
-                    fontSize: '0.9rem',
-                    boxSizing: 'border-box'
-                  }}
-                  autoFocus
-                />
-                {abilitySearch.trim() && (
-                  <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+
+              {/* Tiers */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Tiers</h4>
+                <label className={styles.filterCheckboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={selectedTiers.length === 0}
+                    onChange={() => setSelectedTiers([])}
+                  />
+                  <span>All</span>
+                </label>
+                {tierOptions.filter(option => option !== 'all').map(option => (
+                  <label key={option} className={styles.filterCheckboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={selectedTiers.includes(option)}
+                      onChange={(e) => {
+                        setSelectedTiers(prev => (
+                          e.target.checked
+                            ? [...prev, option]
+                            : prev.filter(value => value !== option)
+                        ))
+                      }}
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* Egg Groups */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Egg Groups</h4>
+                <label className={styles.filterCheckboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={selectedEggGroups.length === 0}
+                    onChange={() => setSelectedEggGroups([])}
+                  />
+                  <span>All</span>
+                </label>
+                {eggGroupOptions.filter(option => option !== 'all').map(option => (
+                  <label key={option} className={styles.filterCheckboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={selectedEggGroups.includes(option)}
+                      onChange={(e) => {
+                        setSelectedEggGroups(prev => (
+                          e.target.checked
+                            ? [...prev, option]
+                            : prev.filter(value => value !== option)
+                        ))
+                      }}
+                    />
+                    <span>{formatEggGroupName(option)}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* Types */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Types</h4>
+                <label className={styles.filterCheckboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={selectedTypes.length === 0}
+                    onChange={() => setSelectedTypes([])}
+                  />
+                  <span>All</span>
+                </label>
+                {typeOptions.filter(option => option !== 'all').map(option => (
+                  <label key={option} className={styles.filterCheckboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={selectedTypes.includes(option)}
+                      onChange={(e) => {
+                        setSelectedTypes(prev => (
+                          e.target.checked
+                            ? [...prev, option]
+                            : prev.filter(value => value !== option)
+                        ))
+                      }}
+                    />
+                    <span>{option.charAt(0).toUpperCase() + option.slice(1)}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* Moves */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Moves</h4>
+                <div className={styles.filterInputGroup}>
+                  <div className={styles.filterInputDescription}>Type up to 4 move names:</div>
+                  <div className={styles.filterInputGrid}>
+                    {[0, 1, 2, 3].map((index) => (
+                      <input
+                        key={index}
+                        type="text"
+                        placeholder={`Move ${index + 1}`}
+                        value={movesToFilterBy[index]}
+                        onChange={(e) => {
+                          const newMoves = [...movesToFilterBy]
+                          newMoves[index] = e.target.value
+                          setMovesToFilterBy(newMoves)
+                        }}
+                        className={styles.filterInput}
+                      />
+                    ))}
+                  </div>
+                  {movesToFilterBy.some(m => m.trim()) && (
                     <button
-                      onClick={() => setAbilitySearch('')}
-                      style={{
-                        width: '100%',
-                        padding: '6px 10px',
-                        background: 'rgba(102, 126, 234, 0.2)',
-                        border: '1px solid rgba(102, 126, 234, 0.5)',
-                        borderRadius: '4px',
-                        color: '#667eea',
-                        fontSize: '0.85rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = 'rgba(102, 126, 234, 0.3)'
-                        e.target.style.borderColor = 'rgba(102, 126, 234, 0.7)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = 'rgba(102, 126, 234, 0.2)'
-                        e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
-                      }}
+                      onClick={() => setMovesToFilterBy(['', '', '', ''])}
+                      className={styles.filterClearBtn}
                     >
                       Clear
                     </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className={styles.dropdown} ref={locationMenuRef}>
-          <button
-            type="button"
-            className={styles.dropdownButton}
-            onClick={() => {
-              setIsLocationOpen((prev) => !prev)
-              setIsRarityOpen(false)
-              setIsTierOpen(false)
-              setIsEggGroupOpen(false)
-              setIsTypesOpen(false)
-              setIsMovesOpen(false)
-              setIsStatSearchOpen(false)
-              setIsAbilitiesOpen(false)
-            }}
-            aria-expanded={isLocationOpen}
-            aria-haspopup="listbox"
-          >
-            <span className={styles.dropdownLabel}>Locations</span>
-            <span className={styles.dropdownValue}>
-              {locationSearch.trim() ? locationSearch : 'All Locations'}
-            </span>
-            <span className={styles.dropdownCaret}>▾</span>
-          </button>
-          {isLocationOpen  && (
-            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true" style={{ minWidth: '340px', columnCount: 1 }}>
-              <div style={{ padding: '12px' }}>
-                <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '12px' }}>
-                  Search for a location (leave blank for no filter):
+                  )}
                 </div>
-                <input
-                  type="text"
-                  placeholder="Type location name..."
-                  value={locationSearchInput}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    setLocationSearchInput(value)
-                    if (value.trim()) {
-                      const filtered = locationOptions.filter(loc =>
-                        loc.toLowerCase().includes(value.toLowerCase())
-                      )
-                      setLocationSuggestions(filtered.slice(0, 8))
-                    } else {
-                      setLocationSuggestions([])
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    background: 'rgba(0, 0, 0, 0.3)',
-                    border: '1px solid rgba(102, 126, 234, 0.5)',
-                    borderRadius: '4px',
-                    color: 'white',
-                    fontSize: '0.9rem',
-                    boxSizing: 'border-box'
-                  }}
-                  autoFocus
-                />
-                {locationSuggestions.length > 0 && (
-                  <div style={{ marginTop: '8px', maxHeight: '200px', overflowY: 'auto', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '8px' }}>
-                    {locationSuggestions.map((location) => (
-                      <button
-                        key={location}
-                        onClick={() => {
-                          setLocationSearchInput(location)
-                          setLocationSearch(location)
-                          setLocationSuggestions([])
-                        }}
-                        style={{
-                          display: 'block',
-                          width: '100%',
-                          textAlign: 'left',
-                          padding: '6px 8px',
-                          background: 'transparent',
-                          border: 'none',
-                          color: '#667eea',
-                          fontSize: '0.9rem',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                          marginBottom: '4px',
-                          borderRadius: '2px'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.background = 'rgba(102, 126, 234, 0.2)'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.background = 'transparent'
-                        }}
-                      >
-                        {location}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {locationSearch.trim() && (
-                  <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              </div>
+
+              {/* Abilities */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Abilities</h4>
+                <div className={styles.filterInputGroup}>
+                  <input
+                    type="text"
+                    placeholder="Search abilities..."
+                    value={abilitySearch}
+                    onChange={(e) => setAbilitySearch(e.target.value)}
+                    className={styles.filterInput}
+                  />
+                  {abilitySearch.trim() && (
+                    <button
+                      onClick={() => setAbilitySearch('')}
+                      className={styles.filterClearBtn}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Locations */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Locations</h4>
+                <div className={styles.filterInputGroup}>
+                  <input
+                    type="text"
+                    placeholder="Search locations..."
+                    value={locationSearchInput}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setLocationSearchInput(value)
+                      if (value.trim()) {
+                        const filtered = locationOptions.filter(loc =>
+                          loc.toLowerCase().includes(value.toLowerCase())
+                        )
+                        setLocationSuggestions(filtered.slice(0, 8))
+                      } else {
+                        setLocationSuggestions([])
+                      }
+                    }}
+                    className={styles.filterInput}
+                  />
+                  {locationSuggestions.length > 0 && (
+                    <div className={styles.filterSuggestionsList}>
+                      {locationSuggestions.map((location) => (
+                        <button
+                          key={location}
+                          onClick={() => {
+                            setLocationSearchInput(location)
+                            setLocationSearch(location)
+                            setLocationSuggestions([])
+                          }}
+                          className={styles.filterSuggestionItem}
+                        >
+                          {location}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {locationSearch.trim() && (
                     <button
                       onClick={() => {
                         setLocationSearch('')
                         setLocationSearchInput('')
                         setLocationSuggestions([])
                       }}
-                      style={{
-                        width: '100%',
-                        padding: '6px 10px',
-                        background: 'rgba(102, 126, 234, 0.2)',
-                        border: '1px solid rgba(102, 126, 234, 0.5)',
-                        borderRadius: '4px',
-                        color: '#667eea',
-                        fontSize: '0.85rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = 'rgba(102, 126, 234, 0.3)'
-                        e.target.style.borderColor = 'rgba(102, 126, 234, 0.7)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = 'rgba(102, 126, 234, 0.2)'
-                        e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
-                      }}
+                      className={styles.filterClearBtn}
                     >
                       Clear
                     </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-        
-        <div className={styles.dropdown} ref={statSearchMenuRef}>
-          <button
-            type="button"
-            className={styles.dropdownButton}
-            onClick={() => {
-              setIsStatSearchOpen((prev) => !prev)
-              setIsRarityOpen(false)
-              setIsTierOpen(false)
-              setIsEggGroupOpen(false)
-              setIsTypesOpen(false)
-              setIsMovesOpen(false)
-              setIsAbilitiesOpen(false)
-              setIsLocationOpen(false)
-            }}
-            aria-expanded={isStatSearchOpen}
-            aria-haspopup="listbox"
-          >
-            <span className={styles.dropdownLabel}>Stat Searcher</span>
-            <span className={styles.dropdownValue}>
-              {Object.values(statMinimums).some(v => v && v !== '0') ? 'Active' : 'Inactive'}
-            </span>
-            <span className={styles.dropdownCaret}>▾</span>
-          </button>
-          {isStatSearchOpen && (
-            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true" style={{ minWidth: '340px', columnCount: 1 }}>
-              <div style={{ padding: '12px' }}>
-                <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '12px' }}>
-                  Enter minimum base stat values (leave empty for no filter):
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 16px', marginBottom: '8px' }}>
-                  {[
-                    { label: 'HP', key: 'hp' },
-                    { label: 'Attack', key: 'attack' },
-                    { label: 'Defense', key: 'defense' },
-                    { label: 'Sp. Atk', key: 'spAtk' },
-                    { label: 'Sp. Def', key: 'spDef' },
-                    { label: 'Speed', key: 'speed' }
-                  ].map(({ label, key }) => (
-                    <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label style={{ width: '62px', fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.8)', textAlign: 'right' }}>
-                        {label}:
-                      </label>
-                      <input
-                        type="number"
-                        value={statMinimums[key]}
-                        onChange={(e) => setStatMinimums(prev => ({
-                          ...prev,
-                          [key]: e.target.value
-                        }))}
-                        placeholder="0"
-                        min="0"
-                        max="999"
-                        style={{
-                          width: '60px',
-                          padding: '6px 8px',
-                          background: 'rgba(0, 0, 0, 0.3)',
-                          border: '1px solid rgba(102, 126, 234, 0.5)',
-                          borderRadius: '4px',
-                          color: 'white',
-                          fontSize: '0.9rem'
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                  <button
-                    onClick={() => setStatMinimums({
-                      hp: '',
-                      attack: '',
-                      defense: '',
-                      spAtk: '',
-                      spDef: '',
-                      speed: ''
-                    })}
-                    style={{
-                      width: '100%',
-                      padding: '6px 10px',
-                      background: 'rgba(102, 126, 234, 0.2)',
-                      border: '1px solid rgba(102, 126, 234, 0.5)',
-                      borderRadius: '4px',
-                      color: '#667eea',
-                      fontSize: '0.85rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'rgba(102, 126, 234, 0.3)'
-                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.7)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'rgba(102, 126, 234, 0.2)'
-                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
-                    }}
-                  >
-                    Clear All
-                  </button>
+                  )}
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      </div>
 
+              {/* Stat Searcher */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Stat Searcher</h4>
+                <div className={styles.filterInputGroup}>
+                  <div className={styles.filterInputDescription}>Min base stat values:</div>
+                  <div className={styles.filterStatsGrid}>
+                    {[
+                      { label: 'HP', key: 'hp' },
+                      { label: 'Atk', key: 'attack' },
+                      { label: 'Def', key: 'defense' },
+                      { label: 'SpA', key: 'spAtk' },
+                      { label: 'SpD', key: 'spDef' },
+                      { label: 'Spe', key: 'speed' }
+                    ].map(({ label, key }) => (
+                      <div key={key} className={styles.filterStatInput}>
+                        <label>{label}</label>
+                        <input
+                          type="number"
+                          value={statMinimums[key]}
+                          onChange={(e) => setStatMinimums(prev => ({
+                            ...prev,
+                            [key]: e.target.value
+                          }))}
+                          placeholder="0"
+                          min="0"
+                          max="999"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  {Object.values(statMinimums).some(v => v && v !== '0') && (
+                    <button
+                      onClick={() => setStatMinimums({
+                        hp: '',
+                        attack: '',
+                        defense: '',
+                        spAtk: '',
+                        spDef: '',
+                        speed: ''
+                      })}
+                      className={styles.filterClearBtn}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <SearchBar
         value={search}
         onChange={setSearch}

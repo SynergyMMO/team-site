@@ -371,10 +371,14 @@ function extractApiFields(apiShiny, fieldsToMerge) {
  * Merges API data into Cloudflare data for a single user.
  * Also removes any mergeable fields that are no longer in fieldsToMerge.
  * Uses normalized Pokémon names for matching to handle form variants (-f, -east, etc).
+ * Returns both the merged data and a log of what changed.
  */
 function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
   if (!cloudflareUserData || !cloudflareUserData.shinies) {
-    return cloudflareUserData;
+    return {
+      userData: cloudflareUserData,
+      changes: []
+    };
   }
 
   // Determine which fields to remove (API fields not in current merge list)
@@ -403,6 +407,7 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
 
   // Merge: Iterate through Cloudflare shinies and add API data
   const mergedShinies = { ...cloudflareUserData.shinies };
+  const changeLog = [];
 
   Object.keys(mergedShinies).forEach((shinyIndex) => {
     const cloudflareShiny = mergedShinies[shinyIndex];
@@ -413,8 +418,14 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
 
     // Start with existing shiny and remove fields that are no longer being merged
     let newShiny = { ...cloudflareShiny };
+    let fieldsChanged = [];
+
+    // Track removed fields
     fieldsToRemove.forEach(field => {
-      delete newShiny[field];
+      if (newShiny.hasOwnProperty(field)) {
+        fieldsChanged.push(`removed ${field}`);
+        delete newShiny[field];
+      }
     });
 
     if (
@@ -423,18 +434,41 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
     ) {
       const apiShiny = pokemonToApiData[normalizedName].shift();
       const apiFields = extractApiFields(apiShiny, fieldsToMerge);
+      
+      // Track what fields were updated
+      Object.keys(apiFields).forEach(field => {
+        const oldValue = cloudflareShiny[field];
+        const newValue = apiFields[field];
+        
+        // Only log if the value actually changed
+        if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+          fieldsChanged.push(field);
+        }
+      });
+
       newShiny = {
         ...newShiny,
         ...apiFields,
       };
     }
 
+    // Only add to change log if something actually changed
+    if (fieldsChanged.length > 0) {
+      changeLog.push({
+        pokemon: cloudflareShiny.Pokemon,
+        fields: fieldsChanged
+      });
+    }
+
     mergedShinies[shinyIndex] = newShiny;
   });
 
   return {
-    ...cloudflareUserData,
-    shinies: mergedShinies,
+    userData: {
+      ...cloudflareUserData,
+      shinies: mergedShinies,
+    },
+    changes: changeLog
   };
 }
 
@@ -553,6 +587,8 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
     const mergedDatabase = { ...cloudflareDb };
     let mergeCount = 0;
     let skipCount = 0;
+    let totalChangedPokemon = 0;
+    const changesByUser = {};
 
     for (const user of users) {
       const normalizedUser = normalizeUsername(user);
@@ -565,17 +601,29 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
       }
 
       const userApiData = apiDataMap[user] || [];
-      const beforeCount = Object.keys(mergedDatabase[actualName].shinies || {}).length;
       
-      mergedDatabase[actualName] = mergeUserData(
+      const mergeResult = mergeUserData(
         mergedDatabase[actualName],
         userApiData,
         fields
       );
 
-      const afterCount = Object.keys(mergedDatabase[actualName].shinies || {}).length;
-
-      log(`  ✓ ${user} → ${actualName}: Processed ${beforeCount} shinies with ${userApiData.length} API entries`, 'success');
+      mergedDatabase[actualName] = mergeResult.userData;
+      const changes = mergeResult.changes;
+      
+      if (changes.length > 0) {
+        changesByUser[actualName] = changes;
+        totalChangedPokemon += changes.length;
+        log(`  ✓ ${actualName}: ${changes.length} Pokémon updated`, 'success');
+        
+        // Log detailed changes for this user
+        changes.forEach(change => {
+          log(`     → ${change.pokemon}: ${change.fields.join(', ')}`, 'info');
+        });
+      } else {
+        log(`  ✓ ${actualName}: No changes`, 'info');
+      }
+      
       mergeCount++;
     }
 
@@ -626,6 +674,20 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
     log('\n📊 Summary:', 'info');
     log(`   Users processed: ${mergeCount}`, 'info');
     log(`   Users skipped: ${skipCount}`, 'info');
+    log(`   Total Pokémon with changes: ${totalChangedPokemon}`, 'success');
+    
+    if (totalChangedPokemon > 0) {
+      log('\n📝 Change Details by User:', 'info');
+      Object.keys(changesByUser).forEach(userName => {
+        const changes = changesByUser[userName];
+        log(`   ${userName} (${changes.length} Pokémon):`, 'success');
+        changes.forEach(change => {
+          log(`     • ${change.pokemon}: ${change.fields.join(', ')}`, 'info');
+        });
+      });
+    } else {
+      log('   No Pokémon data was changed', 'info');
+    }
 
     return mergedDatabase;
   } catch (error) {

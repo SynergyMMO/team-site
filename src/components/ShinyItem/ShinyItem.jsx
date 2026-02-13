@@ -47,6 +47,8 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
   const wrapperRef = useRef(null)
   const lastTapTimeRef = useRef(0)
   const tapTimeoutRef = useRef(null)
+  const lastScrollTimeRef = useRef(0)
+  const lastScrollYRef = useRef(0)
 
   // Container CSS classes based on traits
   const containerClasses = useMemo(() => {
@@ -126,7 +128,12 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
   const handleGifTouchEnd = () => {
     if (!isMobile) return
 
+    // Ignore touch events that happen within 300ms of a scroll event
     const now = Date.now()
+    if (now - lastScrollTimeRef.current < 300) {
+      return
+    }
+
     const timeSinceLastTap = now - lastTapTimeRef.current
 
     if (timeSinceLastTap < 500) {
@@ -147,9 +154,12 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
     }
   }
 
-  // Close InfoBox on outside click for mobile
+  // Close InfoBox on outside click/touch for mobile and on scroll
   useEffect(() => {
     if (!isMobile || !showInfoBoxMobile) return
+
+    // Initialize scroll position when info box is shown
+    lastScrollYRef.current = window.scrollY || window.pageYOffset
 
     const handleOutsideClick = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -157,14 +167,41 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
       }
     }
 
-    // Add slight delay to prevent the triggering click from immediately closing
-    const timeoutId = setTimeout(() => {
-      document.addEventListener('click', handleOutsideClick)
-    }, 100)
+    const handleOutsideTouch = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setShowInfoBoxMobile(false)
+      }
+    }
+
+    // Use requestAnimationFrame to continuously check scroll position
+    // This captures momentum scrolling on mobile which doesn't fire scroll events
+    let rafId = null
+    const checkScroll = () => {
+      const currentScrollY = window.scrollY || window.pageYOffset
+      const scrollChanged = Math.abs(currentScrollY - lastScrollYRef.current) > 2
+      
+      if (scrollChanged) {
+        lastScrollYRef.current = currentScrollY
+        lastScrollTimeRef.current = Date.now()
+        setShowInfoBoxMobile(false)
+        return // Stop monitoring after scroll detected
+      }
+      
+      // Continue checking for scroll
+      rafId = requestAnimationFrame(checkScroll)
+    }
+
+    // Start the RAF loop
+    rafId = requestAnimationFrame(checkScroll)
+
+    // Also attach touch/click listeners for catching outside interactions
+    document.addEventListener('click', handleOutsideClick)
+    document.addEventListener('touchstart', handleOutsideTouch)
 
     return () => {
-      clearTimeout(timeoutId)
+      if (rafId) cancelAnimationFrame(rafId)
       document.removeEventListener('click', handleOutsideClick)
+      document.removeEventListener('touchstart', handleOutsideTouch)
     }
   }, [isMobile, showInfoBoxMobile])
 
