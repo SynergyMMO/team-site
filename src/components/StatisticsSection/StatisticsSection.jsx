@@ -578,7 +578,7 @@ export default function StatisticsSection({ playerData, playerName }) {
 
   // --- Component: Encounter Data Table (Mobile Friendly) ---
   const EncounterDataTable = ({ data }) => {
-    const sortedData = data.sort((a, b) => b.encounter_count - a.encounter_count)
+    const sortedData = [...data].sort((a, b) => b.encounter_count - a.encounter_count)
     return (
       <div className={styles.encounterTable}>
         <div className={styles.tableHeader}>

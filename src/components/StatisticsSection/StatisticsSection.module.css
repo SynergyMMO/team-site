@@ -178,7 +178,7 @@
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
 }
 
-.methodCount {
+.methodCount { 
   min-width: 40px;
   text-align: right;
   color: #FFD700;
