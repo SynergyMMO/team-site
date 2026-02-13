@@ -56,6 +56,37 @@
   margin-top: 4px;
 }
 
+/* API Details section */
+.apiDetails {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.75rem;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  line-height: 1.2;
+}
+
+.detailRow .label {
+  font-weight: 600;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.detailRow .value {
+  color: #fff;
+  text-align: right;
+  word-break: break-word;
+  flex: 1;
+}
+
 /* Base tag badge */
 .tag {
   display: inline-block;
@@ -160,5 +191,24 @@ span:hover .infoBox {
   .tag {
     font-size: 0.55rem;
     padding: 1px 4px;
+  }
+
+  .apiDetails {
+    margin-top: 4px;
+    padding-top: 4px;
+    gap: 2px;
+    font-size: 0.65rem;
+  }
+
+  .detailRow {
+    gap: 2px;
+  }
+
+  .detailRow .label {
+    font-size: 0.6rem;
+  }
+
+  .detailRow .value {
+    font-size: 0.6rem;
   }
 }

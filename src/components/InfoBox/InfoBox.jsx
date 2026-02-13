@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useMemo } from 'react'
 import styles from './InfoBox.module.css'
 
 const TRAIT_CHECKS = [
@@ -13,6 +13,35 @@ const TRAIT_CHECKS = [
   { key: 'MysteriousBall', label: 'Mystery', cls: 'tagMystery' },
   { key: 'Reaction', label: 'Reaction', cls: 'tagReaction' },
 ]
+
+// API merged fields to display (in order)
+const API_FIELDS = [
+  { key: 'ivs', label: 'IVs' },
+  { key: 'nature', label: 'Nature' },
+  { key: 'location', label: 'Location' },
+  { key: 'encounter_method', label: 'Method' },
+  { key: 'date_caught', label: 'Caught' },
+  { key: 'encounter_count', label: 'Encounters' },
+  { key: 'nickname', label: 'Nickname' },
+  { key: 'variant', label: 'Variant' },
+]
+
+// Format date to readable format
+function formatDate(dateStr) {
+  if (!dateStr) return null
+  try {
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+  } catch {
+    return null
+  }
+}
+
+// Format encounter count with commas
+function formatEncounterCount(count) {
+  if (!count && count !== 0) return null
+  return count.toLocaleString()
+}
 
 export default function InfoBox({ shiny, points, customText }) {
   const boxRef = useRef(null)
@@ -66,6 +95,23 @@ export default function InfoBox({ shiny, points, customText }) {
   const activeTraits = TRAIT_CHECKS.filter(
     t => shiny[t.key]?.toLowerCase() === 'yes'
   )
+
+  // Get API fields that exist and are not null
+  const activeApiFields = useMemo(() => {
+    return API_FIELDS.filter(field => {
+      const value = shiny[field.key]
+      if (value === null || value === undefined || value === '') return false
+      return true
+    }).map(field => ({
+      ...field,
+      value: field.key === 'date_caught' 
+        ? formatDate(shiny[field.key])
+        : field.key === 'encounter_count'
+        ? formatEncounterCount(shiny[field.key])
+        : shiny[field.key]
+    }))
+  }, [shiny])
+
   let reactionUrl = shiny['Reaction Link']?.trim()
   if (reactionUrl && !/^https?:\/\//i.test(reactionUrl)) {
     reactionUrl = 'https://' + reactionUrl
@@ -99,6 +145,16 @@ export default function InfoBox({ shiny, points, customText }) {
               </span>
             )
           })}
+        </div>
+      )}
+      {activeApiFields.length > 0 && (
+        <div className={styles.apiDetails}>
+          {activeApiFields.map(field => (
+            <div key={field.key} className={styles.detailRow}>
+              <span className={styles.label}>{field.label}:</span>
+              <span className={styles.value}>{field.value}</span>
+            </div>
+          ))}
         </div>
       )}
     </div>

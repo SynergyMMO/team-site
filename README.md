@@ -65,6 +65,8 @@ npm run dev
 | `npm run build` | Build for production (outputs to `/dist/`) |
 | `npm run preview` | Preview production build locally |
 | `npm run sitemap` | Generate sitemap via `src/utils/sitemap-builder.js` |
+| `npm run MergeData` | Merge ShinyBoard API data with Cloudflare KV database and push to production |
+| `npm run TestMergeData` | Test merge operation and output results to `merged_shiny_data.json` (no push) |
 
 ---
 

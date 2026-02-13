@@ -68,6 +68,14 @@ export default function About() {
         <h2>Changelog</h2>
         <div className={styles.changelog}>
           <div className={styles.changelogEntry}>
+            <h3>February 13, 2026</h3>
+            <ul>
+              <li><strong>Shiny Data Merge System Added</strong> - New NPM scripts for syncing ShinyBoard API data</li>
+              <li>Configurable field merging (IVs, nature, location, encounter method, date caught, encounter count, nickname, variant)</li>
+              <li>Grabs information using the API, Users must match the evolutions and names for Pokemon to match correctly.</li>
+            </ul>
+          </div>
+          <div className={styles.changelogEntry}>
             <h3>February 12, 2026</h3>
             <ul>
               <li>New Rare Pokemon section in location search</li>
@@ -150,7 +158,7 @@ export default function About() {
           </div>
         </div>
         <div className={styles.metadata}>
-          <p><strong>Last Updated:</strong> February 12, 2026</p>
+          <p><strong>Last Updated:</strong> February 13, 2026</p>
           <p><strong>Contact:</strong> oHypers on Discord</p>
         </div>
       </section>

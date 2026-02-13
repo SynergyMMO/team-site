@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "node src/utils/sitemap-builder.js && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
-    "sitemap": "node src/utils/sitemap-builder.js"
+    "sitemap": "node src/utils/sitemap-builder.js",
+    "MergeData": "node scripts/mergeShinyData.js",
+    "TestMergeData": "node scripts/mergeShinyData.js --test"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",
