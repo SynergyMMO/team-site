@@ -294,6 +294,54 @@ export default function EventsDetail() {
         </div>
       )}
 
+      {/* Winners */}
+      {(
+        (event.firstPlaceWinners?.length ?? 0) > 0 ||
+        (event.secondPlaceWinners?.length ?? 0) > 0 ||
+        (event.thirdPlaceWinners?.length ?? 0) > 0 ||
+        (event.fourthPlaceWinners?.length ?? 0) > 0
+      ) && (
+        <div className={styles.listSection}>
+          <h3>Winners</h3>
+
+          {event.firstPlaceWinners?.length > 0 && (
+            <div className={`${styles.prizeGroup} ${styles.firstPlace}`}>
+              <div className={styles.prizeTitle}>🏆 1st Place!</div>
+              {event.firstPlaceWinners.map((winner, i) => (
+                <div key={`first-${i}`} className={styles.prizeItem}>{winner}</div>
+              ))}
+            </div>
+          )}
+
+          {event.secondPlaceWinners?.length > 0 && (
+            <div className={`${styles.prizeGroup} ${styles.secondPlace}`}>
+              <div className={styles.prizeTitle}>🥈 2nd Place!</div>
+              {event.secondPlaceWinners.map((winner, i) => (
+                <div key={`second-${i}`} className={styles.prizeItem}>{winner}</div>
+              ))}
+            </div>
+          )}
+
+          {event.thirdPlaceWinners?.length > 0 && (
+            <div className={`${styles.prizeGroup} ${styles.thirdPlace}`}>
+              <div className={styles.prizeTitle}>🥉 3rd Place!</div>
+              {event.thirdPlaceWinners.map((winner, i) => (
+                <div key={`third-${i}`} className={styles.prizeItem}>{winner}</div>
+              ))}
+            </div>
+          )}
+
+          {event.fourthPlaceWinners?.length > 0 && (
+            <div className={`${styles.prizeGroup} ${styles.fourthPlace}`}>
+              <div className={styles.prizeTitle}>🏅 4th Place!</div>
+              {event.fourthPlaceWinners.map((winner, i) => (
+                <div key={`fourth-${i}`} className={styles.prizeItem}>{winner}</div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
     </div>
   )
 }

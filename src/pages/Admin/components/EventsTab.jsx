@@ -17,6 +17,10 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     validPokemon: [],
     targetPokemon: [],
     participatingStaff: [],
+    firstPlaceWinners: [],
+    secondPlaceWinners: [],
+    thirdPlaceWinners: [],
+    fourthPlaceWinners: [],
     firstPlacePrize: [],
     secondPlacePrize: [],
     thirdPlacePrize: [],
@@ -107,6 +111,7 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
       validPokemon: event.validPokemon || [],
       targetPokemon: event.targetPokemon || [],
       participatingStaff: event.participatingStaff || [],
+      winners: event.winners || [],
       firstPlacePrize: event.firstPlacePrize || [],
       secondPlacePrize: event.secondPlacePrize || [],
       thirdPlacePrize: event.thirdPlacePrize || [],
@@ -388,6 +393,25 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           </div>
         ))}
         <button className={styles.editBtn} onClick={() => addListItem("participatingStaff")}>Add Staff</button>
+
+        {/* Winners by Place */}
+        {["firstPlaceWinners", "secondPlaceWinners", "thirdPlaceWinners", "fourthPlaceWinners"].map((field, idx) => (
+          <div key={field}>
+            <label>{["1st", "2nd", "3rd", "4th"][idx]} Place Winner(s):</label>
+            {eventData[field].map((w, i) => (
+              <div key={i} className={styles.inputRow}>
+                <input
+                  placeholder="Winner Name"
+                  className={styles.adminInput}
+                  value={w || ""}
+                  onChange={(e) => updateListItem(field, i, e.target.value)}
+                />
+                <button className={styles.deleteBtn} onClick={() => removeListItem(field, i)}>Remove</button>
+              </div>
+            ))}
+            <button className={styles.editBtn} onClick={() => addListItem(field)}>Add Winner</button>
+          </div>
+        ))}
 
         {/* Prizes */}
         {["firstPlacePrize", "secondPlacePrize", "thirdPlacePrize", "fourthPlacePrize"].map((field, idx) => (
