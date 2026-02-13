@@ -75,6 +75,8 @@ export default function About() {
               <li>Grabs information using the API, Users must match the evolutions and names for Pokemon to match correctly.</li>
               <li>Fixed info box display on hover - shows pokemon that are not included</li>
               <li>Pokemon variant forms like frillish-f and gastrodon-east now merge correctly</li>
+              <li>Player statistics threshold increased to 65% data completeness for leaderboards</li>
+              <li>Added click-away functionality to Player Leaderboards dropdown</li>
             </ul>
           </div>
           <div className={styles.changelogEntry}>
