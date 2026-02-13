@@ -193,7 +193,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
 
   const title = meta.ogTitle || 'Team Synergy - PokeMMO';
   const description = meta.ogDescription || 'Team Synergy is a PokeMMO shiny hunting team.';
-  const image = meta.ogImage || 'https://synergymmo.com/favicon.png';
+  const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_7/pikachu.gif';
   const url = meta.route ? `https://synergymmo.com${meta.route}` : 'https://synergymmo.com/';
 
   // Inject OG tags
@@ -250,19 +250,19 @@ async function prerender() {
       route: '/events',
       ogTitle: 'Team Synergy Events | Team Synergy - PokeMMO',
       ogDescription: 'Discover Team Synergy\'s PokeMMO community events. Join shiny hunting competitions, seasonal tournaments, team challenges, and special gaming events. Stay connected with the latest Team Synergy activities.',
-      ogImage: 'https://synergymmo.com/favicon.png',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
     },
     '/trophy-board': {
       route: '/trophy-board',
       ogTitle: 'Team Synergy Trophy Board | Team Synergy - PokeMMO',
       ogDescription: 'Explore trophies and achievements earned by Team Synergy members in PokeMMO. View championship awards, milestone accomplishments, and community recognition. Celebrate team success and member achievements.',
-      ogImage: 'https://synergymmo.com/favicon.png',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
     },
     '/streamers': {
       route: '/streamers',
       ogTitle: 'Team Synergy Streamers | Team Synergy - PokeMMO',
       ogDescription: 'Watch Team Synergy members stream PokeMMO live on Twitch. Check live status, find active streamers, join the community watching shiny hunts, encounters, and competitive gameplay.',
-      ogImage: 'https://synergymmo.com/favicon.png',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
     },
     '/shiny-war-2025': {
       route: '/shiny-war-2025',
