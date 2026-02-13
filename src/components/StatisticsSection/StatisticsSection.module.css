@@ -10,7 +10,7 @@
   font-size: 2rem;
   text-align: center;
   margin-bottom: 2rem;
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  text-shadow: 0 0 10px rgba(255, 0, 128, 0.87);
   font-weight: 900;
   letter-spacing: 1px;
 }
@@ -21,13 +21,13 @@
   border-radius: 12px;
   overflow: hidden;
   background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 100%);
-  border: 2px solid #00d4ff;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+  border: 2px solid #DAA520;
+  box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
   transition: all 0.3s ease;
 }
 
 .collapsibleSection:hover {
-  box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
 }
 
 .sectionHeader {
@@ -36,18 +36,18 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: linear-gradient(90deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 212, 255, 0.05) 100%);
+  background: linear-gradient(90deg, rgba(218, 165, 32, 0.12) 0%, rgba(218, 165, 32, 0.06) 100%);
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   color: #fff;
   font-size: 1.1rem;
   font-weight: 600;
-  border-bottom: 2px solid #00d4ff;
+  border-bottom: 2px solid #FFEB99;
 }
 
 .sectionHeader:hover {
-  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 212, 255, 0.1) 100%);
+  background: linear-gradient(90deg, rgba(218, 165, 32, 0.18) 0%, rgba(218, 165, 32, 0.1) 100%);
 }
 
 .icon {
@@ -58,13 +58,13 @@
 .title {
   flex: 1;
   text-align: left;
-  color: #00d4ff;
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  color: #FFEB99;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
 }
 
 .arrow {
   transition: transform 0.3s ease;
-  color: #00d4ff;
+  color: #FFD700;
   font-size: 0.9rem;
 }
 
@@ -97,18 +97,18 @@
 }
 
 .statCard {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(51, 134, 255, 0.1) 100%);
-  border: 2px solid #00d4ff;
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.12) 0%, rgba(184, 134, 11, 0.12) 100%);
+  border: 2px solid #FFD700;
   border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.15);
 }
 
 .statCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.25);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.35);
   border-color: #ffbe0b;
 }
 
@@ -122,10 +122,10 @@
 }
 
 .statValue {
-  color: #00d4ff;
+  color: #FFD700;
   font-size: 2rem;
   font-weight: 900;
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
   margin-bottom: 0.5rem;
 }
 
@@ -148,9 +148,9 @@
   align-items: center;
   gap: 1rem;
   padding: 0.75rem;
-  background: rgba(0, 212, 255, 0.05);
+  background: rgba(218, 165, 32, 0.08);
   border-radius: 8px;
-  border-left: 4px solid #00d4ff;
+  border-left: 4px solid #FFD700;
 }
 
 .methodName {
@@ -166,22 +166,22 @@
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #00d4ff;
+  border: 1px solid #FFD700;
 }
 
 .methodFill {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #00d4ff, #3a86ff);
+  background: linear-gradient(90deg, #FFD700, #DAA520);
   border-radius: 12px;
   transition: width 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
 }
 
 .methodCount {
   min-width: 40px;
   text-align: right;
-  color: #00d4ff;
+  color: #FFD700;
   font-weight: 900;
   font-size: 1.1rem;
 }
@@ -190,10 +190,10 @@
 .methodsTable {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(0, 212, 255, 0.05);
+  background: rgba(218, 165, 32, 0.08);
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.25);
 }
 
 .methodsHeader {
@@ -201,12 +201,12 @@
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15) 0%, rgba(51, 134, 255, 0.1) 100%);
-  border-bottom: 2px solid #00d4ff;
+  background: linear-gradient(90deg, rgba(218, 165, 32, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
+  border-bottom: 2px solid #FFD700;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #00d4ff;
+  color: #FFD700;
 }
 
 .methodsHeaderCell {
@@ -219,13 +219,13 @@
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.15);
   align-items: center;
   transition: background 0.3s ease;
 }
 
 .methodsRow:hover {
-  background: rgba(0, 212, 255, 0.08);
+  background: rgba(218, 165, 32, 0.1);
 }
 
 .methodsRow:last-child {
@@ -239,7 +239,7 @@
 }
 
 .methodsCell:last-child {
-  color: #00d4ff;
+  color: #FFD700;
   font-weight: 700;
 }
 
@@ -247,20 +247,20 @@
 .chartContainer {
   margin-bottom: 3rem;
   padding: 1.5rem;
-  background: rgba(0, 212, 255, 0.05);
+  background: rgba(218, 165, 32, 0.08);
   border-radius: 12px;
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.25);
 }
 
 .chartTitle {
-  color: #00d4ff;
+  color: #FFD700;
   font-size: 1.2rem;
   margin-top: 0;
   margin-bottom: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
 }
 
 .chart {
@@ -293,7 +293,7 @@
   aspect-ratio: 1;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 8px;
-  filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.2));
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
 }
 
 .pieLegend {
@@ -301,9 +301,9 @@
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
-  background: rgba(0, 212, 255, 0.05);
+  background: rgba(218, 165, 32, 0.08);
   border-radius: 8px;
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.25);
   min-width: 200px;
   max-height: 350px;
   overflow-y: auto;
@@ -599,10 +599,10 @@
 .encounterTable {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(0, 212, 255, 0.05);
+  background: rgba(218, 165, 32, 0.08);
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.25);
   margin-bottom: 1.5rem;
 }
 
@@ -611,12 +611,12 @@
   grid-template-columns: 2fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15) 0%, rgba(51, 134, 255, 0.1) 100%);
-  border-bottom: 2px solid #00d4ff;
+  background: linear-gradient(90deg, rgba(218, 165, 32, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
+  border-bottom: 2px solid #FFD700;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #00d4ff;
+  color: #FFD700;
 }
 
 .tableHeaderCell {
@@ -629,13 +629,13 @@
   grid-template-columns: 2fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.15);
   align-items: center;
   transition: background 0.3s ease;
 }
 
 .tableRow:hover {
-  background: rgba(0, 212, 255, 0.08);
+  background: rgba(218, 165, 32, 0.1);
 }
 
 .tableRow:last-child {
@@ -648,7 +648,7 @@
 }
 
 .tableCell:last-child {
-  color: #00d4ff;
+  color: #FFD700;
   font-weight: 700;
   text-align: right;
 }
@@ -659,12 +659,12 @@
 }
 
 .pieLegend::-webkit-scrollbar-track {
-  background: rgba(0, 212, 255, 0.1);
+  background: rgba(255, 215, 0, 0.15);
   border-radius: 8px;
 }
 
 .pieLegend::-webkit-scrollbar-thumb {
-  background: #00d4ff;
+  background: #FFD700;
   border-radius: 8px;
 }
 
@@ -677,13 +677,13 @@
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-  background: rgba(0, 212, 255, 0.9);
-  color: #fff;
+  background: rgba(255, 215, 0, 0.95);
+  color: #1a1a1a;
   padding: 0.75rem 1rem;
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 600;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
   z-index: 10;
 }
 
@@ -692,20 +692,20 @@
   display: none;
   flex: 1;
   padding: 1rem;
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(51, 134, 255, 0.2) 100%);
-  border: 2px solid #00d4ff;
-  color: #00d4ff;
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.25) 0%, rgba(184, 134, 11, 0.25) 100%);
+  border: 2px solid #FFD700;
+  color: #FFD700;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
 }
 
 .graphsZoomButton:hover {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(51, 134, 255, 0.3) 100%);
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.35) 0%, rgba(184, 134, 11, 0.35) 100%);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
   transform: translateY(-2px);
 }
 
