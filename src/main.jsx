@@ -26,7 +26,29 @@ const queryClient = new QueryClient({
       .split('&').map(s => s.replace(/~and~/g, '&'))
       .join('?')
     window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash)
+    // Clear the session storage flag since we're done
+    sessionStorage.removeItem('spa-redirect-attempted')
+  } else {
+    // Clear any leftover redirect flags
+    sessionStorage.removeItem('spa-redirect-attempted')
   }
+})()
+
+// Update canonical URL dynamically based on current location
+;(function() {
+  const updateCanonicalURL = () => {
+    const canonical = document.querySelector('link[rel="canonical"]')
+    if (canonical) {
+      const currentPath = window.location.pathname + window.location.search + window.location.hash
+      canonical.href = `https://synergymmo.com${currentPath}`
+    }
+  }
+  
+  // Update on page load
+  updateCanonicalURL()
+  
+  // Update on route changes
+  window.addEventListener('popstate', updateCanonicalURL)
 })()
 
 // Auto-reload once when Vite chunks 404 after a deploy (stale asset hashes)

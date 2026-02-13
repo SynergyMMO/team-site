@@ -2,19 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Team Synergy!</title>
+  <title>Team Synergy - PokeMMO</title>
+  <meta name="robots" content="noindex, follow">
   <script>
-    // GitHub Pages SPA redirect with subdirectory support
-    var pathSegmentsToKeep = 0; // Keep 1 segment for /synergy-shiny-showcase/
-    var l = window.location;
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash
-    );
+    // Improved GitHub Pages SPA redirect to prevent Google Search redirect errors
+    (function() {
+      var pathSegmentsToKeep = 0;
+      var l = window.location;
+      var isRedirect = sessionStorage.getItem('spa-redirect-attempted');
+      
+      // Only redirect if we haven't already to prevent loops
+      if (!isRedirect) {
+        sessionStorage.setItem('spa-redirect-attempted', '1');
+        var newPath = 
+          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+          l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+          l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash;
+        
+        // Use replace to prevent back button issues
+        l.replace(newPath);
+      } else {
+        // Clear the flag after use
+        sessionStorage.removeItem('spa-redirect-attempted');
+      }
+    })();
   </script>
+  <noscript>
+    <!-- Fallback redirect for search engines when JS is disabled -->
+    <meta http-equiv="refresh" content="0; url=/">
+  </noscript>
 </head>
-<body></body>
+<body>
+  <p>Redirecting to home page...</p>
+</body>
 </html>
