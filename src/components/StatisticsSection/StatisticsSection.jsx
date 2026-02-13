@@ -67,7 +67,22 @@ export default function StatisticsSection({ playerData, playerName }) {
     const methodCounts = {}
     shinies.forEach(s => {
       const method = s.encounter_method || 'Unknown'
-      methodCounts[method] = (methodCounts[method] || 0) + 1
+      if (!methodCounts[method]) {
+        methodCounts[method] = {
+          count: 0,
+          totalEncounters: 0,
+          avgEncounters: 0
+        }
+      }
+      methodCounts[method].count += 1
+      methodCounts[method].totalEncounters += s.encounter_count || 0
+    })
+    // Calculate average encounters per method
+    Object.keys(methodCounts).forEach(method => {
+      methodCounts[method].avgEncounters = 
+        methodCounts[method].count > 0
+          ? Math.round(methodCounts[method].totalEncounters / methodCounts[method].count)
+          : 0
     })
 
     // Region Stats - Only valid Pokemon regions
@@ -652,14 +667,18 @@ export default function StatisticsSection({ playerData, playerName }) {
             <div className={styles.methodsHeaderCell}>Method</div>
             <div className={styles.methodsHeaderCell}>Count</div>
             <div className={styles.methodsHeaderCell}>Percentage</div>
+            <div className={styles.methodsHeaderCell}>Total Encounters</div>
+            <div className={styles.methodsHeaderCell}>Avg Encounter/Shiny</div>
           </div>
           {Object.entries(stats.methodCounts)
-            .sort((a, b) => b[1] - a[1])
-            .map(([method, count]) => (
+            .sort((a, b) => b[1].count - a[1].count)
+            .map(([method, data]) => (
               <div key={method} className={styles.methodsRow}>
                 <div className={styles.methodsCell}>{method}</div>
-                <div className={styles.methodsCell}>{count}</div>
-                <div className={styles.methodsCell}>{((count / stats.totalShinies) * 100).toFixed(1)}%</div>
+                <div className={styles.methodsCell}>{data.count}</div>
+                <div className={styles.methodsCell}>{((data.count / stats.totalShinies) * 100).toFixed(1)}%</div>
+                <div className={styles.methodsCell}>{data.totalEncounters.toLocaleString()}</div>
+                <div className={styles.methodsCell}>{data.avgEncounters.toLocaleString()}</div>
               </div>
             ))}
         </div>

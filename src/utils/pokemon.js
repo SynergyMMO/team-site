@@ -192,3 +192,43 @@ export function getPokemonImageUrl(name, shiny = true) {
 export function formatPokemonName(name) {
   return name ? name.charAt(0).toUpperCase() + name.slice(1) : name
 }
+// Extract base Pokemon name, stripping form variants (e.g., "frillish-f" -> "frillish")
+// This is used for navigation to ensure form variants go to the main Pokemon page
+export function getBasePokemonName(name) {
+  if (!name || typeof name !== 'string') return name
+  
+  const lowerName = name.toLowerCase()
+  
+  // Known form variant suffixes that should be stripped
+  const formVariantSuffixes = [
+    'f', 'm', 'h', 'a',
+    'alola', 'galar', 'hisui', 'paldea', 'unbound',
+    'east', 'west',
+    'attack', 'defense', 'speed',
+    'rapid', 'single',
+    'origin', 'altered',
+    'sky', 'land', 'therian', 'incarnate', 'resolute', 'active', 'pendant', 'dusk', 'dawn'
+  ]
+  
+  // Check if name has a hyphen
+  if (!lowerName.includes('-')) return name
+  
+  // Split on the last hyphen
+  const lastHyphenIndex = lowerName.lastIndexOf('-')
+  const potentialSuffix = lowerName.substring(lastHyphenIndex + 1)
+  const baseName = name.substring(0, lastHyphenIndex)
+  
+  // If the suffix is a known form variant, return the base name
+  if (formVariantSuffixes.includes(potentialSuffix)) {
+    return baseName
+  }
+  
+  // Also handle multi-word suffixes like "rapid-strike"
+  const potentialMultiSuffix = lowerName.substring(lowerName.indexOf('-') + 1)
+  if (potentialMultiSuffix === 'rapid-strike' || potentialMultiSuffix === 'single-strike') {
+    return lowerName.substring(0, lowerName.indexOf('-'))
+  }
+  
+  // Otherwise return the original name (it might be a base Pokemon with hyphens like "tapu-koko")
+  return name
+}

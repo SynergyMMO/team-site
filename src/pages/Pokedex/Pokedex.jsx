@@ -5,7 +5,7 @@ import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTierData } from '../../hooks/useTierData'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { getAssetUrl } from '../../utils/assets'
-import { normalizePokemonName, onGifError } from '../../utils/pokemon'
+import { normalizePokemonName, onGifError, getBasePokemonName } from '../../utils/pokemon'
 import { API } from '../../api/endpoints'
 import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
@@ -76,6 +76,18 @@ export default function Pokedex() {
   }
   const nameAliasMap = {
     darmanitan: 'darmanitan-standard'
+  }
+
+  // Format egg group names - handles special water groups
+  const formatEggGroupName = (group) => {
+    if (!group) return ""
+    const lowerGroup = group.toLowerCase()
+    // Special handling for water groups
+    if (lowerGroup === "watera") return "Water A"
+    if (lowerGroup === "waterb") return "Water B"
+    if (lowerGroup === "waterc") return "Water C"
+    // Default: capitalize and replace hyphens with spaces
+    return group.charAt(0).toUpperCase() + group.slice(1).replace('-', ' ')
   }
 
   // Helper function to categorize encounters by type
@@ -895,7 +907,7 @@ export default function Pokedex() {
           >
             <span className={styles.dropdownLabel}>Egg Groups</span>
             <span className={styles.dropdownValue}>
-              {formatSelectionSummary(selectedEggGroups, eggGroupOptions, (value) => value, 'All Egg Groups')}
+              {formatSelectionSummary(selectedEggGroups, eggGroupOptions, formatEggGroupName, 'All Egg Groups')}
             </span>
             <span className={styles.dropdownCaret}>▾</span>
           </button>
@@ -922,7 +934,7 @@ export default function Pokedex() {
                       ))
                     }}
                   />
-                  <span>{option}</span>
+                  <span>{formatEggGroupName(option)}</span>
                 </label>
               ))}
             </div>
@@ -1830,12 +1842,12 @@ export default function Pokedex() {
                           
                           <div 
                             className={styles.pokemonContainer}
-                            onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
+                            onClick={() => navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}`)}
                             role="button"
                             tabIndex={0}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' || e.key === ' ') {
-                                navigate(`/pokemon/${pokemon.toLowerCase()}`)
+                                navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}`)
                               }
                             }}
                             style={{ cursor: 'pointer' }}
@@ -2071,12 +2083,12 @@ export default function Pokedex() {
                     <div 
                       key={`${gen}-${pokemon}-${idx}`} 
                       className={styles.pokemonContainer}
-                      onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
+                      onClick={() => navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}`)}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                          navigate(`/pokemon/${pokemon.toLowerCase()}`)
+                          navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}`)
                         }
                       }}
                       style={{ cursor: 'pointer' }}

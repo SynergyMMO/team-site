@@ -6,6 +6,7 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { usePokemonOrder } from '../../hooks/usePokemonOrder'
 import { usePokemonSprites } from '../../hooks/usePokemonSprites'
 import { usePokemonForms } from '../../hooks/usePokemonForms'
+import { getBasePokemonName } from '../../utils/pokemon'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from './PokemonDetail.module.css'
 import abilitiesData from '../../data/pokemmo_data/abilities-data.json'
@@ -930,13 +931,25 @@ export default function PokemonDetail() {
 const capitalize = (str) =>
   str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
 
+// Format egg group names - handles special water groups
+const formatEggGroupName = (group) => {
+  if (!group) return "";
+  const lowerGroup = group.toLowerCase();
+  // Special handling for water groups
+  if (lowerGroup === "watera") return "Water A";
+  if (lowerGroup === "waterb") return "Water B";
+  if (lowerGroup === "waterc") return "Water C";
+  // Default: capitalize and replace hyphens with spaces
+  return capitalize(group).replace('-', ' ');
+};
+
 // Format types → "Dark / Ghost"
 const formatTypes = (types) =>
   types?.map(capitalize).join(" / ") || "Unknown";
 
 // Format egg groups → "Field & Fairy"
 const formatEggGroups = (eggs) =>
-  eggs?.length ? eggs.map(capitalize).join(" & ") : "Unknown";
+  eggs?.length ? eggs.map(formatEggGroupName).join(" & ") : "Unknown";
 
 // Build EXACT description format requested
 const buildDescription = (pokemon) => {
@@ -1185,7 +1198,7 @@ useDocumentHead({
                       onClick={() => {
                         setSelectedForm(form.name)
                         setCurrentSpriteIndex(0)
-                        navigate(`/pokemon/${form.name}`, { state: { fromPokemon: true } })
+                        navigate(`/pokemon/${getBasePokemonName(form.name)}`, { state: { fromPokemon: true } })
                       }}
                       title={form.label}
                     >
@@ -1554,7 +1567,7 @@ useDocumentHead({
                           className={styles.eggGroupTag}
                           style={{ '--egg-color': groupColor }}
                         >
-                          {group.replace('-', ' ')}
+                          {formatEggGroupName(group)}
                         </span>
                       )
                     })}

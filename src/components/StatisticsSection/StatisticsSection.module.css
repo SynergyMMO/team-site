@@ -198,7 +198,7 @@
 
 .methodsHeader {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1rem;
   background: linear-gradient(90deg, rgba(218, 165, 32, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
@@ -216,7 +216,7 @@
 
 .methodsRow {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1rem;
   border-bottom: 1px solid rgba(255, 215, 0, 0.15);
@@ -505,13 +505,13 @@
   }
 
   .methodsHeader {
-    grid-template-columns: auto 1fr 1fr;
+    grid-template-columns: auto 1fr 1fr 1fr 1fr;
     gap: 0.25rem;
     padding: 0.5rem;
   }
 
   .methodsRow {
-    grid-template-columns: auto 1fr 1fr;
+    grid-template-columns: auto 1fr 1fr 1fr 1fr;
     gap: 0.25rem;
     padding: 0.5rem;
   }

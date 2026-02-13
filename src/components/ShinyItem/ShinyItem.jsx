@@ -1,7 +1,7 @@
 import { memo, useMemo, useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfoBox from '../InfoBox/InfoBox'
-import { getLocalPokemonGif, onGifError } from '../../utils/pokemon'
+import { getLocalPokemonGif, onGifError, getBasePokemonName } from '../../utils/pokemon'
 import styles from './ShinyItem.module.css'
 
 // Mapping of traits to CSS classes
@@ -119,7 +119,7 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
       return
     }
     // Desktop: navigate immediately
-    navigate(`/pokemon/${shiny.Pokemon.toLowerCase()}`)
+    navigate(`/pokemon/${getBasePokemonName(shiny.Pokemon).toLowerCase()}`)
   }
 
   // Handle double-tap on mobile
@@ -134,7 +134,7 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
       if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current)
       lastTapTimeRef.current = 0
       setShowInfoBoxMobile(false) // Close the InfoBox before navigating
-      navigate(`/pokemon/${shiny.Pokemon.toLowerCase()}`)
+      navigate(`/pokemon/${getBasePokemonName(shiny.Pokemon).toLowerCase()}`)
     } else {
       // First tap - show InfoBox
       lastTapTimeRef.current = now
@@ -186,7 +186,7 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
-              navigate(`/pokemon/${shiny.Pokemon.toLowerCase()}`)
+              navigate(`/pokemon/${getBasePokemonName(shiny.Pokemon).toLowerCase()}`)
             }
           }}
         />

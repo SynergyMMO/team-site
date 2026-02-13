@@ -91,7 +91,7 @@ export default function ZoomableChart({ children }) {
       // Calculate ratio from the start of the pinch gesture (not incremental)
       const zoomRatio = currentDistance / stateRef.current.touchDistance
       // Apply 10x faster zoom: 3 -> 30
-      const dampedRatio = 1 + (zoomRatio - 1) * 30
+      const dampedRatio = 1 + (zoomRatio - 1) * 100
       // Always calculate from the zoom level at pinch start, not current zoom
       const baseZoom = stateRef.current.touchStartZoom
       const newZoom = Math.max(1, Math.min(10, baseZoom * dampedRatio))
