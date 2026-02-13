@@ -153,11 +153,15 @@ async function getPokemon() {
 
     const types = formatTypes(pokemon.types);
     const tier = tierLookup[sanitized] || 'Unknown';
+    const abilities = pokemon.abilities?.join(', ') || 'Unknown';
+    const generation = pokemon.generation ? `Gen ${pokemon.generation}` : '';
+
+    const ogDescription = `${name} (${types}) - Tier: ${tier} ${generation ? '- ' + generation : ''}. View ${name} details, shiny form, location, and abilities in Team Synergy's PokeMMO Pokédex.`;
 
     return {
       route: `/pokemon/${sanitized}`,
-      ogTitle: `${name} - Shiny Dex | Team Synergy - PokeMMO`,
-      ogDescription: `${name} - Type: ${types} - ${tier}`,
+      ogTitle: `${name} Shiny Dex | Type: ${types} | Team Synergy - PokeMMO`,
+      ogDescription: ogDescription,
       ogImage: animatedShinyGif,
     };
   });
