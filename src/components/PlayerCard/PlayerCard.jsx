@@ -4,7 +4,7 @@ import ShinyItem from '../ShinyItem/ShinyItem'
 import { getAssetUrl } from '../../utils/assets'
 import styles from './PlayerCard.module.css'
 
-function PlayerCard({ player, data, rank, streamers }) {
+function PlayerCard({ player, data, rank, streamers, mobileInteractive = false }) {
   const playerClass =
     rank < 5
       ? styles.topPlayer
@@ -53,7 +53,7 @@ function PlayerCard({ player, data, rank, streamers }) {
       </div>
       <div className={styles.shinyList}>
         {Object.entries(data.shinies).map(([id, s]) => (
-          <ShinyItem key={id} shiny={s} userName={player} localizeDates={false} />
+          <ShinyItem key={id} shiny={s} userName={player} localizeDates={false} mobileInteractive={mobileInteractive} />
         ))}
       </div>
     </div>

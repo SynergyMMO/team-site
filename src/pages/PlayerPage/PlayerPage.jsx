@@ -230,7 +230,7 @@ export default function PlayerPage() {
           <div className={styles.favouriteGrid}>
             {safeFavourites.map(([id, s]) => (
               <div key={id} className={styles.bigShinyWrapper}>
-                <ShinyItem shiny={s} userName={safeRealKey} localizeDates={false} />
+                <ShinyItem shiny={s} userName={safeRealKey} localizeDates={false} mobileInteractive={true} />
               </div>
             ))}
           </div>
@@ -240,7 +240,7 @@ export default function PlayerPage() {
       {safeNormalShinies.length > 0 && (
         <div className={styles.shinyList}>
           {safeNormalShinies.map(([id, s]) => (
-            <ShinyItem key={id} shiny={s} userName={safeRealKey} localizeDates={false} />
+            <ShinyItem key={id} shiny={s} userName={safeRealKey} localizeDates={false} mobileInteractive={true} />
           ))}
         </div>
       )}

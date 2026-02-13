@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfoBox from '../InfoBox/InfoBox'
 import { getLocalPokemonGif, onGifError } from '../../utils/pokemon'

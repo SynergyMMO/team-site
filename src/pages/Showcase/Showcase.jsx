@@ -5,7 +5,9 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import PlayerStatsDropdown from '../../components/PlayerStatsDropdown/PlayerStatsDropdown'
 import { getAssetUrl } from '../../utils/assets'
+import { getStatisticsWinners } from '../../utils/playerStatistics'
 import { API } from '../../api/endpoints'
 import styles from './Showcase.module.css'
 
@@ -52,6 +54,11 @@ export default function Showcase() {
     })
     return map
   }, [sortedPlayers])
+
+  // Calculate statistics winners
+  const winners = useMemo(() => {
+    return getStatisticsWinners(data)
+  }, [data])
 
   const loadMore = useCallback(() => {
     setVisibleCount(prev => Math.min(prev + BATCH_SIZE, filteredPlayers.length))
@@ -109,6 +116,8 @@ export default function Showcase() {
 
       <SearchBar value={search} onChange={setSearch} />
 
+      <PlayerStatsDropdown winners={winners} data={data} />
+
       <div className={styles.showcase}>
         {playersToShow.map(([player, playerData]) => (
           <PlayerCard
@@ -117,6 +126,7 @@ export default function Showcase() {
             data={playerData}
             rank={rankMap.get(player)}
             streamers={streamers}
+            mobileInteractive={true}
           />
         ))}
       </div>
