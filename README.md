@@ -82,9 +82,11 @@ src/
 │   ├── InfoBox/            # Hover info tooltips
 │   ├── Navbar/             # Navigation with mobile menu
 │   ├── PlayerCard/         # Player info card with shiny preview
+│   ├── PlayerStatsDropdown/ # Collapsible player statistics
 │   ├── SearchBar/          # Search input for filtering
 │   ├── ShinyItem/          # Individual shiny Pokemon display
 │   ├── StarField/          # Animated background
+│   ├── StatisticsSection/  # Charts & graphs with zoom modal
 │   └── TrophyShelf/        # Trophy display grid
 │
 ├── context/                # React Context providers
@@ -95,12 +97,18 @@ src/
 │   ├── tier_pokemon.json   # Pokemon grouped by rarity tier
 │   ├── tier_points.json    # Points per tier (for SHOTM scoring)
 │   ├── randomizer_tiers.json # Tiers for randomizer tool
+│   ├── shinywar2025.json   # Shiny War 2025 catches & scores
 │   ├── streamers.json      # Team streamer Twitch usernames
 │   └── trophies.json       # Trophy definitions & assignments
 │
 ├── hooks/                  # Custom React hooks
 │   ├── useDatabase.js      # Query main shiny database
 │   ├── useDocumentHead.js  # Dynamic page title, meta tags & canonical URLs
+│   ├── usePokemonDetails.js # Fetch single Pokemon metadata
+│   ├── usePokemonForms.js  # Discover Pokemon forms & gender variants
+│   ├── usePokemonLocations.js # Encounter locations & rarity data
+│   ├── usePokemonOrder.js  # Canonical Pokedex ordering
+│   ├── usePokemonSprites.js # Sprites organized by generation
 │   ├── useShinyData.js     # Fetch user shiny data from Shinyboard.net
 │   ├── useStreamers.js     # Query live/offline streamer status
 │   ├── useTierData.js      # Load Pokemon tier classifications
@@ -108,14 +116,18 @@ src/
 │   └── useTrophies.js      # Load trophy data
 │
 ├── pages/                  # Route-level page components
+│   ├── About/              # About / team info page
 │   ├── Admin/              # Admin login & management panel
 │   │   ├── components/     # Admin-specific UI components
 │   │   └── hooks/          # Admin-specific hooks
 │   ├── CounterGenerator/   # GIF to ZIP converter for PokeMMO
+│   ├── EventsPage/         # Events listing & event detail pages
 │   ├── NotFound/           # 404 page
 │   ├── PlayerPage/         # Individual player's collection
 │   ├── Pokedex/            # Pokemon dex tracker
+│   ├── PokemonDetail/      # Individual Pokemon info page
 │   ├── RandomPokemon/      # Random Pokemon generator with bingo
+│   ├── ShinyWar2025/       # 2025 Shiny War leaderboard
 │   ├── SHOTM/              # Shiny Hunters of the Month leaderboard
 │   ├── Showcase/           # Main landing page (player grid)
 │   ├── Streamers/          # Team streamers with Twitch status
@@ -125,15 +137,18 @@ src/
 ├── utils/                  # Utility functions
 │   ├── assets.js           # Asset URL helper (handles base path)
 │   ├── bingo.js            # Bingo card game logic
+│   ├── playerStatistics.js # Player stats calculation helpers
 │   ├── points.js           # Shiny point calculation logic
 │   ├── pokemon.js          # Pokemon name normalization & image URLs
-│   └── sitemap-builder.js  # Generates sitemap.xml for SEO
+│   ├── sitemap-builder.js  # Generates sitemap.xml for SEO
+│   └── slugify.js          # URL-friendly slug generation
 │
 ├── App.jsx                 # Main routing & layout
 ├── main.jsx                # App entry point with providers
 └── index.css               # Global styles (dark theme)
 
 public/
+├── .nojekyll               # Disable Jekyll processing on GitHub Pages
 ├── 404.html                # SPA redirect handler for GitHub Pages
 ├── favicon.png             # Site icon
 ├── CNAME                   # GitHub Pages custom domain
@@ -143,6 +158,10 @@ public/
 ├── images/                 # UI images (arrows, icons, etc.)
 │   └── pokemon_gifs/       # Local Pokemon GIF sprites (tier_0/ through tier_7/)
 └── xml/                    # PokeMMO counter template files
+
+scripts/
+├── mergeShinyData.js       # Merge ShinyBoard API data with Cloudflare KV
+└── prerender.mjs           # Post-build Puppeteer prerendering for SEO
 ```
 
 ---
@@ -166,6 +185,7 @@ Routes are defined in `src/App.jsx` using React Router v6.
 | `/counter-generator` | `CounterGenerator` | GIF to ZIP converter tool |
 | `/random-pokemon-generator` | `RandomPokemon` | Random Pokemon + bingo game |
 | `/shiny-war-2025` | `ShinyWar2025` | 2025 Shiny War leaderboard |
+| `/about` | `About` | About / team info page |
 | `/admin` | `AdminLogin` | Admin login page |
 | `/admin/panel` | `AdminPanel` | Admin management interface (protected) |
 | `*` | `NotFound` | 404 fallback |
@@ -484,11 +504,20 @@ Hover tooltip for additional information.
 Context-aware back navigation (handles referrer-based routing).
 - **Location:** `src/components/BackButton/`
 
+### `<PlayerStatsDropdown />`
+Collapsible dropdown showing player statistics and charts.
+- **Location:** `src/components/PlayerStatsDropdown/`
+
 ### `<SearchBar />`
 Reusable search input with auto-complete suggestions and dropdown.
 - **Location:** `src/components/SearchBar/`
 - **Props:** `value`, `onChange`, `placeholder`, `suggestions`, `onSuggestionSelect`
 - **Features:** Filtered suggestions up to 8 results, click-outside detection
+
+### `<StatisticsSection />`
+Charts and graphs for player/team statistics with zoomable modal.
+- **Location:** `src/components/StatisticsSection/`
+- **Sub-components:** `GraphZoomModal`, `HoverTooltip`, `ZoomableChart`
 
 ### `<StarField />`
 Animated background with parallax star effect.
