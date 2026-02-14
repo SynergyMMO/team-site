@@ -7,7 +7,7 @@ import styles from '../Admin.module.css'
 
 export default function EditPlayerTab({
   playerNames, getPlayerShinies, allPokemonNames,
-  onEditShiny, onDeleteShiny, onDeletePlayer, isMutating,
+  onEditShiny, onDeleteShiny, onDeletePlayer, isMutating, onReorderShinies,
 }) {
   const [selectedPlayer, setSelectedPlayer] = useState('')
   const [editingId, setEditingId] = useState(null)
@@ -53,6 +53,11 @@ export default function EditPlayerTab({
       setSelectedPlayer('')
       setConfirmDeletePlayer(false)
     }
+    return result
+  }
+
+  async function handleReorderShinies(newOrder) {
+    const result = await onReorderShinies(selectedPlayer, newOrder)
     return result
   }
 
@@ -113,6 +118,7 @@ export default function EditPlayerTab({
                 shinies={shinies}
                 onEdit={handleEdit}
                 onDelete={handleDeleteClick}
+                onReorder={handleReorderShinies}
               />
             </>
           )}

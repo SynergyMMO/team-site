@@ -228,45 +228,45 @@ export default function EventsDetail() {
 
       {/* Prizes */}
       {(
-        (event.firstPlacePrize?.length ?? 0) > 0 ||
-        (event.secondPlacePrize?.length ?? 0) > 0 ||
-        (event.thirdPlacePrize?.length ?? 0) > 0 ||
-        (event.fourthPlacePrize?.length ?? 0) > 0
+        (event.firstPlacePrize?.filter(p => p?.trim())?.length ?? 0) > 0 ||
+        (event.secondPlacePrize?.filter(p => p?.trim())?.length ?? 0) > 0 ||
+        (event.thirdPlacePrize?.filter(p => p?.trim())?.length ?? 0) > 0 ||
+        (event.fourthPlacePrize?.filter(p => p?.trim())?.length ?? 0) > 0
       ) && (
         <div className={styles.listSection}>
           <h3>Prizes</h3>
 
-          {event.firstPlacePrize?.length > 0 && (
+          {(event.firstPlacePrize?.filter(p => p?.trim())?.length ?? 0) > 0 && (
             <div className={`${styles.prizeGroup} ${styles.firstPlace}`}>
               <div className={styles.prizeTitle}>🏆 1st Place!</div>
-              {event.firstPlacePrize.map((prize, i) => (
+              {event.firstPlacePrize.filter(p => p?.trim()).map((prize, i) => (
                 <div key={`first-${i}`} className={styles.prizeItem}>{prize}</div>
               ))}
             </div>
           )}
 
-          {event.secondPlacePrize?.length > 0 && (
+          {(event.secondPlacePrize?.filter(p => p?.trim())?.length ?? 0) > 0 && (
             <div className={`${styles.prizeGroup} ${styles.secondPlace}`}>
               <div className={styles.prizeTitle}>🥈 2nd Place!</div>
-              {event.secondPlacePrize.map((prize, i) => (
+              {event.secondPlacePrize.filter(p => p?.trim()).map((prize, i) => (
                 <div key={`second-${i}`} className={styles.prizeItem}>{prize}</div>
               ))}
             </div>
           )}
 
-          {event.thirdPlacePrize?.length > 0 && (
+          {(event.thirdPlacePrize?.filter(p => p?.trim())?.length ?? 0) > 0 && (
             <div className={`${styles.prizeGroup} ${styles.thirdPlace}`}>
               <div className={styles.prizeTitle}>🥉 3rd Place!</div>
-              {event.thirdPlacePrize.map((prize, i) => (
+              {event.thirdPlacePrize.filter(p => p?.trim()).map((prize, i) => (
                 <div key={`third-${i}`} className={styles.prizeItem}>{prize}</div>
               ))}
             </div>
           )}
 
-          {event.fourthPlacePrize?.length > 0 && (
+          {(event.fourthPlacePrize?.filter(p => p?.trim())?.length ?? 0) > 0 && (
             <div className={`${styles.prizeGroup} ${styles.fourthPlace}`}>
               <div className={styles.prizeTitle}>🏅 4th Place!</div>
-              {event.fourthPlacePrize.map((prize, i) => (
+              {event.fourthPlacePrize.filter(p => p?.trim()).map((prize, i) => (
                 <div key={`fourth-${i}`} className={styles.prizeItem}>{prize}</div>
               ))}
             </div>
@@ -296,45 +296,45 @@ export default function EventsDetail() {
 
       {/* Winners */}
       {(
-        (event.firstPlaceWinners?.length ?? 0) > 0 ||
-        (event.secondPlaceWinners?.length ?? 0) > 0 ||
-        (event.thirdPlaceWinners?.length ?? 0) > 0 ||
-        (event.fourthPlaceWinners?.length ?? 0) > 0
+        (event.firstPlaceWinners?.filter(w => w?.trim())?.length ?? 0) > 0 ||
+        (event.secondPlaceWinners?.filter(w => w?.trim())?.length ?? 0) > 0 ||
+        (event.thirdPlaceWinners?.filter(w => w?.trim())?.length ?? 0) > 0 ||
+        (event.fourthPlaceWinners?.filter(w => w?.trim())?.length ?? 0) > 0
       ) && (
         <div className={styles.listSection}>
           <h3>Winners</h3>
 
-          {event.firstPlaceWinners?.length > 0 && (
+          {(event.firstPlaceWinners?.filter(w => w?.trim())?.length ?? 0) > 0 && (
             <div className={`${styles.prizeGroup} ${styles.firstPlace}`}>
               <div className={styles.prizeTitle}>🏆 1st Place!</div>
-              {event.firstPlaceWinners.map((winner, i) => (
+              {event.firstPlaceWinners.filter(w => w?.trim()).map((winner, i) => (
                 <div key={`first-${i}`} className={styles.prizeItem}>{winner}</div>
               ))}
             </div>
           )}
 
-          {event.secondPlaceWinners?.length > 0 && (
+          {(event.secondPlaceWinners?.filter(w => w?.trim())?.length ?? 0) > 0 && (
             <div className={`${styles.prizeGroup} ${styles.secondPlace}`}>
               <div className={styles.prizeTitle}>🥈 2nd Place!</div>
-              {event.secondPlaceWinners.map((winner, i) => (
+              {event.secondPlaceWinners.filter(w => w?.trim()).map((winner, i) => (
                 <div key={`second-${i}`} className={styles.prizeItem}>{winner}</div>
               ))}
             </div>
           )}
 
-          {event.thirdPlaceWinners?.length > 0 && (
+          {(event.thirdPlaceWinners?.filter(w => w?.trim())?.length ?? 0) > 0 && (
             <div className={`${styles.prizeGroup} ${styles.thirdPlace}`}>
               <div className={styles.prizeTitle}>🥉 3rd Place!</div>
-              {event.thirdPlaceWinners.map((winner, i) => (
+              {event.thirdPlaceWinners.filter(w => w?.trim()).map((winner, i) => (
                 <div key={`third-${i}`} className={styles.prizeItem}>{winner}</div>
               ))}
             </div>
           )}
 
-          {event.fourthPlaceWinners?.length > 0 && (
+          {(event.fourthPlaceWinners?.filter(w => w?.trim())?.length ?? 0) > 0 && (
             <div className={`${styles.prizeGroup} ${styles.fourthPlace}`}>
               <div className={styles.prizeTitle}>🏅 4th Place!</div>
-              {event.fourthPlaceWinners.map((winner, i) => (
+              {event.fourthPlaceWinners.filter(w => w?.trim()).map((winner, i) => (
                 <div key={`fourth-${i}`} className={styles.prizeItem}>{winner}</div>
               ))}
             </div>

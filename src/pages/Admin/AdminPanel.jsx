@@ -91,6 +91,7 @@ export default function AdminPanel() {
           onEditShiny={withToast(db.editShiny, 'Shiny updated!')}
           onDeleteShiny={withToast(db.deleteShiny, 'Shiny deleted!')}
           onDeletePlayer={withToast(db.deletePlayer, 'Player deleted!')}
+          onReorderShinies={withToast(db.reorderShinies, 'Shinies reordered!')}
           isMutating={db.isMutating}
         />
       )}

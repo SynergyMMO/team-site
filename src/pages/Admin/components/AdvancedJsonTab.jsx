@@ -3,7 +3,7 @@ import ConfirmDialog from './ConfirmDialog'
 import styles from '../Admin.module.css'
 
 const REQUIRED_SHINY_FIELDS = [
-  'Pokemon', 'Month', 'Year', 'Secret Shiny', 'Egg', 'Alpha',
+  'Pokemon', 'Secret Shiny', 'Egg', 'Alpha',
   'Sold', 'Event', 'Reaction', 'MysteriousBall', 'Safari',
   'Favourite', 'Honey Tree', 'Legendary', 'Reaction Link',
 ]
@@ -66,6 +66,47 @@ function validateEventsSchema(data) {
     errors.push('Root must be an object with event names as keys.')
   }
   return errors
+}
+
+// Normalize Pokemon database: fix entry gaps and recalculate shiny_count
+function normalizePokemonDatabase(data) {
+  const correctedData = JSON.parse(JSON.stringify(data)) // Deep copy
+  const corrections = []
+
+  for (const [player, playerData] of Object.entries(correctedData)) {
+    if (typeof playerData !== 'object' || playerData === null || !playerData.shinies) {
+      continue
+    }
+
+    const shinies = playerData.shinies
+    const shinyIds = Object.keys(shinies)
+      .map(id => parseInt(id, 10))
+      .filter(id => !isNaN(id))
+      .sort((a, b) => a - b)
+
+    // Check if there are gaps in the numbering
+    const hasGaps = shinyIds.some((id, i) => id !== i + 1)
+
+    if (hasGaps || shinyIds.length !== playerData.shiny_count) {
+      // Rebuild shinies with sequential IDs starting from 1
+      const newShinies = {}
+      shinyIds.forEach((oldId, index) => {
+        newShinies[index + 1] = shinies[oldId]
+      })
+
+      // Calculate shiny_count excluding sold Pokemon
+      const newShinyCount = Object.values(newShinies).filter(s => s.Sold !== 'Yes').length
+
+      correctedData[player].shinies = newShinies
+      correctedData[player].shiny_count = newShinyCount
+
+      corrections.push(
+        `"${player}": Fixed entry gaps and recalculated shiny_count (was ${playerData.shiny_count}, now ${newShinyCount})`
+      )
+    }
+  }
+
+  return { correctedData, corrections }
 }
 
 function computeChangeSummary(oldData, newData, mode) {
@@ -149,6 +190,14 @@ export default function AdvancedJsonTab({
       return
     }
 
+    // Normalize Pokemon database to fix gaps and recalculate counts
+    let corrections = []
+    if (mode === 'pokemon') {
+      const { correctedData, corrections: normalizeCorrections } = normalizePokemonDatabase(parsed)
+      parsed = correctedData
+      corrections = normalizeCorrections
+    }
+
     const errors =
       mode === 'pokemon' ? validateDatabaseSchema(parsed) :
       mode === 'streamers' ? validateStreamersSchema(parsed) :
@@ -160,7 +209,16 @@ export default function AdvancedJsonTab({
     }
 
     setValidationErrors([])
-    const summary = computeChangeSummary(currentData, parsed, mode)
+    let summary = computeChangeSummary(currentData, parsed, mode)
+    
+    // Add corrections to summary if any were made
+    if (corrections.length > 0) {
+      summary = [
+        ...corrections.map(c => `AUTO-CORRECTED: ${c}`),
+        ...summary
+      ]
+    }
+
     setChangeSummary(summary)
     setParsedData(parsed)
     setShowConfirm(true)

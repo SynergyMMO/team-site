@@ -205,6 +205,48 @@ export default function useAdminDatabase(auth) {
     } finally { setIsMutating(false); }
   }, [auth, database, postData, saveSnapshot]);
 
+  const reorderShinies = useCallback(async (playerName, newOrderIds) => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    saveSnapshot(); setIsMutating(true);
+    try {
+      const db = deepClone(database);
+      if (!db[playerName]?.shinies) return { success: false, error: 'Player not found' };
+
+      // Track which Pokemon moved to which new positions
+      const oldOrderIds = Object.keys(db[playerName].shinies)
+        .map(id => parseInt(id))
+        .sort((a, b) => a - b);
+      
+      const moves = [];
+      newOrderIds.forEach((oldId, newIndex) => {
+        const oldIndex = oldOrderIds.indexOf(parseInt(oldId));
+        if (oldIndex !== newIndex) {
+          const pokemonName = db[playerName].shinies[oldId].Pokemon;
+          moves.push(`Moved ${pokemonName} to id: ${newIndex + 1}`);
+        }
+      });
+
+      // Reorder shinies based on newOrderIds (which are the current IDs in new order)
+      const reorderedShinies = {};
+      newOrderIds.forEach((oldId, newIndex) => {
+        reorderedShinies[newIndex + 1] = db[playerName].shinies[oldId];
+      });
+
+      db[playerName].shinies = reorderedShinies;
+      db[playerName].shiny_count = recalcShinyCount(db[playerName]);
+
+      const moveDetails = moves.length > 0 ? `, ${moves.join(', ')}` : '';
+      const actionText = `Reordered shinies for ${playerName}${moveDetails}`;
+      const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: actionText });
+      if (result.success) {
+        setDatabase(db);
+        await logAdminAction(actionText);
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally { setIsMutating(false); }
+  }, [auth, database, postData, saveSnapshot, logAdminAction]);
+
   // ---------------- STREAMER MANAGEMENT ----------------
   const addStreamer = useCallback(async (pokeName, twitchName) => {
     if (!auth) return { success: false, error: 'Unauthorized' };
@@ -345,7 +387,7 @@ export default function useAdminDatabase(auth) {
   return {
     database, streamersDB, logData, eventDB,
     isLoading, isMutating, hasSnapshot,
-    loadDatabase, addShiny, editShiny, deleteShiny, deletePlayer,
+    loadDatabase, addShiny, editShiny, deleteShiny, deletePlayer, reorderShinies,
     addStreamer, deleteStreamer, undo,
     playerNames, getPlayerShinies, allPokemonNames,
     loadEvents, addEvent, updateEvent, removeEvent,

@@ -317,6 +317,15 @@
   opacity: 0.5;
 }
 
+.dragging {
+  background-color: rgba(155, 89, 182, 0.3);
+}
+
+.dragOver {
+  background-color: rgba(155, 89, 182, 0.15);
+  border-top: 3px solid #9b59b6;
+}
+
 .spriteImg {
   width: 40px;
   height: 40px;
