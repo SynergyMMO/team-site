@@ -72,6 +72,15 @@ export default function About() {
         <h2>Changelog</h2>
         <div className={styles.changelog}>
           <div className={styles.changelogEntry}>
+            <h3>February 14, 2026</h3>
+            <ul>
+              <li><strong>Statistics Page Now Shows Partial Data</strong> - No longer requires all data types at once</li>
+              <li>If you have 50% encounter data, you'll see General Statistics, Encounter Analysis, and Tier Distribution</li>
+              <li>If you have 50% location data, you'll see Region Distribution</li>
+              <li>If you have 50% hunting method data, you'll see Hunting Methods</li>
+            </ul>
+          </div>
+          <div className={styles.changelogEntry}>
             <h3>February 13, 2026</h3>
             <ul>
               <li><strong>Shiny Data Merge System Added</strong> - New NPM scripts for syncing ShinyBoard API data</li>
@@ -166,7 +175,7 @@ export default function About() {
           </div>
         </div>
         <div className={styles.metadata}>
-          <p><strong>Last Updated:</strong> February 13, 2026</p>
+          <p><strong>Last Updated:</strong> February 14, 2026</p>
           <p><strong>Contact:</strong> oHypers on Discord</p>
         </div>
       </section>

@@ -123,9 +123,9 @@ export default function PlayerPage() {
     }
   }, [playerData, safeShinies])
 
-  // --- Check if should show statistics section ---
-  const showStatisticsSection = useMemo(() => {
-    if (!playerData || safeShinies.length === 0) return false
+  // --- Check if should show statistics section and which parts ---
+  const { showStatisticsSection, sectionFlags } = useMemo(() => {
+    if (!playerData || safeShinies.length === 0) return { showStatisticsSection: false, sectionFlags: {} }
 
     // Check encounter data: need 50% or more with encounter_count > 0
     const shiniesWithEncounters = safeShinies.filter(
@@ -139,8 +139,22 @@ export default function PlayerPage() {
     )
     const locationPercentage = (shiniesWithLocation.length / safeShinies.length) * 100
 
-    // Only show if both encounter AND location have at least 50%
-    return encounterPercentage >= 50 && locationPercentage >= 50
+    // Check method data: need 50% or more with encounter_method
+    const shiniesWithMethod = safeShinies.filter(
+      ([, s]) => s.encounter_method && typeof s.encounter_method === 'string' && s.encounter_method.trim() !== ''
+    )
+    const methodPercentage = (shiniesWithMethod.length / safeShinies.length) * 100
+
+    const flags = {
+      showEncounterSections: encounterPercentage >= 50,
+      showLocationSections: locationPercentage >= 50,
+      showMethodSections: methodPercentage >= 50,
+    }
+
+    // Show statistics if any of the sections can be displayed
+    const canShow = flags.showEncounterSections || flags.showLocationSections || flags.showMethodSections
+
+    return { showStatisticsSection: canShow, sectionFlags: flags }
   }, [playerData, safeShinies])
 
   const parentDomain = typeof window !== 'undefined' ? window.location.hostname : 'synergymmo.com'
@@ -245,7 +259,7 @@ export default function PlayerPage() {
         </div>
       )}
 
-      {showStatisticsSection && <StatisticsSection playerData={playerData} playerName={safeRealKey} />}
+      {showStatisticsSection && <StatisticsSection playerData={playerData} playerName={safeRealKey} sectionFlags={sectionFlags} />}
       
       {renderTwitchSection()}
 

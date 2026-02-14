@@ -17,12 +17,19 @@ const TIER_POKEMON = {
   'Tier 7': ['abra','kadabra','alakazam','aron','lairon','aggron','baltoy','claydol','basculin-red-striped','bidoof','bibarel','blitzle','zebstrika','bouffalant','bronzor','bronzong','buizel','floatzel','chinchou','lanturn','clamperl','huntail','gorebyss','cubchoo','beartic','cubone','marowak','deerling','sawsbuck','diglett','dugtrio','drowzee','hypno','druddigon','dunsparce','durant','duskull','dusclops','dusknoir','dwebble','crustle','elgyem','beheeyem','foongus','amoonguss','frillish-f','frillish','jellicent', 'jellicent-f','gastly','haunter','gengar','geodude','graveler','golem','goldeen','seaking','golett','golurk','gothita','gothorita','gothitelle','grimer','muk','heatmor','hoppip','skiploom','jumpluff','horsea','seadra','kingdra','igglybuff', 'jigglypuff','wigglytuff','smoochum', 'jynx','koffing','weezing','krabby','kingler','lickitung','lickilicky','lillipup','herdier','stoutland','litwick','lampent','chandelure','lotad','lombre','ludicolo','lunatone','machop','machoke','machamp','magikarp','gyarados','magnemite','magneton','magnezone','makuhita','hariyama','mantyke', 'mantine','azurill', 'marill','azumarill','meowth','persian','mienfoo','mienshao','nidoran-f','nidorina','nidoqueen','nidoran-m','nidorino','nidoking','numel','camerupt','oddish','gloom','vileplume','bellossom','onix','steelix','paras','parasect','patrat','watchog','pidgey','pidgeotto','pidgeot','pidove','tranquill','unfezant','unfezant-f','pichu', 'pikachu','raichu','poliwag','poliwhirl','poliwrath','politoed','ponyta','rapidash','poochyena','mightyena','psyduck','golduck','purrloin','liepard','rattata','raticate','rhyhorn','rhydon','rhyperior','roggenrola','boldore','gigalith','budew','roselia','roserade','sandile','krokorok','krookodile','sandshrew','sandslash','seel','dewgong','sewaddle','swadloon','leavanny','shellos','gastrodon-east','gastrodon-west','shelmet','accelgor','shuppet','banette','slowpoke','slowbro','slowking','slugma','magcargo','smeargle','sneasel','weavile','snover','abomasnow','solosis','duosion','reuniclus','solrock','spearow','fearow','spheal','sealeo','walrein','stunfisk','surskit','masquerain','swablu','altaria','swinub','piloswine','mamoswine','taillow','swellow','tangela','tangrowth','tentacool','tentacruel','timburr','gurdurr','conkeldurr','torkoal','tympole','palpitoad','seismitoad','voltorb','electrode','whismur','loudred','exploud','wingull','pelipper','wynaut', 'wobbuffet','woobat','swoobat','wooper','quagsire','yamask','cofagrigus','zigzagoon','linoone','zubat','golbat','crobat'],
 }
 
-export default function StatisticsSection({ playerData, playerName }) {
+export default function StatisticsSection({ playerData, playerName, sectionFlags = {} }) {
   const [statsExpanded, setStatsExpanded] = useState(false)
   const [statsClosing, setStatsClosing] = useState(false)
   const [zoomModalOpen, setZoomModalOpen] = useState(false)
   const [zoomModalContent, setZoomModalContent] = useState(null)
   const [zoomModalTitle, setZoomModalTitle] = useState('')
+
+  // Default to showing all sections if sectionFlags not provided (backward compatibility)
+  const {
+    showEncounterSections = true,
+    showLocationSections = true,
+    showMethodSections = true,
+  } = sectionFlags
 
   // --- Calculate all statistics ---
   const stats = useMemo(() => {
@@ -632,6 +639,7 @@ export default function StatisticsSection({ playerData, playerName }) {
         {statsExpanded && (
           <div className={`${styles.mainStatsContent} ${statsClosing ? styles.closing : ''}`}>
             {/* General Stats Category */}
+            {showEncounterSections && (
             <NestedCategory
               title={
                 <HoverTooltip
@@ -683,8 +691,10 @@ export default function StatisticsSection({ playerData, playerName }) {
                 />
               </div>
             </NestedCategory>
+            )}
 
             {/* Hunting Methods Category */}
+            {showMethodSections && (
             <NestedCategory title="Hunting Methods" icon="🎣">
               <div className={styles.methodsTable}>
                 <div className={styles.methodsHeader}>
@@ -707,14 +717,17 @@ export default function StatisticsSection({ playerData, playerName }) {
                   ))}
               </div>
             </NestedCategory>
+            )}
 
             {/* Region Stats Category */}
+            {showLocationSections && (
             <NestedCategory title="Region Distribution" icon="🗺️">
               <PieChart data={stats.regionCounts} title="Shinies by Region" />
             </NestedCategory>
+            )}
 
             {/* Encounter Charts Category */}
-            {stats.shiniesWithEncounters.length > 0 && (
+            {showEncounterSections && stats.shiniesWithEncounters.length > 0 && (
               <NestedCategory
                 title={`Encounter Analysis (${stats.shinyCount} Pokémon)`}
                 icon="📉"
@@ -817,7 +830,7 @@ export default function StatisticsSection({ playerData, playerName }) {
             )}
 
             {/* Tier Distribution Category */}
-            {Object.values(stats.tierCounts).some(count => count > 0) && (
+            {showEncounterSections && Object.values(stats.tierCounts).some(count => count > 0) && (
               <NestedCategory
                 title="Tier Distribution"
                 icon="⭐"
