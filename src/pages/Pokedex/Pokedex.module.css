@@ -966,7 +966,6 @@
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
   user-select: none;
   margin: 0 auto 15px auto;
-  display: block;
   position: relative;
 }
 
@@ -1002,9 +1001,11 @@
 .filterPanel {
   background: linear-gradient(180deg, rgba(25, 25, 40, 0.98) 0%, rgba(20, 20, 35, 0.95) 100%);
   border: 1px solid rgba(102, 126, 234, 0.35);
-  border-radius: 0;
-  margin: 0;
+  border-radius: 8px;
+  margin: 0 auto 20px auto;
   width: 100%;
+  max-width: 1400px;
+  padding: 0;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(102, 126, 234, 0.1);
   backdrop-filter: blur(10px);
   animation: slideDown 0.3s ease;
@@ -1014,17 +1015,15 @@
   from {
     opacity: 0;
     transform: translateY(-10px);
-    max-height: 0;
   }
   to {
     opacity: 1;
     transform: translateY(0);
-    max-height: 100%;
   }
 }
 
 .filterPanelContent {
-  padding: 12px;
+  padding: 16px;
 }
 
 .filterPanelHeader {
@@ -1069,35 +1068,35 @@
 .filterGrid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  gap: 12px;
   padding: 0;
 }
 
 @media (max-width: 1600px) {
   .filterGrid {
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    gap: 12px;
   }
 }
 
 @media (max-width: 1200px) {
   .filterGrid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 9px;
+    gap: 10px;
   }
 }
 
 @media (max-width: 768px) {
   .filterGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .filterGrid {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 10px;
   }
 }
 
@@ -1109,10 +1108,9 @@
   background: rgba(10, 10, 20, 0.6);
   border: 1px solid rgba(102, 126, 234, 0.15);
   border-radius: 8px;
-  overflow: auto;
+  overflow: visible;
   transition: all 0.2s ease;
   padding: 10px;
-  max-height: 300px;
 }
 
 .filterSection:hover {
@@ -1415,24 +1413,19 @@
 
 @media (max-width: 768px) {
   .filterPanel {
-    max-height: 70vh;
-    overflow-y: auto;
-    border-radius: 12px 12px 0 0;
-    margin: 0 -12px 20px -12px;
-    width: calc(100% + 24px);
-  }
-  
-  .filterPanel::-webkit-scrollbar {
-    width: 4px;
+    border-radius: 8px;
+    margin: 0 auto 20px auto;
+    width: 100%;
+    padding: 0;
   }
 
   .filterGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 10px;
   }
   
   .filterSection {
-    max-height: 250px;
+    overflow: visible;
     padding: 8px;
   }
   
@@ -1466,23 +1459,19 @@
 
 @media (max-width: 480px) {
   .filterPanel {
-    max-height: 65vh;
-    border-radius: 12px 12px 0 0;
-    margin: 0 -12px 20px -12px;
-    width: calc(100% + 24px);
-  }
-  
-  .filterPanel::-webkit-scrollbar {
-    width: 3px;
+    border-radius: 8px;
+    margin: 0 auto 20px auto;
+    width: 100%;
+    padding: 0;
   }
 
   .filterGrid {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 10px;
   }
   
   .filterSection {
-    max-height: 200px;
+    overflow: visible;
     padding: 6px;
   }
   

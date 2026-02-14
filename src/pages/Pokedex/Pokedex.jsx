@@ -486,26 +486,7 @@ export default function Pokedex() {
     return { globalShinies: gs, ownerMap: om }
   }, [data])
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      // Don't close if clicking the filter button itself
-      const filterButton = document.querySelector('[data-filter-button]')
-      if (filterButton && filterButton.contains(event.target)) {
-        return
-      }
-      
-      if (filterPanelRef.current && !filterPanelRef.current.contains(event.target)) {
-        setIsFilterPanelOpen(false)
-      }
-    }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    document.addEventListener('touchend', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('touchend', handleClickOutside)
-    }
-  }, [])
 
   useEffect(() => {
     if (!synergyDataToggle) {
@@ -532,7 +513,7 @@ export default function Pokedex() {
     }
   }, [location.state?.locationSearch])
 
-  // Close filter menu on resize to desktop and handle click-outside on mobile
+  // Close filter menu on resize to desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 600) {
@@ -540,29 +521,12 @@ export default function Pokedex() {
       }
     }
 
-    const handleClickOutside = (e) => {
-      // Check if clicking on elements inside the filter row
-      const filterRow = document.querySelector('[data-filter-row]')
-      const filterButton = document.querySelector('[data-filter-button]')
-      
-      if ((filterRow && filterRow.contains(e.target)) || (filterButton && filterButton.contains(e.target))) {
-        return
-      }
-      
-      // Close the menu if clicking outside on mobile
-      if (isFilterPanelOpen && window.innerWidth <= 600) {
-        setIsFilterPanelOpen(false)
-      }
-    }
-
     window.addEventListener('resize', handleResize)
-    document.addEventListener('click', handleClickOutside)
     
     return () => {
       window.removeEventListener('resize', handleResize)
-      document.removeEventListener('click', handleClickOutside)
     }
-  }, [isFilterPanelOpen])
+  }, [])
 
   const formatSelectionSummary = (selected, options, labelFn, emptyLabel) => {
     if (selected.length === 0) return emptyLabel
