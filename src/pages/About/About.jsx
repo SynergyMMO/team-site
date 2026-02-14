@@ -80,6 +80,11 @@ export default function About() {
               <li>If you have 50% hunting method data, you'll see Hunting Methods</li>
               <li>Shiny Wars pokemon are now clickable links to their PokeDex pages</li>
               <li>About page styling made consistent with the rest of the site</li>
+              <li><strong>Pokédex Filter Panel Redesigned</strong> - Improved layout matching reference design with Moves, Essentials, and Base Stats sections</li>
+              <li>Alpha Filter - Added ability to filter Pokémon by Alpha status</li>
+              <li>Egg Group Selection - Now allows selecting up to 2 egg groups with "Any" or "Both" matching options</li>
+              <li>Locations Filter - Fixed to remain separate from Essentials section and always visible</li>
+              <li>Type Buttons - Added colored type buttons with improved visual feedback</li>
             </ul>
           </div>
           <div className={styles.changelogEntry}>

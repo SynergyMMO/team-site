@@ -999,14 +999,14 @@
    ============================================================================ */
 
 .filterPanel {
-  background: linear-gradient(180deg, rgba(25, 25, 40, 0.98) 0%, rgba(20, 20, 35, 0.95) 100%);
-  border: 1px solid rgba(102, 126, 234, 0.35);
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(30, 20, 50, 0.95) 0%, rgba(20, 15, 40, 0.93) 100%);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
   margin: 0 auto 20px auto;
   width: 100%;
   max-width: 1400px;
   padding: 0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(102, 126, 234, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(102, 126, 234, 0.15);
   backdrop-filter: blur(10px);
   animation: slideDown 0.3s ease;
 }
@@ -1023,72 +1023,459 @@
 }
 
 .filterPanelContent {
-  padding: 16px;
+  padding: 24px;
 }
 
-.filterPanelHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+.filterPanelTitle {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(102, 126, 234, 0.25);
 }
 
-.filterPanelHeader h3 {
+.filterPanelTitle h2 {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1.8rem;
+  color: white;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* ============================================================================
+   MAIN GRID - Two Column Layout with Essentials and Stats
+   ============================================================================ */
+
+.filterMainGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1200px) {
+  .filterMainGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.filterLeftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filterRightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ============================================================================
+   ESSENTIALS GROUP - Combined Filtered Inputs
+   ============================================================================ */
+
+.filterEssentialsGroup {
+  background: rgba(10, 10, 20, 0.6);
+  border: 1px solid rgba(102, 126, 234, 0.15);
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.filterEssentialsGroup:hover {
+  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.filterEssentialsGroup > h4 {
+  margin: 0 0 14px 0;
+  font-size: 0.85rem;
   color: #667eea;
   font-weight: 600;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.clearAllFiltersBtn {
-  padding: 6px 12px;
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  border-radius: 6px;
-  color: #ff6b6b;
+.filterEssentialItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.filterEssentialItem:last-of-type {
+  margin-bottom: 0;
+}
+
+.filterEssentialLabel {
   font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.filterEssentialSelect {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(102, 126, 234, 0.4);
+  border-radius: 6px;
+  color: white;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.clearAllFiltersBtn:hover {
-  background: rgba(239, 68, 68, 0.25);
-  border-color: rgba(239, 68, 68, 0.7);
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+.filterEssentialSelect:focus {
+  outline: none;
+  border-color: #667eea;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+}
+
+.filterEssentialInput {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(102, 126, 234, 0.4);
+  border-radius: 6px;
+  color: white;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.filterEssentialInput:focus {
+  outline: none;
+  border-color: #667eea;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+}
+
+.filterEssentialInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.filterEssentialSelectRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.filterEggGroupTag {
+  padding: 6px 12px;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.filterEggGroupTag:hover {
+  border-color: rgba(102, 126, 234, 0.6);
+  background: rgba(102, 126, 234, 0.15);
+}
+
+.filterEggGroupTag.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 0 12px rgba(102, 126, 234, 0.4);
+}
+
+.filterEggGroupTag.clearTag {
+  background: rgba(100, 100, 100, 0.2);
+  border-color: rgba(100, 100, 100, 0.4);
+}
+
+.filterEggGroupTag.clearTag:hover {
+  background: rgba(100, 100, 100, 0.3);
+  border-color: rgba(100, 100, 100, 0.6);
+}
+
+.filterAlphaLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.filterAlphaLabel:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.filterAlphaCheckbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid rgba(102, 126, 234, 0.6);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.filterAlphaCheckbox:hover {
+  border-color: #667eea;
+  box-shadow: 0 0 6px rgba(102, 126, 234, 0.3);
+}
+
+.filterAlphaCheckbox:checked {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.4);
 }
 
 /* ============================================================================
-   FILTER GRID - Layout for Multiple Filters
+   STAT FILTERS - Base Stats Layout
+   ============================================================================ */
+
+.filterStatsGridVertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filterStatRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filterStatLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.filterStatInputRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.filterStatComparison {
+  flex: 0 0 auto;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(102, 126, 234, 0.4);
+  border-radius: 4px;
+  color: white;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  max-width: 90px;
+}
+
+.filterStatComparison:focus {
+  outline: none;
+  border-color: #667eea;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+}
+
+.filterStatNumberInput {
+  flex: 1;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(102, 126, 234, 0.4);
+  border-radius: 4px;
+  color: white;
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.filterStatNumberInput:focus {
+  outline: none;
+  border-color: #667eea;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+}
+
+.filterStatNumberInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================================================
+   TYPES FILTER - Colored Type Buttons
+   ============================================================================ */
+
+.filterTypesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.filterTypeLabel {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  text-transform: capitalize;
+}
+
+.filterTypeLabel:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.filterTypeLabel.typeActive {
+  border-color: #667eea;
+  box-shadow: 0 0 12px rgba(102, 126, 234, 0.5);
+  font-weight: 700;
+}
+
+/* Type-specific colors */
+.filterTypeLabel.type-normal { background: rgba(168, 168, 120, 0.2); border-color: rgba(168, 168, 120, 0.5); }
+.filterTypeLabel.type-fire { background: rgba(240, 128, 48, 0.2); border-color: rgba(240, 128, 48, 0.5); }
+.filterTypeLabel.type-water { background: rgba(104, 144, 240, 0.2); border-color: rgba(104, 144, 240, 0.5); }
+.filterTypeLabel.type-grass { background: rgba(120, 200, 80, 0.2); border-color: rgba(120, 200, 80, 0.5); }
+.filterTypeLabel.type-electric { background: rgba(248, 208, 48, 0.2); border-color: rgba(248, 208, 48, 0.5); }
+.filterTypeLabel.type-ice { background: rgba(152, 216, 216, 0.2); border-color: rgba(152, 216, 216, 0.5); }
+.filterTypeLabel.type-fighting { background: rgba(192, 48, 40, 0.2); border-color: rgba(192, 48, 40, 0.5); }
+.filterTypeLabel.type-poison { background: rgba(160, 64, 160, 0.2); border-color: rgba(160, 64, 160, 0.5); }
+.filterTypeLabel.type-ground { background: rgba(224, 192, 104, 0.2); border-color: rgba(224, 192, 104, 0.5); }
+.filterTypeLabel.type-flying { background: rgba(168, 144, 240, 0.2); border-color: rgba(168, 144, 240, 0.5); }
+.filterTypeLabel.type-psychic { background: rgba(248, 88, 136, 0.2); border-color: rgba(248, 88, 136, 0.5); }
+.filterTypeLabel.type-bug { background: rgba(168, 184, 32, 0.2); border-color: rgba(168, 184, 32, 0.5); }
+.filterTypeLabel.type-rock { background: rgba(184, 160, 56, 0.2); border-color: rgba(184, 160, 56, 0.5); }
+.filterTypeLabel.type-ghost { background: rgba(112, 88, 152, 0.2); border-color: rgba(112, 88, 152, 0.5); }
+.filterTypeLabel.type-dragon { background: rgba(112, 56, 248, 0.2); border-color: rgba(112, 56, 248, 0.5); }
+.filterTypeLabel.type-dark { background: rgba(112, 88, 72, 0.2); border-color: rgba(112, 88, 72, 0.5); }
+.filterTypeLabel.type-steel { background: rgba(184, 184, 208, 0.2); border-color: rgba(184, 184, 208, 0.5); }
+.filterTypeLabel.type-fairy { background: rgba(238, 153, 172, 0.2); border-color: rgba(238, 153, 172, 0.5); }
+
+.filterTypeLabel.typeActive.type-normal { background: rgba(168, 168, 120, 0.4); color: #f5f5f5; }
+.filterTypeLabel.typeActive.type-fire { background: rgba(240, 128, 48, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-water { background: rgba(104, 144, 240, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-grass { background: rgba(120, 200, 80, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-electric { background: rgba(248, 208, 48, 0.4); color: #000; }
+.filterTypeLabel.typeActive.type-ice { background: rgba(152, 216, 216, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-fighting { background: rgba(192, 48, 40, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-poison { background: rgba(160, 64, 160, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-ground { background: rgba(224, 192, 104, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-flying { background: rgba(168, 144, 240, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-psychic { background: rgba(248, 88, 136, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-bug { background: rgba(168, 184, 32, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-rock { background: rgba(184, 160, 56, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-ghost { background: rgba(112, 88, 152, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-dragon { background: rgba(112, 56, 248, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-dark { background: rgba(112, 88, 72, 0.4); color: #fff; }
+.filterTypeLabel.typeActive.type-steel { background: rgba(184, 184, 208, 0.4); color: #000; }
+.filterTypeLabel.typeActive.type-fairy { background: rgba(238, 153, 172, 0.4); color: #fff; }
+
+/* ============================================================================
+   ACTION BUTTONS - Search and Reset
+   ============================================================================ */
+
+.filterActionsRow {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.filterSearchBtn {
+  flex: 1;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #8b5cf6 100%);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.filterSearchBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+}
+
+.filterSearchBtn:active {
+  transform: translateY(0);
+}
+
+.filterResetBtn {
+  flex: 1;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterResetBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.filterResetBtn:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================================
+   FILTER GRID - Layout for Multiple Filters (Bottom Sections)
    ============================================================================ */
 
 .filterGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   padding: 0;
 }
 
 @media (max-width: 1600px) {
   .filterGrid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
   }
 }
 
 @media (max-width: 1200px) {
   .filterGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
 }
 
 @media (max-width: 768px) {
   .filterGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 10px;
   }
 }
@@ -1110,7 +1497,7 @@
   border-radius: 8px;
   overflow: visible;
   transition: all 0.2s ease;
-  padding: 10px;
+  padding: 14px;
 }
 
 .filterSection:hover {
@@ -1123,7 +1510,7 @@
   font-size: 0.8rem;
   color: #667eea;
   font-weight: 600;
-  margin: 0 0 8px 0;
+  margin: 0 0 10px 0;
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1210,35 +1597,13 @@
 .filterInputGroup {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.filterInputDescription {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 4px;
-}
-
-.filterInputGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
-  margin-bottom: 8px;
-}
-/* ============================================================================
-   INPUT GROUPS - Text Input Sections
-   ============================================================================ */
-
-.filterInputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .filterInputDescription {
   font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
@@ -1246,18 +1611,18 @@
 .filterInputGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 6px;
 }
 
 .filterInput {
   width: 100%;
-  padding: 6px 8px;
+  padding: 8px 10px;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(102, 126, 234, 0.4);
-  border-radius: 4px;
+  border-radius: 6px;
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   transition: all 0.2s ease;
   box-sizing: border-box;
 }
@@ -1273,46 +1638,23 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
-/* ============================================================================
-   STATS GRID - Stats Filter Layout
-   ============================================================================ */
-
-.filterStatsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  margin-bottom: 8px;
-}
-
-.filterStatInput {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.filterStatInput label {
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.6);
+.filterClearBtn {
+  padding: 6px 12px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 4px;
+  color: #ff6b6b;
+  font-size: 0.7rem;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.filterStatInput input {
-  padding: 5px 6px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(102, 126, 234, 0.4);
-  border-radius: 3px;
-  color: white;
-  font-size: 0.65rem;
+  cursor: pointer;
   transition: all 0.2s ease;
+  align-self: flex-start;
 }
 
-.filterStatInput input:focus {
-  outline: none;
-  border-color: #667eea;
-  background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 6px rgba(102, 126, 234, 0.3);
+.filterClearBtn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.7);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
 }
 
 /* ============================================================================
@@ -1321,7 +1663,7 @@
 
 .filterSuggestionsList {
   margin-top: 6px;
-  padding: 4px 0;
+  padding: 6px 0;
   border-top: 1px solid rgba(102, 126, 234, 0.15);
   max-height: 150px;
   overflow-y: auto;
@@ -1332,11 +1674,11 @@
   display: block;
   width: 100%;
   text-align: left;
-  padding: 4px 6px;
+  padding: 6px 8px;
   background: transparent;
   border: none;
   color: #667eea;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   cursor: pointer;
   transition: all 0.15s ease;
   border-radius: 3px;
@@ -1344,7 +1686,7 @@
 
 .filterSuggestionItem:hover {
   background: rgba(102, 126, 234, 0.15);
-  padding-left: 10px;
+  padding-left: 12px;
 }
 
 /* ============================================================================
