@@ -505,14 +505,14 @@
   height: 100%;
   position: relative;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(50,50,80,0.4) 0%, rgba(40,40,70,0.4) 100%);
-  border: 2px solid rgba(102, 126, 234, 0.25);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  background: #222;
+  border: 1px solid #555;
+  box-sizing: border-box;
+  transition: transform 0.2s, border-color 0.2s;
 }
 
 .pokemonContainer::after {
@@ -525,8 +525,7 @@
   pointer-events: none;
   background: url('/images/Shiny Showcase/sparkle.gif') center/cover no-repeat;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 .pokemonContainer:hover::after {
@@ -534,45 +533,30 @@
 }
 
 .pokemon {
+  max-width: 90%;
+  max-height: 90%;
   width: auto;
   height: auto;
-  max-width: 100%;
-  max-height: 100%;
   object-fit: contain;
-  object-position: center;
-  box-sizing: border-box;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
   display: block;
+  cursor: pointer;
 }
 
 .pokemonContainer:hover {
-  border-color: rgba(74, 144, 226, 0.6);
-  background: linear-gradient(135deg, rgba(74, 144, 226, 0.2) 0%, rgba(127, 95, 255, 0.2) 100%);
-  box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-  filter: brightness(1.1);
-}
-
-.pokemonContainer:hover .pokemon {
-  transform: scale(1.08);
+  transform: scale(1.2);
+  border-color: #4a90e2;
 }
 
 .pokemonContainer:focus-within {
   outline: none;
-  border-color: rgba(74, 144, 226, 0.8);
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3), 0 8px 24px rgba(74, 144, 226, 0.4);
 }
 
 .pokemonContainer:active {
-  transform: scale(0.98);
+  transform: scale(1.15);
 }
 
 .pokemon:focus {
   outline: none;
-}
-
-.pokemon:active {
-  transform: scale(1.05);
 }
 
 .complete {
@@ -580,7 +564,7 @@
 }
 
 .complete:hover {
-  filter: brightness(1.15);
+  filter: brightness(1.1);
 }
 
 .incomplete {
@@ -589,12 +573,8 @@
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.pokemonContainer:has(.incomplete) {
-  border-color: rgba(102, 126, 234, 0.15);
-}
-
 .pokemonContainer:has(.incomplete):hover {
-  border-color: rgba(102, 126, 234, 0.4);
+  border-color: #555;
 }
 
 .incomplete:hover {
