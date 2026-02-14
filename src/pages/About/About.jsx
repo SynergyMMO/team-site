@@ -83,8 +83,7 @@ export default function About() {
               <li><strong>Pokédex Filter Panel Redesigned</strong> - Improved layout matching reference design with Moves, Essentials, and Base Stats sections</li>
               <li>Alpha Filter - Added ability to filter Pokémon by Alpha status</li>
               <li>Egg Group Selection - Now allows selecting up to 2 egg groups with "Any" or "Both" matching options</li>
-              <li>Locations Filter - Fixed to remain separate from Essentials section and always visible</li>
-              <li>Type Buttons - Added colored type buttons with improved visual feedback</li>
+              <li>Ability to see Alpha variants only</li>
             </ul>
           </div>
           <div className={styles.changelogEntry}>
