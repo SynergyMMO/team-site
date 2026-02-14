@@ -38,18 +38,35 @@ export default function PlayerStatsDropdown({ winners, data }) {
       subtitle: '(The Player with the highest Encounter Shiny)',
       player: winners.highestDryStreak,
       value: `${winners.highestDryStreak.maxEncounter.toLocaleString()} encounters`,
+      pokemon: winners.highestDryStreak.maxEncounterPokemon,
     },
     {
       title: 'The Least Encounter Pokemon!',
       subtitle: '(The Player with the least encounter shiny)',
       player: winners.leastEncounter,
       value: `${winners.leastEncounter.minEncounter.toLocaleString()} encounters`,
+      pokemon: winners.leastEncounter.minEncounterPokemon,
     },
     {
       title: 'Most Rares!',
       subtitle: '(The Player with the most shinies with Tier 2, 1 or 0)',
       player: winners.mostRares,
       value: `${winners.mostRares.rareCount} rare shinies`,
+      pokemons: winners.mostRares.rarePokemons,
+    },
+    {
+      title: 'Most Phases!',
+      subtitle: '(The Player with the most shinies caught in a single route)',
+      player: winners.mostPhases,
+      value: `${winners.mostPhases.phasesCount} shinies`,
+      route: winners.mostPhases.topRoute,
+    },
+    {
+      title: 'Most Shinies in a Week!',
+      subtitle: '(The Player who caught the most shinies within a single 7-day period)',
+      player: winners.mostInWeek,
+      value: `${winners.mostInWeek.mostInWeekCount} shinies`,
+      pokemons: winners.mostInWeek.mostInWeekPokemons,
     },
   ]
 
@@ -73,6 +90,21 @@ export default function PlayerStatsDropdown({ winners, data }) {
               <div className={styles.content}>
                 <div className={styles.playerName}>{stat.player.name}</div>
                 <div className={styles.value}>{stat.value}</div>
+                {stat.pokemon && (
+                  <div className={styles.pokemon}>
+                    Pokémon: <strong>{stat.pokemon}</strong>
+                  </div>
+                )}
+                {stat.pokemons && stat.pokemons.length > 0 && (
+                  <div className={styles.pokemons}>
+                    Pokémon: <strong>{stat.pokemons.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(', ')}</strong>
+                  </div>
+                )}
+                {stat.route && (
+                  <div className={styles.route}>
+                    Top Route: <strong>{stat.route}</strong>
+                  </div>
+                )}
               </div>
             </div>
           ))}
