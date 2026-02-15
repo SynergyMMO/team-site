@@ -9,10 +9,48 @@ export default function EventsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'Events', url: '/events' }
+  ];
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What are Team Synergy events?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Team Synergy hosts regular PokeMMO community events including shiny hunting competitions, seasonal tournaments, team challenges, and special gaming activities."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How can I join Team Synergy events?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Join our Discord community at discord.gg/2BEUq6fWAj to stay updated on upcoming events and participate in Team Synergy activities."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are there ongoing events?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! Check our events page to see ongoing, upcoming, and past Team Synergy events. Events are sorted by current status."
+        }
+      }
+    ]
+  };
+
     useDocumentHead({
-    title: 'Team Synergy Events',
-    description: 'Discover Team Synergy\'s PokeMMO community events. Join shiny hunting competitions, seasonal tournaments, team challenges, and special gaming events. Stay connected with the latest Team Synergy activities.',
+    title: 'PokeMMO Events - Team Synergy Community Events',
+    description: 'Discover Team Synergy PokeMMO community events. Join shiny hunting competitions, seasonal tournaments, team challenges, special events & tournaments. Stay connected with latest activities.',
     canonicalPath: '/events',
+    breadcrumbs: breadcrumbs,
+    structuredData: faqSchema
   })
   useEffect(() => {
     async function fetchEvents() {

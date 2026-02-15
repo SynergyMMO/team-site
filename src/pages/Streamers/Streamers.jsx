@@ -4,10 +4,16 @@ import { useDocumentHead } from '../../hooks/useDocumentHead'
 import styles from './Streamers.module.css'
 
 export default function Streamers() {
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'Streamers', url: '/streamers' }
+  ];
+
   useDocumentHead({
-    title: 'Team Synergy Streamers',
-    description: 'Watch Team Synergy members stream PokeMMO live on Twitch. Check live status, find active streamers, join the community watching shiny hunts, encounters, and competitive gameplay.',
+    title: 'PokeMMO Streamers - Watch Team Synergy Live on Twitch',
+    description: 'Watch Team Synergy members stream PokeMMO live on Twitch. Follow active streamers, discover shiny hunts, competitive battles, encounters, and join the PokeMMO streaming community.',
     canonicalPath: '/streamers',
+    breadcrumbs: breadcrumbs
   })
   const { data, isLoading, error } = useStreamers()
 

@@ -17,16 +17,39 @@ export default function EventsDetail() {
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'Events', url: '/events' },
+    { name: event?.title || 'Event', url: `/event/${slug}` }
+  ];
+
+  const eventSchema = event ? {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": event.title,
+    "description": event.description,
+    "startDate": event.startDate,
+    "endDate": event.endDate,
+    "url": `https://synergymmo.com/event/${slug}`,
+    "image": event.imageLink || "https://synergymmo.com/favicon.png",
+    "organizer": {
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    },
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode"
+  } : null;
+
   useDocumentHead({
-    title: event?.title || 'Loading event...',
-    description: event?.description || 'Check out this Team Synergy event in PokeMMO.',
-    canonicalPath: `/events/${slug}`,
-    url: `https://synergymmo.com/events/${slug}?v=2`,
+    title: event?.title ? `${event.title} - PokeMMO Event | Team Synergy` : 'Loading event...',
+    description: event?.description || 'Join Team Synergy events in PokeMMO. Shiny hunting competitions, tournaments, and team challenges.',
+    canonicalPath: `/event/${slug}`,
+    url: `https://synergymmo.com/event/${slug}`,
     ogImage: event?.imageLink || 'https://synergymmo.com/favicon.png',
     twitterCard: 'summary_large_image',
-    twitterTitle: event?.title || 'Loading event...',
-    twitterDescription: event?.description || 'Check out this Team Synergy event in PokeMMO.',
-    twitterImage: event?.imageLink || 'https://synergymmo.com/favicon.png',
+    breadcrumbs: breadcrumbs,
+    structuredData: eventSchema
   })
 
   useEffect(() => {

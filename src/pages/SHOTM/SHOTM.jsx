@@ -27,10 +27,16 @@ function isCurrentMonth(month, year) {
 }
 
 export default function SHOTM() {
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'Shiny Hunters of the Month', url: '/shotm' }
+  ];
+
   useDocumentHead({
-    title: 'Shiny Hunters of the Month',
-    description: "Monthly rankings for Team Synergy's top shiny hunters in PokeMMO. See who caught the most shinies this month and all-time.",
+    title: 'Shiny Hunters of the Month - PokeMMO Rankings | Team Synergy',
+    description: 'Monthly rankings of top shiny hunters in PokeMMO. Track highest catches, tier points, and all-time stats for Team Synergy members. Competitive shiny hunting leaderboard.',
     canonicalPath: '/shotm',
+    breadcrumbs: breadcrumbs
   })
 
   const now = new Date()

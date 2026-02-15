@@ -30,11 +30,17 @@ const TIER_COLORS = {
 const BASE = import.meta.env.BASE_URL || '/'
 
 export default function ShinyWar2025() {
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'Shiny Wars 2025', url: '/shiny-war-2025' }
+  ];
+
   useDocumentHead({
-    title: 'Shiny Wars 2025 Results',
-    description: 'Team Synergy placed #25 in the Official PokeMMO Shiny Wars 2025 with 1060 points and 111 shinies. View every catch with tier breakdowns and point totals.',
+    title: 'PokeMMO Shiny Wars 2025 Results - Team Synergy',
+    description: 'Team Synergy Shiny Wars 2025 results: #25 placement with 1060 points and 111 shiny Pokémon caught. View tier breakdowns, all catches, rankings, and competition details.',
     canonicalPath: '/shiny-war-2025',
     ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif',
+    breadcrumbs: breadcrumbs
   })
 
   const { data: dbData } = useDatabase()

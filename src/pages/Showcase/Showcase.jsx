@@ -16,8 +16,8 @@ const BATCH_SIZE = 5
 
 export default function Showcase() {
   useDocumentHead({
-    title: 'Shiny Showcase',
-    description: "Meet Team Synergy, a PokeMMO shiny hunting team. Browse our members' shiny Pokemon collections and see who's caught the most shinies.",
+    title: 'Team Synergy - PokeMMO Shiny Hunting Team & Community',
+    description: 'Team Synergy is the ultimate PokeMMO shiny hunting community. Browse 140+ player shiny collections, track completion with our Pokédex, watch live Twitch streamers, and join competitions.',
     canonicalPath: '/',
   })
   const { data, isLoading, error } = useDatabase()
@@ -88,10 +88,12 @@ export default function Showcase() {
 
   return (
     <div>
-      <h1>
-        Team Synergy Shiny Showcase
-        <Link to="/admin" className="invisible-link">!</Link>
+      <h1 class="seo-optimized">
+        Team Synergy: PokeMMO Shiny Hunting Community
       </h1>
+      <p class="seo-intro">
+        Track shinies, join competitions, and explore our {filteredPlayers.length} member collections
+      </p>
 
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 

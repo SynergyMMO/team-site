@@ -29,10 +29,16 @@ const normalizedTiers = {
 }
 
 export default function RandomPokemon() {
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'Random Pokémon Generator', url: '/random-pokemon-generator' }
+  ];
+
   useDocumentHead({
-    title: 'Random Pokémon Generator & Shiny Bingo',
-    description: 'Generate random Pokémon targets for PokeMMO hunts. Play shiny bingo with 3x3, 4x4, or 5x5 boards, filter by tier, randomize natures and IVs. Track your completion and find new hunt challenges.',
+    title: 'PokeMMO Random Pokémon Generator & Shiny Bingo',
+    description: 'Ultimate PokeMMO random Pokémon generator and shiny bingo tool. Generate hunt targets, play bingo with multiple board sizes, filter by tier, randomize natures and IVs for shiny hunting.',
     canonicalPath: '/random-pokemon-generator',
+    breadcrumbs: breadcrumbs
   })
 
   const { data: shinyDatabase } = useDatabase()

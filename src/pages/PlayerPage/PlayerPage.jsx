@@ -36,6 +36,21 @@ export default function PlayerPage() {
     return () => document.body.classList.remove('player-page-active')
   }, [])
 
+  const breadcrumbs = realKey ? [
+    { name: 'Home', url: '/' },
+    { name: 'Shiny Showcase', url: '/' },
+    { name: realKey, url: `/player/${playerName}` }
+  ] : null;
+
+  useDocumentHead({
+    title: realKey ? `${realKey}'s Shiny Collection | Team Synergy PokeMMO` : 'Player Shinies | Team Synergy - PokeMMO',
+    description: realKey 
+      ? `Browse ${realKey}'s shiny Pokémon collection in PokeMMO. View caught shinies, collections, and stats for Team Synergy member.`
+      : 'Explore player shiny collections in Team Synergy PokeMMO.',
+    canonicalPath: `/player/${playerName?.toLowerCase()}`,
+    breadcrumbs: breadcrumbs
+  })
+
   // --- Safe defaults ---
   const safeRealKey = realKey || playerName
 
@@ -44,13 +59,6 @@ export default function PlayerPage() {
   const safeFavourites = safeShinies.filter(
     ([, s]) => s.Favourite?.toLowerCase() === 'yes'
   )
-
-  const safeNormalShinies = safeShinies.filter(
-    ([, s]) => s.Favourite?.toLowerCase() !== 'yes'
-  )
-
-  const firstFavouriteShiny = safeFavourites[0]?.[1]
-  const firstNormalShiny = safeNormalShinies[0]?.[1]
 
   const ogImage =
     (firstFavouriteShiny && getLocalPokemonGif(firstFavouriteShiny.Pokemon)) ||

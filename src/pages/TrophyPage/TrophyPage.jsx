@@ -22,14 +22,24 @@ export default function TrophyPage() {
   const trophyImg = trophyKey ? `${DOMAIN}${trophies[trophyKey]}` : `${DOMAIN}/favicon.png`;
   const ogUrl = `${DOMAIN}/trophy/${trophySlug || ''}`;
 
+  const breadcrumbs = trophyKey ? [
+    { name: 'Home', url: '/' },
+    { name: 'Trophy Board', url: '/trophy-board' },
+    { name: trophyKey, url: `/trophy/${trophySlug}` }
+  ] : [
+    { name: 'Home', url: '/' },
+    { name: 'Trophy Board', url: '/trophy-board' }
+  ];
+
   useDocumentHead({
-    title: trophyKey ? `${trophyKey} Trophy` : trophySlug || 'Trophy',
+    title: trophyKey ? `${trophyKey} Trophy - Team Synergy PokeMMO Awards` : trophySlug || 'Trophy',
     description: trophyKey
-      ? `See which Team Synergy members earned the ${trophyKey} trophy in PokeMMO.`
+      ? `View which Team Synergy members earned the ${trophyKey} trophy in PokeMMO. Discover milestone achievements and competitive accomplishments.`
       : `View trophy details for Team Synergy in PokeMMO.`,
     canonicalPath: ogUrl,
     ogImage: trophyImg,
     url: ogUrl,
+    breadcrumbs: breadcrumbs
   });
 
   if (loadingTrophies || loadingDB) return <div className="message">Loading...</div>;

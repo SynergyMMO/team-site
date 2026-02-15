@@ -12,10 +12,56 @@ import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import styles from './Pokedex.module.css'
 
 export default function Pokedex() {
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'Pokédex Tracker', url: '/pokedex' }
+  ];
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a living dex in PokeMMO?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A living dex is a Pokédex where you own one of every species (or form) of Pokémon. Our tracker helps you monitor your progress towards completing a living dex in PokeMMO."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How can I filter Pokémon by tier?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use the tier filter in our Pokédex tracker to view Pokémon in tiers 0-7. Each tier represents different rarity and difficulty in PokeMMO shiny hunting."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I find shiny encounter locations?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! Our tracker shows encounter locations for all Pokémon. Search by location name and see all methods (grass, fishing, headbutt, etc.) for finding shinies."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I filter by ability?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use the ability search feature to find all Pokémon with specific abilities. This helps with breeding and shiny hunting strategies in PokeMMO."
+        }
+      }
+    ]
+  };
+
   useDocumentHead({
-    title: 'Pokédex Tracker - Shiny & Living Dex',
-    description: 'Track Team Synergy\'s complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.',
+    title: 'Pokédex Tracker - Shiny & Living Dex Database',
+    description: 'Ultimate PokeMMO Pokédex tracker with 731 Pokémon. Filter by tier, type, location, ability, and nature. Track your shiny hunting progress with advanced search and encounter location finder.',
     canonicalPath: '/pokedex',
+    breadcrumbs: breadcrumbs,
+    structuredData: faqSchema
   })
   const navigate = useNavigate()
   const location = useLocation()

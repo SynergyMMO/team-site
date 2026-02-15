@@ -4,10 +4,16 @@ import { getAssetUrl } from '../../utils/assets'
 import styles from './About.module.css'
 
 export default function About() {
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'About', url: '/about' }
+  ];
+
   useDocumentHead({
-    title: 'About SynergyMMO',
-    description: 'Learn about Team Synergy, a PokeMMO shiny hunting community. How to apply, and recent updates.',
+    title: 'About Team Synergy - PokeMMO Shiny Hunting Community',
+    description: 'Learn about Team Synergy, a PokeMMO shiny hunting community. Discover how to join, meet our streamers, view events, and become part of our growing PokeMMO family.',
     canonicalPath: '/about',
+    breadcrumbs: breadcrumbs
   })
 
   return (

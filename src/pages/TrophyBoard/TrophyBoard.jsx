@@ -5,10 +5,16 @@ import styles from './TrophyBoard.module.css';
 import { slugify } from '../../utils/slugify'; // fixed path to your utils
 
 export default function TrophyBoard() {
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'Trophy Board', url: '/trophy-board' }
+  ];
+
   useDocumentHead({
-    title: 'Team Synergy Trophy Board',
-    description: 'Explore trophies and achievements earned by Team Synergy members in PokeMMO. View championship awards, milestone accomplishments, and community recognition. Celebrate team success and member achievements.',
+    title: 'PokeMMO Trophy Board - Team Synergy Achievements',
+    description: 'Team Synergy trophy board showcasing PokeMMO achievements, awards, and member accomplishments. Browse 12 trophy categories, celebrate milestones, and view championship wins.',
     canonicalPath: '/trophy-board',
+    breadcrumbs: breadcrumbs
   });
 
   const { data, isLoading } = useTrophies();

@@ -917,13 +917,22 @@ const buildDescription = (pokemon) => {
   const types = formatTypes(pokemon.types);
   const eggGroups = formatEggGroups(pokemon.eggGroups);
 
-  return `${name} - Type: ${types}, Egg Group: ${eggGroups}`;
+  return `${name} - ${types} type - Shiny encounter locations, stats, egg groups, abilities, and detailed information for PokeMMO hunting.`;
 };
+
+const breadcrumbs = pokemon ? [
+  { name: 'Home', url: '/' },
+  { name: 'Pokédex', url: '/pokedex' },
+  { name: capitalize(pokemon.displayName), url: `/pokemon/${pokemonName?.toLowerCase()}` }
+] : [
+  { name: 'Home', url: '/' },
+  { name: 'Pokédex', url: '/pokedex' }
+];
 
 useDocumentHead({
   title: pokemon
-    ? `${capitalize(pokemon.displayName)} - Shiny Dex | Team Synergy - PokeMMO`
-    : "Shiny Dex | Team Synergy - PokeMMO",
+    ? `${capitalize(pokemon.displayName)} Shiny Hunting Guide | PokeMMO Pokédex`
+    : "Pokémon Details | Team Synergy - PokeMMO",
 
   description: buildDescription(pokemon),
 
@@ -936,12 +945,14 @@ useDocumentHead({
   twitterCard: "summary_large_image",
 
   twitterTitle: pokemon
-    ? `${capitalize(pokemon.displayName)} - Shiny Dex | Team Synergy - PokeMMO`
-    : "Shiny Dex | Team Synergy - PokeMMO",
+    ? `${capitalize(pokemon.displayName)} Shiny Hunting Guide | PokeMMO`
+    : "Pokémon Details | PokeMMO",
 
   twitterDescription: buildDescription(pokemon),
 
   twitterImage: animatedShinyGif,
+
+  breadcrumbs: breadcrumbs
 });
 
 
