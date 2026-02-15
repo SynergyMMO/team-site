@@ -14,7 +14,7 @@ import styles from './Pokedex.module.css'
 export default function Pokedex() {
   const breadcrumbs = [
     { name: 'Home', url: '/' },
-    { name: 'Pokédex Tracker', url: '/pokedex' }
+    { name: 'PokeMMO Pokédex', url: '/pokedex' }
   ];
 
   const faqSchema = {
@@ -23,42 +23,42 @@ export default function Pokedex() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "What is a living dex in PokeMMO?",
+        "name": "What is the best PokeMMO Pokédex tracker?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "A living dex is a Pokédex where you own one of every species (or form) of Pokémon. Our tracker helps you monitor your progress towards completing a living dex in PokeMMO."
+          "text": "Our PokeMMO Pokédex tracker is the most comprehensive resource for PokeMMO players. It includes all 731 Pokémon with PokeMMO-specific encounter locations, tier rarities, and shiny hunting strategies."
         }
       },
       {
         "@type": "Question",
-        "name": "How can I filter Pokémon by tier?",
+        "name": "Where do I find PokeMMO Pokémon encounter locations?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Use the tier filter in our Pokédex tracker to view Pokémon in tiers 0-7. Each tier represents different rarity and difficulty in PokeMMO shiny hunting."
+          "text": "Our PokeMMO Pokédex shows exact encounter locations, regions, and methods (grass, fishing, headbutt, rock smash) for every Pokémon. Filter by location name to find specific areas in PokeMMO."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I find shiny encounter locations?",
+        "name": "How do PokeMMO tier rarities affect shiny hunting?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes! Our tracker shows encounter locations for all Pokémon. Search by location name and see all methods (grass, fishing, headbutt, etc.) for finding shinies."
+          "text": "PokeMMO organizes Pokémon into tiers 0-7 based on rarity and hunt difficulty. Higher tiers require more encounters. Use our tier filter to find easier hunts or challenge yourself with tier 7 legendaries."
         }
       },
       {
         "@type": "Question",
-        "name": "How do I filter by ability?",
+        "name": "Can I track my PokeMMO living dex progress?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Use the ability search feature to find all Pokémon with specific abilities. This helps with breeding and shiny hunting strategies in PokeMMO."
+          "text": "Yes! Our PokeMMO tracker helps you monitor your living dex completion. Search and filter 731 Pokémon, track which ones you've caught, and plan your next shiny hunt strategy."
         }
       }
     ]
   };
 
   useDocumentHead({
-    title: 'Pokédex Tracker - Shiny & Living Dex Database',
-    description: 'Ultimate PokeMMO Pokédex tracker with 731 Pokémon. Filter by tier, type, location, ability, and nature. Track your shiny hunting progress with advanced search and encounter location finder.',
+    title: 'PokeMMO Pokédex Tracker - 731 Pokémon Encounter Locations & Tiers',
+    description: 'The ultimate PokeMMO Pokédex tracker for shiny hunters. Find all 731 Pokémon with PokeMMO encounter locations, tier rarities, abilities, and shiny hunting strategies. Track living dex progress.',
     canonicalPath: '/pokedex',
     breadcrumbs: breadcrumbs,
     structuredData: faqSchema
