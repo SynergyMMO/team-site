@@ -26,6 +26,18 @@ function setCanonical(url) {
   el.setAttribute('href', url);
 }
 
+// Function to add or update structured data
+function setStructuredData(schema, id = 'structured-data') {
+  let script = document.querySelector(`script#${id}`);
+  if (!script) {
+    script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = id;
+    document.head.appendChild(script);
+  }
+  script.textContent = JSON.stringify(schema);
+}
+
 export function useDocumentHead({
   title,
   description,
@@ -34,7 +46,13 @@ export function useDocumentHead({
   ogImage,
   ogType = 'website',
   siteName = DEFAULT_SITE_NAME,
-  twitterCard = 'summary_large_image', // default to large image for shinies
+  twitterCard = 'summary_large_image',
+  // Additional SEO options
+  robots = 'index, follow, max-image-preview:large',
+  structuredData = null,
+  breadcrumbs = null,
+  imageAlt = null,
+  author = null,
 } = {}) {
   useEffect(() => {
     const fullTitle = title ? `${title} | ${siteName}` : siteName;
@@ -50,13 +68,26 @@ export function useDocumentHead({
     // --- Standard Meta ---
     setMeta('description', desc);
 
+    // --- Set robots meta ---
+    setMeta('robots', robots);
+
+    // --- Set author if provided ---
+    if (author) {
+      setMeta('author', author);
+    }
+
     // --- Open Graph ---
     setMeta('og:title', fullTitle, 'property');
     setMeta('og:description', desc, 'property');
     setMeta('og:image', image, 'property');
-    setMeta('og:url', finalUrl, 'property'); // clean URL
+    setMeta('og:url', finalUrl, 'property');
     setMeta('og:type', ogType, 'property');
     setMeta('og:site_name', siteName, 'property');
+
+    // --- Add image alt text if available ---
+    if (imageAlt) {
+      setMeta('og:image:alt', imageAlt, 'property');
+    }
 
     // --- Twitter Card (mirror OG tags) ---
     setMeta('twitter:card', twitterCard);
@@ -65,13 +96,28 @@ export function useDocumentHead({
     setMeta('twitter:image', image);
 
     // --- Canonical ---
-    setCanonical(finalUrl); // clean URL
+    setCanonical(finalUrl);
 
-    // Note: Removed aggressive cleanup that was resetting tags on unmount.
-    // This was causing issues with React Router where the cleanup would fire
-    // before the new page's hook could set tags, briefly showing defaults.
-    // Since each page calls useDocumentHead with its own values, we don't need
-    // to reset tags here. The next page will properly set its own.
+    // --- Handle breadcrumb schema ---
+    if (breadcrumbs && breadcrumbs.length > 0) {
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': breadcrumbs.map((item, idx) => ({
+          '@type': 'ListItem',
+          'position': idx + 1,
+          'name': item.name,
+          'item': item.url.startsWith('http') ? item.url : `${DEFAULT_BASE_URL}${item.url}`
+        }))
+      };
+      setStructuredData(breadcrumbSchema, 'breadcrumb-schema');
+    }
+
+    // --- Handle custom structured data ---
+    if (structuredData) {
+      setStructuredData(structuredData, 'page-schema');
+    }
+
   }, [
     title,
     description,
@@ -81,5 +127,11 @@ export function useDocumentHead({
     ogType,
     siteName,
     twitterCard,
+    robots,
+    structuredData,
+    breadcrumbs,
+    imageAlt,
+    author,
   ]);
 }
+

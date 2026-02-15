@@ -29,6 +29,35 @@ export default function App() {
     window.scrollTo(0, 0)
   }, [location.pathname])
 
+  // Add organization schema on mount
+  useEffect(() => {
+    const organizationSchema = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com",
+      "logo": "https://synergymmo.com/favicon.png",
+      "description": "Team Synergy is a PokeMMO shiny hunting team. Browse our shiny dex, view shiny collections, watch our streamers, and generate encounter counter themes.",
+      "sameAs": [
+        "https://discord.gg/2BEUq6fWAj",
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Support",
+        "url": "https://discord.gg/2BEUq6fWAj"
+      }
+    };
+
+    let script = document.getElementById('org-schema');
+    if (!script) {
+      script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'org-schema';
+      script.textContent = JSON.stringify(organizationSchema);
+      document.head.appendChild(script);
+    }
+  }, []);
+
   useEffect(() => {
     let timeout
     const onScroll = () => {

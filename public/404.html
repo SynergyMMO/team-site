@@ -2,38 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Team Synergy - PokeMMO</title>
-  <script>
-    // Improved GitHub Pages SPA redirect to prevent Google Search redirect errors
-    (function() {
-      var pathSegmentsToKeep = 0;
-      var l = window.location;
-      var isRedirect = sessionStorage.getItem('spa-redirect-attempted');
-      
-      // Only redirect if we haven't already to prevent loops
-      if (!isRedirect) {
-        sessionStorage.setItem('spa-redirect-attempted', '1');
-        var newPath = 
-          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-          l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-          l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-          l.hash;
-        
-        // Use replace to prevent back button issues
-        l.replace(newPath);
-      } else {
-        // Clear the flag after use
-        sessionStorage.removeItem('spa-redirect-attempted');
-      }
-    })();
-  </script>
-  <noscript>
-    <!-- Fallback redirect for search engines when JS is disabled -->
-    <meta http-equiv="refresh" content="0; url=/">
-  </noscript>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, follow">
+  <title>Page Not Found - Team Synergy PokeMMO</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+    .container {
+      max-width: 600px;
+    }
+    h1 { font-size: 72px; margin: 0 0 20px 0; }
+    p { font-size: 18px; margin: 10px 0; }
+    a { color: #4a9eff; text-decoration: none; font-weight: bold; }
+    a:hover { text-decoration: underline; }
+  </style>
+  <!-- Cloudflare will serve index.html instead via _redirects file -->
+  <!-- This 404.html is a pure fallback, not the primary SPA routing mechanism -->
+  <meta http-equiv="refresh" content="1; url=/">
 </head>
 <body>
-  <p>Redirecting to home page...</p>
+  <div class="container">
+    <h1>404</h1>
+    <p>The page you're looking for doesn't exist.</p>
+    <p><a href="/">Return to Team Synergy</a></p>
+    <noscript>
+      <p>If you are not redirected, <a href="/">click here</a>.</p>
+    </noscript>
+  </div>
 </body>
 </html>

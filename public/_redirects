@@ -1,0 +1,24 @@
+# Cloudflare Pages SPA routing
+# All non-asset routes return 200 and serve index.html for React Router to handle
+/*    /index.html   200
+
+# Security headers for HTML pages
+/index.html   200  X-Content-Type-Options: nosniff; X-Frame-Options: SAMEORIGIN; X-XSS-Protection: 1; mode=block; Referrer-Policy: strict-origin-when-cross-origin; Permissions-Policy: interest-cohort=()
+
+# Cache rules - immutable assets
+/images/*             200  Cache-Control: public, max-age=31536000, immutable
+/images/pokemon_gifs/*  200  Cache-Control: public, max-age=31536000, immutable
+/images/Shiny\ Showcase/*  200  Cache-Control: public, max-age=31536000, immutable
+/images/trophy/*      200  Cache-Control: public, max-age=31536000, immutable
+
+# Static assets with long cache (no hashing needed after Vite build)
+/*.js         200  Cache-Control: public, max-age=31536000, immutable
+/*.css        200  Cache-Control: public, max-age=31536000, immutable
+
+# Cache sitemaps and robots.txt
+/sitemap*.xml     200  Cache-Control: public, max-age=86400
+/robots.txt       200  Cache-Control: public, max-age=86400
+
+# Gzip compression for text/SVG assets (Cloudflare automatic)
+/js/*         200  Content-Type: application/javascript; charset=utf-8
+/css/*        200  Content-Type: text/css; charset=utf-8

@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     target: 'esnext',
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -33,7 +34,26 @@ export default defineConfig(({ mode }) => ({
           query: ['@tanstack/react-query'],
           jszip: ['jszip'],
         },
+        // Optimize chunk names for readability and SEO (shorter hash)
+        entryFileNames: 'js/[name].[hash:6].js',
+        chunkFileNames: 'js/[name].[hash:6].js',
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.');
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|gif|svg|webp/i.test(ext)) {
+            return `images/[name].[hash:6][extname]`;
+          } else if (/woff|woff2|ttf|otf|eot/i.test(ext)) {
+            return `fonts/[name].[hash:6][extname]`;
+          } else if (ext === 'css') {
+            return `css/[name].[hash:6][extname]`;
+          }
+          return `[name].[hash:6][extname]`;
+        },
       },
     },
+    assetsInlineLimit: 4096,
+    reportCompressedSize: true,
+    chunkSizeWarningLimit: 500,
+    sourcemap: false,
   },
 }))

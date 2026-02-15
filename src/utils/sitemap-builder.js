@@ -14,53 +14,132 @@ const staticRoutes = [
   { path: '/trophy-board', changefreq: 'monthly', priority: '0.6' },
   { path: '/counter-generator', changefreq: 'monthly', priority: '0.6' },
   { path: '/random-pokemon-generator', changefreq: 'monthly', priority: '0.7' },
+  { path: '/events', changefreq: 'weekly', priority: '0.6' },
+  { path: '/shiny-war-2025', changefreq: 'weekly', priority: '0.7' },
+  { path: '/about', changefreq: 'monthly', priority: '0.5' },
 ];
+
+// Function to generate sitemap file
+function generateSitemapFile(filename, routes) {
+  const today = new Date().toISOString().split('T')[0];
+  
+  const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${routes
+    .map(route => {
+      let url = `  <url>
+    <loc>${baseUrl}${route.path}</loc>
+    <lastmod>${route.lastmod || today}</lastmod>
+    <changefreq>${route.changefreq}</changefreq>
+    <priority>${route.priority}</priority>`;
+      
+      // Add image tag if route has associated image
+      if (route.image) {
+        url += `
+    <image:image>
+      <image:loc>${route.image}</image:loc>
+      <image:title>${route.imageTitle || 'Image'}</image:title>
+    </image:image>`;
+      }
+      
+      url += `
+  </url>`;
+      return url;
+    })
+    .join('\n')}
+</urlset>`;
+
+  fs.writeFileSync(`./public/${filename}`, sitemapXml);
+  console.log(`✓ Generated ${filename} with ${routes.length} URLs`);
+  return routes.length;
+}
+
+// Function to generate sitemap index
+function generateSitemapIndex(sitemapFiles) {
+  const today = new Date().toISOString().split('T')[0];
+  
+  const indexXml = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapFiles
+    .map(file => `  <sitemap>
+    <loc>${baseUrl}/${file}</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>`)
+    .join('\n')}
+</sitemapindex>`;
+
+  fs.writeFileSync('./public/sitemap-index.xml', indexXml);
+  console.log(`✓ Generated sitemap-index.xml with ${sitemapFiles.length} sitemaps`);
+}
 
 async function buildSitemap() {
   const today = new Date().toISOString().split('T')[0];
-  const allRoutes = [...staticRoutes];
+  
+  // STEP 1: Static routes
+  console.log('\n📋 Building static pages sitemap...');
+  generateSitemapFile('sitemap-static.xml', staticRoutes);
 
-  // Fetch player names from the API
+  // STEP 2: Player pages
+  console.log('\n👤 Building player pages sitemap...');
+  let playerRoutes = [];
   try {
     const res = await fetch(databaseUrl);
     const database = await res.json();
     const players = Object.keys(database).sort();
-    console.log(`Found ${players.length} players`);
+    console.log(`   Found ${players.length} players`);
 
-    for (const name of players) {
-      allRoutes.push({
-        path: `/player/${name}`,
-        changefreq: 'weekly',
-        priority: '0.4',
-      });
-    }
-  } catch (err) {
-    console.error('Failed to fetch players, generating sitemap with static routes only:', err.message);
-  }
-
-  const pokemonNames = Object.keys(pokemonData).sort();
-  for (const name of pokemonNames) {
-    allRoutes.push({
-      path: `/pokemon/${name}`,
+    playerRoutes = players.map(name => ({
+      path: `/player/${name}`,
       changefreq: 'weekly',
-      priority: '0.5',
-    });
+      priority: '0.4',
+      lastmod: today,
+    }));
+
+    generateSitemapFile('sitemap-players.xml', playerRoutes);
+  } catch (err) {
+    console.error('   ⚠️  Failed to fetch players:', err.message);
   }
 
-  const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${allRoutes
-    .map(route => `  <url>
-    <loc>${baseUrl}${route.path}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${route.changefreq}</changefreq>
-    <priority>${route.priority}</priority>
-  </url>`)
-    .join('\n')}
-</urlset>`;
+  // STEP 3: Pokemon pages with images
+  console.log('\n🐉 Building pokemon pages sitemap with images...');
+  const pokemonNames = Object.keys(pokemonData).sort();
+  const pokemonRoutes = pokemonNames.map(name => {
+    const sanitized = name.toLowerCase().replace(/\s/g, '-');
+    return {
+      path: `/pokemon/${sanitized}`,
+      changefreq: 'monthly',
+      priority: '0.5',
+      lastmod: today,
+      // Add image data for Google Images
+      image: `https://img.pokemondb.net/sprites/black-white/anim/shiny/${sanitized}.gif`,
+      imageTitle: `${name} shiny form`,
+    };
+  });
 
-  fs.writeFileSync('./public/sitemap.xml', sitemapXml);
-  console.log(`Sitemap generated with ${allRoutes.length} URLs!`);
+  generateSitemapFile('sitemap-pokemon.xml', pokemonRoutes);
+
+  // STEP 4: Create sitemap index
+  console.log('\n📑 Creating sitemap index...');
+  const sitemapFiles = [
+    'sitemap-static.xml',
+    'sitemap-players.xml',
+    'sitemap-pokemon.xml'
+  ];
+  generateSitemapIndex(sitemapFiles);
+
+  // Summary
+  const totalUrls = staticRoutes.length + playerRoutes.length + pokemonNames.length;
+  console.log(
+    `\n✅ Sitemap generation complete!\n` +
+    `   Total URLs: ${totalUrls}\n` +
+    `   Static: ${staticRoutes.length}\n` +
+    `   Players: ${playerRoutes.length}\n` +
+    `   Pokemon: ${pokemonNames.length}`
+  );
 }
 
-buildSitemap();
+buildSitemap().catch(err => {
+  console.error('❌ Sitemap generation failed:', err);
+  process.exit(1);
+});

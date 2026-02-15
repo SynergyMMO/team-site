@@ -1,4 +1,5 @@
 import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -99,6 +100,17 @@ function slugify(title) {
     .replace(/^-+|-+$/g, '')     // remove leading/trailing dashes
 }
 
+async function getStreamers() {
+  const streamersPath = join(__dirname, '../src/data/streamers.json');
+  const raw = await readFile(streamersPath, 'utf-8');
+  const streamerNames = JSON.parse(raw);
+  
+  return streamerNames.map(name => ({
+    route: `/streamers#${name}`,
+    title: name
+  }));
+}
+
 async function getEvents() {
   const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events');
   const data = await res.json();
@@ -187,6 +199,95 @@ export async function getTrophies() {
     };
   });
 }
+
+// ---- SEO SCHEMA FUNCTIONS ----
+function generatePersonSchema(playerName) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": playerName,
+    "url": `https://synergymmo.com/player/${playerName.toLowerCase()}`,
+    "memberOf": {
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    }
+  };
+}
+
+function generatePokemonSchema(name, sanitized) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Thing",
+    "name": name,
+    "url": `https://synergymmo.com/pokemon/${sanitized}`,
+    "image": `https://img.pokemondb.net/sprites/black-white/anim/shiny/${sanitized}.gif`,
+    "description": `${name} shiny form in PokeMMO`
+  };
+}
+
+function generateBreadcrumbSchema(routePath, routeName) {
+  const segments = routePath.split('/').filter(Boolean);
+  let itemListElements = [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://synergymmo.com"
+    }
+  ];
+  
+  let currentPath = '';
+  segments.slice(0, -1).forEach((segment, idx) => {
+    currentPath += '/' + segment;
+    itemListElements.push({
+      "@type": "ListItem",
+      "position": idx + 2,
+      "name": segment.charAt(0).toUpperCase() + segment.slice(1),
+      "item": `https://synergymmo.com${currentPath}`
+    });
+  });
+  
+  itemListElements.push({
+    "@type": "ListItem",
+    "position": itemListElements.length + 1,
+    "name": routeName,
+    "item": `https://synergymmo.com${routePath}`
+  });
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": itemListElements
+  };
+}
+// ---- END SCHEMA FUNCTIONS ----
+
+// ---- UTILITY: SANITIZE FUNCTION ----
+function sanitizePokemonName(name) {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[\u2018\u2019']/g, '')
+    .replace(/\./g, '')
+    .replace(/\s+/g, '-')
+    .replace(/[♀]/g, 'f')
+    .replace(/[♂]/g, 'm');
+}
+
+// ---- CRAWLER-FRIENDLY NAVIGATION ----
+function generateCrawlerNav(links, label) {
+  if (!links || links.length === 0) return '';
+  
+  // Create hidden nav for crawlers - display none but still in DOM for HTML parser
+  return `
+  <!-- Crawler-friendly navigation for SEO discovery (hidden from users, visible to search engines) -->
+  <nav style="display: none; visibility: hidden;" aria-hidden="true" role="navigation">
+    ${links.map(link => `<a href="${link.href}" title="${link.title}"></a>`).join('\n    ')}
+  </nav>`;
+}
+// ---- END CRAWLER NAV ----
+
 // ---------------- PRERENDER ----------------
 async function prerenderRoute(templateHtml, outPath, meta = {}) {
   let html = templateHtml;
@@ -195,6 +296,12 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   const description = meta.ogDescription || 'Team Synergy is a PokeMMO shiny hunting team.';
   const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif';
   const url = meta.route ? `https://synergymmo.com${meta.route}` : 'https://synergymmo.com/';
+  
+  // Validate description length
+  const cleanDescription = description.replace(/<[^>]*>/g, '');
+  if (cleanDescription.length > 160) {
+    console.warn(`⚠️  Description too long for ${meta.route}: ${cleanDescription.length} chars`);
+  }
 
   // Inject OG tags
   html = html.replace(/<title>.*<\/title>/, `<title>${title}</title>`);
@@ -216,9 +323,50 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
     html = html.replace(/<\/head>/, `  <link rel="canonical" href="${url}">\n</head>`);
   }
 
+  // Add robots meta tag for explicit indexing
+  if (!html.includes('meta name="robots"')) {
+    html = html.replace(/<\/head>/, `  <meta name="robots" content="index, follow, max-image-preview:large">\n</head>`);
+  }
+
+  // Add hreflang for language
+  if (!html.includes('rel="alternate" hreflang')) {
+    html = html.replace(/<\/head>/, `  <link rel="alternate" hreflang="en" href="${url}">\n</head>`);
+  }
+
+  // Add structured data based on route type
+  let schemaScript = '';
+  
+  if (meta.route?.includes('/player/')) {
+    const playerName = meta.route.split('/').pop();
+    const personSchema = generatePersonSchema(decodeURIComponent(playerName));
+    schemaScript = `<script type="application/ld+json">\n${JSON.stringify(personSchema, null, 2)}\n</script>`;
+  } else if (meta.route?.includes('/pokemon/')) {
+    const pokemonName = meta.route.split('/').pop();
+    const pokemonSchema = generatePokemonSchema(pokemonName, pokemonName);
+    schemaScript = `<script type="application/ld+json">\n${JSON.stringify(pokemonSchema, null, 2)}\n</script>`;
+  }
+
+  // Add breadcrumb schema for all pages
+  const routePath = meta.route || '/';
+  const routeName = meta.ogTitle?.split('|')[0]?.trim() || 'Page';
+  const breadcrumbSchema = generateBreadcrumbSchema(routePath, routeName);
+  const breadcrumbScript = `<script type="application/ld+json">\n${JSON.stringify(breadcrumbSchema, null, 2)}\n</script>`;
+
+  // Inject all schema tags before closing body
+  if (schemaScript) {
+    html = html.replace(/<\/body>/, `  ${schemaScript}\n</body>`);
+  }
+  html = html.replace(/<\/body>/, `  ${breadcrumbScript}\n</body>`);
+
+  // Inject crawler-friendly navigation if provided
+  if (meta.crawlerLinks) {
+    const navHtml = generateCrawlerNav(meta.crawlerLinks, meta.route || 'Navigation');
+    html = html.replace(/<\/body>/, `${navHtml}\n</body>`);
+  }
+
   await mkdir(join(outPath, '..'), { recursive: true });
   await writeFile(outPath, html, 'utf-8');
-  console.log(`→ Prerendered ${outPath}`);
+  console.log(`→ Prerendered ${outPath} (${cleanDescription.length} chars desc${meta.crawlerLinks ? `, ${meta.crawlerLinks.length} crawler links` : ''})`);
 }
 
 async function prerender() {
@@ -226,19 +374,82 @@ async function prerender() {
 
   const templateHtml = await readFile(join(DIST, 'index.html'), 'utf-8');
 
-  // Static route OG overrides
+  // PRE-FETCH DYNAMIC DATA FOR CRAWLER LINKS
+  console.log('📊 Fetching dynamic data for crawler navigation...');
+  const players = await getPlayers();
+  const events = await getEvents();
+  const trophies = await getTrophies();
+  const streamers = await getStreamers();
+  const pokemonData = (() => {
+    try {
+      const pokemonPath = join(__dirname, '../src/data/pokemmo_data/pokemon-data.json');
+      const raw = readFileSync(pokemonPath, 'utf-8');
+      return JSON.parse(raw);
+    } catch (err) {
+      console.warn('⚠️  Could not load pokemon data for crawler links:', err.message);
+      return {};
+    }
+  })();
+
+  // Pokemon links - deduplicate by base form (e.g., unown, unown-a, unown-b → only unown)
+  const pokemonLinkMap = new Map();
+  Object.entries(pokemonData).forEach(([key, pokemon]) => {
+    const sanitized = sanitizePokemonName(pokemon.displayName || key);
+    const baseForm = sanitized.split('-')[0]; // Get base form (before first dash)
+    
+    // Only add if we haven't seen this base form yet
+    if (!pokemonLinkMap.has(baseForm)) {
+      pokemonLinkMap.set(baseForm, {
+        href: `/pokemon/${sanitized}`,
+        title: pokemon.displayName || key
+      });
+    }
+  });
+  const pokemonLinks = Array.from(pokemonLinkMap.values());
+  console.log(`📊 Deduped Pokemon: ${Object.keys(pokemonData).length} forms → ${pokemonLinks.length} base forms`);
+
+  const playerLinks = players.map(p => ({
+    href: p.route,
+    title: p.route.split('/').pop()
+  }));
+
+  const streamerLinks = streamers.map(s => ({
+    href: s.route,
+    title: s.title
+  }));
+
+  const eventLinks = events.map(e => ({
+    href: e.route,
+    title: e.route.split('/').pop()
+  }));
+
+  const trophyLinks = trophies.map(t => ({
+    href: t.route,
+    title: t.route.split('/').pop()
+  }));
+
+  // Static route OG overrides with CRAWLER LINKS
   const STATIC_META = {
+    '/': {
+      route: '/',
+      ogTitle: 'Team Synergy - PokeMMO Shiny Hunting Team',
+      ogDescription: 'Team Synergy is a PokeMMO shiny hunting team. Browse our shiny dex, view shiny collections, watch our streamers, and generate encounter counter themes.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      crawlerLinks: playerLinks,
+    },
     '/pokedex': {
       route: '/pokedex',
       ogTitle: 'Pokédex Tracker - Shiny & Living Dex | Team Synergy - PokeMMO',
       ogDescription: 'Track Team Synergy\'s complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/pikachu.gif',
+      crawlerLinks: pokemonLinks,
     },
     '/random-pokemon-generator': {
       route: '/random-pokemon-generator',
       ogTitle: 'Random Pokémon Generator & Shiny Bingo | Team Synergy - PokeMMO',
       ogDescription: 'Generate random Pokémon targets for PokeMMO hunts. Play shiny bingo with 3x3, 4x4, or 5x5 boards, filter by tier, randomize natures and IVs. Track your completion and find new hunt challenges.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/bulbasaur.gif',
+      crawlerLinks: pokemonLinks,
     },
     '/counter-generator': {
       route: '/counter-generator',
@@ -251,18 +462,21 @@ async function prerender() {
       ogTitle: 'Team Synergy Events | Team Synergy - PokeMMO',
       ogDescription: 'Discover Team Synergy\'s PokeMMO community events. Join shiny hunting competitions, seasonal tournaments, team challenges, and special gaming events. Stay connected with the latest Team Synergy activities.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      crawlerLinks: eventLinks,
     },
     '/trophy-board': {
       route: '/trophy-board',
       ogTitle: 'Team Synergy Trophy Board | Team Synergy - PokeMMO',
       ogDescription: 'Explore trophies and achievements earned by Team Synergy members in PokeMMO. View championship awards, milestone accomplishments, and community recognition. Celebrate team success and member achievements.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      crawlerLinks: trophyLinks,
     },
     '/streamers': {
       route: '/streamers',
       ogTitle: 'Team Synergy Streamers | Team Synergy - PokeMMO',
       ogDescription: 'Watch Team Synergy members stream PokeMMO live on Twitch. Check live status, find active streamers, join the community watching shiny hunts, encounters, and competitive gameplay.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      crawlerLinks: streamerLinks,
     },
     '/shiny-war-2025': {
       route: '/shiny-war-2025',
@@ -284,32 +498,31 @@ async function prerender() {
     await prerenderRoute(templateHtml, outPath, STATIC_META[route]);
   }
 
-  // Player pages
-  const players = await getPlayers();
+  // Player pages (already fetched above for crawler links)
+  console.log(`Prerendering ${players.length} player pages...`);
   for (const p of players) {
     const outPath = join(DIST, p.route.slice(1), 'index.html');
     await prerenderRoute(templateHtml, outPath, p);
   }
 
-  // Event pages
-  const events = await getEvents();
+  // Event pages (already fetched above for crawler links)
+  console.log(`Prerendering ${events.length} event pages...`);
   for (const e of events) {
     const outPath = join(DIST, e.route.slice(1), 'index.html');
     await prerenderRoute(templateHtml, outPath, e);
   }
 
-  // Trophy pages
-  const trophies = await getTrophies();
+  // Trophy pages (already fetched above for crawler links)
+  console.log(`Prerendering ${trophies.length} trophy pages...`);
   for (const t of trophies) {
     const outPath = join(DIST, t.route.slice(1), 'index.html');
     await prerenderRoute(templateHtml, outPath, t);
   }
 
-  // Pokemon pages
-  console.log('Fetching Pokemon data for prerender...');
+  // Pokemon pages (already fetched above for crawler links)
+  console.log(`Prerendering ${Object.keys(pokemonData).length} Pokemon pages...`);
   try {
     const pokemon = await getPokemon();
-    console.log(`Prerendering ${pokemon.length} Pokemon pages...`);
     for (const p of pokemon) {
       const outPath = join(DIST, p.route.slice(1), 'index.html');
       await prerenderRoute(templateHtml, outPath, p);
@@ -318,7 +531,7 @@ async function prerender() {
     console.warn('Failed to prerender Pokemon pages:', err.message);
   }
 
-  console.log('Prerender complete!');
+  console.log('✅ Prerender complete!');
 }
 
 prerender().catch(err => {

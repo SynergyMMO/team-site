@@ -1,5 +1,61 @@
+# ============================================
+# Team Synergy - PokeMMO Website
+# robots.txt for Google/Bing crawlers
+# ============================================
+
+# Default rules for all crawlers
 User-agent: *
+
+# Allow crawling of all public pages
 Allow: /
+Allow: /player/
+Allow: /pokemon/
+Allow: /event/
+Allow: /trophy/
+Allow: /pokedex
+Allow: /streamers
+Allow: /shotm
+Allow: /counter-generator
+Allow: /random-pokemon-generator
+
+# Block admin and private pages
 Disallow: /admin
 Disallow: /admin/panel
-Sitemap: https://synergymmo.com/sitemap.xml
+
+# Block API and database endpoints
+Disallow: /api/
+Disallow: /database
+
+# Block parameter-based duplicates
+Disallow: /*?utm_
+Disallow: /*?fbclid=
+Disallow: /*?gclid=
+Disallow: /*?ref=
+Disallow: /*?source=
+
+# Crawl-delay (be servers by being respectful)
+# 1 second delay between requests (adjust if needed)
+Crawl-delay: 1
+Request-rate: 100/1m
+
+# ============================================
+# Bing-specific rules
+# ============================================
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Crawl-delay: 1
+
+# ============================================
+# Block aggressive crawlers (optional)
+# ============================================
+User-agent: AhrefsBot
+User-agent: SemrushBot
+User-agent: DotBot
+User-agent: MJ12bot
+Disallow: /
+
+# ============================================
+# Sitemaps (primary)
+# ============================================
+Sitemap: https://synergymmo.com/sitemap-index.xml

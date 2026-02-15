@@ -1,5 +1,20 @@
 {
   "name": "team-synergy-shiny-showcase",
+  "description": "Team Synergy PokeMMO Shiny Hunting Community - Track shinies, view streamers, generate counters",
+  "keywords": [
+    "pokemmo",
+    "shiny pokemon",
+    "pokemon",
+    "shiny",
+    "hunting",
+    "team",
+    "synergy",
+    "twitch",
+    "streaming",
+    "mmo"
+  ],
+  "author": "Team Synergy",
+  "homepage": "https://synergymmo.com",
   "private": true,
   "version": "1.0.0",
   "type": "module",
