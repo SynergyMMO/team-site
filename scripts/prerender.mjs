@@ -233,7 +233,7 @@ function generateBreadcrumbSchema(routePath, routeName) {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://synergymmo.com"
+      "item": "https://synergymmo.com/"
     }
   ];
   
@@ -248,12 +248,15 @@ function generateBreadcrumbSchema(routePath, routeName) {
     });
   });
   
-  itemListElements.push({
-    "@type": "ListItem",
-    "position": itemListElements.length + 1,
-    "name": routeName,
-    "item": `https://synergymmo.com${routePath}/`
-  });
+  // Only add final breadcrumb if not on home page
+  if (routePath !== '/') {
+    itemListElements.push({
+      "@type": "ListItem",
+      "position": itemListElements.length + 1,
+      "name": routeName,
+      "item": `https://synergymmo.com${routePath}/`
+    });
+  }
 
   return {
     "@context": "https://schema.org",
@@ -296,7 +299,9 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   const description = meta.ogDescription || 'Team Synergy is a PokeMMO shiny hunting team.';
   const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif';
   // Add trailing slash to match GitHub Pages serving pattern (avoids 301 redirects)
-  const url = meta.route ? `https://synergymmo.com${meta.route}/` : 'https://synergymmo.com/';
+  // Normalize route to avoid double slashes: '/' should not become '//'
+  const normalizedRoute = meta.route === '/' ? '' : meta.route;
+  const url = `https://synergymmo.com${normalizedRoute}/`;
   
   // Validate description length
   const cleanDescription = description.replace(/<[^>]*>/g, '');
