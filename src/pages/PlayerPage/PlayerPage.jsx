@@ -60,6 +60,10 @@ export default function PlayerPage() {
     ([, s]) => s.Favourite?.toLowerCase() === 'yes'
   )
 
+  const safeNormalShinies = safeShinies.filter(
+    ([, s]) => s.Favourite?.toLowerCase() !== 'yes'
+  )
+
   const firstFavouriteShiny = safeFavourites[0]?.[1]
   const firstNormalShiny = safeShinies[0]?.[1]
 
