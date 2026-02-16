@@ -19,6 +19,7 @@ export default function Showcase() {
     title: 'Team Synergy - PokeMMO Shiny Hunting Team & Community',
     description: 'Team Synergy is the ultimate PokeMMO shiny hunting community. Browse 140+ player shiny collections, track completion with our Pokédex, watch live Twitch streamers, and join competitions.',
     canonicalPath: '/',
+    robots: 'index, follow, max-image-preview:large',
   })
   const { data, isLoading, error } = useDatabase()
   const [search, setSearch] = useState('')
