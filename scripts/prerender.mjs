@@ -13,6 +13,27 @@ const trophiesData = JSON.parse(trophiesRaw);
 
 const DIST = join(__dirname, '..', 'dist');
 
+
+const PAGE_KEYWORDS = {
+  '/': 'PokeMMO shiny showcase, shiny collection, PokeMMO community, Team Synergy, team shiny hunting, Pokemon collectors',
+  '/pokedex': 'PokeMMO Pokédex, Pokédex tracker, Generation 1-5 Pokemon, PokeMMO shiny tracker, Pokemon database, PokeMMO Shiny Locations, PokeMMO Where to Shiny Hunt, PokeMMO Catch Calculator',
+  '/random-pokemon-generator': 'Pokemon randomizer, shiny hunt randomizer, random Pokemon generator, shiny bingo cards, encounter picker, hunt challenge',
+  '/counter-generator': 'PokeMMO counter theme, counter theme generator, encounter counter, PokeMMO tools, theme customizer, counter maker',
+  '/events': 'PokeMMO events, shiny hunting competition, PokeMMO PVP events, gaming tournament, team events, community challenges',
+  '/trophy-board': 'PokeMMO trophies, achievement trophies, trophy list, PokeMMO leaderboard, gaming achievements, community awards',
+  '/streamers': 'PokeMMO streamers, PokeMMO Twitch streamers, PokeMMO YouTube, gaming livestream, content creators, streamer directory',
+  '/shiny-war-2025': 'Shiny Wars 2025, PokeMMO competition, Shiny Wars standings, leaderboard results, shiny catching championship, competition rankings, team synergy shiny war results',
+  '/about': 'Team Synergy PokeMMO, PokeMMO community, how to join Team Synergy, team membership, PokeMMO guild, community guide, pokemmo team recruitment, how to find a team in PokeMMO',
+};
+
+const DYNAMIC_KEYWORDS = {
+  pokemon: '{pokemon} shiny, {pokemon} PokeMMO, Pokemon stats, Pokemon abilities, {pokemon} pokemmo catch location, {pokemon} pokemmo catch calculator, {pokemon} encounter, tier rank',
+  player: '{player} shiny collection, {player} PokeMMO player, player profile, encounter statistics, trophy showcase, shiny hunter',
+  trophy: '{trophy} trophy, {trophy} achievement, PokeMMO trophy, trophy winners, gaming award, community milestone',
+  event: '{event} PokeMMO event, {event} tournament, event details, tournament rules, competition schedule, event prizes',
+};
+// ================================================================
+
 // ---------------- STATIC ROUTES ----------------
 const STATIC_ROUTES = [
   '/',
@@ -291,6 +312,40 @@ function generateCrawlerNav(links, label) {
 }
 // ---- END CRAWLER NAV ----
 
+// ---- GET KEYWORDS FOR ROUTE ----
+function getKeywordsForRoute(route) {
+  // Check for static route keywords first
+  if (PAGE_KEYWORDS[route]) {
+    return PAGE_KEYWORDS[route];
+  }
+  
+  // Check for dynamic route patterns and extract the name
+  if (route?.includes('/pokemon/')) {
+    const pokemonName = route.split('/pokemon/')[1];
+    const keywords = DYNAMIC_KEYWORDS.pokemon.replace(/{pokemon}/g, pokemonName);
+    return keywords;
+  }
+  if (route?.includes('/player/')) {
+    const playerName = route.split('/player/')[1];
+    const keywords = DYNAMIC_KEYWORDS.player.replace(/{player}/g, playerName);
+    return keywords;
+  }
+  if (route?.includes('/trophy/')) {
+    const trophyName = route.split('/trophy/')[1];
+    const keywords = DYNAMIC_KEYWORDS.trophy.replace(/{trophy}/g, trophyName);
+    return keywords;
+  }
+  if (route?.includes('/event/')) {
+    const eventName = route.split('/event/')[1];
+    const keywords = DYNAMIC_KEYWORDS.event.replace(/{event}/g, eventName);
+    return keywords;
+  }
+  
+  // Fallback to generic keywords if route not found
+  return 'PokeMMO, Pokemon, gaming, shiny hunting, community';
+}
+// ---- END GET KEYWORDS ----
+
 // ---------------- PRERENDER ----------------
 async function prerenderRoute(templateHtml, outPath, meta = {}) {
   let html = templateHtml;
@@ -315,6 +370,14 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   html = html.replace(/<meta property="og:description" content=".*">/, `<meta property="og:description" content="${description}">`);
   html = html.replace(/<meta property="og:image" content=".*">/, `<meta property="og:image" content="${image}">`);
   html = html.replace(/<meta property="og:url" content=".*">/, `<meta property="og:url" content="${url}">`);
+
+  // Inject keywords meta tag
+  const keywords = getKeywordsForRoute(meta.route);
+  if (html.includes('<meta name="keywords"')) {
+    html = html.replace(/<meta name="keywords" content=".*">/, `<meta name="keywords" content="${keywords}">`);
+  } else {
+    html = html.replace(/<\/head>/, `  <meta name="keywords" content="${keywords}">\n</head>`);
+  }
 
   // Twitter mirror
   html = html.replace(/<meta name="twitter:title" content=".*">/, `<meta name="twitter:title" content="${title}">`);
