@@ -12,6 +12,7 @@ const staticRoutes = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
   { path: '/shotm/', changefreq: 'daily', priority: '0.9' },
   { path: '/pokedex/', changefreq: 'weekly', priority: '0.8' },
+  { path: '/roaming-legendaries/', changefreq: 'weekly', priority: '0.8' },
   { path: '/streamers/', changefreq: 'daily', priority: '0.7' },
   { path: '/trophy-board/', changefreq: 'monthly', priority: '0.6' },
   { path: '/counter-generator/', changefreq: 'monthly', priority: '0.6' },
