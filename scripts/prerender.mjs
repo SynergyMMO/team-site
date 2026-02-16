@@ -887,7 +887,7 @@ async function prerender() {
       route: '/',
       ogTitle: 'Team Synergy - PokeMMO Shiny Hunting Team',
       ogDescription: 'Team Synergy is a PokeMMO shiny hunting team. Browse our shiny dex, view shiny collections, watch our streamers, and generate encounter counter themes.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      ogImage: 'images/openGraph.jpg',
       crawlerLinks: playerLinks,
     },
     '/pokedex': {
