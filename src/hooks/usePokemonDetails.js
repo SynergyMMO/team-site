@@ -29,9 +29,16 @@ export function usePokemonDetails(pokemonName) {
       const normalizedName = pokemonName.toLowerCase().trim()
       const aliasMap = {
         darmanitan: 'darmanitan-standard',
-        'wormadam': 'wormadam-plant',
+        wormadam: 'wormadam-plant',
         'gastrodon-west': 'gastrodon',
-        'shellos-west': 'shellos'
+        'shellos-west': 'shellos',
+        meloetta: 'meloetta-aria',
+        keldeo: 'keldeo-ordinary',
+        tornadus: 'tornadus-incarnate',
+        thundurus: 'thundurus-incarnate',
+        landorus: 'landorus-incarnate',
+        deoxys: 'deoxys-normal',
+        shaymin: 'shaymin-land'
       }
       let lookupName = aliasMap[normalizedName] || normalizedName
 

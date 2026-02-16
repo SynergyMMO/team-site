@@ -6,7 +6,6 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { usePokemonOrder } from '../../hooks/usePokemonOrder'
 import { usePokemonSprites } from '../../hooks/usePokemonSprites'
 import { usePokemonForms } from '../../hooks/usePokemonForms'
-import { getBasePokemonName } from '../../utils/pokemon'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from './PokemonDetail.module.css'
 import abilitiesData from '../../data/pokemmo_data/abilities-data.json'
@@ -724,7 +723,8 @@ export default function PokemonDetail() {
   const spriteAliasMap = useMemo(() => ({
     wormadam: 'wormadam-plant',
     'gastrodon-west': 'gastrodon',
-    'shellos-west': 'shellos'
+    'shellos-west': 'shellos',
+    shaymin: 'shaymin-land'
   }), [])
   const spriteName = spriteAliasMap[pokemonName?.toLowerCase()] || pokemonName
 
@@ -803,6 +803,28 @@ export default function PokemonDetail() {
     setSelectedGender('male')
     setShowBack(false)
   }, [pokemonName])
+
+  // Redirect to canonical form URL if needed
+  useEffect(() => {
+    if (!pokemon || !pokemonName) return
+
+    const aliasMap = {
+      shaymin: 'shaymin-land',
+      meloetta: 'meloetta-aria',
+      keldeo: 'keldeo-ordinary',
+      tornadus: 'tornadus-incarnate',
+      thundurus: 'thundurus-incarnate',
+      landorus: 'landorus-incarnate',
+      wormadam: 'wormadam-plant',
+      deoxys: 'deoxys-normal'
+    }
+
+    const pokemonLower = pokemonName.toLowerCase()
+    if (aliasMap[pokemonLower]) {
+      const canonicalForm = aliasMap[pokemonLower]
+      navigate(`/pokemon/${canonicalForm}`, { replace: true, state: { fromPokemon: true } })
+    }
+  }, [pokemon, pokemonName, navigate])
   
   // Reset sprite index when generation changes
   useEffect(() => {
@@ -1167,7 +1189,7 @@ useDocumentHead({
                       onClick={() => {
                         setSelectedForm(form.name)
                         setCurrentSpriteIndex(0)
-                        navigate(`/pokemon/${getBasePokemonName(form.name)}`, { state: { fromPokemon: true } })
+                        navigate(`/pokemon/${form.name}`, { state: { fromPokemon: true } })
                       }}
                       title={form.label}
                     >
