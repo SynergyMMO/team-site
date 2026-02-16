@@ -199,3 +199,13 @@ h1:hover {
 body.player-page-active #searchbar {
   display: none;
 }
+
+/* SEO content - hidden from users but visible to search engines */
+.seo-optimized,
+.seo-intro {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

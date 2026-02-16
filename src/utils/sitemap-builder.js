@@ -21,6 +21,12 @@ const staticRoutes = [
   { path: '/about/', changefreq: 'monthly', priority: '0.5' },
 ];
 
+// Ensure we always publish canonical URLs with a trailing slash
+function ensureTrailingSlash(path) {
+  if (!path) return '/';
+  return path.endsWith('/') ? path : `${path}/`;
+}
+
 // Function to generate sitemap file
 function generateSitemapFile(filename, routes) {
   const today = new Date().toISOString().split('T')[0];
@@ -30,8 +36,10 @@ function generateSitemapFile(filename, routes) {
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${routes
     .map(route => {
+      const normalizedPath = ensureTrailingSlash(route.path);
+
       let url = `  <url>
-    <loc>${baseUrl}${route.path}</loc>
+    <loc>${baseUrl}${normalizedPath}</loc>
     <lastmod>${route.lastmod || today}</lastmod>
     <changefreq>${route.changefreq}</changefreq>
     <priority>${route.priority}</priority>`;

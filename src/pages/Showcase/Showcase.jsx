@@ -92,7 +92,7 @@ export default function Showcase() {
         Team Synergy: PokeMMO Shiny Hunting Community
       </h1>
       <p class="seo-intro">
-        Track shinies, join competitions, and explore our {filteredPlayers.length} member collections
+        Track PokeMMO shinies, join PokeMMO Events, Study all PokeMMO Shiny Hunting Locations, Alphas, and more in our detailed PokeDex Page, and explore our {filteredPlayers.length} member collections
       </p>
 
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
