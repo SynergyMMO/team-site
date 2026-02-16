@@ -60,6 +60,9 @@ export default function PlayerPage() {
     ([, s]) => s.Favourite?.toLowerCase() === 'yes'
   )
 
+  const firstFavouriteShiny = safeFavourites[0]?.[1]
+  const firstNormalShiny = safeShinies[0]?.[1]
+
   const ogImage =
     (firstFavouriteShiny && getLocalPokemonGif(firstFavouriteShiny.Pokemon)) ||
     (firstNormalShiny && getLocalPokemonGif(firstNormalShiny.Pokemon)) ||
