@@ -242,7 +242,7 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
                   y={y}
                   width={barWidth * 0.8}
                   height={barHeight}
-                  fill="#00d4ff"
+                  fill="#DAA520"
                   rx="4"
                   opacity="0.9"
                 />
@@ -307,19 +307,20 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
   }
 
   // --- Component: Pie Chart ---
-  const PieChart = ({ data, title }) => {
+  const PieChart = ({ data, title, customColors }) => {
     const entries = Object.entries(data)
     const total = entries.reduce((sum, [, v]) => sum + v, 0)
-    const colors = [
-      '#00d4ff',
-      '#ff006e',
-      '#ffbe0b',
-      '#3a86ff',
-      '#8338ec',
-      '#fb5607',
-      '#06ffa5',
-      '#ff006d',
+    const defaultColors = [
+      '#ffd700',
+      '#c084fc',
+      '#60a5fa',
+      '#4ade80',
+      '#2dd4bf',
+      '#fb923c',
+      '#94a3b8',
+      '#cbd5e1',
     ]
+    const colors = customColors || defaultColors
     const centerX = 150
     const centerY = 150
     const radius = 120
@@ -409,7 +410,7 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
 
     // Format data for pie chart
     const data = {}
-    const colors = ['#00d4ff', '#3a86ff', '#8338ec', '#ff006e']
+    const colors = ['#ffd700', '#c084fc', '#60a5fa', '#fb923c']
     
     buckets.forEach((bucket, i) => {
       const count = bucket.pokemon.length
@@ -539,7 +540,7 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
             })}
 
             {/* Line */}
-            <path d={pathD} stroke="#00d4ff" strokeWidth="2" fill="none" />
+            <path d={pathD} stroke="#FFD700" strokeWidth="2" fill="none" />
 
             {/* Points with Pokemon GIFs below */}
             {points.map((point, i) => {
@@ -837,7 +838,11 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
                 title="Tier Distribution"
                 icon="⭐"
               >
-                <PieChart data={stats.tierCounts} title="Pokémon by Tier" />
+                <PieChart
+                  data={stats.tierCounts}
+                  title="Pokémon by Tier"
+                  customColors={['#ffd700', '#c084fc', '#60a5fa', '#4ade80', '#2dd4bf', '#fb923c', '#94a3b8', '#cbd5e1']}
+                />
               </NestedCategory>
             )}
           </div>
