@@ -1,0 +1,54 @@
+{
+  "legendaries": [
+    {
+      "id": "zapdos",
+      "name": "Zapdos",
+      "type": "Electric/Flying",
+      "months": [0, 3, 6, 9]
+    },
+    {
+      "id": "moltres",
+      "name": "Moltres",
+      "type": "Fire/Flying",
+      "months": [1, 4, 7, 10]
+    },
+    {
+      "id": "articuno",
+      "name": "Articuno",
+      "type": "Ice/Flying",
+      "months": [2, 5, 8, 11]
+    },
+    {
+      "id": "entei",
+      "name": "Entei",
+      "type": "Fire",
+      "months": [0, 3, 6, 9]
+    },
+    {
+      "id": "suicune",
+      "name": "Suicune",
+      "type": "Water",
+      "months": [1, 4, 7, 10]
+    },
+    {
+      "id": "raikou",
+      "name": "Raikou",
+      "type": "Electric",
+      "months": [2, 5, 8, 11]
+    }
+  ],
+  "months": [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ]
+}

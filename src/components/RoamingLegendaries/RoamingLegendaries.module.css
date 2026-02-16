@@ -1,0 +1,208 @@
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: linear-gradient(135deg, #0f3d4a 0%, #1a4d5a 100%);
+  border: 2px solid #2a8fa3;
+  border-radius: 12px;
+  padding: 24px 32px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.icon {
+  font-size: 28px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.title {
+  color: #ff4444;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.5px;
+}
+
+.monthLabel {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.monthText {
+  color: #ff4444;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.legendariesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.legendaryItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(42, 143, 163, 0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.legendaryItem:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #2a8fa3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(42, 143, 163, 0.3);
+}
+
+.legendaryImage {
+  width: 100%;
+  max-width: 120px;
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.legendaryNameContainer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.legendaryNameGif {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.calendarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #2a7a8f, #1a5d6f);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  border: 2px solid #2a8fa3;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.calendarButton:hover {
+  background: linear-gradient(135deg, #3a8aaf, #2a6d7f);
+  border-color: #3a9fb3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(42, 143, 163, 0.4);
+}
+
+.calendarButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    padding: 16px 20px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .legendariesGrid {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .legendaryItem {
+    padding: 10px;
+  }
+
+  .legendaryImage {
+    max-width: 100px;
+  }
+
+  .legendaryNameContainer {
+    font-size: 12px;
+  }
+
+  .calendarButton {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+
+  .card {
+    padding: 12px 16px;
+  }
+
+  .header {
+    gap: 8px;
+  }
+
+  .icon {
+    font-size: 24px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .legendariesGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+}

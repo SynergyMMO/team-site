@@ -17,6 +17,7 @@ const DIST = join(__dirname, '..', 'dist');
 const PAGE_KEYWORDS = {
   '/': 'PokeMMO shiny showcase, shiny collection, PokeMMO community, Team Synergy, team shiny hunting, Pokemon collectors',
   '/pokedex': 'PokeMMO Pokédex, Pokédex tracker, Generation 1-5 Pokemon, PokeMMO shiny tracker, Pokemon database, PokeMMO Shiny Locations, PokeMMO Where to Shiny Hunt, PokeMMO Catch Calculator',
+  '/roaming-legendaries': 'PokeMMO roaming legendaries, roaming legendary calendar, Zapdos, Articuno, Moltres, Entei, Suicune, Raikou, PokeMMO legendary spawns, roaming Pokémon locations, legendary monthly schedule, PokeMMO shiny hunting legendaries',
   '/random-pokemon-generator': 'Pokemon randomizer, shiny hunt randomizer, random Pokemon generator, shiny bingo cards, encounter picker, hunt challenge',
   '/counter-generator': 'PokeMMO counter theme, counter theme generator, encounter counter, PokeMMO tools, theme customizer, counter maker',
   '/events': 'PokeMMO events, shiny hunting competition, PokeMMO PVP events, gaming tournament, team events, community challenges',
@@ -56,6 +57,11 @@ const PAGE_FAQS = {
     { question: 'Where can I find shiny hunting locations?', answer: 'Each Pokémon entry includes encounter locations, rare spawn rates, and shiny hunting tips for PokeMMO.' },
     { question: 'What are Pokémon tiers?', answer: 'Tiers in PokeMMO classify Pokémon by rarity and difficulty to obtain. Higher tiers are rarer and more valuable.' },
     { question: 'How is the catch calculator used?', answer: 'The catch calculator estimates encounter rates and time to catch based on PokeMMO mechanics.' },
+  ],
+  '/roaming-legendaries': [
+    { question: 'How do you obtain the roaming legends?', answer: 'Roaming legendaries in PokeMMO appear in different locations each month based on a rotating schedule. Once you encounter a roaming legendary in the wild, you can catch it just like any other wild Pokémon.' },
+    { question: 'How do you unlock the roaming legends?', answer: 'Roaming legendaries are unlocked as soon as you Beat the 8th gym in Kanto, or defeat Ho-oh in Johto, as soon as you do this you can find them in the grass' },
+    { question: 'Can the roaming legends be shiny?', answer: 'Yes! Roaming legendaries can be shiny in PokeMMO, although extremely rare. The Exact shiny rate is not officially disclosed.' },
   ],
   '/streamers': [
     { question: 'Where can I watch Team Synergy streamers?', answer: 'Team Synergy members stream on Twitch and YouTube. Visit our Streamers page for live links.' },
@@ -142,6 +148,7 @@ const STATIC_ROUTES = [
   '/',
   '/shotm',
   '/pokedex',
+  '/roaming-legendaries',
   '/streamers',
   '/trophy-board',
   '/events',
@@ -868,6 +875,11 @@ async function prerender() {
     title: t.route.split('/').pop()
   }));
 
+  const roamingLegendariesLinks = [{
+    href: '/roaming-legendaries/',
+    title: 'Roaming Legendaries Calendar'
+  }];
+
   // Static route OG overrides with CRAWLER LINKS
   const STATIC_META = {
     '/': {
@@ -882,7 +894,13 @@ async function prerender() {
       ogTitle: 'Pokédex Tracker - Shiny & Living Dex | Team Synergy - PokeMMO',
       ogDescription: 'Track Team Synergy\'s complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/pikachu.gif',
-      crawlerLinks: pokemonLinks,
+      crawlerLinks: [...roamingLegendariesLinks, ...pokemonLinks],
+    },
+    '/roaming-legendaries': {
+      route: '/roaming-legendaries',
+      ogTitle: 'Roaming Legendaries Calendar - PokeMMO Zapdos, Articuno, Moltres, Entei, Suicune, Raikou Schedule',
+      ogDescription: 'PokeMMO Roaming Legendaries Calendar showing monthly availability of Zapdos, Moltres, Articuno, Entei, Suicune, and Raikou. Track which roaming legendaries are available each month and plan your shiny hunts.',
+      ogImage: 'https://img.pokemondb.net/sprites/black-white/anim/shiny/suicune.gif',
     },
     '/random-pokemon-generator': {
       route: '/random-pokemon-generator',

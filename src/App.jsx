@@ -15,6 +15,7 @@ const TrophyPage = lazy(() => import('./pages/TrophyPage/TrophyPage'))
 const CounterGenerator = lazy(() => import('./pages/CounterGenerator/CounterGenerator'))
 const RandomPokemon = lazy(() => import('./pages/RandomPokemon/RandomPokemon'))
 const ShinyWar2025 = lazy(() => import('./pages/ShinyWar2025/ShinyWar2025'))
+const RoamingLegendariesCalendar = lazy(() => import('./pages/RoamingLegendaries/RoamingLegendariesCalendar'))
 const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
 const About = lazy(() => import('./pages/About/About'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
@@ -92,6 +93,7 @@ export default function App() {
             <Route path="/trophy/:trophySlug" element={<TrophyPage />} />
             <Route path="/counter-generator" element={<CounterGenerator />} />
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />
+            <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />
             <Route path="/shiny-war-2025" element={<ShinyWar2025 />} />
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<AdminLogin />} />

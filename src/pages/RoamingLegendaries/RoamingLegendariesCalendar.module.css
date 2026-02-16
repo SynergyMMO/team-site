@@ -1,0 +1,282 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background: linear-gradient(180deg, #0a1929 0%, #132f4c 50%, #0a1929 100%);
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.backLinkWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  color: #ffffff;
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0 0 16px 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  color: #b0c4de;
+  font-size: 18px;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+  grid-auto-rows: minmax(380px, auto);
+}
+
+.monthCard {
+  background: linear-gradient(135deg, #1a3a47 0%, #0f2d38 100%);
+  border: 2px solid #2a5a6a;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.monthCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(42, 143, 163, 0.1) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.monthCard:hover {
+  border-color: #2a8fa3;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(42, 143, 163, 0.2),
+              0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.monthCard.currentMonth {
+  border: 3px solid #ff6b6b;
+  background: linear-gradient(135deg, #2a3a47 0%, #1f2d38 100%);
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.3),
+              inset 0 0 20px rgba(255, 107, 107, 0.05);
+}
+
+.monthTitle {
+  color: #ff4444;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 1;
+}
+
+.legendariesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.legendaryEntry {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(42, 143, 163, 0.3);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.legendaryEntry:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #2a8fa3;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(42, 143, 163, 0.2);
+}
+
+.legendaryGif {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  flex-shrink: 0;
+}
+
+.legendaryNameContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.legendaryNameGif {
+  width: 28px;
+  height: 28px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  flex-shrink: 0;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #2a7a8f, #1a5d6f);
+  color: #ffffff;
+  text-decoration: none;
+  border: 2px solid #2a8fa3;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.backLink:hover {
+  background: linear-gradient(135deg, #3a8aaf, #2a6d7f);
+  border-color: #3a9fb3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(42, 143, 163, 0.4);
+}
+
+.backLink:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 1200px) {
+  .calendarGrid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 24px 16px;
+  }
+
+  .title {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+  }
+
+  .header {
+    margin-bottom: 30px;
+  }
+
+  .calendarGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    grid-auto-rows: minmax(340px, auto);
+  }
+
+  .monthCard {
+    padding: 16px;
+  }
+
+  .monthTitle {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .legendariesContainer {
+    gap: 12px;
+  }
+
+  .legendaryEntry {
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .legendaryGif {
+    width: 70px;
+    height: 70px;
+  }
+
+  .legendaryNameContainer {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 16px 12px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .calendarGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    grid-auto-rows: auto;
+  }
+
+  .monthCard {
+    padding: 12px;
+  }
+
+  .monthTitle {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .legendaryEntry {
+    padding: 8px;
+    gap: 10px;
+  }
+
+  .legendaryGif {
+    width: 60px;
+    height: 60px;
+  }
+
+  .legendaryNameContainer {
+    font-size: 12px;
+  }
+
+  .backLink {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}

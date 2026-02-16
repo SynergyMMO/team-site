@@ -4,6 +4,7 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTierData } from '../../hooks/useTierData'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import RoamingLegendaries from '../../components/RoamingLegendaries/RoamingLegendaries'
 import { getAssetUrl } from '../../utils/assets'
 import { normalizePokemonName, onGifError, getBasePokemonName } from '../../utils/pokemon'
 import { API } from '../../api/endpoints'
@@ -26,7 +27,7 @@ export default function Pokedex() {
         "name": "What is the best PokeMMO Pokédex tracker?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Our PokeMMO Pokédex tracker is the most comprehensive resource for PokeMMO players. It includes all 731 Pokémon with PokeMMO-specific encounter locations, tier rarities, and shiny hunting strategies."
+          "text": "Our PokeMMO Pokédex tracker is the most comprehensive resource for PokeMMO players. It includes all 731 Pokémon with PokeMMO-specific encounter locations, tier rarities, Catch Calculator and shiny hunting strategies."
         }
       },
       {
@@ -1094,6 +1095,8 @@ export default function Pokedex() {
         placeholder="Search Pokemon"
         suggestions={searchSuggestions}
       />
+
+      <RoamingLegendaries />
 
       {!(locationSearch.trim() && locationOptions.includes(locationSearch)) && (
         <div style={{ textAlign: 'center', margin: '20px 0' }}>
