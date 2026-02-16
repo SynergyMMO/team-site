@@ -1,0 +1,40 @@
+/**
+ * SEO Hidden Content Classes
+ * Used for hiding content from visual display while keeping it accessible to search engines
+ * for structured data and SEO purposes
+ */
+
+/* Hidden from users but visible to search engines */
+.seo-hidden {
+  display: none;
+  visibility: hidden;
+}
+
+/* Visually hidden with minimal DOM footprint - for screen readers and crawlers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Alternative: fully hidden semantic content for SEO (h1, section, etc.) */
+.seo-semantic-hidden {
+  display: none;
+  visibility: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Hidden navigation for crawlers - display none but still in DOM for HTML parser */
+.crawler-nav {
+  display: none;
+  visibility: hidden;
+}
