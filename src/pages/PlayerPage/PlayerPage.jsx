@@ -63,7 +63,7 @@ export default function PlayerPage() {
   const ogImage =
     (firstFavouriteShiny && getLocalPokemonGif(firstFavouriteShiny.Pokemon)) ||
     (firstNormalShiny && getLocalPokemonGif(firstNormalShiny.Pokemon)) ||
-    'https://synergymmo.com/favicon.png'
+    'https://synergymmo.com/images/openGraph.jpg'
 
   const ogUrl = `https://synergymmo.com/player/${playerName?.toLowerCase()}?v=2`
 

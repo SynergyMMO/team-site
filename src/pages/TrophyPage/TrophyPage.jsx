@@ -19,7 +19,7 @@ export default function TrophyPage() {
   const trophyKey =
     trophySlug && Object.keys(trophies).find(name => slugify(name) === trophySlug.toLowerCase()) || null;
 
-  const trophyImg = trophyKey ? `${DOMAIN}${trophies[trophyKey]}` : `${DOMAIN}/favicon.png`;
+  const trophyImg = trophyKey ? `${DOMAIN}${trophies[trophyKey]}` : `${DOMAIN}/images/openGraph.jpg`;
   const ogUrl = `${DOMAIN}/trophy/${trophySlug || ''}`;
 
   const breadcrumbs = trophyKey ? [

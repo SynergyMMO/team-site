@@ -31,7 +31,7 @@ export default function EventsDetail() {
     "startDate": event.startDate,
     "endDate": event.endDate,
     "url": `https://synergymmo.com/event/${slug}`,
-    "image": event.imageLink || "https://synergymmo.com/favicon.png",
+    "image": event.imageLink || "https://synergymmo.com/images/openGraph.jpg",
     "organizer": {
       "@type": "Organization",
       "name": "Team Synergy",
@@ -46,7 +46,7 @@ export default function EventsDetail() {
     description: event?.description || 'Join Team Synergy events in PokeMMO. Shiny hunting competitions, tournaments, and team challenges.',
     canonicalPath: `/event/${slug}`,
     url: `https://synergymmo.com/event/${slug}`,
-    ogImage: event?.imageLink || 'https://synergymmo.com/favicon.png',
+    ogImage: event?.imageLink || 'https://synergymmo.com/images/openGraph.jpg',
     twitterCard: 'summary_large_image',
     breadcrumbs: breadcrumbs,
     structuredData: eventSchema

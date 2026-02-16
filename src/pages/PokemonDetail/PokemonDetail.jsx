@@ -882,7 +882,7 @@ export default function PokemonDetail() {
         return firstGen[0].url
       }
     }
-    return 'https://synergymmo.com/favicon.png'
+    return 'https://synergymmo.com/images/openGraph.jpg'
   }, [spritesByGeneration])
 
 // Capitalize first letter helper
