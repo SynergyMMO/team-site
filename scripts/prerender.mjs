@@ -34,6 +34,89 @@ const DYNAMIC_KEYWORDS = {
 };
 // ================================================================
 
+// ================== PAGE-SPECIFIC FAQ SCHEMA =====================
+// Add FAQs for each page to help Google understand content better
+// Format: Array of { question, answer } objects - max 30 per page
+const PAGE_FAQS = {
+  '/': [
+    { question: 'What is Team Synergy?', answer: 'Team Synergy is a PokeMMO shiny hunting community dedicated to shiny collection, competitive gameplay, and community events.' },
+    { question: 'How do I join Team Synergy?', answer: 'Visit our About page to learn about requirements and how to apply to join the team.' },
+    { question: 'What is shiny hunting in PokeMMO?', answer: 'Shiny hunting is the practice of catching shiny Pokémon - rare variants with different colors. Team Synergy specializes in shiny collection.' },
+    { question: 'Where can I find Team Synergy streamers?', answer: 'Check our Streamers page for live PokeMMO streams from team members on Twitch and YouTube.' },
+    { question: 'How many shinies has Team Synergy caught?', answer: 'Team Synergy has caught a lot of shinies! Visit the Shiny Showcase for a detailed list.' },
+  ],
+  '/shotm': [
+    { question: 'What is SHOTM?', answer: 'SHOTM stands for Shiny of the Month - a monthly feature highlighting exceptional shiny catches by Team Synergy Members' },
+    { question: 'How is SHOTM chosen?', answer: 'The SHOTM is based on the amount of points each players get, based on the tiers of their shinies, the better the shiny, the more points!' },
+    { question: 'What are the benefits of winning SHOTM?', answer: 'SHOTM winners receive a free art commission, community appreciation, and bragging rights within Team Synergy.' },
+  ],
+  '/pokedex': [
+    { question: 'What is the Team Synergy Pokédex?', answer: 'An interactive database tracking Gen 1-5 Pokémon with detailed stats, shiny forms, catch locations, and PokeMMO-specific information.' },
+    { question: 'Can I filter by Pokémon type?', answer: 'Yes, the Pokédex supports filtering by type, tier, generation, and location for easy searching.' },
+    { question: 'Where can I find shiny hunting locations?', answer: 'Each Pokémon entry includes encounter locations, rare spawn rates, and shiny hunting tips for PokeMMO.' },
+    { question: 'What are Pokémon tiers?', answer: 'Tiers in PokeMMO classify Pokémon by rarity and difficulty to obtain. Higher tiers are rarer and more valuable.' },
+    { question: 'How is the catch calculator used?', answer: 'The catch calculator estimates encounter rates and time to catch based on PokeMMO mechanics.' },
+  ],
+  '/streamers': [
+    { question: 'Where can I watch Team Synergy streamers?', answer: 'Team Synergy members stream on Twitch and YouTube. Visit our Streamers page for live links.' },
+    { question: 'What content do Team Synergy streamers cover?', answer: 'Streamers primarily focus on PokeMMO shiny hunting, PVP battles, competitive events, and community gameplay.' },
+    { question: 'How often do streamers go live?', answer: 'Stream schedules vary by member. Check our Streamers page for current live status and upcoming streams.' },
+    { question: 'Can I interact with streamers?', answer: 'Yes! Most streamers have Twitch chat enabled where you can interact with them during streams.' },
+  ],
+  '/trophy-board': [
+    { question: 'What are Team Synergy trophies?', answer: 'Trophies are achievements earned by team members for accomplishments in PokeMMO such as catching rare shinies or winning competitions.' },
+    { question: 'How do I earn a trophy?', answer: 'Trophies are awarded for reaching milestones, winning events, completing challenges, and exceptional achievements.' },
+    { question: 'How many trophies are available?', answer: 'Team Synergy has 12 unique trophies, each with specific achievement criteria.' },
+    { question: 'Can I see which members have earned each trophy?', answer: 'Yes, click any trophy on the Trophy Board to see a list of all members who have earned it.' },
+  ],
+  '/events': [
+    { question: 'What types of events does Team Synergy host?', answer: 'Team Synergy hosts shiny hunting competitions, PVP tournaments, seasonal challenges, team raids, and community events.' },
+    { question: 'How do I participate in events?', answer: 'Visit the Events page to see upcoming events, their rules, dates, and how to register or participate.' },
+    { question: 'What are the prizes for winning events?', answer: 'Event prizes vary and may include trophies, in-game rewards, and more.' },
+    { question: 'How often are new events scheduled?', answer: 'Team Synergy regularly schedules events. Check the Events page for upcoming competitions and challenges.' },
+    { question: 'Can non-members participate in events?', answer: 'Most events are exclusive to Team Synergy members, but some community events may be open to all.' },
+  ],
+  '/counter-generator': [
+    { question: 'What is a counter theme in PokeMMO?', answer: 'A counter theme is a customized overlay showing Pokémon encounter counters to track shiny hunt progress in-game.' },
+    { question: 'How do I use the Counter Generator?', answer: 'Upload or create Pokémon GIFs, customize sizing, arrange them as desired, then download the theme package.' },
+    { question: 'Can I import existing counter themes?', answer: 'The Counter Generator allows you to create custom themes from scratch or modify templates.' },
+    { question: 'What file format does the Counter Generator export?', answer: 'Themes are exported as downloadable packages compatible with PokeMMO counter mod systems.' },
+    { question: 'Can I share custom themes with others?', answer: 'Yes, exported themes can be easily shared with other PokeMMO players.' },
+  ],
+  '/random-pokemon-generator': [
+    { question: 'What is the Random Pokémon Generator?', answer: 'A tool that randomly selects Pokémon to shiny hunt, designed to help players discover new hunt targets and break monotony.' },
+    { question: 'What is shiny bingo?', answer: 'Shiny bingo is a 3x3, 4x4, or 5x5 grid game where you mark off Pokémon as you catch them, aiming for bingo patterns.' },
+    { question: 'Can I filter random Pokémon by tier?', answer: 'Yes, you can restrict random selection to specific tiers (easy, medium, hard, etc.).' },
+    { question: 'How do I start a new bingo board?', answer: 'Click "Generate Bingo Board" and select your preferred grid size and difficulty level.' },
+    { question: 'What happens when I complete a pattern?', answer: 'Completing a bingo pattern marks your achievement and you can generate a new board or challenge.' },
+  ],
+  '/about': [
+    { question: 'What is Team Synergy?', answer: 'Team Synergy is a PokeMMO community dedicated to shiny hunting, competitive gameplay, and fostering a welcoming gaming environment.' },
+    { question: 'When was Team Synergy founded?', answer: 'Team Synergy was founded as a collective effort to build a strong PokeMMO community of shiny hunters.' },
+    { question: 'How many members does Team Synergy have?', answer: 'Team Synergy has 140+ active members with diverse skills and hunting preferences.' },
+    { question: 'How do I apply to join Team Synergy?', answer: 'Visit the About page for detailed membership requirements, application process, and contact information.' },
+    { question: 'What are the team values?', answer: 'Team Synergy values community, cooperation, skill development, and inclusive gaming for all members.' },
+  ],
+};
+
+// FAQs for dynamic pages (use {placeholder} for dynamic values)
+const DYNAMIC_FAQS = {
+  pokemon: [
+    { question: 'Is {pokemon} a shiny in PokeMMO?', answer: 'Yes, {pokemon} has a shiny variant available in PokeMMO with a different color palette.' },
+    { question: 'What is the best location to hunt {pokemon}?', answer: 'See the location details on the {pokemon} page for recommended spawn locations and encounter rates.' },
+    { question: 'What abilities does {pokemon} have?', answer: 'Check the abilities section on the {pokemon} page to see all available ability options.' },
+    { question: 'What tier is {pokemon} in?', answer: 'The tier rank for {pokemon} is listed on the Pokédex page and reflects its rarity and hunt difficulty.' },
+    { question: 'What is the best way to catch {pokemon}?', answer: 'Visit the Pokemon Specific Page to see the PokeMMO Catch Calculator for the most efficient way to catch them' },
+  ],
+  event: [
+    { question: 'When does the {event} event start?', answer: 'Event dates and times are shown on the event details page. Check start and end dates carefully.' },
+    { question: 'How do I register for {event}?', answer: 'Registration instructions for {event} are displayed on the event details page.' },
+    { question: 'What are the rules for {event}?', answer: 'Complete rules and competition guidelines for {event} are available on the event page.' },
+    { question: 'What are the prizes for {event}?', answer: 'Prize information for {event} including rewards and trophies is detailed on the event page.' },
+  ],
+};
+// ================================================================
+
 // ---------------- STATIC ROUTES ----------------
 const STATIC_ROUTES = [
   '/',
@@ -285,7 +368,110 @@ function generateBreadcrumbSchema(routePath, routeName) {
     "itemListElement": itemListElements
   };
 }
-// ---- END SCHEMA FUNCTIONS ----
+
+// ---- ORGANIZATION SCHEMA ----
+function generateOrganizationSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Team Synergy",
+    "url": "https://synergymmo.com",
+    "logo": "https://synergymmo.com/favicon.png",
+    "description": "A PokeMMO shiny hunting community dedicated to shiny collection, PVP competition, and gaming events.",
+    "sameAs": [
+      "https://www.youtube.com/@ohypers",
+      "https://discord.com/invite/2BEUq6fWAj"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "",
+      "contactType": "Community Support"
+    }
+  };
+}
+
+// ---- EVENT SCHEMA ----
+function generateEventSchema(eventTitle, eventDescription) {
+  const startDate = new Date();
+  const endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+  
+  return {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": eventTitle,
+    "description": eventDescription,
+    "startDate": startDate.toISOString().split('T')[0],
+    "endDate": endDate.toISOString().split('T')[0],
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+    "organizer": {
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    }
+  };
+}
+
+// ---- TROPHY SCHEMA ----
+function generateTrophySchema(trophyName) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Award",
+    "name": trophyName,
+    "description": `${trophyName} achievement earned by Team Synergy members in PokeMMO`,
+    "awardedBy": {
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    }
+  };
+}
+
+// ---- FAQ SCHEMA ----
+function generateFaqSchema(faqs) {
+  if (!faqs || faqs.length === 0) return null;
+  
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  };
+}
+
+// ---- GET FAQs FOR ROUTE ----
+function getFaqsForRoute(route) {
+  // Check for static route FAQs first
+  if (PAGE_FAQS[route]) {
+    return PAGE_FAQS[route];
+  }
+  
+  // Check for dynamic route patterns and extract the name
+  if (route?.includes('/pokemon/')) {
+    const pokemonName = route.split('/pokemon/')[1];
+    // Replace {pokemon} placeholder in dynamic FAQs
+    return DYNAMIC_FAQS.pokemon.map(faq => ({
+      question: faq.question.replace(/{pokemon}/g, pokemonName),
+      answer: faq.answer.replace(/{pokemon}/g, pokemonName)
+    }));
+  }
+  if (route?.includes('/event/')) {
+    const eventName = route.split('/event/')[1];
+    // Replace {event} placeholder in dynamic FAQs
+    return DYNAMIC_FAQS.event.map(faq => ({
+      question: faq.question.replace(/{event}/g, eventName),
+      answer: faq.answer.replace(/{event}/g, eventName)
+    }));
+  }
+  
+  return null;
+}
+// ---- END FAQ FUNCTIONS ----
 
 // ---- UTILITY: SANITIZE FUNCTION ----
 function sanitizePokemonName(name) {
@@ -299,18 +485,69 @@ function sanitizePokemonName(name) {
     .replace(/[♂]/g, 'm');
 }
 
-// ---- CRAWLER-FRIENDLY NAVIGATION ----
-function generateCrawlerNav(links, label) {
+// ---- CRAWLER-FRIENDLY NAVIGATION WITH INTERNAL LINKING ----
+// This creates hidden navigation links for search engines to discover related content
+function generateCrawlerNav(links, label, routePath = '') {
   if (!links || links.length === 0) return '';
+  
+  // Add strategic internal links based on route type
+  let additionalLinks = [];
+  
+  // Link to main pages from everywhere
+  const mainPageLinks = [
+    { href: '/', title: 'Home' },
+    { href: '/pokedex/', title: 'Pokédex' },
+    { href: '/trophy-board/', title: 'Trophy Board' },
+    { href: '/events/', title: 'Events' },
+    { href: '/streamers/', title: 'Streamers' },
+  ];
+  
+  // Link to home and related categories from detail pages
+  if (routePath?.includes('/pokemon/')) {
+    additionalLinks = [
+      { href: '/pokedex/', title: 'PokeMMO Pokédex' },
+      { href: '/random-pokemon-generator/', title: 'Pokemon Randomizer' },
+      { href: '/counter-generator/', title: 'Counter Theme' },
+    ];
+  } else if (routePath?.includes('/player/')) {
+    additionalLinks = [
+      { href: '/trophy-board/', title: 'Trophy Board' },
+      { href: '/', title: 'Shiny Showcase' },
+      { href: '/streamers/', title: 'Streamers' },
+    ];
+  } else if (routePath?.includes('/trophy/')) {
+    additionalLinks = [
+      { href: '/trophy-board/', title: 'All Trophies' },
+      { href: '/', title: 'Team Members' },
+    ];
+  } else if (routePath?.includes('/event/')) {
+    additionalLinks = [
+      { href: '/events/', title: 'All Events' },
+      { href: '/streamers/', title: 'Team Streamers' },
+    ];
+  }
+  
+  // Combine primary links with additional contextual links
+  const allLinks = [...mainPageLinks, ...additionalLinks, ...links];
+  
+  // Deduplicate by href
+  const uniqueLinks = [];
+  const seen = new Set();
+  for (const link of allLinks) {
+    if (!seen.has(link.href)) {
+      seen.add(link.href);
+      uniqueLinks.push(link);
+    }
+  }
   
   // Create hidden nav for crawlers - display none but still in DOM for HTML parser
   return `
   <!-- Crawler-friendly navigation for SEO discovery (hidden from users, visible to search engines) -->
   <nav style="display: none; visibility: hidden;" aria-hidden="true" role="navigation">
-    ${links.map(link => `<a href="${link.href}" title="${link.title}"></a>`).join('\n    ')}
+    ${uniqueLinks.map(link => `<a href="${link.href}" title="${link.title}"></a>`).join('\n    ')}
   </nav>`;
 }
-// ---- END CRAWLER NAV ----
+// ---- END CRAWLER NAV WITH INTERNAL LINKING ----
 
 // ---- GET KEYWORDS FOR ROUTE ----
 function getKeywordsForRoute(route) {
@@ -402,17 +639,65 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
     html = html.replace(/<\/head>/, `  <link rel="alternate" hreflang="en" href="${url}">\n</head>`);
   }
 
+  // ---- ADD HIDDEN H1 FOR SEO CRAWLERS ----
+  // This H1 is hidden from users but visible to search engines for keyword relevance
+  let h1Title = meta.ogTitle?.split('|')[0]?.trim() || 'Team Synergy';
+  const h1Html = `<h1 style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;">${h1Title}</h1>`;
+  html = html.replace(/<body[^>]*>/, `<body>\n  ${h1Html}`);
+
+  // ---- ADD IMAGE ALT TEXT (via meta tag for crawler reference) ----
+  // Primary image alt text
+  if (meta.ogImage && !html.includes('meta name="image:alt"')) {
+    const imageAlt = h1Title || 'Team Synergy PokeMMO';
+    html = html.replace(/<\/head>/, `  <meta property="twitter:image:alt" content="${imageAlt}">\n</head>`);
+  }
+
   // Add structured data based on route type
+  let schemaScripts = [];
   let schemaScript = '';
   
+  // ---- ORGANIZATION SCHEMA (Homepage only) ----
+  if (meta.route === '/') {
+    const orgSchema = generateOrganizationSchema();
+    schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(orgSchema, null, 2)}\n</script>`);
+  }
+  
+  // ---- PLAYER SCHEMA ----
   if (meta.route?.includes('/player/')) {
     const playerName = meta.route.split('/').pop();
     const personSchema = generatePersonSchema(decodeURIComponent(playerName));
     schemaScript = `<script type="application/ld+json">\n${JSON.stringify(personSchema, null, 2)}\n</script>`;
-  } else if (meta.route?.includes('/pokemon/')) {
+  } 
+  // ---- POKEMON SCHEMA ----
+  else if (meta.route?.includes('/pokemon/')) {
     const pokemonName = meta.route.split('/').pop();
     const pokemonSchema = generatePokemonSchema(pokemonName, pokemonName);
     schemaScript = `<script type="application/ld+json">\n${JSON.stringify(pokemonSchema, null, 2)}\n</script>`;
+  }
+  // ---- EVENT SCHEMA ----
+  else if (meta.route?.includes('/event/')) {
+    const eventName = meta.route.split('/').pop();
+    const eventSchema = generateEventSchema(meta.ogTitle, meta.ogDescription);
+    schemaScript = `<script type="application/ld+json">\n${JSON.stringify(eventSchema, null, 2)}\n</script>`;
+  }
+  // ---- TROPHY SCHEMA ----
+  else if (meta.route?.includes('/trophy/')) {
+    const trophyName = meta.route.split('/').pop();
+    const trophySchema = generateTrophySchema(trophyName);
+    schemaScript = `<script type="application/ld+json">\n${JSON.stringify(trophySchema, null, 2)}\n</script>`;
+  }
+  
+  if (schemaScript) {
+    schemaScripts.push(schemaScript);
+  }
+
+  // ---- FAQ SCHEMA (for all pages that have FAQs) ----
+  const faqs = getFaqsForRoute(meta.route);
+  if (faqs && faqs.length > 0) {
+    const faqSchema = generateFaqSchema(faqs);
+    if (faqSchema) {
+      schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(faqSchema, null, 2)}\n</script>`);
+    }
   }
 
   // Add breadcrumb schema for all pages
@@ -420,16 +705,15 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   const routeName = meta.ogTitle?.split('|')[0]?.trim() || 'Page';
   const breadcrumbSchema = generateBreadcrumbSchema(routePath, routeName);
   const breadcrumbScript = `<script type="application/ld+json">\n${JSON.stringify(breadcrumbSchema, null, 2)}\n</script>`;
+  schemaScripts.push(breadcrumbScript);
 
   // Inject all schema tags before closing body
-  if (schemaScript) {
-    html = html.replace(/<\/body>/, `  ${schemaScript}\n</body>`);
-  }
-  html = html.replace(/<\/body>/, `  ${breadcrumbScript}\n</body>`);
+  const allSchemaScripts = schemaScripts.join('\n  ');
+  html = html.replace(/<\/body>/, `  ${allSchemaScripts}\n</body>`);
 
   // Inject crawler-friendly navigation if provided
   if (meta.crawlerLinks) {
-    const navHtml = generateCrawlerNav(meta.crawlerLinks, meta.route || 'Navigation');
+    const navHtml = generateCrawlerNav(meta.crawlerLinks, meta.route || 'Navigation', meta.route);
     html = html.replace(/<\/body>/, `${navHtml}\n</body>`);
   }
 
