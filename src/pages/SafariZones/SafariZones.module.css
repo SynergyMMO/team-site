@@ -497,6 +497,27 @@
   min-width: 140px;
   flex: 1;
   max-width: 200px;
+  transition: all 0.2s ease;
+}
+
+.rotationCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(100, 60, 180, 0.2);
+}
+
+.rotationCard.rotationCarnivine:hover {
+  border-color: rgba(80, 180, 80, 0.9);
+  box-shadow: 0 4px 16px rgba(80, 180, 80, 0.25);
+}
+
+.rotationCard.rotationSkorupi:hover {
+  border-color: rgba(150, 100, 210, 0.9);
+  box-shadow: 0 4px 16px rgba(150, 100, 210, 0.25);
+}
+
+.rotationCard.rotationCroagunk:hover {
+  border-color: rgba(70, 140, 230, 0.9);
+  box-shadow: 0 4px 16px rgba(70, 140, 230, 0.25);
 }
 
 .rotationCard.rotationCarnivine {
