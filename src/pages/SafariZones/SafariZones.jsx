@@ -122,25 +122,42 @@ function normalizeStrategy(strategy) {
 }
 
 function getEncounterClass(type) {
-  if (type === 'day') return styles.encounterDay
-  if (type === 'night') return styles.encounterNight
-  if (type === 'rotation') return styles.encounterRotation
-  if (type === 'water') return styles.encounterWater
-  return styles.encounterStandard
+  if (!type) return styles.encounterStandard;
+  const t = String(type).toLowerCase();
+  if (t === 'day') return styles.encounterDay;
+  if (t === 'night') return styles.encounterNight;
+  if (t === 'rotation') return styles.encounterRotationalImportant;
+  if (t === 'water') return styles.encounterWater;
+  return styles.encounterStandard;
 }
 
 function PokemonCard({ name, encounterType, catchData }) {
-  const data = catchData?.[name]
-  const showStrategy = data && (data.bestStrategy === 'oneBait' || data.bestStrategy === 'oneMud')
-  
+  const data = catchData?.[name];
+  const showStrategy = data && (data.bestStrategy === 'oneBait' || data.bestStrategy === 'oneMud');
+
   function getStrategyClass(strategy) {
-    if (strategy === 'oneMud') return styles.strategyOneMud
-    if (strategy === 'oneBait') return styles.strategyOneBait
-    return ''
+    if (strategy === 'oneMud') return styles.strategyOneMud;
+    if (strategy === 'oneBait') return styles.strategyOneBait;
+    return '';
   }
-  
+
+  // Add extra class for Rotational/Rotation (case-insensitive)
+  function isRotationType(type) {
+    if (!type) return false;
+    const t = String(type).toLowerCase();
+    return t === 'rotation' || t === 'rotational';
+  }
+  const isRotational = isRotationType(encounterType);
+  let cardClass = styles.pokemonCard;
+  if (isRotational) {
+    if (styles.rotationalImportantCard) {
+      cardClass += ' ' + styles.rotationalImportantCard;
+    }
+    cardClass += ' ' + styles.rotationMon;  
+  }
+
   return (
-    <Link to={`/pokemon/${normalizePokemonName(name)}`} className={styles.pokemonCard}>
+    <Link to={`/pokemon/${normalizePokemonName(name)}`} className={cardClass}>
       <img
         src={getLocalPokemonGif(name)}
         alt={name}
@@ -158,9 +175,11 @@ function PokemonCard({ name, encounterType, catchData }) {
         </span>
       )}
       <span className={`${styles.encounterBadge} ${getEncounterClass(encounterType)}`}>{ENCOUNTER_LABELS[encounterType] || encounterType}</span>
-    </Link>
-  )
+
+      </Link>
+    );
 }
+
 
 function CatchDataTable({ catchData }) {
   const [sortKey, setSortKey] = useState('bestOdds')
@@ -293,12 +312,48 @@ function RegionContent({ region }) {
 
   const area = data.areas[selectedArea]
 
+  // Move rotation/rotational Pokemon to the top (case-insensitive)
+  function isRotationType(type) {
+    if (!type) return false;
+    const t = String(type).toLowerCase();
+    console.log(t);
+    return t === 'rotation'
+  }
+  const sortedPokemon = [...area.pokemon].sort((a, b) => {
+    const aRot = isRotationType(a.encounterType) ? 1 : 0;
+    const bRot = isRotationType(b.encounterType) ? 1 : 0;
+    return bRot - aRot;
+  });
+
+
   return (
     <div className={styles.regionContent}>
       <p className={styles.regionGame}>{data.game}</p>
       <p className={styles.regionDescription}>{data.description}</p>
 
       <InGameClock region={region} />
+
+      {/* Show Hoenn area map image only for Hoenn region */}
+      {region === 'hoenn' && (
+        <div style={{ textAlign: 'center', margin: '1.5rem 0' }}>
+          <img
+            src={getAssetUrl('images/hoennareas.png')}
+            alt="Hoenn Safari Zone Areas Map"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+          />
+        </div>
+      )}
+
+      {/* Show Sinnoh area map image only for Sinnoh region */}
+      {region === 'sinnoh' && (
+        <div style={{ textAlign: 'center', margin: '1.5rem 0' }}>
+          <img
+            src={getAssetUrl('images/sinnohareas.png')}
+            alt="Sinnoh Safari Zone Areas Map"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+          />
+        </div>
+      )}
 
       <div className={styles.areaSelector}>
         {data.areas.map((a, i) => (
@@ -320,7 +375,7 @@ function RegionContent({ region }) {
       {data.rotationSchedule && <RotationSchedule schedule={data.rotationSchedule} currentDay={getInGameState().day} />}
 
       <div className={styles.pokemonGrid}>
-        {area.pokemon.map(p => (
+        {sortedPokemon.map(p => (
           <PokemonCard
             key={p.name}
             name={p.name}

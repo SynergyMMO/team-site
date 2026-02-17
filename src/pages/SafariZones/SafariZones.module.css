@@ -648,7 +648,19 @@
     height: 48px;
   }
 }
+.rotationMon {
+  border: 2px solid #ffde59; /* bright yellow border to grab attention */
+  background: rgba(255, 222, 89, 0.15); /* subtle yellow glow */
+  box-shadow: 0 4px 20px rgba(255, 222, 89, 0.4); /* glowing effect */
+  transform: translateY(-4px); /* slightly lifted */
+  transition: all 0.3s ease;
+}
 
+.rotationMon:hover {
+  border-color: #ffd633; /* even brighter on hover */
+  box-shadow: 0 6px 24px rgba(255, 222, 89, 0.6);
+  transform: translateY(-6px) scale(1.05); /* pop effect on hover */
+}
 @media (max-width: 480px) {
   .pokemonGrid {
     grid-template-columns: repeat(3, 1fr);
