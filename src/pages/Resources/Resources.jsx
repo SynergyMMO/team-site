@@ -313,8 +313,7 @@ export default function Resources() {
         Discover guides, tools, and community links to enhance your PokeMMO experience.
       </p>
 
-        <h4 className={styles.intro}>If you are creddited in this and would like for your guide to be removed, please contact ohypers on discord</h4>
-        <h4 className={styles.intro}>If you have a useful guide or tool that you would like to be added, please dm</h4>
+        <h4 className={styles.intro}>If you are creddited in this and would like for your guide to be removed or you have a useful guide or tool that you would like to be added please contact ohypers on discord</h4>
 
       {/* Index/Table of Contents */}
       <div className={styles.indexContainer}>
