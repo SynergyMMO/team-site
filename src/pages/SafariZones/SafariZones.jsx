@@ -127,7 +127,7 @@ function getEncounterClass(type) {
   const t = String(type).toLowerCase();
   if (t === 'day') return styles.encounterDay;
   if (t === 'night') return styles.encounterNight;
-  if (t === 'rotation') return styles.encounterRotationalImportant;
+  if (t === 'rotation') return styles.encounterRotation;
   if (t === 'water') return styles.encounterWater;
   if (t === 'lure') return styles.encounterLure;
   return styles.encounterStandard;
