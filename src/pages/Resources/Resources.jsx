@@ -100,13 +100,13 @@ export default function Resources() {
     ]
     
     if (activeCategory) {
-      crumbs.push({ name: activeCategory, url: `/resources/${toSlug(activeCategory)}` })
+      crumbs.push({ name: activeCategory, url: `/resources/${toSlug(activeCategory)}/` })
     }
     if (activeSubcategory) {
-      crumbs.push({ name: activeSubcategory, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}` })
+      crumbs.push({ name: activeSubcategory, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}/` })
     }
     if (activeNestedTab) {
-      crumbs.push({ name: activeNestedTab, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}/${toSlug(activeNestedTab)}` })
+      crumbs.push({ name: activeNestedTab, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}/${toSlug(activeNestedTab)}/` })
     }
     
     return crumbs
@@ -115,6 +115,11 @@ export default function Resources() {
   // Determine which metadata to use for the page head
   const seoMeta = nestedMeta || subcategoryMeta || categoryMeta || {}
   let currentCanonicalPath = `/resources${activeCategory ? `/${toSlug(activeCategory)}` : ''}${activeSubcategory ? `/${toSlug(activeSubcategory)}` : ''}${activeNestedTab ? `/${toSlug(activeNestedTab)}` : ''}`;
+  // Only add trailing slash for root /resources/ page
+  if (!activeCategory && !activeSubcategory && !activeNestedTab) {
+    currentCanonicalPath += '/';
+  }
+
   useDocumentHead({
     title: seoMeta.title || 'Team Synergy Resources',
     description: seoMeta.description || 'Explore Team Synergy\'s comprehensive PokeMMO resources. Find guides, tools, calculators, community links, and expert tips.',
@@ -130,25 +135,26 @@ export default function Resources() {
   const isFlatCategory = currentCategory && currentCategory._items && Array.isArray(currentCategory._items) && !Object.keys(currentCategory).some(k => !k.startsWith('_') && k !== '_items')
   const subcategories = !isFlatCategory && activeCategory ? Object.keys(currentCategory || {}).filter(key => !key.startsWith('_')) : []
 
-useEffect(() => {
-  let newPath = '/resources'
-
-  if (activeCategory) {
-    newPath += `/${toSlug(activeCategory)}`
-  }
-  if (activeSubcategory) {
-    newPath += `/${toSlug(activeSubcategory)}`
-  }
-  if (activeNestedTab) {
-    newPath += `/${toSlug(activeNestedTab)}`
-  }
-
-  const currentPath = window.location.pathname
-  if (currentPath !== newPath) {
-    navigate(newPath, { replace: true })
-  }
-}, [activeCategory, activeSubcategory, activeNestedTab, navigate])
-
+  // Update URL when tab changes
+  useEffect(() => {
+    let newPath = '/resources/'
+    
+    if (activeCategory) {
+      newPath += `${toSlug(activeCategory)}/`
+    }
+    if (activeSubcategory) {
+      newPath += `${toSlug(activeSubcategory)}/`
+    }
+    if (activeNestedTab) {
+      newPath += `${toSlug(activeNestedTab)}/`
+    }
+    
+    // Only navigate if necessary
+    const currentPath = window.location.pathname
+    if (currentPath !== newPath) {
+      navigate(newPath, { replace: true })
+    }
+  }, [activeCategory, activeSubcategory, activeNestedTab, navigate])
 
   // Set initial subcategory when category changes
   useEffect(() => {
@@ -257,6 +263,24 @@ useEffect(() => {
     })
   }
 
+  // Toggle index category expansion
+  const toggleIndexCategory = (categoryKey) => {
+    setExpandedIndexCategories(prev => ({
+      ...prev,
+      [categoryKey]: !prev[categoryKey]
+    }))
+  }
+
+  // Navigate to a resource section
+  const navigateToResource = (catSlug, subcatSlug = null, nestedSlug = null) => {
+    let path = `/resources/${catSlug}/`
+    if (subcatSlug) path += `${subcatSlug}/`
+    if (nestedSlug) path += `${nestedSlug}/`
+    navigate(path)
+    setShowIndex(false)
+  }
+
+  // Filter items by selected tags (if any)
   const filterItemsByTags = (items) => {
     if (!selectedTags.length) return items
     return items.filter(item => {
@@ -323,7 +347,7 @@ useEffect(() => {
                         setActiveCategory(categoryKey)
                         setActiveSubcategory(null)
                         setActiveNestedTab(null)
-                          navigate(`/resources/${toSlug(categoryKey)}`)
+                        navigate(`/resources/${toSlug(categoryKey)}/`)
                         setShowIndex(false)
                       }}
                     >
@@ -346,7 +370,7 @@ useEffect(() => {
                                   setActiveCategory(categoryKey)
                                   setActiveSubcategory(subcategoryKey)
                                   setActiveNestedTab(null)
-                                    navigate(`/resources/${toSlug(categoryKey)}/${toSlug(subcategoryKey)}`)
+                                  navigate(`/resources/${toSlug(categoryKey)}/${toSlug(subcategoryKey)}/`)
                                   setShowIndex(false)
                                 }}
                               >
@@ -363,7 +387,7 @@ useEffect(() => {
                                       setActiveCategory(categoryKey)
                                       setActiveSubcategory(subcategoryKey)
                                       setActiveNestedTab(nestedKey)
-                                        navigate(`/resources/${toSlug(categoryKey)}/${toSlug(subcategoryKey)}/${toSlug(nestedKey)}`)
+                                      navigate(`/resources/${toSlug(categoryKey)}/${toSlug(subcategoryKey)}/${toSlug(nestedKey)}/`)
                                       setShowIndex(false)
                                     }}
                                   >
