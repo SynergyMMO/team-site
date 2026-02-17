@@ -397,6 +397,13 @@
   text-align: center;
 }
 
+.thanks {
+  color: #c4b5e0;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
 .searchInput {
   display: block;
   width: 100%;
@@ -523,7 +530,7 @@
 
 .rotationNote {
   text-align: center;
-  color: #888;
+  color: #ffffff;
   font-size: 0.85rem;
   margin-bottom: 12px;
 }

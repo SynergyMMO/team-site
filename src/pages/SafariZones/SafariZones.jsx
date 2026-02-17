@@ -405,6 +405,8 @@ function RegionContent({ region }) {
         ))}
       </div>
 
+      <h3 className={styles.thanks}>Thanks to Immo for helping with the spawn pools</h3>
+
       <CatchDataTable catchData={data.catchData} />
     </div>
   )
