@@ -129,19 +129,19 @@ export default function Home() {
           <Link to="/trophy-board" className={styles.featureCard}>
             <div className={styles.featureIcon}>🏆</div>
             <h3>Trophy Board</h3>
-            <p>View achievements and milestones from our community</p>
+            <p>View achievements and milestones from Team Synergy</p>
           </Link>
 
           <Link to="/events" className={styles.featureCard}>
             <div className={styles.featureIcon}>🎯</div>
             <h3>Events</h3>
-            <p>Join exciting community events and competitions</p>
+            <p>Join community events and competitions</p>
           </Link>
 
           <Link to="/roaming-legendaries" className={styles.featureCard}>
             <div className={styles.featureIcon}>🌍</div>
             <h3>Roaming Legendaries</h3>
-            <p>Track roaming legendary Pokémon locations and schedules</p>
+            <p>Track roaming legendary schedules</p>
           </Link>
         </div>
       </section>
@@ -175,6 +175,14 @@ export default function Home() {
       <section className={styles.changelogSection}>
         <h2>Changelog</h2>
         <div className={styles.changelog}>
+            <div className={styles.changelogEntry}>
+            <h3>February 17, 2026</h3>
+            <ul>
+              <li><strong>Safari Zone</strong> - Added page for detailed Safari Zone Information for all 4 regions *Mitchell*</li>
+              <li>Removed About Page and merged into new Home/Index screen</li>
+              <li>Merged relative tabs to clear tab space</li>
+            </ul>
+          </div>
           <div className={styles.changelogEntry}>
             <h3>February 14, 2026</h3>
             <ul>
