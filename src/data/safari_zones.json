@@ -3184,5 +3184,105 @@
       }
     ]
   },
-  "hoenn": null
+  "hoenn": {
+    "name": "Hoenn Safari Zone",
+    "game": "Ruby / Sapphire / Emerald",
+    "description": "The Hoenn Safari Zone is located in the northeast area of Hoenn. It features 6 unique areas with different Pokemon accessible through various methods including grass encounters, surfing, and fishing. The catch / flee rates for Hoenn are not published, so exact numbers are not available.",
+    "areas": [
+      {
+        "name": "Area 1",
+        "pokemon": [
+          {"name": "Oddish", "encounterType": "grass"},
+          {"name": "Kakuna", "encounterType": "grass"},
+          {"name": "Girafarig", "encounterType": "grass"},
+          {"name": "Wobbuffet", "encounterType": "grass"},
+          {"name": "Doduo", "encounterType": "grass"},
+          {"name": "Natu", "encounterType": "grass"},
+          {"name": "Pikachu", "encounterType": "grass"},
+          {"name": "Gloom", "encounterType": "grass"},
+          {"name": "Castform", "encounterType": "grass"}
+        ]
+      },
+      {
+        "name": "Area 2",
+        "pokemon": [
+          {"name": "Oddish", "encounterType": "grass"},
+          {"name": "Girafarig", "encounterType": "grass"},
+          {"name": "Wobbuffet", "encounterType": "grass"},
+          {"name": "Doduo", "encounterType": "grass"},
+          {"name": "Natu", "encounterType": "grass"},
+          {"name": "Pikachu", "encounterType": "grass"},
+          {"name": "Gloom", "encounterType": "grass"},
+          {"name": "Psyduck", "encounterType": "water"},
+          {"name": "Magikarp", "encounterType": "water"},
+          {"name": "Goldeen", "encounterType": "water"},
+          {"name": "Seaking", "encounterType": "water"}
+        ]
+      },
+      {
+        "name": "Area 3",
+        "pokemon": [
+          {"name": "Oddish", "encounterType": "grass"},
+          {"name": "Rhyhorn", "encounterType": "grass"},
+          {"name": "Doduo", "encounterType": "grass"},
+          {"name": "Gloom", "encounterType": "grass"},
+          {"name": "Pinsir", "encounterType": "grass"},
+          {"name": "Dodrio", "encounterType": "grass"},
+          {"name": "Psyduck", "encounterType": "water"},
+          {"name": "Golduck", "encounterType": "water"},
+          {"name": "Magikarp", "encounterType": "water"},
+          {"name": "Goldeen", "encounterType": "water"},
+          {"name": "Seaking", "encounterType": "water"}
+        ]
+      },
+      {
+        "name": "Area 4",
+        "pokemon": [
+          {"name": "Geodude", "encounterType": "grass"},
+          {"name": "Phanpy", "encounterType": "grass"},
+          {"name": "Donphan", "encounterType": "grass"},
+          {"name": "Oddish", "encounterType": "grass"},
+          {"name": "Gloom", "encounterType": "grass"},
+          {"name": "Natu", "encounterType": "grass"},
+          {"name": "Heracross", "encounterType": "grass"},
+          {"name": "Xatu", "encounterType": "grass"}
+        ]
+      },
+      {
+        "name": "Area 5",
+        "pokemon": [
+          {"name": "Mareep", "encounterType": "grass"},
+          {"name": "Sunkern", "encounterType": "grass"},
+          {"name": "Spinarak", "encounterType": "grass"},
+          {"name": "Aipom", "encounterType": "grass"},
+          {"name": "Hoothoot", "encounterType": "grass"},
+          {"name": "Snubbull", "encounterType": "grass"},
+          {"name": "Gligar", "encounterType": "grass"},
+          {"name": "Stantler", "encounterType": "grass"},
+          {"name": "Wooper", "encounterType": "water"},
+          {"name": "Marill", "encounterType": "water"},
+          {"name": "Quagsire", "encounterType": "water"},
+          {"name": "Magikarp", "encounterType": "water"},
+          {"name": "Goldeen", "encounterType": "water"},
+          {"name": "Remoraid", "encounterType": "water"},
+          {"name": "Octillery", "encounterType": "water"}
+        ]
+      },
+      {
+        "name": "Area 6",
+        "pokemon": [
+          {"name": "Shuckle", "encounterType": "grass"},
+          {"name": "Aipom", "encounterType": "grass"},
+          {"name": "Teddiursa", "encounterType": "grass"},
+          {"name": "Sunkern", "encounterType": "grass"},
+          {"name": "Ledyba", "encounterType": "grass"},
+          {"name": "Houndour", "encounterType": "grass"},
+          {"name": "Miltank", "encounterType": "grass"},
+          {"name": "Hoothoot", "encounterType": "grass"},
+          {"name": "Pineco", "encounterType": "grass"}
+        ]
+      }
+    ],
+    "catchData": {}
+  }
 }
