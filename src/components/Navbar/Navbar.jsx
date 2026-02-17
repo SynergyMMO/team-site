@@ -24,8 +24,8 @@ const NAV_ITEMS = [
       { to: '/counter-generator/', label: 'Counter Generator' },
       { to: '/random-pokemon-generator/', label: 'Random Pokemon Generator' },
     ]
-  }
-  //{ to: '/resources/', label: 'Resources' },
+  },
+  { to: '/resources/', label: 'Resources' },
 ]
 
 

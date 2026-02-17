@@ -99,6 +99,9 @@ export default function App() {
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />
             <Route path="/safari-zones" element={<SafariZones />} />
             <Route path="/resources" element={<Resources />} />
+            <Route path="/resources/:category" element={<Resources />} />
+            <Route path="/resources/:category/:subcategory" element={<Resources />} />
+            <Route path="/resources/:category/:subcategory/:nested" element={<Resources />} />
             <Route path="/shiny-war-2025" element={<ShinyWar2025 />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/panel" element={<AdminPanel />} />

@@ -1,39 +1,118 @@
 import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import resourcesData from '../../data/resources.json'
 import styles from './Resources.module.css'
 
-export default function Resources() {
-  const breadcrumbs = [
-    { name: 'Home', url: '/' },
-    { name: 'Resources', url: '/resources' }
-  ];
+// Utility function to convert text to URL slug
+const toSlug = (text) => {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]/g, '')
+}
 
-  useDocumentHead({
-    title: 'PokeMMO Resources - Guides, Tools & Community Links | Team Synergy',
-    description: 'Explore Team Synergy\'s comprehensive PokeMMO resources. Find guides, tools, calculators, community links, and expert tips for shiny hunting, PVP training, and competitive gameplay.',
-    canonicalPath: '/resources',
-    breadcrumbs: breadcrumbs
-  })
+// Utility function to find key by slug
+const findKeyBySlug = (obj, slug) => {
+  if (!obj) return null
+  return Object.keys(obj).find(key => toSlug(key) === slug)
+}
+
+export default function Resources() {
+  const navigate = useNavigate()
+  const { category: urlCategory, subcategory: urlSubcategory, nested: urlNested } = useParams()
+  
+  // Get initial values from URL params and find actual keys
+  const defaultCategory = Object.keys(resourcesData)[0]
+  const actualCategory = urlCategory ? findKeyBySlug(resourcesData, urlCategory) : defaultCategory
+  
+  const categoryData = resourcesData[actualCategory]
+  const actualSubcategory = urlSubcategory ? findKeyBySlug(categoryData, urlSubcategory) : null
+  
+  const subcategoryData = actualCategory && actualSubcategory ? categoryData[actualSubcategory] : null
+  const actualNested = urlNested && subcategoryData && typeof subcategoryData === 'object' && !Array.isArray(subcategoryData)
+    ? findKeyBySlug(subcategoryData, urlNested)
+    : null
 
   // State for navigation through tabs
-  const [activeCategory, setActiveCategory] = useState(Object.keys(resourcesData)[0])
-  const [activeSubcategory, setActiveSubcategory] = useState(null)
-  const [activeNestedTab, setActiveNestedTab] = useState(null)
+  const [activeCategory, setActiveCategory] = useState(actualCategory)
+  const [activeSubcategory, setActiveSubcategory] = useState(actualSubcategory)
+  const [activeNestedTab, setActiveNestedTab] = useState(actualNested)
+
+  // Extract metadata for SEO
+  const categoryMeta = categoryData?._meta
+  const subcategoryMeta = subcategoryData?._meta
+  const nestedTabData = activeNestedTab && subcategoryData ? subcategoryData[activeNestedTab] : null
+  const nestedMeta = nestedTabData?._meta
+
+  // Build breadcrumbs with dynamic metadata
+  const buildBreadcrumbs = () => {
+    const crumbs = [
+      { name: 'Home', url: '/' },
+      { name: 'Resources', url: '/resources' }
+    ]
+    
+    if (activeCategory) {
+      crumbs.push({ name: activeCategory, url: `/resources/${toSlug(activeCategory)}` })
+    }
+    if (activeSubcategory) {
+      crumbs.push({ name: activeSubcategory, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}` })
+    }
+    if (activeNestedTab) {
+      crumbs.push({ name: activeNestedTab, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}/${toSlug(activeNestedTab)}` })
+    }
+    
+    return crumbs
+  }
+
+  // Determine which metadata to use for the page head
+  const seoMeta = nestedMeta || subcategoryMeta || categoryMeta || {}
+  const currentCanonicalPath = `/resources${activeCategory ? `/${toSlug(activeCategory)}` : ''}${activeSubcategory ? `/${toSlug(activeSubcategory)}` : ''}${activeNestedTab ? `/${toSlug(activeNestedTab)}` : ''}`
+
+  useDocumentHead({
+    title: seoMeta.title || 'Team Synergy Resources',
+    description: seoMeta.description || 'Explore Team Synergy\'s comprehensive PokeMMO resources. Find guides, tools, calculators, community links, and expert tips.',
+    canonicalPath: currentCanonicalPath,
+    breadcrumbs: buildBreadcrumbs()
+  })
 
   // Get available categories
-  const categories = Object.keys(resourcesData)
+  const categories = Object.keys(resourcesData).filter(key => !key.startsWith('_'))
   const currentCategory = resourcesData[activeCategory]
-  const subcategories = currentCategory ? Object.keys(currentCategory) : []
+  const subcategories = activeCategory ? Object.keys(currentCategory || {}).filter(key => !key.startsWith('_')) : []
+
+  // Update URL when tab changes
+  useEffect(() => {
+    let newPath = '/resources'
+    
+    if (activeCategory) {
+      newPath += `/${toSlug(activeCategory)}`
+    }
+    if (activeSubcategory) {
+      newPath += `/${toSlug(activeSubcategory)}`
+    }
+    if (activeNestedTab) {
+      newPath += `/${toSlug(activeNestedTab)}`
+    }
+    
+    // Only navigate if necessary
+    const currentPath = window.location.pathname
+    if (currentPath !== newPath) {
+      navigate(newPath, { replace: true })
+    }
+  }, [activeCategory, activeSubcategory, activeNestedTab, navigate])
 
   // Set initial subcategory when category changes
   useEffect(() => {
     const newSubcategories = currentCategory ? Object.keys(currentCategory) : []
     if (newSubcategories.length > 0) {
-      setActiveSubcategory(newSubcategories[0])
-      setActiveNestedTab(null)
+      // Only set if not already set from URL
+      if (!activeSubcategory) {
+        setActiveSubcategory(newSubcategories[0])
+        setActiveNestedTab(null)
+      }
     }
-  }, [activeCategory])
+  }, [activeCategory, currentCategory, activeSubcategory])
 
   // Check if current subcategory has nested structure
   const getSubcategoryContent = () => {
@@ -43,7 +122,7 @@ export default function Resources() {
 
   const subcategoryContent = getSubcategoryContent()
   const isNested = subcategoryContent && typeof subcategoryContent === 'object' && !Array.isArray(subcategoryContent)
-  const nestedKeys = isNested ? Object.keys(subcategoryContent) : []
+  const nestedKeys = isNested ? Object.keys(subcategoryContent).filter(key => !key.startsWith('_')) : []
 
   // Set initial nested tab when subcategory changes
   useEffect(() => {
@@ -56,7 +135,7 @@ export default function Resources() {
     const hasNesting = subcatContent && typeof subcatContent === 'object' && !Array.isArray(subcatContent)
     
     if (hasNesting) {
-      const keys = Object.keys(subcatContent)
+      const keys = Object.keys(subcatContent).filter(key => !key.startsWith('_'))
       setActiveNestedTab(keys[0] || null)
     } else {
       setActiveNestedTab(null)
@@ -67,7 +146,7 @@ export default function Resources() {
   const getItems = () => {
     if (!subcategoryContent) return []
 
-    // If it's a direct array
+    // If it's a direct array (old format)
     if (Array.isArray(subcategoryContent)) {
       return subcategoryContent.filter(item => item !== null && item !== undefined)
     }
@@ -75,6 +154,13 @@ export default function Resources() {
     // If it's nested and we have a selected nested tab
     if (isNested && activeNestedTab) {
       const nestedContent = subcategoryContent[activeNestedTab]
+      
+      // Check for new format with _items array
+      if (nestedContent && typeof nestedContent === 'object' && !Array.isArray(nestedContent) && nestedContent._items) {
+        return nestedContent._items.filter(item => item !== null && item !== undefined)
+      }
+      
+      // Check for old direct array format
       if (Array.isArray(nestedContent)) {
         return nestedContent.filter(item => item !== null && item !== undefined)
       }
@@ -105,9 +191,10 @@ export default function Resources() {
         )
       }
       return (
-        <div key={key} className={styles.itemField}>
-          <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {String(value)}
-        </div>
+        <>
+          <strong key={`${key}-label`} className={styles.itemFieldLabel}>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>
+          <span key={`${key}-value`} className={styles.itemFieldValue}>{String(value)}</span>
+        </>
       )
     })
   }
@@ -126,7 +213,11 @@ export default function Resources() {
             <button
               key={category}
               className={`${styles.tab} ${activeCategory === category ? styles.activeTab : ''}`}
-              onClick={() => setActiveCategory(category)}
+              onClick={() => {
+                setActiveCategory(category)
+                setActiveSubcategory(null)
+                setActiveNestedTab(null)
+              }}
             >
               {category}
             </button>
@@ -144,15 +235,7 @@ export default function Resources() {
                 className={`${styles.subTab} ${activeSubcategory === subcategory ? styles.activeSubTab : ''}`}
                 onClick={() => {
                   setActiveSubcategory(subcategory)
-                  // Immediately set the nested tab for this subcategory
-                  const subcatContent = currentCategory?.[subcategory]
-                  const hasNesting = subcatContent && typeof subcatContent === 'object' && !Array.isArray(subcatContent)
-                  if (hasNesting) {
-                    const keys = Object.keys(subcatContent)
-                    setActiveNestedTab(keys[0] || null)
-                  } else {
-                    setActiveNestedTab(null)
-                  }
+                  setActiveNestedTab(null)
                 }}
               >
                 {subcategory}
@@ -185,8 +268,10 @@ export default function Resources() {
           {items.map((item, idx) => (
             item && (
               <div key={idx} className={styles.resourceCard}>
-                <h3 className={styles.itemName}>{item.name || 'Unnamed Item'}</h3>
-                {renderItemFields(item)}
+                <div className={styles.cardContent}>
+                  <h3 className={styles.itemName}>{item.name || 'Unnamed Item'}</h3>
+                  {renderItemFields(item)}
+                </div>
                 {(item.link || item.url) && (
                   <a
                     href={item.link || item.url}

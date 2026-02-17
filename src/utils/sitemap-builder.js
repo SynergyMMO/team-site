@@ -7,6 +7,8 @@ const pokemonDataPath = new URL('../data/pokemmo_data/pokemon-data.json', import
 const pokemonData = JSON.parse(fs.readFileSync(pokemonDataPath, 'utf-8'));
 const trophiesPath = new URL('../data/trophies.json', import.meta.url);
 const trophiesData = JSON.parse(fs.readFileSync(trophiesPath, 'utf-8'));
+const resourcesPath = new URL('../data/resources.json', import.meta.url);
+const resourcesData = JSON.parse(fs.readFileSync(resourcesPath, 'utf-8'));
 
 const staticRoutes = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
@@ -85,6 +87,63 @@ ${sitemapFiles
   console.log(`✓ Generated sitemap-index.xml with ${sitemapFiles.length} sitemaps`);
 }
 
+// Helper function to slugify text
+function slugify(title) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Function to extract all resource routes
+function getResourceRoutes(today) {
+  const routes = [];
+
+  Object.entries(resourcesData).forEach(([categoryName, categoryData]) => {
+    if (categoryName.startsWith('_')) return;
+
+    // Category level
+    if (categoryData._meta) {
+      routes.push({
+        path: `/resources/${slugify(categoryName)}`,
+        changefreq: 'monthly',
+        priority: '0.6',
+        lastmod: today,
+      });
+    }
+
+    // Subcategory and nested levels
+    Object.entries(categoryData).forEach(([subcategoryName, subcategoryData]) => {
+      if (subcategoryName.startsWith('_')) return;
+
+      if (subcategoryData._meta) {
+        routes.push({
+          path: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}`,
+          changefreq: 'monthly',
+          priority: '0.55',
+          lastmod: today,
+        });
+      }
+
+      // Nested level (third level)
+      Object.entries(subcategoryData).forEach(([nestedName, nestedData]) => {
+        if (nestedName.startsWith('_')) return;
+
+        if (nestedData && typeof nestedData === 'object' && nestedData._meta) {
+          routes.push({
+            path: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/${slugify(nestedName)}`,
+            changefreq: 'monthly',
+            priority: '0.5',
+            lastmod: today,
+          });
+        }
+      });
+    });
+  });
+
+  return routes;
+}
+
 async function buildSitemap() {
   const today = new Date().toISOString().split('T')[0];
   
@@ -139,14 +198,6 @@ async function buildSitemap() {
     const events = await res.json();
     console.log(`   Found ${events.length} events`);
 
-    // Helper function to slugify
-    function slugify(title) {
-      return title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    }
-
     eventRoutes = events.map(e => ({
       path: `/event/${slugify(e.title)}`,
       changefreq: 'weekly',
@@ -167,14 +218,6 @@ async function buildSitemap() {
     const trophyNames = Object.keys(trophies);
     console.log(`   Found ${trophyNames.length} trophies`);
 
-    // Helper function to slugify
-    function slugify(title) {
-      return title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    }
-
     trophyRoutes = trophyNames.map(name => ({
       path: `/trophy/${slugify(name)}`,
       changefreq: 'monthly',
@@ -187,19 +230,26 @@ async function buildSitemap() {
     console.error('   ⚠️  Failed to load trophies:', err.message);
   }
 
-  // STEP 6: Create sitemap index
+  // STEP 6: Resource pages
+  console.log('\n📚 Building resource pages sitemap...');
+  const resourceRoutes = getResourceRoutes(today);
+  console.log(`   Found ${resourceRoutes.length} resource pages`);
+  generateSitemapFile('sitemap-resources.xml', resourceRoutes);
+
+  // STEP 7: Create sitemap index
   console.log('\n📑 Creating sitemap index...');
   const sitemapFiles = [
     'sitemap-static.xml',
     'sitemap-players.xml',
     'sitemap-pokemon.xml',
     'sitemap-events.xml',
-    'sitemap-trophies.xml'
+    'sitemap-trophies.xml',
+    'sitemap-resources.xml'
   ];
   generateSitemapIndex(sitemapFiles);
 
   // Summary
-  const totalUrls = staticRoutes.length + playerRoutes.length + pokemonNames.length + eventRoutes.length + trophyRoutes.length;
+  const totalUrls = staticRoutes.length + playerRoutes.length + pokemonNames.length + eventRoutes.length + trophyRoutes.length + resourceRoutes.length;
   console.log(
     `\n✅ Sitemap generation complete!\n` +
     `   Total URLs: ${totalUrls}\n` +
@@ -207,7 +257,8 @@ async function buildSitemap() {
     `   Players: ${playerRoutes.length}\n` +
     `   Pokemon: ${pokemonNames.length}\n` +
     `   Events: ${eventRoutes.length}\n` +
-    `   Trophies: ${trophyRoutes.length}`
+    `   Trophies: ${trophyRoutes.length}\n` +
+    `   Resources: ${resourceRoutes.length}`
   );
 }
 

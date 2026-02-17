@@ -1,152 +1,67 @@
 {
   "Guides": {
+    "_meta": {
+      "title": "PokeMMO Guides & Strategy Articles | Team Synergy",
+      "description": "Expert PokeMMO guides covering money making gym reruns, shiny hunting strategies, trainer battles, and advanced hunting techniques for competitive play."
+    },
     "Money Making": {
-      "Gym ReRuns": [
-        {
-          "name": "Kanto Gym",
-          "description": "Efficient Kanto gym reruns for consistent money and rewards",
-          "link": "#"
+      "_meta": {
+        "title": "Money Making Guides | Profitable PokeMMO Gym Strategies | Team Synergy",
+        "description": "Master PokeMMO money earning with comprehensive gym rerun guides including 6 Pillars, 7 Hells, Tempest Explosion and Prehistory 5 strategies."
+      },
+      "Gym Re-Runs": {
+        "_meta": {
+          "title": "Best Gym Rerun Strategies for PokeMMO | Money Making Teams | Team Synergy",
+          "description": "Discover the most profitable gym rerun strategies in PokeMMO. Compare 6 Pillars, 7 Hells, Tempest Explosion, Prehistory 5, and Double Typhlosion methods with earnings and difficulty ratings."
         },
-        {
-          "name": "Johto Gym",
-          "description": "Johto gym challenges with balanced difficulty and rewards",
-          "link": "#"
-        }
-      ],
-      "Trainer ReRuns": [
-        {
-          "name": "Elite Four",
-          "description": "Elite Four rematch strategy guide for maximum rewards",
-          "link": "#"
-        },
-        {
-          "name": "Champion Battles",
-          "description": "Champion rematch guide with team recommendations",
-          "link": "#"
-        }
-      ]
-    },
-    "Shiny Hunting": {
-      "Basics": [
-        {
-          "name": "Shiny Encounter Mechanics",
-          "description": "Understanding shiny encounter rates and mechanics",
-          "link": "#"
-        },
-        {
-          "name": "Popular Hunting Locations",
-          "description": "Best locations for efficient shiny hunting",
-          "link": "#"
-        }
-      ],
-      "Advanced Strategies": [
-        {
-          "name": "Nature Optimization",
-          "description": "Guide to hunting for specific natures and IVs",
-          "link": "#"
-        },
-        {
-          "name": "Legendary Shiny Hunting",
-          "description": "Strategies for hunting roaming and static legendaries",
-          "link": "#"
-        }
-      ]
-    }
-  },
-  "Tools": {
-    "Team Synergy Tools": {
-      "Generators": [
-        {
-          "name": "Counter Generator",
-          "description": "Create custom encounter counter themes for PokeMMO",
-          "link": "/counter-generator/"
-        },
-        {
-          "name": "Random Pokemon Generator",
-          "description": "Generate random shiny hunt targets and bingo boards",
-          "link": "/random-pokemon-generator/"
-        }
-      ],
-      "Databases": [
-        {
-          "name": "Interactive Pokédex",
-          "description": "Browse all Pokemon with type, location, and tier filtering",
-          "link": "/pokedex/"
-        },
-        {
-          "name": "Safari Zone Guide",
-          "description": "Complete Safari Zone data with catch rates and strategies",
-          "link": "/safari-zones/"
-        }
-      ]
-    },
-    "External Tools": {
-      "Calculators": [
-        {
-          "name": "Pokemon Damage Calculator",
-          "description": "Calculate damage output for battle planning",
-          "link": "https://pokemondb.net/tools/damage-calc"
-        },
-        {
-          "name": "IV Calculator",
-          "description": "Calculate individual values from Pokemon stats",
-          "link": "https://pokemondb.net/tools/iv-calc"
-        }
-      ],
-      "References": [
-        {
-          "name": "Bulbapedia",
-          "description": "Comprehensive Pokemon encyclopedia with detailed mechanics",
-          "link": "https://bulbapedia.bulbagarden.net"
-        },
-        {
-          "name": "Serebii.net",
-          "description": "Pokemon games and multimedia database",
-          "link": "https://serebii.net"
-        }
-      ]
-    }
-  },
-  "Community": {
-    "Team Synergy": {
-      "Main": [
-        {
-          "name": "Discord Server",
-          "description": "Join our community for events, discussions, and support",
-          "link": "https://discord.gg/2BEUq6fWAj"
-        },
-        {
-          "name": "Shiny Showcase",
-          "description": "Browse member collections and shiny hunting achievements",
-          "link": "/shiny-showcase/"
-        },
-        {
-          "name": "Trophy Board",
-          "description": "View achievements and milestones earned by community members",
-          "link": "/trophy-board/"
-        }
-      ],
-      "Events": [
-        {
-          "name": "Upcoming Events",
-          "description": "View and register for Team Synergy competitions",
-          "link": "/events/"
-        },
-        {
-          "name": "Shiny Wars 2025",
-          "description": "Official shiny catching championship results",
-          "link": "/shiny-war-2025/"
-        }
-      ]
-    },
-    "Streamers": {
-      "Watch Live": [
-        {
-          "name": "Team Synergy Twitch Streamers",
-          "description": "Watch team members stream PokeMMO live gameplay",
-          "link": "/streamers/"
-        }
-      ]
+        "_items": [
+          {
+            "name": "6 Pillars",
+            "description": "6 Pillars is an effective gym-rerun that makes a good amount of money and is easy to do, there is multiple difficulties to choose from, from simply switching lead Pokemon to switching held items/X Items with increasing money per hour for doing so. The team is relatively expensive, but due to how much it makes, you will make it back within a week or two of gym rerunning",
+            "link": "https://docs.google.com/document/d/1XnFfsSVh1x5sEBLzvkletNfBuKY5ymSL_UHKNjoDaeE/edit?tab=t.0#heading=h.qd857el3g265",
+            "Money Per Hour": "~400k-450k/hr",
+            "Cost of Team": "~1.5m - 2m",
+            "Difficulty": "Medium - High depending on Route",
+            "credits": "FreeReign, Mnoverick"
+          },
+          {
+            "name": "7 Hells",
+            "description": "7 Hells is easy to follow, and can be done without thinking; similar to 6 Pillars although more straightforward, with slightly less Money per hour, due to the simplicity it is designed around being able to easily do it on 2 accounts at once, if this is your goal, this will make more than 6 Pillars will.",
+            "link": "https://docs.google.com/document/d/14vrMW-L8blZOxYpGTrRUswsCsuwybWR00Kr1dPmxpz0/edit?tab=t.0",
+            "Money Per Hour": "~350k/hr",
+            "Cost of Team": "~1.3m - 1.8m",
+            "Difficulty": "Easy - Medium",
+            "credits": "DaveTheBabe"
+          },
+          {
+            "name": "Tempest Explosion",
+            "description": "Tempest Explosion is known as the `Speedrunning` gym rerun, and is designed to be as fast as possible, this requires it to be much more focus intensive, but results in the most gym re runs per hour if done effectively, the team is very percise and the route requires item swaps, and focus, but if done correctly can reach up to 33 gyms per hour (pre string nerd)",
+            "link": "https://forums.pokemmo.com/index.php?/topic/177976-tempest-explosion-gym-run-590k-revenue/",
+            "Money Per Hour": "~550k/hr",
+            "Cost of Team": "~1.5m - 2m",
+            "Difficulty": "Hard",
+            "credits": "Xanarchy"
+          },
+          {
+            "name": "Prehistory 5",
+            "description": "This team is very good, similar speeds to 6 Pillars and 7 Hells but due to the team only having 5 Pokemon instead of 6 it allows you to level up an additional Pokemon alongside your gym reruns, meaning you can level up your Pokemon, or Level up Pokemon to sell for even more profits, meaning this can make even more money!",
+            "link": "https://forums.pokemmo.com/index.php?/topic/177976-tempest-explosion-gym-run-590k-revenue/",
+            "Money Per Hour": "~450k-500k/hr",
+            "Cost of Team": "~1.2m - 1.6m",
+            "Difficulty": "Medium - High",
+            "credits": "JinxedBoon"
+          },
+          {
+            "name": "Double Typhlosion",
+            "description": "This team is a Classic, and is probably the most well known Gym ReRun strategy on PokeMMO, due to how cheap and simple it is to do. Although nowadays due to the strings nerf it is a little outdated, although as it is very cheap, its a perfect gym re run to start of with until you can afford another one!",
+            "link": "https://forums.pokemmo.com/index.php?/topic/183624-simple-typhlosion-gym-rerun-guide/",
+            "Money Per Hour": "~250k/hr",
+            "Cost of Team": "~200k-400k",
+            "Difficulty": "Medium - High",
+            "credits": "JinxedBoon"
+          }
+        ]
+      }
     }
   }
 }

@@ -10,6 +10,9 @@ const tierPokemon = JSON.parse(tierPokemonRaw);
 const trophiesPath = join(__dirname, '../src/data/trophies.json');
 const trophiesRaw = await readFile(trophiesPath, 'utf-8');
 const trophiesData = JSON.parse(trophiesRaw);
+const resourcesPath = join(__dirname, '../src/data/resources.json');
+const resourcesRaw = await readFile(resourcesPath, 'utf-8');
+const resourcesData = JSON.parse(resourcesRaw);
 
 const DIST = join(__dirname, '..', 'dist');
 
@@ -240,6 +243,55 @@ function slugify(title) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with dash
     .replace(/^-+|-+$/g, '')     // remove leading/trailing dashes
+}
+
+// Extract all resource routes with metadata
+function getResourceRoutes() {
+  const resources = [];
+
+  Object.entries(resourcesData).forEach(([categoryName, categoryData]) => {
+    if (categoryName.startsWith('_')) return;
+
+    // Category level
+    if (categoryData._meta) {
+      resources.push({
+        route: `/resources/${slugify(categoryName)}`,
+        ogTitle: categoryData._meta.title,
+        ogDescription: categoryData._meta.description,
+        ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+      });
+    }
+
+    // Subcategory and nested levels
+    Object.entries(categoryData).forEach(([subcategoryName, subcategoryData]) => {
+      if (subcategoryName.startsWith('_')) return;
+
+      if (subcategoryData._meta) {
+        resources.push({
+          route: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}`,
+          ogTitle: subcategoryData._meta.title,
+          ogDescription: subcategoryData._meta.description,
+          ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+        });
+      }
+
+      // Nested level (third level)
+      Object.entries(subcategoryData).forEach(([nestedName, nestedData]) => {
+        if (nestedName.startsWith('_')) return;
+
+        if (nestedData && typeof nestedData === 'object' && nestedData._meta) {
+          resources.push({
+            route: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/${slugify(nestedName)}`,
+            ogTitle: nestedData._meta.title,
+            ogDescription: nestedData._meta.description,
+            ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+          });
+        }
+      });
+    });
+  });
+
+  return resources;
 }
 
 async function getStreamers() {
@@ -1223,6 +1275,14 @@ async function prerender() {
   for (const t of trophies) {
     const outPath = join(DIST, t.route.slice(1), 'index.html');
     await prerenderRoute(templateHtml, outPath, t);
+  }
+
+  // Resource pages
+  const resources = getResourceRoutes();
+  console.log(`Prerendering ${resources.length} resource pages...`);
+  for (const r of resources) {
+    const outPath = join(DIST, r.route.slice(1), 'index.html');
+    await prerenderRoute(templateHtml, outPath, r);
   }
 
   // Pokemon pages (already fetched above for crawler links)
