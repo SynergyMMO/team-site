@@ -7,7 +7,7 @@
     "Money Making": {
       "_meta": {
         "title": "Money Making Guides | Profitable PokeMMO Gym Strategies | Team Synergy",
-        "description": "Master PokeMMO money earning with comprehensive gym rerun guides including 6 Pillars, 7 Hells, Tempest Explosion and Prehistory 5 strategies."
+        "description": "Expert PokeMMO guides covering money making gym reruns, shiny hunting strategies, trainer battles, and advanced hunting techniques for competitive play."
       },
       "Gym Re-Runs": {
         "_meta": {
@@ -133,7 +133,140 @@
         "description": "This is the Ultimate guide for the Halloween Event, everything you need to know (and probably more)",
         "link": "https://forums.pokemmo.com/index.php?/topic/192700-halloween-2025-the-ultimate-halloween-event-guide/",
         "credits": "CallMeSensei"
+      },
+      {
+        "name": "The Ultimate Lunar New Year Event Guide",
+        "description": "This is the Ultimate guide for the Lunar New Year Event, everything you need to know (and probably more)",
+        "link": "https://forums.pokemmo.com/index.php?/topic/195845-lny-2026-the-ultimate-lunar-new-year-event-guide/",
+        "credits": "CallMeSensei"
+      },
+      {
+        "name": "Mystery Ball Drop Rates",
+        "description": "An Extensive list of all Mystery Ball Pokemon Rates for years 2022-2026",
+        "link": "https://forums.pokemmo.com/index.php?/topic/193788-the-ultimate-mysterious-ball-guide/",
+        "credits": "CallMeSensei"
+      },
+      {
+        "name": "Pumpcat Spawn Locations 2025",
+        "description": "A detailed list of all possible Pumpcat spawn locations from the 2025 Halloween Event",
+        "credits": "CallMeSensei",
+        "link": "https://forums.pokemmo.com/index.php?/topic/183830-halloween-pumpcat-hunt-guide-complete-list-of-locations/"
       }
     ]
+  },
+  "Raids": {
+    "_meta": {
+      "title": "",
+      "description": ""
+    },
+    "_items": [
+      {
+        "name": "Raids Den Discord",
+        "description": "This discord is the best place for raid information, with guides on all raids, LFT sections to find players to raid with and more",
+        "link": "https://discord.gg/c943jEUJY9",
+        "credits": "DragoTamer"
+      },
+      {
+        "name": "Meloetta",
+        "description": "A Turn by turn guide on how to defeat the permanent Meloetta Raid",
+        "link": "https://forums.pokemmo.com/index.php?/topic/194982-meloetta-raid-guide/",
+        "credits": "CallMeSensei"
+      },
+      {
+        "name": "Heatran",
+        "description": "The most used Heatran raid guide, easiest to find a group",
+        "credits": "Beorns",
+        "link": "https://docs.google.com/document/d/1iZ0YhbEQntdbdRrBzSGR3PLiYkZSc0P962_3N_dnc_E/edit?tab=t.0#heading=h.crlc8jh0ucdy"
+      },
+      {
+        "name": "Christmas Event Raids",
+        "description": "The Best guide for the Christmas Raids is on CallMeSenseis ultimate Christmas Event Post, scroll down to \"Raids\"",
+        "credits": "CallMeSensei",
+        "link": "https://forums.pokemmo.com/index.php?/topic/194733-xmas-2025-the-ultimate-christmas-event-guide/"
+      },
+      {
+        "name": "Halloween Event Raids",
+        "description": "The Best guide for the Halloween Raids is on CallMeSenseis ultimate Christmas Event Post, scroll down to \"Raids\"",
+        "credits": "CallMeSensei",
+        "link": "https://forums.pokemmo.com/index.php?/topic/192700-halloween-2025-the-ultimate-halloween-event-guide/"
+      },
+      {
+        "name": "Lunar New Year Event Raids",
+        "description": "The Best guide for the Lunar New Year Raids is on CallMeSenseis ultimate Christmas Event Post, scroll down to \"Raids\"",
+        "link": "https://forums.pokemmo.com/index.php?/topic/195845-lny-2026-the-ultimate-lunar-new-year-event-guide/",
+        "credits": "CallMeSensei"
+      }
+    ]
+  },
+  "Content Creators": {
+    "_meta": {
+      "title": "",
+      "description": ""
+    },
+    "_items": [],
+    "YouTubers": {
+      "_meta": {
+        "title": "",
+        "description": ""
+      },
+      "_items": [
+        {
+          "name": "Patrouski",
+          "description": "The biggest English speaking PokeMMO YouTubers, specialises in PokeMMO Guides, News and general gameplay ",
+          "link": "https://www.youtube.com/@patrouski",
+          "tags": "guides, gameplay, news, en"
+        },
+        {
+          "name": "Spidget",
+          "description": "Spidget posts entertaining PVP Content",
+          "link": "https://www.youtube.com/@Spidget",
+          "tags": "pvp, en"
+        },
+        {
+          "name": "Smooge",
+          "description": "Smooge posts entertaining PVP content",
+          "link": "https://www.youtube.com/@Smooge",
+          "tags": "pvp, en"
+        },
+        {
+          "name": "JinxedBoon",
+          "link": "https://www.youtube.com/@JinxedBoon/videos",
+          "description": "JinxedBoon creates useful PokeMMO Guides surrounding Money Making and Raids",
+          "tags": "guides, en"
+        },
+        {
+          "name": "Gym Rerun",
+          "link": "https://www.youtube.com/@GymRerun",
+          "description": "The Best PokeMMO Rapper, posts funny PokeMMO themed music",
+          "tags": "music, en"
+        },
+        {
+          "name": "epok",
+          "description": "Epok posts videos about PokeMMO History, the state of the game, and guides on how to flip/make money",
+          "link": "https://www.youtube.com/@epokmmo",
+          "tags": "guides, news, en"
+        },
+        {
+          "name": "Minish",
+          "description": "Minish is a dedicated shiny hunter who posts funny videos, news about PokeMMO and more",
+          "link": "https://www.youtube.com/@minishuwu5914",
+          "tags": "news, shiny hunting, en"
+        }
+      ]
+    },
+    "Twitch Streamers": {
+      "_meta": {
+        "title": "",
+        "description": "Consider checking out the <a href='/streamers/'>Team Synergy Streamers</a>"
+      },
+      "_items": [
+        {
+          "name": "Patrouski",
+          "description": "Patrouski live streams PokeMMO Very consistently.",
+          "link": "https://www.twitch.tv/patrouski",
+          "tags": "en, guides, shiny hunting,"
+        }
+      ]
+    }
   }
 }

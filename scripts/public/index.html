@@ -258,11 +258,25 @@
       padding: 15px;
       margin-bottom: 15px;
       transition: all 0.2s;
+      cursor: move;
     }
 
     .item-card:hover {
       border-color: #667eea;
       box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+    }
+
+    .item-card.dragging {
+      opacity: 0.5;
+      background: #f0f0f0;
+      border-style: dashed;
+      border-color: #667eea;
+    }
+
+    .item-card.drag-over {
+      background: #e8eaf6;
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     .item-header {
@@ -536,6 +550,8 @@
   <script>
     let currentPath = [];
     let pendingDelete = null;
+    let draggedIndex = null;
+    let dragItemType = null; // 'category', 'subcategory', or 'nest'
 
     // API Functions
     async function apiCall(method, url, data = null) {
@@ -740,7 +756,12 @@
           items.forEach((item, index) => {
             const fieldCount = Object.keys(item).filter(k => k !== 'name').length;
             html += `
-              <div class="item-card">
+              <div class="item-card" draggable="true" data-index="${index}" 
+                   ondragstart="startDrag(event, ${index}, 'category')"
+                   ondragover="dragOver(event)"
+                   ondrop="dropItem(event, ${index}, 'category')"
+                   ondragleave="dragLeave(event)"
+                   ondragend="dragEnd(event)">
                 <div class="item-header">
                   <div class="item-name">${item.name}</div>
                   <div class="item-actions">
@@ -844,7 +865,12 @@
           items.forEach((item, index) => {
             const fieldCount = Object.keys(item).filter(k => k !== 'name').length;
             html += `
-              <div class="item-card">
+              <div class="item-card" draggable="true" data-index="${index}"
+                   ondragstart="startDrag(event, ${index}, 'subcategory')"
+                   ondragover="dragOver(event)"
+                   ondrop="dropItem(event, ${index}, 'subcategory')"
+                   ondragleave="dragLeave(event)"
+                   ondragend="dragEnd(event)">
                 <div class="item-header">
                   <div class="item-name">${item.name}</div>
                   <div class="item-actions">
@@ -929,7 +955,12 @@
           items.forEach((item, index) => {
             const fieldCount = Object.keys(item).filter(k => k !== 'name').length;
             html += `
-              <div class="item-card">
+              <div class="item-card" draggable="true" data-index="${index}"
+                   ondragstart="startDrag(event, ${index}, 'nest')"
+                   ondragover="dragOver(event)"
+                   ondrop="dropItem(event, ${index}, 'nest')"
+                   ondragleave="dragLeave(event)"
+                   ondragend="dragEnd(event)">
                 <div class="item-header">
                   <div class="item-name">${item.name}</div>
                   <div class="item-actions">
@@ -987,6 +1018,84 @@
       });
       html += '</div>';
       return html;
+    }
+
+    // Drag and Drop Functions
+    function startDrag(event, index, itemType) {
+      draggedIndex = index;
+      dragItemType = itemType;
+      event.dataTransfer.effectAllowed = 'move';
+      event.target.closest('.item-card').classList.add('dragging');
+    }
+
+    function dragOver(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'move';
+      const itemCard = event.target.closest('.item-card');
+      if (itemCard && draggedIndex !== null) {
+        itemCard.classList.add('drag-over');
+      }
+    }
+
+    function dragLeave(event) {
+      const itemCard = event.target.closest('.item-card');
+      if (itemCard) {
+        itemCard.classList.remove('drag-over');
+      }
+    }
+
+    function dragEnd(event) {
+      document.querySelectorAll('.item-card').forEach(card => {
+        card.classList.remove('dragging', 'drag-over');
+      });
+    }
+
+    async function dropItem(event, toIndex, itemType) {
+      event.preventDefault();
+      dragEnd(event);
+
+      if (draggedIndex === null || draggedIndex === toIndex || dragItemType !== itemType) {
+        return;
+      }
+
+      try {
+        let endpoint = '';
+        if (itemType === 'category') {
+          const [category] = currentPath;
+          const encodedCategory = encodeURIComponent(category);
+          endpoint = `/api/categories/${encodedCategory}/items/reorder`;
+        } else if (itemType === 'subcategory') {
+          const [category, subcategory] = currentPath;
+          const encodedCategory = encodeURIComponent(category);
+          const encodedSubcategory = encodeURIComponent(subcategory);
+          endpoint = `/api/categories/${encodedCategory}/subcategories/${encodedSubcategory}/items/reorder`;
+        } else if (itemType === 'nest') {
+          const [category, subcategory, nest] = currentPath;
+          const encodedCategory = encodeURIComponent(category);
+          const encodedSubcategory = encodeURIComponent(subcategory);
+          const encodedNest = encodeURIComponent(nest);
+          endpoint = `/api/categories/${encodedCategory}/subcategories/${encodedSubcategory}/nests/${encodedNest}/items/reorder`;
+        }
+
+        await apiCall('POST', endpoint, { fromIndex: draggedIndex, toIndex });
+        
+        // Re-render the items
+        if (itemType === 'category') {
+          renderCategoryContent();
+        } else if (itemType === 'subcategory') {
+          renderSubcategoryContent();
+        } else if (itemType === 'nest') {
+          renderNestContent();
+        }
+        
+        showSuccess('Item reordered');
+      } catch (error) {
+        console.error('Failed to reorder items:', error);
+        showError('Failed to reorder items');
+      } finally {
+        draggedIndex = null;
+        dragItemType = null;
+      }
     }
 
     function switchTab(tabName) {

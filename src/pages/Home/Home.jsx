@@ -126,10 +126,10 @@ export default function Home() {
             <p>Watch live Twitch streams from Team Synergy members</p>
           </Link>
 
-          <Link to="/trophy-board" className={styles.featureCard}>
-            <div className={styles.featureIcon}>🏆</div>
-            <h3>Trophy Board</h3>
-            <p>View achievements and milestones from Team Synergy</p>
+          <Link to="/resources" className={styles.featureCard}>
+            <div className={styles.featureIcon}>📚</div>
+            <h3>Resources</h3>
+            <p>Read all the useful Resources about PokeMMO</p>
           </Link>
 
           <Link to="/events" className={styles.featureCard}>

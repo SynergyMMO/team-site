@@ -520,6 +520,84 @@ app.delete('/api/categories/:category/subcategories/:subcategory/nests/:nest/ite
   }
 });
 
+// Reorder items endpoints
+
+// Reorder items in category
+app.post('/api/categories/:category/items/reorder', (req, res) => {
+  const resources = loadResources();
+  const { category } = req.params;
+  const { fromIndex, toIndex } = req.body;
+  
+  if (!resources[category] || !resources[category]._items) {
+    return res.status(404).json({ error: 'Category not found' });
+  }
+  
+  const items = resources[category]._items;
+  if (fromIndex < 0 || fromIndex >= items.length || toIndex < 0 || toIndex >= items.length) {
+    return res.status(400).json({ error: 'Invalid index' });
+  }
+  
+  // Remove item from old position and insert at new position
+  const [item] = items.splice(fromIndex, 1);
+  items.splice(toIndex, 0, item);
+  
+  if (saveResources(resources)) {
+    res.json({ success: true });
+  } else {
+    res.status(500).json({ error: 'Failed to save' });
+  }
+});
+
+// Reorder items in subcategory
+app.post('/api/categories/:category/subcategories/:subcategory/items/reorder', (req, res) => {
+  const resources = loadResources();
+  const { category, subcategory } = req.params;
+  const { fromIndex, toIndex } = req.body;
+  
+  if (!resources[category] || !resources[category][subcategory] || !resources[category][subcategory]._items) {
+    return res.status(404).json({ error: 'Subcategory not found' });
+  }
+  
+  const items = resources[category][subcategory]._items;
+  if (fromIndex < 0 || fromIndex >= items.length || toIndex < 0 || toIndex >= items.length) {
+    return res.status(400).json({ error: 'Invalid index' });
+  }
+  
+  const [item] = items.splice(fromIndex, 1);
+  items.splice(toIndex, 0, item);
+  
+  if (saveResources(resources)) {
+    res.json({ success: true });
+  } else {
+    res.status(500).json({ error: 'Failed to save' });
+  }
+});
+
+// Reorder items in nest
+app.post('/api/categories/:category/subcategories/:subcategory/nests/:nest/items/reorder', (req, res) => {
+  const resources = loadResources();
+  const { category, subcategory, nest } = req.params;
+  const { fromIndex, toIndex } = req.body;
+  
+  if (!resources[category] || !resources[category][subcategory] || !resources[category][subcategory][nest] || !resources[category][subcategory][nest]._items) {
+    return res.status(404).json({ error: 'Nest not found' });
+  }
+  
+  const items = resources[category][subcategory][nest]._items;
+  if (fromIndex < 0 || fromIndex >= items.length || toIndex < 0 || toIndex >= items.length) {
+    return res.status(400).json({ error: 'Invalid index' });
+  }
+  
+  const [item] = items.splice(fromIndex, 1);
+  items.splice(toIndex, 0, item);
+  
+  if (saveResources(resources)) {
+    res.json({ success: true });
+  } else {
+    res.status(500).json({ error: 'Failed to save' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   const url = `http://localhost:${PORT}`;

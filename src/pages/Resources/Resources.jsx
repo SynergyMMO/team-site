@@ -18,6 +18,49 @@ const findKeyBySlug = (obj, slug) => {
   return Object.keys(obj).find(key => toSlug(key) === slug)
 }
 
+// Function to calculate leaderboard from resources data
+const calculateLeaderboard = (data) => {
+  const credits = {}
+
+  // Recursively traverse the data structure to find all credits fields
+  const traverse = (obj) => {
+    if (!obj || typeof obj !== 'object') return
+    
+    if (Array.isArray(obj)) {
+      obj.forEach(item => traverse(item))
+      return
+    }
+
+    // Check if this object has a credits field
+    if (obj.credits && typeof obj.credits === 'string') {
+      // Split by comma in case multiple credits are listed
+      const creditsArray = obj.credits.split(',').map(c => c.trim()).filter(c => c)
+      creditsArray.forEach(credit => {
+        credits[credit] = (credits[credit] || 0) + 1
+      })
+    }
+
+    // Traverse nested objects
+    Object.values(obj).forEach(value => {
+      if (value && typeof value === 'object') {
+        traverse(value)
+      }
+    })
+  }
+
+  traverse(data)
+
+  // Sort by count descending and get top 5
+  return Object.entries(credits)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map((entry, idx) => ({
+      rank: idx + 1,
+      name: entry[0],
+      count: entry[1]
+    }))
+}
+
 export default function Resources() {
   const navigate = useNavigate()
   const { category: urlCategory, subcategory: urlSubcategory, nested: urlNested } = useParams()
@@ -188,7 +231,7 @@ export default function Resources() {
   const renderItemFields = (item) => {
     if (!item || typeof item !== 'object') return null
 
-    const excludeKeys = ['name'] // Keys to exclude from display
+    const excludeKeys = ['name', 'profileImage'] // Keys to exclude from display
     const entries = Object.entries(item).filter(([key]) => !excludeKeys.includes(key))
 
     return entries.map(([key, value]) => {
@@ -218,6 +261,9 @@ export default function Resources() {
       <p className={styles.intro}>
         Discover guides, tools, and community links to enhance your PokeMMO experience.
       </p>
+
+        <h4 className={styles.intro}>If you are creddited in this and would like for your guide to be removed, please contact ohypers on discord</h4>
+        <h4 className={styles.intro}>If you have a useful guide or tool that you would like to be added, please dm</h4>
 
       {/* Main Category Tabs */}
       <div className={styles.tabsContainer}>
@@ -275,12 +321,31 @@ export default function Resources() {
         </div>
       )}
 
+      {/* Subcategory Description - Only show for Twitch Streamers */}
+      {activeCategory === 'Content Creators' && activeSubcategory === 'Twitch Streamers' && subcategoryContent?._meta?.description && (
+        <div className={styles.subcategoryDescription}>
+          <p dangerouslySetInnerHTML={{ __html: subcategoryContent._meta.description }} />
+        </div>
+      )}
+
       {/* Items Grid */}
       {items.length > 0 && (
         <div className={styles.itemsGrid}>
           {items.map((item, idx) => (
             item && (
               <div key={idx} className={styles.resourceCard}>
+                {item.profileImage && (
+                  <div className={styles.cardImageContainer}>
+                    <img 
+                      src={getAssetUrl(item.profileImage)} 
+                      alt={item.name || 'Profile'}
+                      className={styles.cardImage}
+                      onError={(e) => {
+                        e.target.style.display = 'none'
+                      }}
+                    />
+                  </div>
+                )}
                 <div className={styles.cardContent}>
                   <h3 className={styles.itemName}>{item.name || 'Unnamed Item'}</h3>
                   {renderItemFields(item)}
@@ -309,6 +374,21 @@ export default function Resources() {
           <p>No resources available in this section yet.</p>
         </div>
       )}
+
+      {/* Leaderboard Section */}
+      <div className={styles.leaderboardSection}>
+        <h2>Top Contributors</h2>
+        <div className={styles.leaderboard}>
+          {calculateLeaderboard(resourcesData).map((contributor) => (
+            <div key={contributor.name} className={styles.leaderboardEntry}>
+              <div className={styles.leaderboardRank}>#{contributor.rank}</div>
+              <div className={styles.leaderboardName}>{contributor.name}</div>
+              <div className={styles.leaderboardCount}>{contributor.count} {contributor.count === 1 ? 'guide' : 'guides'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
     </div>
   )
 }
