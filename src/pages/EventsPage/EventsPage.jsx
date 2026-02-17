@@ -56,6 +56,7 @@ export default function EventsPage() {
     async function fetchEvents() {
       try {
         const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events')
+        if (!res.ok) throw new Error(`Failed to fetch events: ${res.status}`)
         const data = await res.json()
         // Sort by startDate descending (latest first)
         data.sort((a, b) => new Date(b.startDate) - new Date(a.startDate))

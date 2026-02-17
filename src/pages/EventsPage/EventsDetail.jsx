@@ -3,14 +3,7 @@ import { useState, useEffect } from 'react'
 import styles from './EventsDetail.module.css'
 import BackButton from '../../components/BackButton/BackButton'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
-
-// Helper function to convert title to URL-friendly slug
-function slugify(title) {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with dash
-    .replace(/^-+|-+$/g, '')     // remove leading/trailing dashes
-}
+import { slugify } from '../../utils/slugify'
 
 export default function EventsDetail() {
   const { slug } = useParams()
@@ -56,6 +49,7 @@ export default function EventsDetail() {
     async function fetchEvent() {
       try {
         const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events')
+        if (!res.ok) throw new Error(`Failed to fetch events: ${res.status}`)
         const data = await res.json()
         const found = data.find(e => slugify(e.title) === slug)
         setEvent(found || null)

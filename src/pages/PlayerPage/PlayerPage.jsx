@@ -42,15 +42,6 @@ export default function PlayerPage() {
     { name: realKey, url: `/player/${playerName}` }
   ] : null;
 
-  useDocumentHead({
-    title: realKey ? `${realKey}'s Shiny Collection | Team Synergy PokeMMO` : 'Player Shinies | Team Synergy - PokeMMO',
-    description: realKey 
-      ? `Browse ${realKey}'s shiny Pokémon collection in PokeMMO. View caught shinies, collections, and stats for Team Synergy member.`
-      : 'Explore player shiny collections in Team Synergy PokeMMO.',
-    canonicalPath: `/player/${playerName?.toLowerCase()}`,
-    breadcrumbs: breadcrumbs
-  })
-
   // --- Safe defaults ---
   const safeRealKey = realKey || playerName
 
@@ -74,10 +65,13 @@ export default function PlayerPage() {
 
   const ogUrl = `https://synergymmo.com/player/${playerName?.toLowerCase()}?v=2`
 
-  // --- Document head ---
   useDocumentHead({
-    title: `${safeRealKey}'s Shinies`,
-    description: `Browse ${safeRealKey}'s shiny Pokemon collection in PokeMMO.`,
+    title: realKey ? `${realKey}'s Shiny Collection | Team Synergy PokeMMO` : 'Player Shinies | Team Synergy - PokeMMO',
+    description: realKey
+      ? `Browse ${realKey}'s shiny Pokémon collection in PokeMMO. View caught shinies, collections, and stats for Team Synergy member.`
+      : 'Explore player shiny collections in Team Synergy PokeMMO.',
+    canonicalPath: `/player/${playerName?.toLowerCase()}`,
+    breadcrumbs: breadcrumbs,
     ogImage,
     url: ogUrl,
   })
