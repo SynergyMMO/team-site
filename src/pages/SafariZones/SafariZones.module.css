@@ -297,6 +297,26 @@
   border: 1px solid rgba(100, 140, 220, 0.3);
 }
 
+.strategyBadge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.strategyOneMud {
+  background: rgba(160, 110, 50, 0.2);
+  color: #c08040;
+  border: 1px solid rgba(160, 110, 50, 0.4);
+}
+
+.strategyOneBait {
+  background: rgba(220, 140, 50, 0.2);
+  color: #fff674;
+  border: 1px solid rgba(255, 243, 77, 0.747);
+}
+
 .encounterBadge {
   font-size: 0.65rem;
   padding: 1px 6px;

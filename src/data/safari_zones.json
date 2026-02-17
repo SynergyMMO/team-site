@@ -2869,7 +2869,224 @@
     "name": "Kanto Safari Zone",
     "game": "Red / Blue / Yellow / FireRed / LeafGreen",
     "description": "The Safari Zone in Kanto is located east of Fuchsia City. It offers 30 Safari Balls to catch Pokemon across multiple areas with different terrain types including grassland and water.",
-    "catchData": {},
+    "catchData": {
+      "Magikarp": {
+        "catchRate": 255,
+        "fleeRate": 10,
+        "ballsOnly": 96.23,
+        "oneBait": 83.33,
+        "oneMud": 95.71,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 96.23
+      },
+      "Poliwag": {
+        "catchRate": 255,
+        "fleeRate": 15,
+        "ballsOnly": 94.45,
+        "oneBait": 78.57,
+        "oneMud": 97.44,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 97.44
+      },
+      "Nidoran M": {
+        "catchRate": 229,
+        "fleeRate": 15,
+        "ballsOnly": 93.86,
+        "oneBait": 77.06,
+        "oneMud": 96.71,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 96.71
+      },
+      "Nidoran F": {
+        "catchRate": 229,
+        "fleeRate": 15,
+        "ballsOnly": 93.86,
+        "oneBait": 77.06,
+        "oneMud": 96.71,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 96.71
+      },
+      "Paras": {
+        "catchRate": 178,
+        "fleeRate": 15,
+        "ballsOnly": 92.23,
+        "oneBait": 73.12,
+        "oneMud": 95.90,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 95.90
+      },
+      "Venonat": {
+        "catchRate": 178,
+        "fleeRate": 15,
+        "ballsOnly": 92.23,
+        "oneBait": 73.12,
+        "oneMud": 95.90,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 95.90
+      },
+      "Psyduck": {
+        "catchRate": 178,
+        "fleeRate": 15,
+        "ballsOnly": 92.23,
+        "oneBait": 73.12,
+        "oneMud": 95.90,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 95.90
+      },
+      "Slowpoke": {
+        "catchRate": 178,
+        "fleeRate": 15,
+        "ballsOnly": 92.23,
+        "oneBait": 73.12,
+        "oneMud": 95.90,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 95.90
+      },
+      "Doduo": {
+        "catchRate": 178,
+        "fleeRate": 15,
+        "ballsOnly": 92.23,
+        "oneBait": 73.12,
+        "oneMud": 95.90,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 95.90
+      },
+      "Goldeen": {
+        "catchRate": 216,
+        "fleeRate": 15,
+        "ballsOnly": 93.51,
+        "oneBait": 76.36,
+        "oneMud": 96.87,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 96.87
+      },
+      "Nidorino": {
+        "catchRate": 114,
+        "fleeRate": 25,
+        "ballsOnly": 82.14,
+        "oneBait": 47.37,
+        "oneMud": 90.00,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 82.14
+      },
+      "Nidorina": {
+        "catchRate": 114,
+        "fleeRate": 25,
+        "ballsOnly": 82.14,
+        "oneBait": 47.37,
+        "oneMud": 90.00,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 82.14
+      },
+      "Rhyhorn": {
+        "catchRate": 114,
+        "fleeRate": 25,
+        "ballsOnly": 82.14,
+        "oneBait": 47.37,
+        "oneMud": 90.00,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 82.14
+      },
+      "Parasect": {
+        "catchRate": 63,
+        "fleeRate": 25,
+        "ballsOnly": 71.62,
+        "oneBait": 33.33,
+        "oneMud": 77.78,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 71.62
+      },
+      "Venomoth": {
+        "catchRate": 63,
+        "fleeRate": 25,
+        "ballsOnly": 71.62,
+        "oneBait": 33.33,
+        "oneMud": 77.78,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 71.62
+      },
+      "Exeggcute": {
+        "catchRate": 89,
+        "fleeRate": 25,
+        "ballsOnly": 78.18,
+        "oneBait": 40.28,
+        "oneMud": 87.06,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 78.18
+      },
+      "Seaking": {
+        "catchRate": 51,
+        "fleeRate": 25,
+        "ballsOnly": 67.11,
+        "oneBait": 27.78,
+        "oneMud": 70.83,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 67.11
+      },
+      "Dratini": {
+        "catchRate": 38,
+        "fleeRate": 35,
+        "ballsOnly": 52.05,
+        "oneBait": 12.20,
+        "oneMud": 52.78,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 52.05
+      },
+      "Chansey": {
+        "catchRate": 25,
+        "fleeRate": 45,
+        "ballsOnly": 9.82,
+        "oneBait": 17.86,
+        "oneMud": 9.83,
+        "bestStrategy": "oneBait",
+        "bestOdds": 17.86
+      },
+      "Kangaskhan": {
+        "catchRate": 38,
+        "fleeRate": 45,
+        "ballsOnly": 45.78,
+        "oneBait": 32.65,
+        "oneMud": 45.24,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 45.78
+      },
+      "Scyther": {
+        "catchRate": 38,
+        "fleeRate": 45,
+        "ballsOnly": 45.78,
+        "oneBait": 32.65,
+        "oneMud": 45.24,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 45.78
+      },
+      "Pinsir": {
+        "catchRate": 38,
+        "fleeRate": 45,
+        "ballsOnly": 45.78,
+        "oneBait": 32.65,
+        "oneMud": 45.24,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 45.78
+      },
+      "Tauros": {
+        "catchRate": 38,
+        "fleeRate": 45,
+        "ballsOnly": 45.78,
+        "oneBait": 32.65,
+        "oneMud": 45.24,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 45.78
+      },
+      "Dragonair": {
+        "catchRate": 38,
+        "fleeRate": 45,
+        "ballsOnly": 45.78,
+        "oneBait": 32.65,
+        "oneMud": 45.24,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 45.78
+      }
+    },
     "areas": [
       {
         "name": "Entrance",

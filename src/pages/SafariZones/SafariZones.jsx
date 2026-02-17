@@ -111,6 +111,16 @@ const ENCOUNTER_LABELS = {
   grass: 'Grass',
 }
 
+const STRATEGY_LABELS = {
+  ballsOnly: 'Balls Only',
+  oneBait: 'One Bait',
+  oneMud: 'One Mud',
+}
+
+function normalizeStrategy(strategy) {
+  return STRATEGY_LABELS[strategy] || strategy
+}
+
 function getEncounterClass(type) {
   if (type === 'day') return styles.encounterDay
   if (type === 'night') return styles.encounterNight
@@ -121,6 +131,14 @@ function getEncounterClass(type) {
 
 function PokemonCard({ name, encounterType, catchData }) {
   const data = catchData?.[name]
+  const showStrategy = data && (data.bestStrategy === 'oneBait' || data.bestStrategy === 'oneMud')
+  
+  function getStrategyClass(strategy) {
+    if (strategy === 'oneMud') return styles.strategyOneMud
+    if (strategy === 'oneBait') return styles.strategyOneBait
+    return ''
+  }
+  
   return (
     <Link to={`/pokemon/${normalizePokemonName(name)}`} className={styles.pokemonCard}>
       <img
@@ -131,6 +149,9 @@ function PokemonCard({ name, encounterType, catchData }) {
         loading="lazy"
       />
       <span className={styles.pokemonName} title={name}>{name}</span>
+      {showStrategy && (
+        <span className={`${styles.strategyBadge} ${getStrategyClass(data.bestStrategy)}`}>{normalizeStrategy(data.bestStrategy)}</span>
+      )}
       {data && (
         <span className={`${styles.pokemonOdds} ${getOddsClass(data.bestOdds)}`}>
           {data.bestOdds}%
