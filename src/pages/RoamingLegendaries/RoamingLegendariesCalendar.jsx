@@ -66,8 +66,8 @@ export default function RoamingLegendariesCalendar() {
       </div>
 
       <div className={styles.backLinkWrapper}>
-        <Link to="/pokedex" className={styles.backLink}>
-          ← Back to Pokédex
+        <Link to="/" className={styles.backLink}>
+          ← Back to Home
         </Link>
       </div>
 

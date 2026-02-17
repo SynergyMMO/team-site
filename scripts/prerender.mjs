@@ -1177,7 +1177,7 @@ async function prerender() {
       route: '/safari-zones',
       ogTitle: 'PokeMMO Safari Zone Guide - Catch Rates, Flee Rates & Best Strategies',
       ogDescription: 'Complete PokeMMO Safari Zone guide with catch rates, flee rates, and optimal strategies for Johto and Sinnoh (Great Marsh). Find the best approach for every Safari Zone Pokemon.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/chansey.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/chansey.gif',
     },
   };
 

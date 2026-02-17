@@ -1,5 +1,10 @@
 @import './seo-hidden.css';
 
+/* Global box-sizing reset */
+* {
+  box-sizing: border-box;
+}
+
 /* Global styles */
 body {
   background: #111;

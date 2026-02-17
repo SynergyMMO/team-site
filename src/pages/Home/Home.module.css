@@ -338,6 +338,7 @@
   margin-bottom: 1.5rem;
   max-height: 600px;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 0.5rem;
 }
 
@@ -423,5 +424,43 @@
   .clockPeriod,
   .clockCountdown {
     font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .featuresSection,
+  .applySection,
+  .changelogSection {
+    padding: 1rem;
+  }
+
+  .applySection ul,
+  .applySection ol,
+  .changelogEntry ul {
+    padding-left: 1.25rem;
+  }
+
+  .featureCard {
+    padding: 1.25rem;
+  }
+
+  .clockContainer {
+    padding: 12px 16px;
+  }
+
+  .clockMain {
+    gap: 12px;
+  }
+
+  .clockTime {
+    font-size: 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
   }
 }
