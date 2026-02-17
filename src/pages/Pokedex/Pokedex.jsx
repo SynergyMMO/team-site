@@ -4,7 +4,6 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTierData } from '../../hooks/useTierData'
 import SearchBar from '../../components/SearchBar/SearchBar'
-import RoamingLegendaries from '../../components/RoamingLegendaries/RoamingLegendaries'
 import { getAssetUrl } from '../../utils/assets'
 import { normalizePokemonName, onGifError, getBasePokemonName } from '../../utils/pokemon'
 import { API } from '../../api/endpoints'
@@ -1095,8 +1094,6 @@ export default function Pokedex() {
         placeholder="Search Pokemon"
         suggestions={searchSuggestions}
       />
-
-      <RoamingLegendaries />
 
       {!(locationSearch.trim() && locationOptions.includes(locationSearch)) && (
         <div style={{ textAlign: 'center', margin: '20px 0' }}>

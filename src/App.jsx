@@ -3,7 +3,8 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar/Navbar'
 import StarField from './components/StarField/StarField'
 
-const Showcase = lazy(() => import('./pages/Showcase/Showcase'))
+const Home = lazy(() => import('./pages/Home/Home'))
+const ShinyShowcase = lazy(() => import('./pages/ShinyShowcase/ShinyShowcase'))
 const PlayerPage = lazy(() => import('./pages/PlayerPage/PlayerPage'))
 const SHOTM = lazy(() => import('./pages/SHOTM/SHOTM'))
 const Pokedex = lazy(() => import('./pages/Pokedex/Pokedex'))
@@ -18,7 +19,6 @@ const ShinyWar2025 = lazy(() => import('./pages/ShinyWar2025/ShinyWar2025'))
 const RoamingLegendariesCalendar = lazy(() => import('./pages/RoamingLegendaries/RoamingLegendariesCalendar'))
 const SafariZones = lazy(() => import('./pages/SafariZones/SafariZones'))
 const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
-const About = lazy(() => import('./pages/About/About'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
@@ -82,7 +82,8 @@ export default function App() {
       <main id="main-container">
         <Suspense fallback={<div className="message">Loading...</div>}>
           <Routes>
-            <Route path="/" element={<Showcase />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/shiny-showcase" element={<ShinyShowcase />} />
             <Route path="/player/:playerName" element={<PlayerPage />} />
             <Route path="/pokemon/:pokemonName" element={<PokemonDetail />} />
             <Route path="/shotm" element={<SHOTM />} />
@@ -97,7 +98,6 @@ export default function App() {
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />
             <Route path="/safari-zones" element={<SafariZones />} />
             <Route path="/shiny-war-2025" element={<ShinyWar2025 />} />
-            <Route path="/about" element={<About />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/panel" element={<AdminPanel />} />
             <Route path="*" element={<NotFound />} />

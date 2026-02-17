@@ -15,7 +15,8 @@ const DIST = join(__dirname, '..', 'dist');
 
 
 const PAGE_KEYWORDS = {
-  '/': 'PokeMMO shiny showcase, shiny collection, PokeMMO community, Team Synergy, team shiny hunting, Pokemon collectors',
+  '/': 'Team Synergy, PokeMMO shiny hunting community, shiny hunters, player shiny collections, PokeMMO Pokédex, roaming legendaries, PokeMMO tools, Trophy Board',
+  '/shiny-showcase': 'PokeMMO shiny showcase, Team Synergy shiny collections, player shiny rankings, Pokemon collectors, shiny count leaderboard, Team Synergy members',
   '/pokedex': 'PokeMMO Pokédex, Pokédex tracker, Generation 1-5 Pokemon, PokeMMO shiny tracker, Pokemon database, PokeMMO Shiny Locations, PokeMMO Where to Shiny Hunt, PokeMMO Catch Calculator',
   '/roaming-legendaries': 'PokeMMO roaming legendaries, roaming legendary calendar, Zapdos, Articuno, Moltres, Entei, Suicune, Raikou, PokeMMO legendary spawns, roaming Pokémon locations, legendary monthly schedule, PokeMMO shiny hunting legendaries',
   '/random-pokemon-generator': 'Pokemon randomizer, shiny hunt randomizer, random Pokemon generator, shiny bingo cards, encounter picker, hunt challenge',
@@ -24,7 +25,6 @@ const PAGE_KEYWORDS = {
   '/trophy-board': 'PokeMMO trophies, achievement trophies, trophy list, PokeMMO leaderboard, gaming achievements, community awards',
   '/streamers': 'PokeMMO streamers, PokeMMO Twitch streamers, PokeMMO YouTube, gaming livestream, content creators, streamer directory',
   '/shiny-war-2025': 'Shiny Wars 2025, PokeMMO competition, Shiny Wars standings, leaderboard results, shiny catching championship, competition rankings, team synergy shiny war results',
-  '/about': 'Team Synergy PokeMMO, PokeMMO community, how to join Team Synergy, team membership, PokeMMO guild, community guide, pokemmo team recruitment, how to find a team in PokeMMO',
 };
 
 const DYNAMIC_KEYWORDS = {
@@ -41,10 +41,17 @@ const DYNAMIC_KEYWORDS = {
 const PAGE_FAQS = {
   '/': [
     { question: 'What is Team Synergy?', answer: 'Team Synergy is a PokeMMO shiny hunting community dedicated to shiny collection, competitive gameplay, and community events.' },
-    { question: 'How do I join Team Synergy?', answer: 'Visit our About page to learn about requirements and how to apply to join the team.' },
-    { question: 'What is shiny hunting in PokeMMO?', answer: 'Shiny hunting is the practice of catching shiny Pokémon - rare variants with different colors. Team Synergy specializes in shiny collection.' },
-    { question: 'Where can I find Team Synergy streamers?', answer: 'Check our Streamers page for live PokeMMO streams from team members on Twitch and YouTube.' },
-    { question: 'How many shinies has Team Synergy caught?', answer: 'Team Synergy has caught a lot of shinies! Visit the Shiny Showcase for a detailed list.' },
+    { question: 'What can I find on Team Synergy?', answer: 'Explore our Shiny Showcase to see 140+ player collections, browse our detailed Pokédex, watch live Twitch streamers, check our Trophy Board, and join community events.' },
+    { question: 'Where can I watch Team Synergy streamers?', answer: 'Check our Streamers page for live PokeMMO streams from team members on Twitch and YouTube.' },
+    { question: 'What is shiny hunting?', answer: 'Shiny hunting is the practice of catching shiny Pokémon - rare variants with different colors. Team Synergy specializes in shiny collection and offers tools to help.' },
+    { question: 'How can I track my Pokemon progress?', answer: 'Use our interactive Pokédex to filter by type, tier, and location. Track which Pokemon you need and find shiny hunting locations.' },
+  ],
+  '/shiny-showcase': [
+    { question: 'What is the Shiny Showcase?', answer: 'The Shiny Showcase displays the shiny collections of all Team Synergy members, ranked by total shiny count.' },
+    { question: 'How are players ranked?', answer: 'Players are ranked by their total number of shinies caught, with detailed statistics available for each member.' },
+    { question: 'Can I filter players?', answer: 'Yes, use the search bar to find specific players or filter by various statistics.' },
+    { question: 'What shinies are included?', answer: 'The showcase includes all shiny Pokémon collected by Team Synergy members across all regions.' },
+    { question: 'How is this data updated?', answer: 'The shiny collections are regularly updated to reflect new catches and achievements by team members.' },
   ],
   '/shotm': [
     { question: 'What is SHOTM?', answer: 'SHOTM stands for Shiny of the Month - a monthly feature highlighting exceptional shiny catches by Team Synergy Members' },
@@ -96,13 +103,6 @@ const PAGE_FAQS = {
     { question: 'How do I start a new bingo board?', answer: 'Click "Generate Bingo Board" and select your preferred grid size and difficulty level.' },
     { question: 'What happens when I complete a pattern?', answer: 'Completing a bingo pattern marks your achievement and you can generate a new board or challenge.' },
   ],
-  '/about': [
-    { question: 'What is Team Synergy?', answer: 'Team Synergy is a PokeMMO community dedicated to shiny hunting, competitive gameplay, and fostering a welcoming gaming environment.' },
-    { question: 'When was Team Synergy founded?', answer: 'Team Synergy was founded as a collective effort to build a strong PokeMMO community of shiny hunters.' },
-    { question: 'How many members does Team Synergy have?', answer: 'Team Synergy has 140+ active members with diverse skills and hunting preferences.' },
-    { question: 'How do I apply to join Team Synergy?', answer: 'Visit the About page for detailed membership requirements, application process, and contact information.' },
-    { question: 'What are the team values?', answer: 'Team Synergy values community, cooperation, skill development, and inclusive gaming for all members.' },
-  ],
 };
 
 // FAQs for dynamic pages (use {placeholder} for dynamic values)
@@ -147,6 +147,7 @@ const CREATORS = {
 // ---------------- STATIC ROUTES ----------------
 const STATIC_ROUTES = [
   '/',
+  '/shiny-showcase',
   '/shotm',
   '/pokedex',
   '/roaming-legendaries',
@@ -157,7 +158,6 @@ const STATIC_ROUTES = [
   '/random-pokemon-generator',
   '/shiny-war-2025',
   '/safari-zones',
-  '/about',
 ];
 
 
@@ -857,7 +857,8 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   // Generate page-specific hidden content with keywords for search engines
   function getHiddenSeoContent(route) {
     const pageDescriptions = {
-      '/': `<h1 class="seo-semantic-hidden">Team Synergy - PokeMMO Shiny Hunting Community</h1><section class="seo-semantic-hidden"><p>Team Synergy is a dedicated PokeMMO shiny hunting community where passionate players gather to catch and collect rare shiny Pokemon. Our team specializes in shiny hunting guides and strategies for catching shiny Pokemon across all generations in PokeMMO. Whether you're new to shiny hunting or an experienced hunter, Team Synergy offers comprehensive resources including Pokédex tracking, roaming legendaries calendars, and encounter guides. We feature livestreaming content from top PokeMMO players, trophy achievements, and competitive shiny wars. Our shiny hunting guides cover everything from basic shiny Pokemon catching techniques to advanced strategies for rare Pokemon. Team Synergy members share their shiny collections, showcase their best catches, and participate in community events. We provide tools for customizing encounter counters, generating random shiny hunt challenges, and tracking progress. Join our PokeMMO community to learn shiny hunting tips, discover new rare Pokemon locations, and compete in shiny catching challenges. Team Synergy brings together the best shiny hunters in PokeMMO for an inclusive gaming experience. Team Synergy is referenced in PokeMMO community forums and gaming communities as a premier shiny hunting resource.</p></section>`,
+      '/': `<h1 class="seo-semantic-hidden">Team Synergy: Ultimate PokeMMO Shiny Hunting Community</h1><section class="seo-semantic-hidden"><p>Team Synergy is the premier PokeMMO shiny hunting community hub with 140+ player collections, interactive Pokédex, roaming legendaries tracking, live streamers, trophy achievements, and competitive events.</p></section>`,
+      '/shiny-showcase': `<h1 class="seo-semantic-hidden">Shiny Showcase - Team Synergy Collections</h1><section class="seo-semantic-hidden"><p>Browse 140+ Team Synergy member shiny collections ranked by count. Discover top hunters, view statistics, and explore the best Pokemon catches in our comprehensive collection database.</p></section>`,
       '/shotm': `<h1 class="seo-semantic-hidden">Shiny of the Month - Team Synergy</h1><section class="seo-semantic-hidden"><p>SHOTM stands for Shiny of the Month - a monthly feature highlighting exceptional shiny catches by Team Synergy members in PokeMMO. The SHOTM recognition program celebrates outstanding shiny hunting achievements and rare Pokemon catches. Each month, Team Synergy members compete for recognition based on the tier value and rarity of their shiny catches. The SHOTM selection system awards points based on Pokemon rarity, nature quality, and hunting difficulty. Winners receive community recognition, featured showcases, and special team acknowledgment. The Shiny of the Month tradition strengthens community engagement and motivates hunters to pursue rare targets. Team Synergy members view SHOTM as a prestigious award recognizing exceptional dedication to shiny hunting. The monthly recognition encourages sharing of hunt stories, strategies, and achievement updates. SHOTM winners become community role models inspiring other hunters to pursue ambitious shiny targets. The program tracks historical winners and maintains achievement records celebrating past accomplishments. Participate in monthly competitions to earn SHOTM recognition and community prestige within Team Synergy.</p></section>`,
       '/pokedex': `<h1 class="seo-semantic-hidden">PokeMMO Pokédex - Shiny Pokemon Database</h1><section class="seo-semantic-hidden"><p>The Team Synergy Pokédex is a comprehensive PokeMMO database featuring all Generation 1-5 Pokemon with detailed shiny variants and hunting information. Our Pokemon guide includes catch locations, rarity tiers, abilities, base stats, and type matchups for every Pokemon in PokeMMO. Use our advanced Pokédex tracker to filter shiny Pokemon by type, tier, generation, and location. Our shiny hunting guides provide exact spawn rates and encounter locations for each Pokemon. The Pokédex displays both normal and shiny forms of every Pokemon, helping hunters identify their targets. Team Synergy's Pokemon database includes rare find indicators and difficulty ratings for shiny hunting. Our guides explain Pokemon evolution, breeding mechanics, and nature-based advantages in PokeMMO. Discover the best shiny Pokemon to hunt based on difficulty and rarity. Use our Pokédex to plan your shiny hunting strategy and track which rare Pokemon you still need. The database includes expert tips for catching hard-to-find Pokemon and maximizing shiny encounter rates. Filter by tier to find beginner-friendly shiny hunts or challenge yourself with legendary tier Pokemon.</p></section>`,
       '/roaming-legendaries': `<h1 class="seo-semantic-hidden">Roaming Legendaries Calendar - PokeMMO Legendary Pokemon</h1><section class="seo-semantic-hidden"><p>The Team Synergy Roaming Legendaries Calendar tracks monthly spawns of rare legendary Pokemon in PokeMMO including Zapdos, Moltres, Articuno, Entei, Suicune, and Raikou. Our guide provides shiny hunting strategies specifically designed for roaming legendary Pokemon. Learn when and where each legendary spawns to plan your shiny hunting expeditions. The calendar shows availability for all roaming legendaries across monthly rotations, helping you schedule hunts efficiently. Our shiny hunting guides explain the unique challenges of catching roaming legends and advanced strategies for success. Team Synergy tracks legendary Pokemon locations and provides tips for efficient encounters. The roaming legendaries calendar is essential for shiny hunters seeking rare legendary shiny Pokemon. Our guides cover catch rates, recommended Pokemon teams, and optimal battle strategies for each legendary. Discover the best months to hunt specific legendary shiny Pokemon based on spawn schedules. Use our Pokédex data combined with the legendary calendar to plan year-round shiny hunting adventures. The roaming legendaries guide includes detailed location maps and encounter frequency data for all legendary Pokemon.</p></section>`,
@@ -867,7 +868,6 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
       '/trophy-board': `<h1 class="seo-semantic-hidden">Team Synergy Trophy Board - Achievements</h1><section class="seo-semantic-hidden"><p>The Team Synergy Trophy Board displays prestigious achievements earned by community members for exceptional accomplishments in PokeMMO shiny hunting. View all available trophies and discover which members have achieved specific milestones. Our trophy guide explains achievement criteria and what it takes to earn each trophy. Team Synergy recognizes outstanding shiny hunters through our comprehensive trophy system covering various hunting styles and specializations. Browse trophy winners and learn their strategies for achieving awards. The trophy board celebrates both competitive achievements and community contributions. Our guide details trophy categories including shiny count records, legendary catches, event victories, and community service recognition. Each trophy page displays all members who earned that specific achievement. Team Synergy trophies motivate hunters to pursue excellence and inspire newer hunters with achievable goals. The trophy board serves as a historical record of Team Synergy's greatest hunters and their legendary catches. View statistics for each trophy including rarity ratings and average earning time. The achievement system encourages participation in shiny hunting events and community challenges.</p></section>`,
       '/streamers': `<h1 class="seo-semantic-hidden">Team Synergy Streamers - PokeMMO Live</h1><section class="seo-semantic-hidden"><p>Team Synergy features talented PokeMMO streamers broadcasting live shiny hunting sessions on Twitch and YouTube. Watch expert hunters perform shiny hunts in real-time and learn advanced strategies through live commentary. Our streamer directory provides links to all Team Synergy content creators and their streaming schedules. Follow Team Synergy streamers for daily PokeMMO content including shiny hunting guides, PVP battles, and community events. Our guide helps you discover top shiny hunters and their favorite Pokemon targets. Join live chat during streams to interact with experienced hunters and ask shiny hunting questions. Team Synergy streamers showcase rare shiny Pokemon catches and explain hunting techniques for different Pokemon tiers. The streamer page displays current live status and upcoming stream schedules. Watch gameplay to improve your own shiny hunting abilities and stay updated on PokeMMO trends. Team Synergy content creators produce entertaining educational content for all skill levels. Subscribe to your favorite Team Synergy streamers for exclusive highlights and offline content. The streaming community brings together shiny hunters from around the world for shared gaming experiences.</p></section>`,
       '/shiny-war-2025': `<h1 class="seo-semantic-hidden">Shiny Wars 2025 - Team Synergy Competition Results</h1><section class="seo-semantic-hidden"><p>Team Synergy Shiny Wars 2025 results display our team's competitive shiny hunting performance in the official PokeMMO season. View our top placements, total shiny catches, and point accumulations across all competition rounds. Our competition guide explains the shiny wars scoring system and tier-based point calculations. Team Synergy competed at the highest level catching valuable shiny Pokemon and executing expert hunting strategies. Browse individual catch records breaking down results by hunter and shiny rarity tier. The shiny wars showcase highlights remarkable achievements by Team Synergy members in official competitions. Our guide explains how shiny wars scoring works including nature bonuses and legendary multipliers. View championship leaderboards and compare Team Synergy's performance against other competitive organizations. Team Synergy's shiny wars results demonstrate our community's dedication to excellence in PokeMMO. Discover top-performing hunters and their favorite shiny Pokemon targets during competition season. The results page provides detailed statistics including average catch value and tier distribution. Team Synergy continues striving for championship glory in upcoming shiny wars seasons.</p></section>`,
-      '/about': `<h1 class="seo-semantic-hidden">About Team Synergy - PokeMMO Community</h1><section class="seo-semantic-hidden"><p>Team Synergy is a welcoming PokeMMO community dedicated to shiny hunting, competitive gameplay, and fostering inclusive gaming experiences. Our organization brings together experienced hunters and newcomers to share shiny Pokemon knowledge and strategies. Learn about Team Synergy's values including community support, skill development, and celebration of achievement. Our guide explains how to join Team Synergy and what membership entails. Team Synergy members participate in organized shiny hunts, competitive events, and collaborative challenges. The about page details our team structure, leadership, and community guidelines. Discover how Team Synergy supports new players through guides, mentorship, and shared resources. Our community emphasizes helping each other improve shiny hunting skills and achieve personal goals. Team Synergy maintains inclusive policies welcoming hunters of all experience levels. Learn about our membership benefits including exclusive events, community events, and team resources. The about page explains Team Synergy's history, growth, and vision for the future. Join a thriving community of passionate PokeMMO shiny hunters committed to cooperative gameplay and mutual support. Team Synergy uses Discord for community management and coordination of shiny hunting activities.</p></section>`
     };
     
     return pageDescriptions[route] || '';
@@ -918,7 +918,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   const webPageSchema = generateWebPageSchema(meta.route, meta.ogTitle, meta.ogDescription, meta.ogImage);
   schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(webPageSchema, null, 2)}\n</script>`);
   
-  // ---- COLLECTION PAGE SCHEMA (for Pokédex and Trophy Board) ----
+  // ---- COLLECTION PAGE SCHEMA (for Pokédex, Trophy Board, and Shiny Showcase) ----
   if (meta.route === '/pokedex') {
     const collectionSchema = generateCollectionPageSchema(
       meta.route,
@@ -935,6 +935,15 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
       meta.ogDescription,
       meta.ogImage,
       12  // 12 unique trophies
+    );
+    schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(collectionSchema, null, 2)}\n</script>`);
+  } else if (meta.route === '/shiny-showcase') {
+    const collectionSchema = generateCollectionPageSchema(
+      meta.route,
+      meta.ogTitle,
+      meta.ogDescription,
+      meta.ogImage,
+      140  // 140+ team members with shiny collections
     );
     schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(collectionSchema, null, 2)}\n</script>`);
   }
@@ -1091,9 +1100,16 @@ async function prerender() {
   const STATIC_META = {
     '/': {
       route: '/',
-      ogTitle: 'Team Synergy - PokeMMO Shiny Hunting Team',
-      ogDescription: 'Team Synergy is a PokeMMO shiny hunting team. Browse our shiny dex, view shiny collections, watch our streamers, and generate encounter counter themes.',
+      ogTitle: 'Team Synergy - PokeMMO Shiny Hunting Community Hub',
+      ogDescription: 'Team Synergy is the ultimate PokeMMO shiny hunting community hub. Browse 140+ player shiny collections, explore our detailed Pokédex, watch live Twitch streamers, track roaming legendaries, and join competitions.',
       ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+      crawlerLinks: [...playerLinks, ...pokemonLinks, ...streamerLinks],
+    },
+    '/shiny-showcase': {
+      route: '/shiny-showcase',
+      ogTitle: 'Shiny Showcase - Team Synergy PokeMMO Member Collections',
+      ogDescription: 'Browse Team Synergy\'s 140+ member shiny collections ranked by total count. Discover the best shiny hunters, view collection statistics, and explore spectacular Pokemon catches.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
       crawlerLinks: playerLinks,
     },
     '/shotm': {
@@ -1162,13 +1178,6 @@ async function prerender() {
       ogTitle: 'PokeMMO Safari Zone Guide - Catch Rates, Flee Rates & Best Strategies',
       ogDescription: 'Complete PokeMMO Safari Zone guide with catch rates, flee rates, and optimal strategies for Johto and Sinnoh (Great Marsh). Find the best approach for every Safari Zone Pokemon.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/chansey.gif',
-    },
-    '/about': {
-      route: '/about',
-      ogTitle: 'About Team Synergy | PokeMMO Shiny Hunting Community',
-      ogDescription: 'Learn about Team Synergy, a PokeMMO shiny hunting community. Learn how to apply, find team members, and join our Discord community for PokeMMO gaming.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
-      crawlerLinks: streamerLinks,
     },
   };
 

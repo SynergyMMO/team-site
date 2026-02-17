@@ -1,0 +1,427 @@
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.featuresSection {
+  background: rgba(20, 10, 40, 0.6);
+  border: 1px solid rgba(100, 150, 255, 0.3);
+  border-radius: 12px;
+  padding: 2.5rem;
+  margin: 3rem 0;
+}
+
+.featuresSection h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #fff;
+}
+
+.featuresSection > p {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #ccc;
+  margin-bottom: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.featureCard {
+  background: linear-gradient(135deg, rgba(100, 50, 150, 0.3), rgba(50, 100, 150, 0.3));
+  border: 1px solid rgba(100, 150, 255, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.featureCard:hover {
+  background: linear-gradient(135deg, rgba(100, 50, 150, 0.5), rgba(50, 100, 150, 0.5));
+  border-color: rgba(100, 150, 255, 0.6);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 32px rgba(100, 150, 255, 0.2);
+}
+
+.featureIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.featureCard h3 {
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+  color: #fff;
+}
+
+.featureCard p {
+  font-size: 0.95rem;
+  color: #ccc;
+  margin: 0;
+}
+
+.videoSection {
+  text-align: center;
+  margin: 3rem 0;
+}
+
+.videoSection h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #fff;
+}
+
+.videoContainer {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.videoLink {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.videoLink:hover {
+  transform: scale(1.05);
+}
+
+.videoThumbnail {
+  border-radius: 8px;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  border: 2px solid rgba(100, 150, 255, 0.3);
+}
+
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.videoLink:hover .playButton {
+  background: rgba(100, 150, 255, 0.8);
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.videoSection > p {
+  color: #ccc;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.cta {
+  text-align: center;
+  background: linear-gradient(135deg, rgba(100, 50, 150, 0.4), rgba(50, 100, 150, 0.4));
+  border: 1px solid rgba(100, 150, 255, 0.4);
+  border-radius: 12px;
+  padding: 3rem;
+  margin: 3rem 0;
+}
+
+.cta h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.cta p {
+  font-size: 1.1rem;
+  color: #ccc;
+  margin-bottom: 2rem;
+}
+
+.ctaButton {
+  display: inline-block;
+  background: linear-gradient(135deg, #6450be, #3264be);
+  color: #fff;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(100, 150, 255, 0.5);
+}
+
+.ctaButton:hover {
+  background: linear-gradient(135deg, #7a5fd4, #4a7ad4);
+  border-color: rgba(100, 150, 255, 0.8);
+  box-shadow: 0 0 20px rgba(100, 150, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* In-Game Clock */
+.clockContainer {
+  background: rgba(20, 10, 40, 0.85);
+  border: 1.5px solid #444;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.clockMain {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.clockTime {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+}
+
+.clockDetails {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.clockDay {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #e0d8f0;
+  background: rgba(100, 60, 180, 0.3);
+  padding: 3px 10px;
+  border-radius: 8px;
+}
+
+.clockPeriod {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 8px;
+}
+
+.periodMorning {
+  background: rgba(220, 180, 60, 0.25);
+  color: #f0d060;
+  border: 1px solid rgba(220, 180, 60, 0.4);
+}
+
+.periodDay {
+  background: rgba(220, 140, 60, 0.25);
+  color: #f0a040;
+  border: 1px solid rgba(220, 140, 60, 0.4);
+}
+
+.periodNight {
+  background: rgba(60, 80, 180, 0.25);
+  color: #8090e0;
+  border: 1px solid rgba(60, 80, 180, 0.4);
+}
+
+.clockCountdown {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Apply Section */
+.applySection {
+  background: rgba(20, 10, 40, 0.6);
+  border: 1px solid rgba(100, 150, 255, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.applySection h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  border-bottom: 2px solid rgba(100, 150, 255, 0.3);
+  padding-bottom: 0.5rem;
+}
+
+.applySection h3 {
+  font-size: 1.3rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.applySection h3:first-of-type {
+  margin-top: 1rem;
+}
+
+.applySection p {
+  color: #ccc;
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.applySection ul {
+  list-style: disc;
+  padding-left: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.applySection ol {
+  list-style: decimal;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.applySection li {
+  margin-bottom: 0.5rem;
+  color: #ccc;
+  line-height: 1.8;
+}
+
+.applySection a {
+  color: #4a90e2;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-weight: 500;
+}
+
+.applySection a:hover {
+  color: #6bb3ff;
+  text-decoration: underline;
+}
+
+/* Changelog Section */
+.changelogSection {
+  background: rgba(20, 10, 40, 0.6);
+  border: 1px solid rgba(100, 150, 255, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.changelogSection h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  border-bottom: 2px solid rgba(100, 150, 255, 0.3);
+  padding-bottom: 0.5rem;
+}
+
+.changelog {
+  margin-bottom: 1.5rem;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.changelog::-webkit-scrollbar {
+  width: 8px;
+}
+
+.changelog::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.changelog::-webkit-scrollbar-thumb {
+  background: rgba(100, 150, 255, 0.5);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.changelog::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 150, 255, 0.8);
+}
+
+.changelogEntry {
+  margin-bottom: 1.5rem;
+}
+
+.changelogEntry h3 {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.changelogEntry ul {
+  list-style: disc;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.changelogEntry li {
+  margin-bottom: 0.5rem;
+  color: #ccc;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.metadata {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(100, 150, 255, 0.3);
+  color: #999;
+}
+
+.metadata p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .featuresGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .featuresSection h2,
+  .videoSection h2,
+  .cta h2 {
+    font-size: 1.5rem;
+  }
+
+  .cta {
+    padding: 2rem 1rem;
+  }
+
+  .clockTime {
+    font-size: 1.5rem;
+  }
+
+  .clockDay,
+  .clockPeriod,
+  .clockCountdown {
+    font-size: 0.75rem;
+  }
+}

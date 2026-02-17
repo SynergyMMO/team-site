@@ -10,6 +10,7 @@ const trophiesData = JSON.parse(fs.readFileSync(trophiesPath, 'utf-8'));
 
 const staticRoutes = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
+  { path: '/shiny-showcase/', changefreq: 'daily', priority: '0.95' },
   { path: '/shotm/', changefreq: 'daily', priority: '0.9' },
   { path: '/pokedex/', changefreq: 'weekly', priority: '0.8' },
   { path: '/roaming-legendaries/', changefreq: 'weekly', priority: '0.8' },
@@ -19,7 +20,6 @@ const staticRoutes = [
   { path: '/random-pokemon-generator/', changefreq: 'monthly', priority: '0.7' },
   { path: '/events/', changefreq: 'weekly', priority: '0.6' },
   { path: '/shiny-war-2025/', changefreq: 'weekly', priority: '0.7' },
-  { path: '/about/', changefreq: 'monthly', priority: '0.5' },
 ];
 
 // Ensure we always publish canonical URLs with a trailing slash

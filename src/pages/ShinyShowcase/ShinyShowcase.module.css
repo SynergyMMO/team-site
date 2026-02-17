@@ -1,0 +1,137 @@
+.showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
+
+.videoContainer {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.videoContainer h2 a {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: #9b59b6;
+  text-underline-offset: 4px;
+}
+
+.videoContainer h2 a:hover {
+  text-decoration-color: #b870d1;
+}
+
+.videoContainer a {
+  display: inline-block;
+}
+
+.showcaseVideo {
+  width: 300px;
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.showcaseVideo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(155, 89, 182, 0.8), 0 0 40px rgba(155, 89, 182, 0.4);
+}
+
+@media (max-width: 900px) {
+  .showcase {
+    max-width: 100%;
+    padding: 12px;
+  }
+}
+
+/* Container for all rare shinies in a tier */
+.rareShinyGrid {
+  display: flex;
+  flex-wrap: wrap;         /* wrap to next line if needed */
+  justify-content: center; /* center items horizontally */
+  gap: 16px;               /* space between cards */
+  margin: 0 auto;          /* optional: center the container itself */
+  padding: 10px 0;
+}
+.tierHeader {
+  text-align: center;       /* center the text */
+  font-size: 1.5rem;        /* adjust size as needed */
+  margin: 20px 0 10px 0;    /* space above and below */
+  font-weight: bold;
+}
+
+/* Each shiny card */
+.rareShinyCard {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  overflow: visible;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rareShinyCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Tier label on top of card */
+.rareShinyCard::after {
+  content: attr(data-tier);
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 215, 0, 0.85);
+  color: #000;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* Shiny GIF container */
+.rareShinyCard img {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+/* Icons (Egg, Alpha, Reaction, etc.) positioned top-left */
+.rareShinyCard .icon {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  z-index: 10;
+}
+
+/* InfoBox on hover */
+.rareShinyCard .infoBox {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0,0,0,0.8);
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.rareShinyCard:hover .infoBox {
+  opacity: 1;
+}
