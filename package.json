@@ -25,7 +25,7 @@
     "sitemap": "node src/utils/sitemap-builder.js",
     "MergeData": "node scripts/mergeShinyData.js",
     "TestMergeData": "node scripts/mergeShinyData.js --test",
-    "editResources": "node scripts/resourcesEditorServer.mjs"
+    "resourceeditor": "node scripts/resourcesEditorServer.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",

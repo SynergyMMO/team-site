@@ -96,6 +96,9 @@ function slugify(title) {
 }
 
 // Function to extract all resource routes
+// IMPORTANT: This function dynamically generates routes from src/data/resources.json
+// Any new resources added to resources.json will automatically be included in the sitemap
+// This ensures resources are discoverable by search engines and web crawlers
 function getResourceRoutes(today) {
   const routes = [];
 

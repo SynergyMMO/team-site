@@ -94,7 +94,7 @@
           }
         ]
       }
-  },
+    },
     "Shiny Hunting": {
       "_meta": {
         "title": "Shiny Hunting Guides & Techniques | PokeMMO | Team Synergy",
@@ -115,5 +115,25 @@
         ]
       }
     }
+  },
+  "Events": {
+    "_meta": {
+      "title": "PokeMMO Guides catered around the Official Seasonal Events",
+      "description": ""
+    },
+    "_items": [
+      {
+        "name": "The Ultimate Christmas Event Guide",
+        "description": "This is the Ultimate guide for the Christmas Event, everything you need to know (and probably more)",
+        "link": "https://forums.pokemmo.com/index.php?/topic/194733-xmas-2025-the-ultimate-christmas-event-guide/",
+        "credits": "CallMeSensei"
+      },
+      {
+        "name": "Ultimate Halloween Guide",
+        "description": "This is the Ultimate guide for the Halloween Event, everything you need to know (and probably more)",
+        "link": "https://forums.pokemmo.com/index.php?/topic/192700-halloween-2025-the-ultimate-halloween-event-guide/",
+        "credits": "CallMeSensei"
+      }
+    ]
   }
 }

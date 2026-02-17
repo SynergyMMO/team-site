@@ -79,7 +79,10 @@ export default function Resources() {
   // Get available categories
   const categories = Object.keys(resourcesData).filter(key => !key.startsWith('_'))
   const currentCategory = resourcesData[activeCategory]
-  const subcategories = activeCategory ? Object.keys(currentCategory || {}).filter(key => !key.startsWith('_')) : []
+  
+  // For subcategories: check if category has nested structure (subcats) or if it's flat (_items)
+  const isFlatCategory = currentCategory && currentCategory._items && Array.isArray(currentCategory._items) && !Object.keys(currentCategory).some(k => !k.startsWith('_') && k !== '_items')
+  const subcategories = !isFlatCategory && activeCategory ? Object.keys(currentCategory || {}).filter(key => !key.startsWith('_')) : []
 
   // Update URL when tab changes
   useEffect(() => {
@@ -144,6 +147,11 @@ export default function Resources() {
 
   // Get items for current view
   const getItems = () => {
+    // First check if category itself has _items (flat structure like Events)
+    if (!activeSubcategory && currentCategory && currentCategory._items && Array.isArray(currentCategory._items)) {
+      return currentCategory._items.filter(item => item !== null && item !== undefined)
+    }
+
     if (!subcategoryContent) return []
 
     // If it's a direct array (old format)

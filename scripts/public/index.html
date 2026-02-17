@@ -697,6 +697,8 @@
 
       try {
         const response = await apiCall('GET', `/api/categories/${category}/subcategories`);
+        const resources = await apiCall('GET', `/api/resources`);
+        const items = resources[category]._items || [];
         
         let html = `
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -704,11 +706,12 @@
             <button class="btn-secondary" onclick="goHome()">← Back</button>
           </div>
           <div class="tabs">
-            <button class="tab active" onclick="switchTab('info')">Info</button>
-            <button class="tab" onclick="switchTab('subcategories')">Subcategories</button>
+            <button class="tab" onclick="switchTab('info')">Info</button>
+            <button class="tab" onclick="switchTab('items')">Items (${items.length})</button>
+            <button class="tab active" onclick="switchTab('subcategories')">Subcategories</button>
           </div>
 
-          <div id="info" class="tab-content active">
+          <div id="info" class="tab-content">
             <form onsubmit="saveCategoryMetadata('${category}'); return false;">
               <div class="form-group">
                 <label>Title (SEO)</label>
@@ -725,7 +728,37 @@
             </form>
           </div>
 
-          <div id="subcategories" class="tab-content">
+          <div id="items" class="tab-content">
+            <div style="margin-bottom: 20px;">
+              <button class="btn-success" onclick="showAddItemToCategoryDialog()">+ Add Item</button>
+            </div>
+        `;
+
+        if (items.length === 0) {
+          html += `<div class="empty-state"><p>No items in this category yet</p></div>`;
+        } else {
+          items.forEach((item, index) => {
+            const fieldCount = Object.keys(item).filter(k => k !== 'name').length;
+            html += `
+              <div class="item-card">
+                <div class="item-header">
+                  <div class="item-name">${item.name}</div>
+                  <div class="item-actions">
+                    <button class="btn-small" onclick="showEditItemDialogCategory(${index})">Edit</button>
+                    <button class="btn-small btn-danger" onclick="askDeleteItemCategory(${index})">Delete</button>
+                  </div>
+                </div>
+                <div class="item-fields">${fieldCount} field${fieldCount !== 1 ? 's' : ''}</div>
+                ${renderItemPreview(item)}
+              </div>
+            `;
+          });
+        }
+
+        html += `
+            </div>
+
+          <div id="subcategories" class="tab-content active">
         `;
 
         if (response.length === 0) {
@@ -734,9 +767,9 @@
           html += `<div class="field-list">`;
           response.forEach(subcat => {
             html += `
-              <div style="padding: 10px; background: white; border-radius: 4px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s;" 
-                   onclick="selectSubcategory('${subcat}')" style="padding: 10px; cursor: pointer;">
-                ${subcat}
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: 4px; margin-bottom: 8px;">
+                <div style="cursor: pointer; flex: 1;" onclick="selectSubcategory('${subcat}')">${subcat}</div>
+                <button class="btn-small btn-danger" style="margin-left: 10px;" onclick="askDeleteSubcategoryDirect('${subcat}')">Delete</button>
               </div>
             `;
           });
@@ -754,7 +787,6 @@
         content.innerHTML = html;
         
         // Load metadata
-        const resources = await apiCall('GET', `/api/resources`);
         const meta = resources[category]._meta || {};
         document.getElementById('catTitle').value = meta.title || '';
         document.getElementById('catDesc').value = meta.description || '';
@@ -769,6 +801,8 @@
 
       try {
         const nests = await apiCall('GET', `/api/categories/${category}/subcategories/${subcategory}/nests`);
+        const resources = await apiCall('GET', `/api/resources`);
+        const items = resources[category][subcategory]._items || [];
         
         let html = `
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -776,11 +810,12 @@
             <button class="btn-secondary" onclick="goBackToCategory()">← Back</button>
           </div>
           <div class="tabs">
-            <button class="tab active" onclick="switchTab('info')">Info</button>
+            <button class="tab" onclick="switchTab('info')">Info</button>
+            <button class="tab active" onclick="switchTab('items')">Items (${items.length})</button>
             <button class="tab" onclick="switchTab('nests')">Nests</button>
           </div>
 
-          <div id="info" class="tab-content active">
+          <div id="info" class="tab-content">
             <form onsubmit="saveSubcategoryMetadata(); return false;">
               <div class="form-group">
                 <label>Title (SEO)</label>
@@ -797,6 +832,36 @@
             </form>
           </div>
 
+          <div id="items" class="tab-content active">
+            <div style="margin-bottom: 20px;">
+              <button class="btn-success" onclick="showAddItemToSubcategoryDialog()">+ Add Item</button>
+            </div>
+        `;
+
+        if (items.length === 0) {
+          html += `<div class="empty-state"><p>No items in this subcategory yet</p></div>`;
+        } else {
+          items.forEach((item, index) => {
+            const fieldCount = Object.keys(item).filter(k => k !== 'name').length;
+            html += `
+              <div class="item-card">
+                <div class="item-header">
+                  <div class="item-name">${item.name}</div>
+                  <div class="item-actions">
+                    <button class="btn-small" onclick="showEditItemDialogSubcategory(${index})">Edit</button>
+                    <button class="btn-small btn-danger" onclick="askDeleteItemSubcategory(${index})">Delete</button>
+                  </div>
+                </div>
+                <div class="item-fields">${fieldCount} field${fieldCount !== 1 ? 's' : ''}</div>
+                ${renderItemPreview(item)}
+              </div>
+            `;
+          });
+        }
+
+        html += `
+            </div>
+
           <div id="nests" class="tab-content">
         `;
 
@@ -806,9 +871,9 @@
           html += `<div class="field-list">`;
           nests.forEach(nest => {
             html += `
-              <div style="padding: 10px; background: white; border-radius: 4px; margin-bottom: 8px; cursor: pointer;" 
-                   onclick="selectNest('${nest}')">
-                ${nest}
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: 4px; margin-bottom: 8px;">
+                <div style="cursor: pointer; flex: 1;" onclick="selectNest('${nest}')">${nest}</div>
+                <button class="btn-small btn-danger" style="margin-left: 10px;" onclick="askDeleteNestDirect('${nest}')">Delete</button>
               </div>
             `;
           });
@@ -826,7 +891,6 @@
         content.innerHTML = html;
 
         // Load metadata
-        const resources = await apiCall('GET', `/api/resources`);
         const meta = resources[category][subcategory]._meta || {};
         document.getElementById('subcatTitle').value = meta.title || '';
         document.getElementById('subcatDesc').value = meta.description || '';
@@ -1112,6 +1176,7 @@
         </form>
       `;
       modal.classList.add('active');
+      loadFieldNamesList();
     }
 
     function addItemField() {
@@ -1119,7 +1184,7 @@
       const id = 'field_' + Date.now();
       const html = `
         <div class="form-row" id="${id}">
-          <input type="text" placeholder="Field name" class="field-name">
+          <input type="text" placeholder="Field name" class="field-name" list="fieldNamesList">
           <input type="text" placeholder="Field value" class="field-value">
           <button type="button" class="btn-danger btn-small" onclick="removeItemField('${id}')" style="width: 100px;">Remove</button>
         </div>
@@ -1129,6 +1194,26 @@
 
     function removeItemField(id) {
       document.getElementById(id).remove();
+    }
+
+    async function loadFieldNamesList() {
+      try {
+        const fieldNames = await apiCall('GET', '/api/field-names');
+        let datalistHtml = '<datalist id="fieldNamesList">';
+        fieldNames.forEach(name => {
+          datalistHtml += `<option value="${name}">`;
+        });
+        datalistHtml += '</datalist>';
+        
+        // Remove existing datalist if any
+        const existing = document.getElementById('fieldNamesList');
+        if (existing) existing.remove();
+        
+        // Add new datalist to body
+        document.body.insertAdjacentHTML('beforeend', datalistHtml);
+      } catch (error) {
+        console.error('Failed to load field names:', error);
+      }
     }
 
     async function saveNewItem() {
@@ -1151,7 +1236,10 @@
       });
 
       try {
-        await apiCall('POST', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}/items`, item);
+        const encodedCategory = encodeURIComponent(category);
+        const encodedSubcategory = encodeURIComponent(subcategory);
+        const encodedNest = encodeURIComponent(nest);
+        await apiCall('POST', `/api/categories/${encodedCategory}/subcategories/${encodedSubcategory}/nests/${encodedNest}/items`, item);
         closeModal();
         renderNestContent();
         showSuccess('Item created');
@@ -1205,6 +1293,7 @@
 
         modalBody.innerHTML = html;
         modal.classList.add('active');
+        loadFieldNamesList();
       } catch (error) {
         console.error('Failed to load item:', error);
       }
@@ -1215,7 +1304,7 @@
       const id = 'field_' + Date.now();
       const html = `
         <div class="form-row" id="${id}">
-          <input type="text" placeholder="Field name" class="field-name">
+          <input type="text" placeholder="Field name" class="field-name" list="fieldNamesList">
           <textarea placeholder="Field value" class="field-value"></textarea>
           <button type="button" class="btn-danger btn-small" onclick="removeEditField('${id}')" style="width: 100px;">Remove</button>
         </div>
@@ -1247,7 +1336,10 @@
       });
 
       try {
-        await apiCall('PUT', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}/items/${index}`, item);
+        const encodedCategory = encodeURIComponent(category);
+        const encodedSubcategory = encodeURIComponent(subcategory);
+        const encodedNest = encodeURIComponent(nest);
+        await apiCall('PUT', `/api/categories/${encodedCategory}/subcategories/${encodedSubcategory}/nests/${encodedNest}/items/${index}`, item);
         closeModal();
         renderNestContent();
         showSuccess('Item updated');
@@ -1312,6 +1404,15 @@
       });
     }
 
+    function askDeleteSubcategoryDirect(subcategory) {
+      const [category] = currentPath;
+      askDelete(`Delete "${subcategory}" and all its contents?`, async () => {
+        await apiCall('DELETE', `/api/categories/${category}/subcategories/${subcategory}`);
+        loadSidebar();
+        renderCategoryContent();
+      });
+    }
+
     function askDeleteNest() {
       const [category, subcategory, nest] = currentPath;
       askDelete(`Delete "${nest}" and all its items?`, async () => {
@@ -1322,11 +1423,323 @@
       });
     }
 
+    function askDeleteNestDirect(nest) {
+      const [category, subcategory] = currentPath;
+      askDelete(`Delete "${nest}" and all its items?`, async () => {
+        await apiCall('DELETE', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}`);
+        loadSidebar();
+        renderSubcategoryContent();
+      });
+    }
+
     function askDeleteItem(index) {
       const [category, subcategory, nest] = currentPath;
       askDelete('Delete this item?', async () => {
-        await apiCall('DELETE', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}/items/${index}`);
+        const encodedCategory = encodeURIComponent(category);
+        const encodedSubcategory = encodeURIComponent(subcategory);
+        const encodedNest = encodeURIComponent(nest);
+        await apiCall('DELETE', `/api/categories/${encodedCategory}/subcategories/${encodedSubcategory}/nests/${encodedNest}/items/${index}`);
         renderNestContent();
+      });
+    }
+
+    // Subcategory Items Functions
+    function showAddItemToSubcategoryDialog() {
+      const [category, subcategory] = currentPath;
+      const modal = document.getElementById('addModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
+
+      modalTitle.textContent = 'Add Item to Subcategory';
+      modalBody.innerHTML = `
+        <form id="itemForm">
+          <div class="form-group">
+            <label>Item Name *</label>
+            <input type="text" name="name" required placeholder="e.g., Guide Name">
+          </div>
+          <div id="dynamicFields"></div>
+          <button type="button" class="btn-secondary btn-small" onclick="addItemField()">+ Add Field</button>
+          <div class="button-group" style="margin-top: 20px;">
+            <button type="button" class="btn-primary" onclick="saveItemToSubcategory()">Create Item</button>
+            <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+          </div>
+        </form>
+      `;
+      modal.classList.add('active');
+      loadFieldNamesList();
+    }
+
+    function showAddItemToCategoryDialog() {
+      const [category] = currentPath;
+      const modal = document.getElementById('addModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
+
+      modalTitle.textContent = 'Add Item to Category';
+      modalBody.innerHTML = `
+        <form id="itemForm">
+          <div class="form-group">
+            <label>Item Name *</label>
+            <input type="text" name="name" required placeholder="e.g., Guide Name">
+          </div>
+          <div id="dynamicFields"></div>
+          <button type="button" class="btn-secondary btn-small" onclick="addItemField()">+ Add Field</button>
+          <div class="button-group" style="margin-top: 20px;">
+            <button type="button" class="btn-primary" onclick="saveItemToCategory()">Create Item</button>
+            <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+          </div>
+        </form>
+      `;
+      modal.classList.add('active');
+      loadFieldNamesList();
+    }
+
+    async function saveItemToSubcategory() {
+      const form = document.getElementById('itemForm');
+      const name = form.querySelector('input[name="name"]').value;
+      const [category, subcategory] = currentPath;
+
+      if (!name) {
+        showError('Item name is required');
+        return;
+      }
+
+      const item = { name };
+      document.querySelectorAll('#dynamicFields > div').forEach(fieldDiv => {
+        const fieldName = fieldDiv.querySelector('.field-name').value;
+        const fieldValue = fieldDiv.querySelector('.field-value').value;
+        if (fieldName && fieldValue) {
+          item[fieldName] = fieldValue;
+        }
+      });
+
+      try {
+        const encodedCategory = encodeURIComponent(category);
+        const encodedSubcategory = encodeURIComponent(subcategory);
+        await apiCall('POST', `/api/categories/${encodedCategory}/subcategories/${encodedSubcategory}/items`, item);
+        closeModal();
+        renderSubcategoryContent();
+        showSuccess('Item created');
+      } catch (error) {
+        console.error('Failed to create item:', error);
+        showError('Failed to create item');
+      }
+    }
+
+    async function saveItemToCategory() {
+      const form = document.getElementById('itemForm');
+      const name = form.querySelector('input[name="name"]').value;
+      const [category] = currentPath;
+
+      if (!name) {
+        showError('Item name is required');
+        return;
+      }
+
+      const item = { name };
+      document.querySelectorAll('#dynamicFields > div').forEach(fieldDiv => {
+        const fieldName = fieldDiv.querySelector('.field-name').value;
+        const fieldValue = fieldDiv.querySelector('.field-value').value;
+        if (fieldName && fieldValue) {
+          item[fieldName] = fieldValue;
+        }
+      });
+
+      try {
+        const encodedCategory = encodeURIComponent(category);
+        await apiCall('POST', `/api/categories/${encodedCategory}/items`, item);
+        closeModal();
+        renderCategoryContent();
+        showSuccess('Item created');
+      } catch (error) {
+        console.error('Failed to create item:', error);
+        showError('Failed to create item');
+      }
+    }
+
+    async function showEditItemDialogSubcategory(index) {
+      const [category, subcategory] = currentPath;
+      try {
+        const resources = await apiCall('GET', `/api/resources`);
+        const item = resources[category][subcategory]._items[index];
+
+        const modal = document.getElementById('addModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        modalTitle.textContent = `Edit Item: ${item.name}`;
+        let html = `
+          <form id="editItemForm">
+            <div class="form-group">
+              <label>Item Name *</label>
+              <input type="text" name="name" required value="${item.name}">
+            </div>
+            <div id="editFields">
+        `;
+
+        Object.entries(item).forEach(([key, value]) => {
+          if (key !== 'name') {
+            const id = 'field_' + key;
+            html += `
+              <div class="form-row" id="${id}">
+                <input type="text" readonly class="field-name" value="${key}" style="background: #f5f5f5;">
+                <textarea class="field-value" placeholder="Field value">${value}</textarea>
+                <button type="button" class="btn-danger btn-small" onclick="removeEditField('${id}')" style="width: 100px;">Remove</button>
+              </div>
+            `;
+          }
+        });
+
+        html += `
+            </div>
+            <button type="button" class="btn-secondary btn-small" onclick="addEditField()">+ Add Field</button>
+            <div class="button-group" style="margin-top: 20px;">
+              <button type="button" class="btn-primary" onclick="saveEditItemSubcategory(${index})">Save Item</button>
+              <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+          </form>
+        `;
+
+        modalBody.innerHTML = html;
+        modal.classList.add('active');
+        loadFieldNamesList();
+      } catch (error) {
+        console.error('Failed to load item:', error);
+        showError('Failed to load item');
+      }
+    }
+
+    async function saveEditItemSubcategory(index) {
+      const form = document.getElementById('editItemForm');
+      const name = form.querySelector('input[name="name"]').value;
+      const [category, subcategory] = currentPath;
+
+      if (!name) {
+        showError('Item name is required');
+        return;
+      }
+
+      const item = { name };
+      document.querySelectorAll('#editFields > div').forEach(fieldDiv => {
+        const fieldName = fieldDiv.querySelector('.field-name').value;
+        const fieldValue = fieldDiv.querySelector('.field-value').value;
+        if (fieldName) {
+          item[fieldName] = fieldValue;
+        }
+      });
+
+      try {
+        const encodedCategory = encodeURIComponent(category);
+        const encodedSubcategory = encodeURIComponent(subcategory);
+        await apiCall('PUT', `/api/categories/${encodedCategory}/subcategories/${encodedSubcategory}/items/${index}`, item);
+        closeModal();
+        renderSubcategoryContent();
+        showSuccess('Item updated');
+      } catch (error) {
+        console.error('Failed to update item:', error);
+        showError('Failed to update item');
+      }
+    }
+
+    function askDeleteItemSubcategory(index) {
+      const [category, subcategory] = currentPath;
+      askDelete('Delete this item?', async () => {
+        const encodedCategory = encodeURIComponent(category);
+        const encodedSubcategory = encodeURIComponent(subcategory);
+        await apiCall('DELETE', `/api/categories/${encodedCategory}/subcategories/${encodedSubcategory}/items/${index}`);
+        renderSubcategoryContent();
+      });
+    }
+
+    async function showEditItemDialogCategory(index) {
+      const [category] = currentPath;
+      try {
+        const resources = await apiCall('GET', `/api/resources`);
+        const item = resources[category]._items[index];
+
+        const modal = document.getElementById('addModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        modalTitle.textContent = `Edit Item: ${item.name}`;
+        let html = `
+          <form id="editItemForm">
+            <div class="form-group">
+              <label>Item Name *</label>
+              <input type="text" name="name" required value="${item.name}">
+            </div>
+            <div id="editFields">
+        `;
+
+        Object.entries(item).forEach(([key, value]) => {
+          if (key !== 'name') {
+            const id = 'field_' + key;
+            html += `
+              <div class="form-row" id="${id}">
+                <input type="text" readonly class="field-name" value="${key}" style="background: #f5f5f5;">
+                <textarea class="field-value" placeholder="Field value">${value}</textarea>
+                <button type="button" class="btn-danger btn-small" onclick="removeEditField('${id}')" style="width: 100px;">Remove</button>
+              </div>
+            `;
+          }
+        });
+
+        html += `
+            </div>
+            <button type="button" class="btn-secondary btn-small" onclick="addEditField()">+ Add Field</button>
+            <div class="button-group" style="margin-top: 20px;">
+              <button type="button" class="btn-primary" onclick="saveEditItemCategory(${index})">Save Item</button>
+              <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+          </form>
+        `;
+
+        modalBody.innerHTML = html;
+        modal.classList.add('active');
+        loadFieldNamesList();
+      } catch (error) {
+        console.error('Failed to load item:', error);
+        showError('Failed to load item');
+      }
+    }
+
+    async function saveEditItemCategory(index) {
+      const form = document.getElementById('editItemForm');
+      const name = form.querySelector('input[name="name"]').value;
+      const [category] = currentPath;
+
+      if (!name) {
+        showError('Item name is required');
+        return;
+      }
+
+      const item = { name };
+      document.querySelectorAll('#editFields > div').forEach(fieldDiv => {
+        const fieldName = fieldDiv.querySelector('.field-name').value;
+        const fieldValue = fieldDiv.querySelector('.field-value').value;
+        if (fieldName) {
+          item[fieldName] = fieldValue;
+        }
+      });
+
+      try {
+        const encodedCategory = encodeURIComponent(category);
+        await apiCall('PUT', `/api/categories/${encodedCategory}/items/${index}`, item);
+        closeModal();
+        renderCategoryContent();
+        showSuccess('Item updated');
+      } catch (error) {
+        console.error('Failed to update item:', error);
+        showError('Failed to update item');
+      }
+    }
+
+    function askDeleteItemCategory(index) {
+      const [category] = currentPath;
+      askDelete('Delete this item?', async () => {
+        const encodedCategory = encodeURIComponent(category);
+        await apiCall('DELETE', `/api/categories/${encodedCategory}/items/${index}`);
+        renderCategoryContent();
       });
     }
 

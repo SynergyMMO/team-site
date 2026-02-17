@@ -245,20 +245,48 @@ function slugify(title) {
     .replace(/^-+|-+$/g, '')     // remove leading/trailing dashes
 }
 
-// Extract all resource routes with metadata
+// Extract all resource routes with metadata and breadcrumb navigation
 function getResourceRoutes() {
   const resources = [];
+  
+  // Build a map of all resource categories for crawler links
+  const allCategories = Object.keys(resourcesData).filter(k => !k.startsWith('_'));
 
   Object.entries(resourcesData).forEach(([categoryName, categoryData]) => {
     if (categoryName.startsWith('_')) return;
 
     // Category level
     if (categoryData._meta) {
+      // Get subcategories for this category
+      const subcategoriesInCategory = Object.keys(categoryData)
+        .filter(k => !k.startsWith('_') && categoryData[k]._meta)
+        .map(subcatName => ({
+          href: `/resources/${slugify(categoryName)}/${slugify(subcatName)}/`,
+          title: subcatName
+        }));
+      
+      // Create crawler links: other categories + subcategories
+      const crawlerLinks = [
+        // Link to main resources hub
+        { href: '/resources/', title: 'Resources' },
+        // Links to other categories
+        ...allCategories
+          .filter(cat => cat !== categoryName)
+          .map(cat => ({
+            href: `/resources/${slugify(cat)}/`,
+            title: cat
+          })),
+        // Links to subcategories within this category
+        ...subcategoriesInCategory
+      ];
+
       resources.push({
         route: `/resources/${slugify(categoryName)}/`,
         ogTitle: categoryData._meta.title,
         ogDescription: categoryData._meta.description,
         ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+        crawlerLinks: crawlerLinks,
+        categoryName: categoryName
       });
     }
 
@@ -267,11 +295,37 @@ function getResourceRoutes() {
       if (subcategoryName.startsWith('_')) return;
 
       if (subcategoryData._meta) {
+        // Get nested items for this subcategory
+        const nestedInSubcategory = Object.keys(subcategoryData)
+          .filter(k => !k.startsWith('_') && subcategoryData[k] && typeof subcategoryData[k] === 'object' && subcategoryData[k]._meta)
+          .map(nestedName => ({
+            href: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/${slugify(nestedName)}/`,
+            title: nestedName
+          }));
+
+        // Create breadcrumb-aware crawler links
+        const crawlerLinks = [
+          { href: '/resources/', title: 'Resources' },
+          { href: `/resources/${slugify(categoryName)}/`, title: categoryName },
+          // Links to sibling subcategories
+          ...Object.keys(categoryData)
+            .filter(k => !k.startsWith('_') && categoryData[k]._meta && k !== subcategoryName)
+            .map(siblingName => ({
+              href: `/resources/${slugify(categoryName)}/${slugify(siblingName)}/`,
+              title: siblingName
+            })),
+          // Links to nested items in this subcategory
+          ...nestedInSubcategory
+        ];
+
         resources.push({
           route: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/`,
           ogTitle: subcategoryData._meta.title,
           ogDescription: subcategoryData._meta.description,
           ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+          crawlerLinks: crawlerLinks,
+          categoryName: categoryName,
+          subcategoryName: subcategoryName
         });
       }
 
@@ -280,11 +334,29 @@ function getResourceRoutes() {
         if (nestedName.startsWith('_')) return;
 
         if (nestedData && typeof nestedData === 'object' && nestedData._meta) {
+          // Create hierarchical crawler links for nested items
+          const crawlerLinks = [
+            { href: '/resources/', title: 'Resources' },
+            { href: `/resources/${slugify(categoryName)}/`, title: categoryName },
+            { href: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/`, title: subcategoryName },
+            // Links to sibling nested items
+            ...Object.keys(subcategoryData)
+              .filter(k => !k.startsWith('_') && subcategoryData[k] && typeof subcategoryData[k] === 'object' && subcategoryData[k]._meta && k !== nestedName)
+              .map(sibling => ({
+                href: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/${slugify(sibling)}/`,
+                title: sibling
+              }))
+          ];
+
           resources.push({
             route: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/${slugify(nestedName)}/`,
             ogTitle: nestedData._meta.title,
             ogDescription: nestedData._meta.description,
             ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+            crawlerLinks: crawlerLinks,
+            categoryName: categoryName,
+            subcategoryName: subcategoryName,
+            nestedName: nestedName
           });
         }
       });
@@ -456,6 +528,89 @@ function generateBreadcrumbSchema(routePath, routeName) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": itemListElements
+  };
+}
+
+// ---- RESOURCE BREADCRUMB SCHEMA WITH HIERARCHY ----
+// Enhanced breadcrumb schema specifically for resource pages with proper SEO hierarchy
+function generateResourceBreadcrumbSchema(routePath, resourceMeta = {}) {
+  const segments = routePath.split('/').filter(Boolean);
+  const itemListElements = [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://synergymmo.com/"
+    }
+  ];
+  
+  // Add Resources main category
+  itemListElements.push({
+    "@type": "ListItem",
+    "position": 2,
+    "name": "Resources",
+    "item": "https://synergymmo.com/resources/"
+  });
+  
+  // Build hierarchical breadcrumbs for nested resource pages
+  let currentPath = '/resources';
+  let position = 3;
+  
+  // Start from index 1 (skip 'resources' in segments)
+  for (let i = 1; i < segments.length; i++) {
+    const segment = segments[i];
+    currentPath += '/' + segment;
+    
+    // Humanize the segment for display
+    const displayName = segment
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+    
+    itemListElements.push({
+      "@type": "ListItem",
+      "position": position,
+      "name": displayName,
+      "item": `https://synergymmo.com${currentPath}/`,
+      // Add rich data if available from metadata
+      ...(resourceMeta.description ? { "description": resourceMeta.description } : {})
+    });
+    
+    position++;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": itemListElements
+  };
+}
+
+// ---- RESOURCE COLLECTION SCHEMA ----
+// Schema for resource category and subcategory pages to help search engines understand resource hierarchy
+function generateResourceCollectionSchema(routePath, categoryTitle, categoryDescription) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "url": `https://synergymmo.com${routePath}/`,
+    "name": categoryTitle,
+    "description": categoryDescription,
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    },
+    "mainEntity": {
+      "@type": "Collection",
+      "name": categoryTitle,
+      "description": categoryDescription,
+      "inLanguage": "en",
+      "creator": {
+        "@type": "Organization",
+        "name": "Team Synergy",
+        "url": "https://synergymmo.com"
+      }
+    }
   };
 }
 
@@ -916,7 +1071,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
 
   // ---- ADD HIDDEN SEO CONTENT FOR CRAWLERS ----
   // Generate page-specific hidden content with keywords for search engines
-  function getHiddenSeoContent(route) {
+  function getHiddenSeoContent(route, meta = {}) {
     const pageDescriptions = {
       '/': `<h1 class="seo-semantic-hidden">Team Synergy: Ultimate PokeMMO Shiny Hunting Community</h1><section class="seo-semantic-hidden"><p>Team Synergy is the premier PokeMMO shiny hunting community hub with 140+ player collections, interactive Pokédex, roaming legendaries tracking, live streamers, trophy achievements, and competitive events.</p></section>`,
       '/shiny-showcase': `<h1 class="seo-semantic-hidden">Shiny Showcase - Team Synergy Collections</h1><section class="seo-semantic-hidden"><p>Browse 140+ Team Synergy member shiny collections ranked by count. Discover top hunters, view statistics, and explore the best Pokemon catches in our comprehensive collection database.</p></section>`,
@@ -933,10 +1088,31 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
       '/resources': `<h1 class="seo-semantic-hidden">Team Synergy PokeMMO Resources - Guides, Tools & Community Links</h1><section class="seo-semantic-hidden"><p>Team Synergy Resources is your comprehensive hub for PokeMMO guides, hunting tools, community links, and expert strategies. Discover official PokeMMO resources including the wiki, forums, and community databases for shiny hunting information. Access Team Synergy's specialized tools including our Counter Generator for custom encounter overlays, Random Pokemon Generator for hunt challenges, and interactive Pokédex with detailed location data. Learn shiny hunting fundamentals with beginner guides covering encounter mechanics, catch rates, and optimal hunting strategies. Advanced hunters can explore nature optimization, IV training, and PVP battle preparation guides. Connect with the Team Synergy community through our Discord server where members share strategies, event information, and hunting achievements. Find recommended external resources including Pokemon databases, species guides, and breeding calculators for comprehensive game knowledge. Our resources page aggregates tools that help you succeed in PokeMMO whether you're starting your first hunt or competing at championship levels. Explore guides on Safari Zone mechanics, roaming legendary schedules, and event competition rules. Team Synergy's curated resource collection saves you time researching and helps you develop effective hunting strategies. Whether seeking catch calculators, community support, or advanced training techniques, our Resources page connects you to the knowledge and tools needed for PokeMMO success.</p></section>`,
     };
     
+    // Check if this is a resource page request
+    if (route && route.includes('/resources/')) {
+      // Build breadcrumb hierarchy for resource pages
+      const segments = route.split('/').filter(Boolean);
+      const breadcrumbNav = segments.slice(1).map(segment => {
+        return segment
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      }).join(' > ');
+      
+      const hasDescription = meta.ogDescription && meta.ogDescription.length > 20;
+      const descriptionText = hasDescription 
+        ? meta.ogDescription 
+        : 'Explore Team Synergy resources for PokeMMO guides, tools, and community links';
+      
+      // Generate dynamic resource page content with breadcrumbs
+      const h1Title = meta.ogTitle?.split('|')[0]?.trim() || breadcrumbNav;
+      return `<h1 class="seo-semantic-hidden">${h1Title}</h1><nav class="seo-semantic-hidden" role="navigation"><p>Breadcrumb: Resources > ${breadcrumbNav}</p></nav><section class="seo-semantic-hidden"><p>${descriptionText}</p></section>`;
+    }
+    
     return pageDescriptions[route] || '';
   }
   
-  const hiddenSeoContent = getHiddenSeoContent(meta.route);
+  const hiddenSeoContent = getHiddenSeoContent(meta.route, meta);
   let h1Title = meta.ogTitle?.split('|')[0]?.trim() || 'Team Synergy';
   
   if (hiddenSeoContent) {
@@ -1048,6 +1224,18 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
     const trophySchema = generateTrophySchema(trophyName);
     schemaScript = `<script type="application/ld+json">\n${JSON.stringify(trophySchema, null, 2)}\n</script>`;
   }
+  // ---- RESOURCE SCHEMA ----
+  else if (meta.route?.includes('/resources/')) {
+    // Generate resource-specific collection schema if metadata is available
+    if (meta.categoryName || meta.ogTitle) {
+      const resourceCollectionSchema = generateResourceCollectionSchema(
+        meta.route,
+        meta.ogTitle?.split('|')[0]?.trim() || 'Resources',
+        meta.ogDescription || 'Team Synergy resources'
+      );
+      schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(resourceCollectionSchema, null, 2)}\n</script>`);
+    }
+  }
   
   if (schemaScript) {
     schemaScripts.push(schemaScript);
@@ -1062,11 +1250,21 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
     }
   }
 
-  // Add breadcrumb schema for all pages
-  const routePath = meta.route || '/';
-  const routeName = meta.ogTitle?.split('|')[0]?.trim() || 'Page';
-  const breadcrumbSchema = generateBreadcrumbSchema(routePath, routeName);
-  const breadcrumbScript = `<script type="application/ld+json">\n${JSON.stringify(breadcrumbSchema, null, 2)}\n</script>`;
+  // ---- RESOURCE-SPECIFIC BREADCRUMB SCHEMA ----
+  // Use enhanced breadcrumb schema for resource pages instead of generic one
+  let breadcrumbScript;
+  if (meta.route?.includes('/resources/')) {
+    const resourceBreadcrumbSchema = generateResourceBreadcrumbSchema(meta.route, {
+      description: meta.ogDescription
+    });
+    breadcrumbScript = `<script type="application/ld+json">\n${JSON.stringify(resourceBreadcrumbSchema, null, 2)}\n</script>`;
+  } else {
+    // Standard breadcrumb for other pages
+    const routePath = meta.route || '/';
+    const routeName = meta.ogTitle?.split('|')[0]?.trim() || 'Page';
+    const breadcrumbSchema = generateBreadcrumbSchema(routePath, routeName);
+    breadcrumbScript = `<script type="application/ld+json">\n${JSON.stringify(breadcrumbSchema, null, 2)}\n</script>`;
+  }
   schemaScripts.push(breadcrumbScript);
 
   // ---- CREATOR SCHEMA (attribution on all pages) ----
