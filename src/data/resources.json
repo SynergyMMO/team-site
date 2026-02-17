@@ -58,7 +58,59 @@
             "Money Per Hour": "~250k/hr",
             "Cost of Team": "~200k-400k",
             "Difficulty": "Medium - High",
-            "credits": "JinxedBoon"
+            "credits": "bloom"
+          }
+        ]
+      },
+      "Rock Smash Routes": {
+        "_meta": {
+          "title": "Rock Smashing Guide | PokeMMO | Team Synergy",
+          "description": "Learn how to rock smash effectively in PokeMMO with our comprehensive guide covering locations, Pokemon encounters, and strategies for maximizing your rock smashing sessions."
+        },
+        "_items": [
+          {
+            "name": "Johto",
+            "description": "Complete guide to rock smashing in Johto for PokeMMO including best locations, Pokemon encounters, and tips for maximizing your rock smashing efficiency.",
+            "link": "https://forums.pokemmo.com/index.php?/topic/160734-shamos-johto-rock-smash-guide-panotxa-developed/",
+            "credits": "shamorunner"
+          },
+          {
+            "name": "Hoenn",
+            "description": "Complete guide to rock smashing in Hoenn for PokeMMO including best locations, Pokemon encounters, and tips for maximizing your rock smashing efficiency.",
+            "link": "https://forums.pokemmo.com/index.php?/topic/154306-shamos-hoenn-rock-smash-guide/",
+            "credits": "shamorunner"
+          },
+          {
+            "name": "Sinnoh",
+            "description": "Complete guide to rock smashing in Sinnoh for PokeMMO including best locations, Pokemon encounters, and tips for maximizing your rock smashing efficiency.",
+            "link": "https://forums.pokemmo.com/index.php?/topic/154772-shamos-sinnoh-rock-smash-guide-and-routes/",
+            "credits": "shamorunner"
+          },
+          {
+            "name": "Unova",
+            "description": "Complete guide to rock smashing in Unova for PokeMMO including best locations, Pokemon encounters, and tips for maximizing your rock smashing efficiency.",
+            "link": "https://forums.pokemmo.com/index.php?/topic/154107-shamos-unova-rock-smash-guide/",
+            "credits": "shamorunner"
+          }
+        ]
+      }
+  },
+    "Shiny Hunting": {
+      "_meta": {
+        "title": "Shiny Hunting Guides & Techniques | PokeMMO | Team Synergy",
+        "description": "Complete shiny hunting guide covering safari zones, roaming legendaries, encounters, spawn rates, and advanced hunting strategies for PokeMMO."
+      },
+      "Safari Zone": {
+        "_meta": {
+          "title": "Safari Zone Shiny Hunting Guide | PokeMMO | Team Synergy",
+          "description": "Master PokeMMO Safari Zone shiny hunting with complete strategies for Johto and Sinnoh. Learn spawn rates, catch mechanics, and optimal hunting routes."
+        },
+        "_items": [
+          {
+            "name": "Safari Zone Guide",
+            "description": "Complete guide to shiny hunting in PokeMMO Safari Zones with detailed strategies, spawn rates, and catch mechanics for both Johto and Sinnoh zones.",
+            "link": "/safari-zones/",
+            "credits": "Mitchell, Hyper"
           }
         ]
       }

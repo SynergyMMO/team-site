@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources Editor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: #333;
+      font-size: 28px;
+    }
+
+    .breadcrumb {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-size: 14px;
+      color: #666;
+    }
+
+    .breadcrumb a {
+      color: #667eea;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 20px;
+    }
+
+    .sidebar {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      font-size: 14px;
+      color: #999;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .sidebar-list {
+      list-style: none;
+    }
+
+    .sidebar-list li {
+      margin-bottom: 8px;
+    }
+
+    .sidebar-list button {
+      width: 100%;
+      padding: 10px 12px;
+      background: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      text-align: left;
+      transition: all 0.2s;
+      color: #333;
+    }
+
+    .sidebar-list button:hover {
+      background: #efefef;
+      border-color: #d0d0d0;
+    }
+
+    .sidebar-list button.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .content {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .content h2 {
+      margin-bottom: 20px;
+      color: #333;
+      font-size: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="url"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+      border: 1px solid #d0d0d0;
+    }
+
+    .btn-secondary:hover {
+      background: #e8e8e8;
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+    }
+
+    .btn-success {
+      background: #27ae60;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #229954;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+    }
+
+    .btn-small {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .items-list {
+      margin-top: 30px;
+    }
+
+    .items-list h3 {
+      margin-bottom: 15px;
+      color: #333;
+      font-size: 18px;
+    }
+
+    .item-card {
+      background: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      transition: all 0.2s;
+    }
+
+    .item-card:hover {
+      border-color: #667eea;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .item-content {
+      background: white;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .item-fields {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .tab {
+      padding: 10px 15px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      color: #667eea;
+    }
+
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .field-list {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .field-item {
+      display: grid;
+      grid-template-columns: 150px 1fr auto;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: start;
+    }
+
+    .field-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-label {
+      font-weight: 600;
+      color: #667eea;
+      font-size: 12px;
+    }
+
+    .field-value {
+      color: #333;
+      font-size: 13px;
+      padding: 6px 0;
+      word-break: break-all;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+
+    .empty-state svg {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+    }
+
+    .close-btn:hover {
+      color: #333;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .no-content {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        max-height: none;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📚 Resources Editor</h1>
+      <div style="color: #999; font-size: 14px;">
+        Auto-saving to resources.json
+      </div>
+    </header>
+
+    <div class="breadcrumb" id="breadcrumb">
+      <a onclick="goHome()">Home</a>
+    </div>
+
+    <div class="main-content">
+      <div class="sidebar">
+        <h2 id="sidebarTitle">Categories</h2>
+        <ul class="sidebar-list" id="sidebarList"></ul>
+        <button class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="showAddDialog('category')">
+          + Add Category
+        </button>
+      </div>
+
+      <div class="content" id="content">
+        <div class="empty-state">
+          <p>👈 Select an item from the sidebar to begin</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal" id="addModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Item</h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2>Confirm Delete</h2>
+        <button class="close-btn" onclick="closeConfirm()">&times;</button>
+      </div>
+      <p id="confirmMessage" style="margin-bottom: 20px; color: #666;"></p>
+      <div class="button-group">
+        <button class="btn-danger" onclick="confirmed()">Delete</button>
+        <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPath = [];
+    let pendingDelete = null;
+
+    // API Functions
+    async function apiCall(method, url, data = null) {
+      const options = {
+        method,
+        headers: { 'Content-Type': 'application/json' }
+      };
+      if (data) options.body = JSON.stringify(data);
+
+      try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+          const error = await response.json();
+          showError(error.error || 'An error occurred');
+          throw new Error(error.error);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+      }
+    }
+
+    // UI Functions
+    function showError(message) {
+      const alert = document.createElement('div');
+      alert.className = 'alert alert-error';
+      alert.textContent = message;
+      document.querySelector('.content').insertBefore(alert, document.querySelector('.content').firstChild);
+      setTimeout(() => alert.remove(), 3000);
+    }
+
+    function showSuccess(message) {
+      const alert = document.createElement('div');
+      alert.className = 'alert alert-success';
+      alert.textContent = message;
+      document.querySelector('.content').insertBefore(alert, document.querySelector('.content').firstChild);
+      setTimeout(() => alert.remove(), 3000);
+    }
+
+    function goHome() {
+      currentPath = [];
+      loadSidebar();
+      renderContent();
+    }
+
+    async function loadSidebar() {
+      const list = document.getElementById('sidebarList');
+      list.innerHTML = '';
+
+      if (currentPath.length === 0) {
+        // Show categories
+        document.getElementById('sidebarTitle').textContent = 'Categories';
+        try {
+          const categories = await apiCall('GET', '/api/categories');
+          categories.forEach(cat => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            btn.textContent = cat;
+            btn.onclick = () => selectCategory(cat);
+            li.appendChild(btn);
+            list.appendChild(li);
+          });
+        } catch (error) {
+          console.error('Failed to load categories:', error);
+        }
+      } else if (currentPath.length === 1) {
+        // Show subcategories
+        document.getElementById('sidebarTitle').textContent = 'Subcategories';
+        try {
+          const subcats = await apiCall('GET', `/api/categories/${currentPath[0]}/subcategories`);
+          subcats.forEach(subcat => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            btn.textContent = subcat;
+            btn.onclick = () => selectSubcategory(subcat);
+            li.appendChild(btn);
+            list.appendChild(li);
+          });
+        } catch (error) {
+          console.error('Failed to load subcategories:', error);
+        }
+      } else if (currentPath.length === 2) {
+        // Show nests
+        document.getElementById('sidebarTitle').textContent = 'Nests';
+        try {
+          const nests = await apiCall('GET', `/api/categories/${currentPath[0]}/subcategories/${currentPath[1]}/nests`);
+          nests.forEach(nest => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            btn.textContent = nest;
+            btn.onclick = () => selectNest(nest);
+            li.appendChild(btn);
+            list.appendChild(li);
+          });
+        } catch (error) {
+          console.error('Failed to load nests:', error);
+        }
+      }
+    }
+
+    async function selectCategory(category) {
+      currentPath = [category];
+      updateBreadcrumb();
+      loadSidebar();
+      renderCategoryContent();
+    }
+
+    async function selectSubcategory(subcategory) {
+      currentPath = [currentPath[0], subcategory];
+      updateBreadcrumb();
+      loadSidebar();
+      renderSubcategoryContent();
+    }
+
+    async function selectNest(nest) {
+      currentPath = [currentPath[0], currentPath[1], nest];
+      updateBreadcrumb();
+      renderNestContent();
+    }
+
+    async function goBackToSubcategory() {
+      currentPath = [currentPath[0], currentPath[1]];
+      updateBreadcrumb();
+      loadSidebar();
+      renderSubcategoryContent();
+    }
+
+    async function goBackToCategory() {
+      currentPath = [currentPath[0]];
+      updateBreadcrumb();
+      loadSidebar();
+      renderCategoryContent();
+    }
+
+    function updateBreadcrumb() {
+      const breadcrumb = document.getElementById('breadcrumb');
+      breadcrumb.innerHTML = '<a onclick="goHome()">Home</a>';
+
+      currentPath.forEach((item, index) => {
+        breadcrumb.innerHTML += ` / ${item}`;
+      });
+    }
+
+    async function renderContent() {
+      const content = document.getElementById('content');
+      if (currentPath.length === 0) {
+        content.innerHTML = `
+          <div class="empty-state">
+            <p>👈 Select a category from the sidebar to begin editing</p>
+          </div>
+        `;
+      }
+    }
+
+    async function renderCategoryContent() {
+      const content = document.getElementById('content');
+      const category = currentPath[0];
+
+      try {
+        const response = await apiCall('GET', `/api/categories/${category}/subcategories`);
+        
+        let html = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">${category}</h2>
+            <button class="btn-secondary" onclick="goHome()">← Back</button>
+          </div>
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab('info')">Info</button>
+            <button class="tab" onclick="switchTab('subcategories')">Subcategories</button>
+          </div>
+
+          <div id="info" class="tab-content active">
+            <form onsubmit="saveCategoryMetadata('${category}'); return false;">
+              <div class="form-group">
+                <label>Title (SEO)</label>
+                <input type="text" id="catTitle" placeholder="Enter title for SEO">
+              </div>
+              <div class="form-group">
+                <label>Description (SEO)</label>
+                <textarea id="catDesc" placeholder="Enter description for SEO"></textarea>
+              </div>
+              <div class="button-group">
+                <button type="submit" class="btn-primary">Save Metadata</button>
+                <button type="button" class="btn-danger" onclick="askDeleteCategory('${category}')">Delete Category</button>
+              </div>
+            </form>
+          </div>
+
+          <div id="subcategories" class="tab-content">
+        `;
+
+        if (response.length === 0) {
+          html += `<p style="color: #999; text-align: center; padding: 40px;">No subcategories yet</p>`;
+        } else {
+          html += `<div class="field-list">`;
+          response.forEach(subcat => {
+            html += `
+              <div style="padding: 10px; background: white; border-radius: 4px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s;" 
+                   onclick="selectSubcategory('${subcat}')" style="padding: 10px; cursor: pointer;">
+                ${subcat}
+              </div>
+            `;
+          });
+          html += `</div>`;
+        }
+
+        html += `
+              <button class="btn-primary" style="margin-top: 15px;" onclick="showAddDialog('subcategory', '${category}')">
+                + Add Subcategory
+              </button>
+            </div>
+          </div>
+        `;
+
+        content.innerHTML = html;
+        
+        // Load metadata
+        const resources = await apiCall('GET', `/api/resources`);
+        const meta = resources[category]._meta || {};
+        document.getElementById('catTitle').value = meta.title || '';
+        document.getElementById('catDesc').value = meta.description || '';
+      } catch (error) {
+        console.error('Failed to render category:', error);
+      }
+    }
+
+    async function renderSubcategoryContent() {
+      const content = document.getElementById('content');
+      const [category, subcategory] = currentPath;
+
+      try {
+        const nests = await apiCall('GET', `/api/categories/${category}/subcategories/${subcategory}/nests`);
+        
+        let html = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">${subcategory}</h2>
+            <button class="btn-secondary" onclick="goBackToCategory()">← Back</button>
+          </div>
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab('info')">Info</button>
+            <button class="tab" onclick="switchTab('nests')">Nests</button>
+          </div>
+
+          <div id="info" class="tab-content active">
+            <form onsubmit="saveSubcategoryMetadata(); return false;">
+              <div class="form-group">
+                <label>Title (SEO)</label>
+                <input type="text" id="subcatTitle" placeholder="Enter title for SEO">
+              </div>
+              <div class="form-group">
+                <label>Description (SEO)</label>
+                <textarea id="subcatDesc" placeholder="Enter description for SEO"></textarea>
+              </div>
+              <div class="button-group">
+                <button type="submit" class="btn-primary">Save Metadata</button>
+                <button type="button" class="btn-danger" onclick="askDeleteSubcategory()">Delete Subcategory</button>
+              </div>
+            </form>
+          </div>
+
+          <div id="nests" class="tab-content">
+        `;
+
+        if (nests.length === 0) {
+          html += `<p style="color: #999; text-align: center; padding: 40px;">No nests yet</p>`;
+        } else {
+          html += `<div class="field-list">`;
+          nests.forEach(nest => {
+            html += `
+              <div style="padding: 10px; background: white; border-radius: 4px; margin-bottom: 8px; cursor: pointer;" 
+                   onclick="selectNest('${nest}')">
+                ${nest}
+              </div>
+            `;
+          });
+          html += `</div>`;
+        }
+
+        html += `
+              <button class="btn-primary" style="margin-top: 15px;" onclick="showAddDialog('nest')">
+                + Add Nest
+              </button>
+            </div>
+          </div>
+        `;
+
+        content.innerHTML = html;
+
+        // Load metadata
+        const resources = await apiCall('GET', `/api/resources`);
+        const meta = resources[category][subcategory]._meta || {};
+        document.getElementById('subcatTitle').value = meta.title || '';
+        document.getElementById('subcatDesc').value = meta.description || '';
+      } catch (error) {
+        console.error('Failed to render subcategory:', error);
+      }
+    }
+
+    async function renderNestContent() {
+      const content = document.getElementById('content');
+      const [category, subcategory, nest] = currentPath;
+
+      try {
+        const nestData = await apiCall('GET', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}`);
+        const { meta, items } = nestData;
+
+        let html = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">${nest}</h2>
+            <button class="btn-secondary" onclick="goBackToSubcategory()">← Back</button>
+          </div>
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab('items')">Items (${items.length})</button>
+            <button class="tab" onclick="switchTab('metadata')">Metadata</button>
+          </div>
+
+          <div id="items" class="tab-content active">
+            <div style="margin-bottom: 20px;">
+              <button class="btn-success" onclick="showAddItemDialog()">+ Add Item</button>
+            </div>
+        `;
+
+        if (items.length === 0) {
+          html += `<div class="empty-state"><p>No items in this nest yet</p></div>`;
+        } else {
+          items.forEach((item, index) => {
+            const fieldCount = Object.keys(item).filter(k => k !== 'name').length;
+            html += `
+              <div class="item-card">
+                <div class="item-header">
+                  <div class="item-name">${item.name}</div>
+                  <div class="item-actions">
+                    <button class="btn-small" onclick="showEditItemDialog(${index})">Edit</button>
+                    <button class="btn-small btn-danger" onclick="askDeleteItem(${index})">Delete</button>
+                  </div>
+                </div>
+                <div class="item-fields">${fieldCount} field${fieldCount !== 1 ? 's' : ''}</div>
+                ${renderItemPreview(item)}
+              </div>
+            `;
+          });
+        }
+
+        html += `
+          </div>
+
+          <div id="metadata" class="tab-content">
+            <form onsubmit="saveNestMetadata(); return false;">
+              <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="nestTitle" placeholder="Enter nest title">
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea id="nestDesc" placeholder="Enter nest description"></textarea>
+              </div>
+              <div class="button-group">
+                <button type="submit" class="btn-primary">Save Metadata</button>
+                <button type="button" class="btn-danger" onclick="askDeleteNest()">Delete Nest</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        `;
+
+        content.innerHTML = html;
+
+        // Load metadata
+        document.getElementById('nestTitle').value = meta.title || '';
+        document.getElementById('nestDesc').value = meta.description || '';
+      } catch (error) {
+        console.error('Failed to render nest:', error);
+      }
+    }
+
+    function renderItemPreview(item) {
+      const fields = Object.entries(item).filter(([k]) => k !== 'name');
+      if (fields.length === 0) return '';
+
+      let html = '<div class="item-content">';
+      fields.forEach(([key, value]) => {
+        const displayValue = typeof value === 'object' ? JSON.stringify(value) : value;
+        html += `<strong>${key}:</strong> ${displayValue}<br>`;
+      });
+      html += '</div>';
+      return html;
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Modal Functions
+    function closeModal() {
+      document.getElementById('addModal').classList.remove('active');
+    }
+
+    function closeConfirm() {
+      document.getElementById('confirmModal').classList.remove('active');
+      pendingDelete = null;
+    }
+
+    async function confirmed() {
+      if (pendingDelete) {
+        try {
+          await pendingDelete();
+          closeConfirm();
+          showSuccess('Deleted successfully');
+        } catch (error) {
+          console.error('Delete failed:', error);
+        }
+      }
+    }
+
+    function askDelete(message, callback) {
+      pendingDelete = callback;
+      document.getElementById('confirmMessage').textContent = message;
+      document.getElementById('confirmModal').classList.add('active');
+    }
+
+    // Add/Edit Dialogs
+    function showAddDialog(type, category = null) {
+      const modal = document.getElementById('addModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
+
+      let html = '';
+
+      if (type === 'category') {
+        modalTitle.textContent = 'Add Category';
+        html = `
+          <form onsubmit="addCategory(this); return false;">
+            <div class="form-group">
+              <label>Category Name</label>
+              <input type="text" name="name" required placeholder="e.g., Guides">
+            </div>
+            <div class="form-group">
+              <label>Title (SEO)</label>
+              <input type="text" name="title" placeholder="SEO title">
+            </div>
+            <div class="form-group">
+              <label>Description (SEO)</label>
+              <textarea name="description" placeholder="SEO description"></textarea>
+            </div>
+            <div class="button-group">
+              <button type="submit" class="btn-primary">Create Category</button>
+              <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+          </form>
+        `;
+      } else if (type === 'subcategory') {
+        modalTitle.textContent = 'Add Subcategory';
+        html = `
+          <form onsubmit="addSubcategory(this, '${category}'); return false;">
+            <div class="form-group">
+              <label>Subcategory Name</label>
+              <input type="text" name="name" required placeholder="e.g., Money Making">
+            </div>
+            <div class="form-group">
+              <label>Title (SEO)</label>
+              <input type="text" name="title" placeholder="SEO title">
+            </div>
+            <div class="form-group">
+              <label>Description (SEO)</label>
+              <textarea name="description" placeholder="SEO description"></textarea>
+            </div>
+            <div class="button-group">
+              <button type="submit" class="btn-primary">Create Subcategory</button>
+              <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+          </form>
+        `;
+      } else if (type === 'nest') {
+        modalTitle.textContent = 'Add Nest';
+        html = `
+          <form onsubmit="addNest(this); return false;">
+            <div class="form-group">
+              <label>Nest Name</label>
+              <input type="text" name="name" required placeholder="e.g., Gym Re-Runs">
+            </div>
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" name="title" placeholder="Nest title">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea name="description" placeholder="Nest description"></textarea>
+            </div>
+            <div class="button-group">
+              <button type="submit" class="btn-primary">Create Nest</button>
+              <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+          </form>
+        `;
+      }
+
+      modalBody.innerHTML = html;
+      modal.classList.add('active');
+    }
+
+    async function addCategory(form) {
+      const data = new FormData(form);
+      try {
+        await apiCall('POST', '/api/categories', {
+          name: data.get('name'),
+          title: data.get('title'),
+          description: data.get('description')
+        });
+        closeModal();
+        goHome();
+        showSuccess('Category created');
+      } catch (error) {
+        console.error('Failed to add category:', error);
+      }
+    }
+
+    async function addSubcategory(form, category) {
+      const data = new FormData(form);
+      try {
+        await apiCall('POST', `/api/categories/${category}/subcategories`, {
+          name: data.get('name'),
+          title: data.get('title'),
+          description: data.get('description')
+        });
+        closeModal();
+        loadSidebar();
+        showSuccess('Subcategory created');
+      } catch (error) {
+        console.error('Failed to add subcategory:', error);
+      }
+    }
+
+    async function addNest(form) {
+      const data = new FormData(form);
+      const [category, subcategory] = currentPath;
+      try {
+        await apiCall('POST', `/api/categories/${category}/subcategories/${subcategory}/nests`, {
+          name: data.get('name'),
+          title: data.get('title'),
+          description: data.get('description')
+        });
+        closeModal();
+        loadSidebar();
+        showSuccess('Nest created');
+      } catch (error) {
+        console.error('Failed to add nest:', error);
+      }
+    }
+
+    // Item Management
+    function showAddItemDialog() {
+      const modal = document.getElementById('addModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
+
+      modalTitle.textContent = 'Add Item';
+      modalBody.innerHTML = `
+        <form id="itemForm">
+          <div class="form-group">
+            <label>Item Name *</label>
+            <input type="text" name="name" required placeholder="e.g., 6 Pillars">
+          </div>
+          <div id="dynamicFields"></div>
+          <button type="button" class="btn-secondary btn-small" onclick="addItemField()">+ Add Field</button>
+          <div class="button-group" style="margin-top: 20px;">
+            <button type="button" class="btn-primary" onclick="saveNewItem()">Create Item</button>
+            <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+          </div>
+        </form>
+      `;
+      modal.classList.add('active');
+    }
+
+    function addItemField() {
+      const container = document.getElementById('dynamicFields');
+      const id = 'field_' + Date.now();
+      const html = `
+        <div class="form-row" id="${id}">
+          <input type="text" placeholder="Field name" class="field-name">
+          <input type="text" placeholder="Field value" class="field-value">
+          <button type="button" class="btn-danger btn-small" onclick="removeItemField('${id}')" style="width: 100px;">Remove</button>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', html);
+    }
+
+    function removeItemField(id) {
+      document.getElementById(id).remove();
+    }
+
+    async function saveNewItem() {
+      const form = document.getElementById('itemForm');
+      const name = form.querySelector('input[name="name"]').value;
+      const [category, subcategory, nest] = currentPath;
+
+      if (!name) {
+        showError('Item name is required');
+        return;
+      }
+
+      const item = { name };
+      document.querySelectorAll('#dynamicFields > div').forEach(fieldDiv => {
+        const fieldName = fieldDiv.querySelector('.field-name').value;
+        const fieldValue = fieldDiv.querySelector('.field-value').value;
+        if (fieldName && fieldValue) {
+          item[fieldName] = fieldValue;
+        }
+      });
+
+      try {
+        await apiCall('POST', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}/items`, item);
+        closeModal();
+        renderNestContent();
+        showSuccess('Item created');
+      } catch (error) {
+        console.error('Failed to create item:', error);
+      }
+    }
+
+    async function showEditItemDialog(index) {
+      const [category, subcategory, nest] = currentPath;
+      try {
+        const nestData = await apiCall('GET', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}`);
+        const item = nestData.items[index];
+
+        const modal = document.getElementById('addModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        modalTitle.textContent = `Edit Item: ${item.name}`;
+        let html = `
+          <form id="editItemForm">
+            <div class="form-group">
+              <label>Item Name *</label>
+              <input type="text" name="name" required value="${item.name}">
+            </div>
+            <div id="editFields">
+        `;
+
+        Object.entries(item).forEach(([key, value]) => {
+          if (key !== 'name') {
+            const id = 'field_' + key;
+            html += `
+              <div class="form-row" id="${id}">
+                <input type="text" readonly class="field-name" value="${key}" style="background: #f5f5f5;">
+                <textarea class="field-value" placeholder="Field value">${value}</textarea>
+                <button type="button" class="btn-danger btn-small" onclick="removeEditField('${id}')" style="width: 100px;">Remove</button>
+              </div>
+            `;
+          }
+        });
+
+        html += `
+            </div>
+            <button type="button" class="btn-secondary btn-small" onclick="addEditField()">+ Add Field</button>
+            <div class="button-group" style="margin-top: 20px;">
+              <button type="button" class="btn-primary" onclick="saveEditItem(${index})">Save Item</button>
+              <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+          </form>
+        `;
+
+        modalBody.innerHTML = html;
+        modal.classList.add('active');
+      } catch (error) {
+        console.error('Failed to load item:', error);
+      }
+    }
+
+    function addEditField() {
+      const container = document.getElementById('editFields');
+      const id = 'field_' + Date.now();
+      const html = `
+        <div class="form-row" id="${id}">
+          <input type="text" placeholder="Field name" class="field-name">
+          <textarea placeholder="Field value" class="field-value"></textarea>
+          <button type="button" class="btn-danger btn-small" onclick="removeEditField('${id}')" style="width: 100px;">Remove</button>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', html);
+    }
+
+    function removeEditField(id) {
+      document.getElementById(id).remove();
+    }
+
+    async function saveEditItem(index) {
+      const form = document.getElementById('editItemForm');
+      const name = form.querySelector('input[name="name"]').value;
+      const [category, subcategory, nest] = currentPath;
+
+      if (!name) {
+        showError('Item name is required');
+        return;
+      }
+
+      const item = { name };
+      document.querySelectorAll('#editFields > div').forEach(fieldDiv => {
+        const fieldName = fieldDiv.querySelector('.field-name').value;
+        const fieldValue = fieldDiv.querySelector('.field-value').value;
+        if (fieldName) {
+          item[fieldName] = fieldValue;
+        }
+      });
+
+      try {
+        await apiCall('PUT', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}/items/${index}`, item);
+        closeModal();
+        renderNestContent();
+        showSuccess('Item updated');
+      } catch (error) {
+        console.error('Failed to update item:', error);
+      }
+    }
+
+    // Delete Functions
+    async function saveCategoryMetadata(category) {
+      const title = document.getElementById('catTitle').value;
+      const description = document.getElementById('catDesc').value;
+
+      try {
+        await apiCall('PUT', `/api/categories/${category}`, { title, description });
+        showSuccess('Metadata saved');
+      } catch (error) {
+        console.error('Failed to save metadata:', error);
+      }
+    }
+
+    async function saveSubcategoryMetadata() {
+      const [category, subcategory] = currentPath;
+      const title = document.getElementById('subcatTitle').value;
+      const description = document.getElementById('subcatDesc').value;
+
+      try {
+        await apiCall('PUT', `/api/categories/${category}/subcategories/${subcategory}`, { title, description });
+        showSuccess('Metadata saved');
+      } catch (error) {
+        console.error('Failed to save metadata:', error);
+      }
+    }
+
+    async function saveNestMetadata() {
+      const [category, subcategory, nest] = currentPath;
+      const title = document.getElementById('nestTitle').value;
+      const description = document.getElementById('nestDesc').value;
+
+      try {
+        await apiCall('PUT', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}`, { title, description });
+        showSuccess('Metadata saved');
+      } catch (error) {
+        console.error('Failed to save metadata:', error);
+      }
+    }
+
+    function askDeleteCategory(category) {
+      askDelete(`Delete "${category}" and all its contents?`, async () => {
+        await apiCall('DELETE', `/api/categories/${category}`);
+        goHome();
+      });
+    }
+
+    function askDeleteSubcategory() {
+      const [category, subcategory] = currentPath;
+      askDelete(`Delete "${subcategory}" and all its contents?`, async () => {
+        await apiCall('DELETE', `/api/categories/${category}/subcategories/${subcategory}`);
+        currentPath = [category];
+        loadSidebar();
+        renderCategoryContent();
+      });
+    }
+
+    function askDeleteNest() {
+      const [category, subcategory, nest] = currentPath;
+      askDelete(`Delete "${nest}" and all its items?`, async () => {
+        await apiCall('DELETE', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}`);
+        currentPath = [category, subcategory];
+        loadSidebar();
+        renderSubcategoryContent();
+      });
+    }
+
+    function askDeleteItem(index) {
+      const [category, subcategory, nest] = currentPath;
+      askDelete('Delete this item?', async () => {
+        await apiCall('DELETE', `/api/categories/${category}/subcategories/${subcategory}/nests/${nest}/items/${index}`);
+        renderNestContent();
+      });
+    }
+
+    // Initialize
+    window.addEventListener('load', () => {
+      loadSidebar();
+      renderContent();
+    });
+  </script>
+</body>
+</html>

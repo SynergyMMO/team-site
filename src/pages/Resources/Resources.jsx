@@ -151,6 +151,11 @@ export default function Resources() {
       return subcategoryContent.filter(item => item !== null && item !== undefined)
     }
 
+    // If the subcategory content has _items directly (like Rock Smash Routes)
+    if (subcategoryContent._items && Array.isArray(subcategoryContent._items)) {
+      return subcategoryContent._items.filter(item => item !== null && item !== undefined)
+    }
+
     // If it's nested and we have a selected nested tab
     if (isNested && activeNestedTab) {
       const nestedContent = subcategoryContent[activeNestedTab]
