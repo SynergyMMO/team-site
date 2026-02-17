@@ -302,25 +302,3 @@ export function usePokemonDetails(pokemonName) {
   return { data, isLoading, error }
 }
 
-/**
- * Extract English flavor text from species data
- * @param {array} flavorTextEntries - Array of flavor text entries from PokeAPI
- * @returns {string} English flavor text
- */
-function getFlavorText(flavorTextEntries) {
-  if (!flavorTextEntries || flavorTextEntries.length === 0) {
-    return 'No description available.'
-  }
-  
-  // Find English text entries
-  const englishEntry = flavorTextEntries.find(
-    entry => entry.language.name === 'en'
-  )
-  
-  if (!englishEntry) {
-    return flavorTextEntries[0]?.flavor_text || 'No description available.'
-  }
-  
-  // Clean up line breaks
-  return englishEntry.flavor_text.replace(/\f/g, ' ').trim()
-}
