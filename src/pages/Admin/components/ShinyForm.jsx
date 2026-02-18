@@ -133,6 +133,15 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
     dispatch({ type: 'SET_FIELD', field: 'Location', value: val })
   }
 
+  function formatIVs(raw) {
+    const digits = raw.replace(/\D/g, '').slice(0, 12)
+    const chunks = []
+    for (let i = 0; i < digits.length; i += 2) {
+      chunks.push(digits.slice(i, i + 2))
+    }
+    return chunks.join('/')
+  }
+
   function handleDateCaughtChange(val) {
     dispatch({ type: 'SET_FIELD', field: 'date_caught', value: val })
     if (val) {
@@ -225,8 +234,9 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
         id="shinyIvs"
         type="text"
         value={form.ivs}
-        onChange={e => dispatch({ type: 'SET_FIELD', field: 'ivs', value: e.target.value })}
-        placeholder="e.g. 31/31/31/31/31/31"
+        onChange={e => dispatch({ type: 'SET_FIELD', field: 'ivs', value: formatIVs(e.target.value) })}
+        placeholder="31/31/31/31/31/31"
+        maxLength={17}
       />
 
       <label htmlFor="shinyNickname">Nickname:</label>
