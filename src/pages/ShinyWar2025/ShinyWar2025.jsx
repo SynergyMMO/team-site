@@ -112,7 +112,7 @@ export default function ShinyWar2025() {
             <div className={styles.nameContainer}>
               {isOnTeam ? (
                 <Link
-                  to={`/player/${player.name.toLowerCase()}`}
+                  to={`/player/${player.name.toLowerCase()}/`}
                   state={{ from: 'shiny-war' }}
                   className={`${styles.playerName} ${playerClass}`}
                 >
@@ -131,7 +131,7 @@ export default function ShinyWar2025() {
               {player.catches.map((c, i) => (
                 <Link
                   key={`${c.p}-${i}`}
-                  to={`/pokemon/${c.p.toLowerCase()}`}
+                  to={`/pokemon/${c.p.toLowerCase()}/`}
                   className={`${styles.pokemonCard} ${c.f === 's' ? styles.secretGlow : ''}`}
                   style={{ '--tier-color': TIER_COLORS[c.t] ?? '#94a3b8' }}
                 >

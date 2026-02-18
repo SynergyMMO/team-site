@@ -162,7 +162,7 @@ function PokemonCard({ name, encounterType, catchData, boosted }) {
   }
 
   return (
-    <Link to={`/pokemon/${normalizePokemonName(name)}`} className={cardClass}>
+    <Link to={`/pokemon/${normalizePokemonName(name)}/`} className={cardClass}>
       <img
         src={getLocalPokemonGif(name)}
         alt={name}
@@ -241,7 +241,7 @@ function CatchDataTable({ catchData }) {
             {sorted.map(p => (
               <tr key={p.name}>
                 <td>
-                  <Link to={`/pokemon/${normalizePokemonName(p.name)}`} className={styles.pokemonCell}>
+                  <Link to={`/pokemon/${normalizePokemonName(p.name)}/`} className={styles.pokemonCell}>
                     <img
                       src={getLocalPokemonGif(p.name)}
                       alt={p.name}

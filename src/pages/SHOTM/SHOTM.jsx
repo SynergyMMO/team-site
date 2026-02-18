@@ -163,7 +163,7 @@ export default function SHOTM() {
             {allTimeLeaderboard.map(e => {
               const medal = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][e.rank - 1] || ''
               return (
-                <Link key={e.player} to={`/player/${e.player.toLowerCase()}`} state={{ from: 'shotm' }} className={styles.allTimeItem}>
+                <Link key={e.player} to={`/player/${e.player.toLowerCase()}/`} state={{ from: 'shotm' }} className={styles.allTimeItem}>
                   {medal && <span className={styles.medal}>{medal}</span>}
                   <span>#{e.rank}</span>
                   <span>{e.player}</span>
@@ -219,7 +219,7 @@ export default function SHOTM() {
                           <div className={styles.pokemonName}>{pokemon}</div>
                           <div className={styles.pokemonHunters}>
                             {players.map(p => (
-                              <Link key={p} to={`/player/${p.toLowerCase()}`} state={{ from: 'shotm' }} className={styles.playerLink}>
+                              <Link key={p} to={`/player/${p.toLowerCase()}/`} state={{ from: 'shotm' }} className={styles.playerLink}>
                                 {p}
                               </Link>
                             ))}
@@ -269,7 +269,7 @@ export default function SHOTM() {
               <div key={player} className={styles.playerCard}>
                 <h2 className={styles.playerName}>
                   {trophy}{' '}
-                  <Link to={`/player/${player.toLowerCase()}`} state={{ from: 'shotm' }} className={styles.playerLink}>
+                  <Link to={`/player/${player.toLowerCase()}/`} state={{ from: 'shotm' }} className={styles.playerLink}>
                     {player}
                   </Link>{' '}
                   ({info.points} pts) {arrow}

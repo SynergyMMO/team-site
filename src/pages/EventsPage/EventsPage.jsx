@@ -88,7 +88,7 @@ export default function EventsPage() {
         <div
           key={event.id}
           className={styles.item}
-          onClick={() => navigate(`/event/${slugify(event.title)}`)}
+          onClick={() => navigate(`/event/${slugify(event.title)}/`)}
         >
           <img
             src={event.imageLink || '/placeholder.png'}

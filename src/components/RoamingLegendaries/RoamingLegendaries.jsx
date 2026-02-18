@@ -27,7 +27,7 @@ export default function RoamingLegendaries() {
           {thisMonthLegendaries.map(legendary => (
             <Link 
               key={legendary.id} 
-              to={`/pokemon/${legendary.id.toLowerCase()}`}
+              to={`/pokemon/${legendary.id.toLowerCase()}/`}
               className={styles.legendaryItem}
             >
               <img

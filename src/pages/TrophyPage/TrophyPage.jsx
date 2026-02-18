@@ -58,7 +58,7 @@ export default function TrophyPage() {
 
   return (
     <div className={styles.trophyPage}>
-      <BackButton to="/trophy-board" label="&larr; Return to Trophy Board" />
+      <BackButton to="/trophy-board/" label="&larr; Return to Trophy Board" />
       <div className={styles.header}>
         <img
           src={trophyImg}
@@ -74,11 +74,11 @@ export default function TrophyPage() {
         {players.map(player => (
           <li key={player}>
             {trophySlug === 'official-shiny-wars-2025' ? (
-              <Link to={`/shiny-war-2025#${player}`} className={styles.playerLink}>
+              <Link to={`/shiny-war-2025/#${player}`} className={styles.playerLink}>
                 {player}
               </Link>
             ) : (
-              <Link to={`/player/${player.toLowerCase()}`} className={styles.playerLink}>
+              <Link to={`/player/${player.toLowerCase()}/`} className={styles.playerLink}>
                 {player}
               </Link>
             )}

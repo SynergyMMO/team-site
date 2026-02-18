@@ -34,8 +34,8 @@ export default function TrophyBoard() {
             <div
               key={name}
               className={styles.item}
-              onClick={() => navigate(`/trophy/${slug}`)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/trophy/${slug}`) }}
+              onClick={() => navigate(`/trophy/${slug}/`)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/trophy/${slug}/`) }}
               role="button"
               tabIndex={0}
             >

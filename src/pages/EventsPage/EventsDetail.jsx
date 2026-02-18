@@ -93,7 +93,7 @@ export default function EventsDetail() {
 
   return (
     <div className={styles.container}>
-      <BackButton to="/events" label="&larr; Return to Events" />
+      <BackButton to="/events/" label="&larr; Return to Events" />
       <h1 className={styles.title}>{event.title}</h1>
 
       {event.imageLink && (

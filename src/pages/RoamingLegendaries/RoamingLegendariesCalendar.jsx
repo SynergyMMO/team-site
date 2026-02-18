@@ -87,7 +87,7 @@ export default function RoamingLegendariesCalendar() {
                 {legendaries.map(legendary => (
                   <Link
                     key={legendary.id}
-                    to={`/pokemon/${legendary.id.toLowerCase()}`}
+                    to={`/pokemon/${legendary.id.toLowerCase()}/`}
                     className={styles.legendaryEntry}
                   >
                     <img

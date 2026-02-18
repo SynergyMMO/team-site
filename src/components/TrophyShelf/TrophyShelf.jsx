@@ -39,7 +39,7 @@ export default function TrophyShelf({ playerName, trophies, trophyAssignments })
                   width="60"
                   height="60"
                   loading="lazy"
-                  onClick={() => navigate(`/trophy/${slugify(awardName)}`)}
+                  onClick={() => navigate(`/trophy/${slugify(awardName)}/`)}
                 />
                 <div className={styles.tooltip}>
                   <strong>{awardName}</strong><br />

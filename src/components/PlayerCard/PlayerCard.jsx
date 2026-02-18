@@ -42,7 +42,7 @@ function PlayerCard({ player, data, rank, streamers, mobileInteractive = false }
           </a>
         )}
         <Link
-          to={`/player/${player.toLowerCase()}`}
+          to={`/player/${player.toLowerCase()}/`}
           className={`${styles.playerName} ${playerClass}`}
           data-player={player.toLowerCase()}
         >

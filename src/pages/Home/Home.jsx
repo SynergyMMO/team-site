@@ -108,7 +108,7 @@ export default function Home() {
         </p>
 
         <div className={styles.featuresGrid}>
-          <Link to="/shiny-showcase" className={styles.featureCard}>
+          <Link to="/shiny-showcase/" className={styles.featureCard}>
             <div className={styles.featureIcon}>
               <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/reuniclus.gif" alt="Reuniclus" />
             </div>
@@ -116,7 +116,7 @@ export default function Home() {
             <p>Browse 140+ members' shiny collections and track rankings</p>
           </Link>
 
-          <Link to="/pokedex" className={styles.featureCard}>
+          <Link to="/pokedex/" className={styles.featureCard}>
             <div className={styles.featureIcon}>
               <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/pikachu.gif" alt="Pikachu" />
             </div>
@@ -124,7 +124,7 @@ export default function Home() {
             <p>Explore shiny hunting locations, alphas, and detailed Pokémon data</p>
           </Link>
 
-          <Link to="/streamers" className={styles.featureCard}>
+          <Link to="/streamers/" className={styles.featureCard}>
             <div className={styles.featureIcon}>
               <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/rotom.gif" alt="Rotom" />
             </div>
@@ -132,7 +132,7 @@ export default function Home() {
             <p>Watch live Twitch streams from Team Synergy members</p>
           </Link>
 
-          <Link to="/resources" className={styles.featureCard}>
+          <Link to="/resources/" className={styles.featureCard}>
             <div className={styles.featureIcon}>
               <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/porygon.gif" alt="Porygon" />
             </div>
@@ -140,7 +140,7 @@ export default function Home() {
             <p>Read all the useful Resources about PokeMMO</p>
           </Link>
 
-          <Link to="/safari-zones" className={styles.featureCard}>
+          <Link to="/safari-zones/" className={styles.featureCard}>
             <div className={styles.featureIcon}>
               <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/riolu.gif" alt="Riolu" />
             </div>
@@ -148,7 +148,7 @@ export default function Home() {
             <p>Explore detailed Safari Zone information for all regions</p>
           </Link>
 
-          <Link to="/roaming-legendaries" className={styles.featureCard}>
+          <Link to="/roaming-legendaries/" className={styles.featureCard}>
             <div className={styles.featureIcon}>
               <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/suicune.gif" alt="Suicune" />
             </div>
