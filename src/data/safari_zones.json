@@ -3013,7 +3013,8 @@
           {"name": "Natu", "encounterType": "grass"},
           {"name": "Pikachu", "encounterType": "grass"},
           {"name": "Gloom", "encounterType": "grass"},
-          {"name": "Castform", "encounterType": "grass"}
+          {"name": "Castform", "encounterType": "grass"},
+          {"name": "Raichu", "encounterType": "lure"}
         ]
       },
       {
@@ -3029,7 +3030,9 @@
           {"name": "Psyduck", "encounterType": "water"},
           {"name": "Magikarp", "encounterType": "water"},
           {"name": "Goldeen", "encounterType": "water"},
-          {"name": "Seaking", "encounterType": "water"}
+          {"name": "Seaking", "encounterType": "water"},
+          {"name": "Raichu", "encounterType": "lure"},
+          {"name": "Golduck", "encounterType": "lure"}
         ]
       },
       {
@@ -3045,7 +3048,9 @@
           {"name": "Golduck", "encounterType": "water"},
           {"name": "Magikarp", "encounterType": "water"},
           {"name": "Goldeen", "encounterType": "water"},
-          {"name": "Seaking", "encounterType": "water"}
+          {"name": "Seaking", "encounterType": "water"},
+          {"name": "Raichu", "encounterType": "lure"},
+          {"name": "Golduck", "encounterType": "lure"}
         ]
       },
       {
@@ -3058,7 +3063,8 @@
           {"name": "Gloom", "encounterType": "grass"},
           {"name": "Natu", "encounterType": "grass"},
           {"name": "Heracross", "encounterType": "grass"},
-          {"name": "Xatu", "encounterType": "grass"}
+          {"name": "Xatu", "encounterType": "grass"},
+          {"name": "Raichu", "encounterType": "lure"}
         ]
       },
       {
@@ -3078,7 +3084,9 @@
           {"name": "Magikarp", "encounterType": "water"},
           {"name": "Goldeen", "encounterType": "water"},
           {"name": "Remoraid", "encounterType": "water"},
-          {"name": "Octillery", "encounterType": "water"}
+          {"name": "Octillery", "encounterType": "water"},
+          {"name": "Raichu", "encounterType": "lure"},
+          {"name": "Golduck", "encounterType": "lure"}
         ]
       },
       {
@@ -3092,7 +3100,8 @@
           {"name": "Houndour", "encounterType": "grass"},
           {"name": "Miltank", "encounterType": "grass"},
           {"name": "Hoothoot", "encounterType": "grass"},
-          {"name": "Pineco", "encounterType": "grass"}
+          {"name": "Pineco", "encounterType": "grass"},
+          {"name": "Raichu", "encounterType": "lure"}
         ]
       }
     ],

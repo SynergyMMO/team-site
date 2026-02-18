@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import resourcesData from '../../data/resources.json'
@@ -467,7 +468,13 @@ export default function Resources() {
             {/* Subcategory Description - Only show for Twitch Streamers */}
       {activeCategory === 'Content Creators' && activeSubcategory === 'Twitch Streamers' && subcategoryContent?._meta?.description && (
         <div className={styles.subcategoryDescription}>
-          <p>{subcategoryContent._meta.description}</p>
+          <p>
+            {subcategoryContent._meta.description}
+            {' '}
+            {(() => {
+              return <Link to="/streamers/">Streamers page</Link>;
+            })()}
+          </p>
         </div>
       )}
 
