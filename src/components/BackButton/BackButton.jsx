@@ -20,10 +20,20 @@ const buttonStyle = {
 export default function BackButton({ to, label = '\u2190 Back' }) {
   const navigate = useNavigate()
 
+  // Helper to ensure trailing slash for non-empty URLs
+  const withTrailingSlash = (url) => {
+    if (!url) return url
+    // Only add trailing slash if not present and url is not just a query/hash
+    if (typeof url === 'string' && !url.endsWith('/') && !url.startsWith('?') && !url.startsWith('#')) {
+      return url + '/'
+    }
+    return url
+  }
+
   return (
     <button
       style={buttonStyle}
-      onClick={() => (to ? navigate(to) : navigate(-1))}
+      onClick={() => (to ? navigate(withTrailingSlash(to)) : navigate(-1))}
       onMouseEnter={e => {
         e.currentTarget.style.transform = 'scale(1.05)'
         e.currentTarget.style.boxShadow = '0 0 18px rgba(155, 89, 182, 0.9)'

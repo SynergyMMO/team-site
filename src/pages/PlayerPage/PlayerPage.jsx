@@ -83,8 +83,8 @@ export default function PlayerPage() {
 
   // --- Back button logic ---
   const fromPage = location.state?.from
-  const backTo = fromPage === 'shotm' ? '/shotm' : fromPage === 'shiny-war' ? '/shiny-war-2025' : fromPage === 'pokemon' ? -1 : '/'
-  const backLabel = fromPage === 'shotm' ? '\u2190 Back to SHOTM' : fromPage === 'shiny-war' ? '\u2190 Back to Shiny Wars 2025' : fromPage === 'pokemon' ? '\u2190 Back to Pokémon' : '\u2190 Back to Showcase'
+  const backTo = fromPage === 'shotm' ? '/shotm' : fromPage === 'shiny-war-2025' ? '/shiny-war-2025' : fromPage === 'pokemon' ? -1 : '/shiny-showcase'
+  const backLabel = fromPage === 'shotm' ? '\u2190 Back to SHOTM' : fromPage === 'shiny-war-2025' ? '\u2190 Back to Shiny Wars 2025' : fromPage === 'pokemon' ? '\u2190 Back to Pokémon' : '\u2190 Back to Showcase'
 
   // --- Find streamer info ---
   const streamerInfo = useMemo(() => {
