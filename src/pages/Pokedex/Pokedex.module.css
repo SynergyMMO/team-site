@@ -375,8 +375,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, 75px);
   grid-auto-rows: 75px;
-  gap: 10px;
-  row-gap: 20px;
+  gap: 6px;
   width: 100%;
   padding: 20px 0;
   justify-content: center;
@@ -386,8 +385,7 @@
   .grid {
     grid-template-columns: repeat(auto-fit, 70px);
     grid-auto-rows: 70px;
-    gap: 9px;
-    row-gap: 55px;
+    gap: 6px;
     justify-content: center;
   }
 }
@@ -396,8 +394,7 @@
   .grid {
     grid-template-columns: repeat(auto-fit, 65px);
     grid-auto-rows: 65px;
-    gap: 8px;
-    row-gap: 50px;
+    gap: 6px;
     justify-content: center;
   }
 }
@@ -406,8 +403,7 @@
   .grid {
     grid-template-columns: repeat(auto-fit, 60px);
     grid-auto-rows: 60px;
-    gap: 7px;
-    row-gap: 35px;
+    gap: 6px;
     justify-content: center;
   }
 }
@@ -416,8 +412,7 @@
   .grid {
     grid-template-columns: repeat(7, 40px);
     grid-auto-rows: 40px;
-    gap: 8px;
-    row-gap: 20px;
+    gap: 6px;
     justify-content: center;
     max-width: calc(100% - 20px);
     margin: 0 auto;
@@ -428,8 +423,7 @@
   .grid {
     grid-template-columns: repeat(7, 30px);
     grid-auto-rows: 35px;
-    gap: 8px;
-    row-gap: 20px;
+    gap: 6px;
     justify-content: center;
     max-width: calc(100% - 16px);
     margin: 0 auto;
