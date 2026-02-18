@@ -309,53 +309,7 @@ function formatEvolutionDetails(details) {
   return parts.length > 0 ? parts.join(' ') : 'Unknown'
 }
 
-/**
- * Recursively render evolution chain
- */
-function renderEvolutionChain(chainLink, navigate, hoveredEvolution, setHoveredEvolution, parentSpeciesName = null) {
-  if (!chainLink) return null
-  
-  const { species, evolves_to, evolution_details } = chainLink
-  const evolutionId = `${parentSpeciesName || 'root'}-${species?.name}`
-  
-  return (
-    <div key={species?.name} className={styles.chainNode}>
-      <button
-        onClick={() => navigate(`/pokemon/${species.name}`, { state: { fromPokemon: true } })}
-        className={styles.chainPokemon}
-        title={`View ${species.name}`}
-        onMouseEnter={() => evolution_details && evolution_details.length > 0 && setHoveredEvolution(evolutionId)}
-        onMouseLeave={() => setHoveredEvolution(null)}
-      >
-        <span className={styles.chainPokemonName}>
-          {species.name.charAt(0).toUpperCase() + species.name.slice(1).replace('-', ' ')}
-        </span>
-        {evolution_details && evolution_details.length > 0 && (
-          <span className={styles.chainCondition}>{formatEvolutionDetails(evolution_details)}</span>
-        )}
-        {hoveredEvolution === evolutionId && evolution_details && evolution_details.length > 0 && (
-          <div className={styles.evolutionTooltip}>
-            {formatEvolutionDetails(evolution_details)}
-          </div>
-        )}
-      </button>
-      
-      {evolves_to && evolves_to.length > 0 && (
-        <div className={styles.chainBranch}>
-          <div className={styles.chainArrow}>↓</div>
-          <div className={styles.chainChildren}>
-            {evolves_to.map((child, index) => (
-              <div key={child.species?.name} className={styles.chainChild}>
-                {evolves_to.length > 1 && <span className={styles.branchLabel}>{index === 0 ? 'Option A' : 'Option B'}</span>}
-                {renderEvolutionChain(child, navigate, hoveredEvolution, setHoveredEvolution, species?.name)}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
+
 
 // Pokemon with advanced branching evolutions
 const BRANCHING_EVOLUTION_POKEMON = ['eevee', 'vaporeon', 'jolteon', 'flareon', 'espeon', 'umbreon', 'leafeon', 'glaceon', 'sylveon', 'tyrogue', 'hitmonlee', 'hitmonchan', 'hitmontop']
@@ -418,7 +372,7 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName, hov
         return (
           <div key={link.species?.name} className={styles.linearEvolutionRow}>
             <button
-              onClick={() => navigate(`/pokemon/${link.species.name}`, { state: { fromPokemon: true } })}
+              onClick={() => navigate(`/pokemon/${link.species.name}/`, { state: { fromPokemon: true } })}
               className={`${styles.chainPokemon} ${isCurrent ? styles.chainPokemonCurrent : ''}`}
               style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
               title={`View ${link.species.name}`}
@@ -450,7 +404,7 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName, hov
                     return (
                       <button
                         key={branch.species?.name}
-                        onClick={() => navigate(`/pokemon/${branch.species.name}`, { state: { fromPokemon: true } })}
+                        onClick={() => navigate(`/pokemon/${branch.species.name}/`, { state: { fromPokemon: true } })}
                         className={`${styles.chainPokemon} ${branchIsCurrent ? styles.chainPokemonCurrent : ''}`}
                         style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
                         title={`View ${branch.species.name}`}
@@ -521,7 +475,7 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName,
         return (
           <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative' }}>
             <button
-              onClick={() => navigate(`/pokemon/${link.species.name}`, { state: { fromPokemon: true } })}
+              onClick={() => navigate(`/pokemon/${link.species.name}/`, { state: { fromPokemon: true } })}
               className={`${styles.chainPokemon} ${isCurrent ? styles.chainPokemonCurrent : ''}`}
               style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
               title={`View ${link.species.name}`}
@@ -553,7 +507,7 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName,
                     return (
                       <button
                         key={branch.species?.name}
-                        onClick={() => navigate(`/pokemon/${branch.species.name}`, { state: { fromPokemon: true } })}
+                        onClick={() => navigate(`/pokemon/${branch.species.name}/`, { state: { fromPokemon: true } })}
                         className={`${styles.chainPokemon} ${branchIsCurrent ? styles.chainPokemonCurrent : ''}`}
                         style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
                         title={`View ${branch.species.name}`}
@@ -822,7 +776,7 @@ export default function PokemonDetail() {
     const pokemonLower = pokemonName.toLowerCase()
     if (aliasMap[pokemonLower]) {
       const canonicalForm = aliasMap[pokemonLower]
-      navigate(`/pokemon/${canonicalForm}`, { replace: true, state: { fromPokemon: true } })
+      navigate(`/pokemon/${canonicalForm}/`, { replace: true, state: { fromPokemon: true } })
     }
   }, [pokemon, pokemonName, navigate])
   
@@ -945,7 +899,7 @@ const buildDescription = (pokemon) => {
 const breadcrumbs = pokemon ? [
   { name: 'Home', url: '/' },
   { name: 'PokeMMO Pokédex', url: '/pokedex' },
-  { name: capitalize(pokemon.displayName), url: `/pokemon/${pokemonName?.toLowerCase()}` }
+  { name: capitalize(pokemon.displayName), url: `/pokemon/${pokemonName?.toLowerCase()}/` }
 ] : [
   { name: 'Home', url: '/' },
   { name: 'PokeMMO Pokédex', url: '/pokedex' }
@@ -958,9 +912,9 @@ useDocumentHead({
 
   description: buildDescription(pokemon),
 
-  canonicalPath: `/pokemon/${pokemonName?.toLowerCase()}`,
+  canonicalPath: `/pokemon/${pokemonName?.toLowerCase()}/`,
 
-  url: `https://synergymmo.com/pokemon/${pokemonName?.toLowerCase()}`,
+  url: `https://synergymmo.com/pokemon/${pokemonName?.toLowerCase()}/`,
 
   ogImage: animatedShinyGif,
 
@@ -1059,13 +1013,13 @@ useDocumentHead({
   
   const handlePrevious = () => {
     if (prevPokemon) {
-      navigate(`/pokemon/${prevPokemon}`, { state: { fromPokemon: true } })
+      navigate(`/pokemon/${prevPokemon}/`, { state: { fromPokemon: true } })
     }
   }
   
   const handleNext = () => {
     if (nextPokemon) {
-      navigate(`/pokemon/${nextPokemon}`, { state: { fromPokemon: true } })
+      navigate(`/pokemon/${nextPokemon}/`, { state: { fromPokemon: true } })
     }
   }
 
@@ -1189,7 +1143,7 @@ useDocumentHead({
                       onClick={() => {
                         setSelectedForm(form.name)
                         setCurrentSpriteIndex(0)
-                        navigate(`/pokemon/${form.name}`, { state: { fromPokemon: true } })
+                        navigate(`/pokemon/${form.name}/`, { state: { fromPokemon: true } })
                       }}
                       title={form.label}
                     >
@@ -1845,7 +1799,7 @@ useDocumentHead({
                   <button 
                     key={index} 
                     className={styles.locationCard}
-                    onClick={() => navigate('/pokedex', { state: { locationSearch: `${location.location} - ${location.region_name}` } })}
+                    onClick={() => navigate('/pokedex/', { state: { locationSearch: `${location.location} - ${location.region_name}` } })}
                     title={`Search for Pokémon at ${location.location}`}
                   >
                     <div className={styles.locationHeader}>
