@@ -230,7 +230,7 @@ async function getPlayers() {
     const ogImage = fav ? getLocalPokemonGif(fav.Pokemon) : '/images/openGraph.jpg';
 
     return {
-      route: `/player/${encodeURIComponent(playerName.toLowerCase())}`,
+      route: `/player/${encodeURIComponent(playerName)}`,
       ogTitle: `${playerName}'s Shinies | Team Synergy - PokeMMO`,
       ogDescription: `Browse ${playerName}'s shiny Pokemon collection in PokeMMO.`,
       ogImage: `https://synergymmo.com${ogImage}`,
