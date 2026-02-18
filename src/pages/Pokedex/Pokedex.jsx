@@ -9,6 +9,7 @@ import { normalizePokemonName, onGifError, getBasePokemonName } from '../../util
 import { API } from '../../api/endpoints'
 import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
+import safariData from '../../data/safari_zones.json'
 import styles from './Pokedex.module.css'
 
 export default function Pokedex() {
@@ -352,6 +353,29 @@ export default function Pokedex() {
     })
     return index
   }, [])
+  const safariLookup = useMemo(() => {
+    const map = new Map()
+    const REGION_LABELS = { kanto: 'Kanto', johto: 'Johto', hoenn: 'Hoenn', sinnoh: 'Sinnoh' }
+    Object.entries(safariData).forEach(([region, data]) => {
+      if (!data) return
+      const regionLabel = REGION_LABELS[region] || region
+      const allPokemon = new Set()
+      if (data.universalPokemon) {
+        data.universalPokemon.forEach(p => allPokemon.add(p.name.toLowerCase()))
+      }
+      if (data.areas) {
+        data.areas.forEach(area => {
+          ;(area.pokemon || []).forEach(p => allPokemon.add(p.name.toLowerCase()))
+        })
+      }
+      allPokemon.forEach(key => {
+        if (!map.has(key)) map.set(key, [])
+        map.get(key).push(regionLabel)
+      })
+    })
+    return map
+  }, [])
+
   const rarityOptions = useMemo(() => {
     const options = new Set()
     locationIndex.forEach(entry => {
@@ -1783,6 +1807,16 @@ export default function Pokedex() {
                         loading="lazy"
                         onError={onGifError(normalized)}
                       />
+                      {safariLookup.has(lowerName) && (
+                        <Link
+                          to="/safari-zones/"
+                          className={styles.safariBadge}
+                          onClick={e => e.stopPropagation()}
+                          title={`Safari Zone: ${safariLookup.get(lowerName).join(', ')}`}
+                        >
+                          {safariLookup.get(lowerName).map(r => r.charAt(0)).join('/')}
+                        </Link>
+                      )}
                     </div>
                   )
                 })}

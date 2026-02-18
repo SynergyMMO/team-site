@@ -1855,6 +1855,28 @@
   }
 }
 
+.safariBadge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(34, 120, 34, 0.88);
+  color: #fff;
+  font-size: 0.52rem;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  padding: 2px 0;
+  z-index: 10;
+  letter-spacing: 0.5px;
+  transition: background 0.15s ease;
+  pointer-events: auto;
+}
+
+.safariBadge:hover {
+  background: rgba(34, 160, 34, 0.95);
+}
+
 .instructionText {
   text-align: center;
 }
