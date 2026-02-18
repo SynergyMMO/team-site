@@ -59,13 +59,13 @@ function getInGameState() {
 
 // Sinnoh rotation lookup: given in-game day, return which area has which pokemon
 const SINNOH_ROTATION = {
-  Wednesday: { 1: 'Carnivine', 2: 'Croagunk', 3: 'Croagunk', 4: 'Croagunk', 5: 'Skorupi', 6: 'Skorupi' },
-  Thursday:  { 1: 'Skorupi',   2: 'Carnivine', 3: 'Croagunk', 4: 'Croagunk', 5: 'Croagunk', 6: 'Skorupi' },
-  Friday:    { 1: 'Skorupi',   2: 'Skorupi',   3: 'Carnivine', 4: 'Croagunk', 5: 'Croagunk', 6: 'Croagunk' },
-  Saturday:  { 1: 'Croagunk',  2: 'Skorupi',   3: 'Skorupi',   4: 'Carnivine', 5: 'Croagunk', 6: 'Croagunk' },
-  Sunday:    { 1: 'Croagunk',  2: 'Croagunk',  3: 'Skorupi',   4: 'Skorupi',   5: 'Carnivine', 6: 'Croagunk' },
-  Monday:    { 1: 'Croagunk',  2: 'Croagunk',  3: 'Croagunk',  4: 'Skorupi',   5: 'Skorupi',   6: 'Carnivine' },
-  Tuesday:   { 1: 'Croagunk',  2: 'Croagunk',  3: 'Croagunk',  4: 'Croagunk',  5: 'Carnivine', 6: 'Croagunk' },
+  Wednesday: { 1: 'Carnivine', 2: 'Croagunk', 3: 'Croagunk', 4: 'Skorupi', 5: 'Skorupi', 6: 'Croagunk' },
+  Thursday:  { 1: 'Croagunk',  2: 'Carnivine', 3: 'Croagunk', 4: 'Croagunk', 5: 'Skorupi',   6: 'Skorupi' },
+  Friday:    { 1: 'Skorupi',   2: 'Croagunk',  3: 'Carnivine', 4: 'Croagunk', 5: 'Croagunk', 6: 'Skorupi' },
+  Saturday:  { 1: 'Skorupi',   2: 'Skorupi',   3: 'Croagunk',  4: 'Carnivine', 5: 'Croagunk', 6: 'Croagunk' },
+  Sunday:    { 1: 'Skorupi',   2: 'Skorupi',   3: 'Croagunk',  4: 'Carnivine', 5: 'Croagunk', 6: 'Croagunk' },
+  Monday:    { 1: 'Croagunk',  2: 'Skorupi',   3: 'Skorupi',   4: 'Croagunk',  5: 'Carnivine', 6: 'Croagunk' },
+  Tuesday:   { 1: 'Croagunk',  2: 'Croagunk',  3: 'Skorupi',   4: 'Skorupi',   5: 'Croagunk',  6: 'Carnivine' },
 }
 
 function InGameClock({ region }) {
