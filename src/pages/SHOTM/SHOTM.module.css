@@ -14,8 +14,8 @@
   display: block;
   padding: 12px 25px;
   border-radius: 25px;
-  border: 2px solid #444;
-  background: #1a1a1a;
+  border: 2px solid rgba(155, 89, 182, 0.4);
+  background: rgba(20, 10, 35, 0.75);
   color: #fff;
   font-size: 1.2rem;
   cursor: pointer;
@@ -26,10 +26,10 @@
 }
 
 .toggleBtn:hover {
-  background: #2a2a2a;
-  border-color: #666;
-  box-shadow: 0 4px 12px rgba(74,144,226,0.5);
-  color: #4a90e2;
+  background: rgba(155, 89, 182, 0.15);
+  border-color: rgba(155, 89, 182, 0.7);
+  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.4);
+  color: #d2b4de;
 }
 
 .toggleBtn:active {
@@ -40,7 +40,7 @@
 /* All-time leaderboard list */
 .alltimeList {
   margin-top: 15px;
-  background: #222;
+  background: rgba(20, 10, 35, 0.75);
   padding: 15px 20px;
   border-radius: 12px;
   display: flex;
@@ -53,7 +53,7 @@
 .allTimeItem {
   font-size: 1rem;
   color: #fff;
-  background: #1f1f1f;
+  background: rgba(155, 89, 182, 0.06);
   padding: 8px 12px;
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -71,9 +71,9 @@
 }
 
 .allTimeItem:hover {
-  background: #2a2a2a;
-  color: #4a90e2;
-  box-shadow: 0 0 12px rgba(74,144,226,0.5);
+  background: rgba(155, 89, 182, 0.18);
+  color: #d2b4de;
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.4);
 }
 
 .allTimeItem:hover * {
@@ -94,7 +94,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px 15px;
-  background: #222;
+  background: rgba(20, 10, 35, 0.75);
   border-radius: 12px;
   margin: 8px auto 0 auto;
   width: fit-content;
@@ -104,16 +104,16 @@
 }
 
 .pointsContent > div {
-  background: #1f1f1f;
+  background: rgba(155, 89, 182, 0.06);
   padding: 6px 10px;
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
 .pointsContent > div:hover {
-  background: #2a2a2a;
-  color: #4a90e2;
-  box-shadow: 0 0 12px rgba(74,144,226,0.5);
+  background: rgba(155, 89, 182, 0.18);
+  color: #d2b4de;
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.4);
 }
 
 /* Tier highlights toggle — matches .tier-dropdown-toggle */
@@ -273,8 +273,8 @@
 .monthBtn {
   padding: 10px 22px;
   border-radius: 25px;
-  border: 2px solid #444;
-  background: #1a1a1a;
+  border: 2px solid rgba(155, 89, 182, 0.4);
+  background: rgba(20, 10, 35, 0.75);
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
@@ -284,10 +284,10 @@
 }
 
 .monthBtn:hover {
-  background: #2a2a2a;
-  border-color: #666;
-  box-shadow: 0 4px 12px rgba(74,144,226,0.5);
-  color: #4a90e2;
+  background: rgba(155, 89, 182, 0.15);
+  border-color: rgba(155, 89, 182, 0.7);
+  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.4);
+  color: #d2b4de;
 }
 
 .monthBtn:active {
@@ -307,7 +307,7 @@
 
 /* Player card */
 .playerCard {
-  background: #222;
+  background: rgba(20, 10, 35, 0.75);
   padding: 20px;
   border-radius: 8px;
   width: 100%;

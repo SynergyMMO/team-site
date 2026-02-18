@@ -15,8 +15,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #222;
-  border: 1px solid #555;
+  background: rgba(20, 10, 35, 0.75);
+  border: 1px solid rgba(155, 89, 182, 0.3);
   border-radius: 8px;
   transition: transform 0.2s, border-color 0.2s;
   box-sizing: border-box;

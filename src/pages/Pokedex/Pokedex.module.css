@@ -58,8 +58,8 @@
   width: 100%;
   padding: 10px 14px;
   border-radius: 18px;
-  border: 2px solid #444;
-  background: #1a1a1a;
+  border: 2px solid rgba(155, 89, 182, 0.4);
+  background: rgba(20, 10, 35, 0.75);
   color: #fff;
   font-size: 0.95rem;
   cursor: pointer;
@@ -269,8 +269,8 @@
   width: 260px;
   padding: 10px 14px;
   border-radius: 18px;
-  border: 2px solid #444;
-  background: #1a1a1a;
+  border: 2px solid rgba(155, 89, 182, 0.4);
+  background: rgba(20, 10, 35, 0.75);
   color: #fff;
   font-size: 1rem;
   outline: none;
@@ -344,7 +344,7 @@
 .showcase {
   padding: 20px;
   box-sizing: border-box;
-  background: #222;
+  background: rgba(20, 10, 35, 0.75);
   border-radius: 8px;
   max-width: 90%;
   margin: 20px auto;
@@ -509,8 +509,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #222;
-  border: 1px solid #555;
+  background: rgba(20, 10, 35, 0.75);
+  border: 1px solid rgba(155, 89, 182, 0.3);
   box-sizing: border-box;
   transition: transform 0.2s, border-color 0.2s;
 }
@@ -694,8 +694,8 @@
   width: 100%;
   padding: 10px 14px;
   border-radius: 18px;
-  border: 2px solid #444;
-  background: #1a1a1a;
+  border: 2px solid rgba(155, 89, 182, 0.4);
+  background: rgba(20, 10, 35, 0.75);
   color: #fff;
   font-size: 0.95rem;
   transition: all 0.2s ease;

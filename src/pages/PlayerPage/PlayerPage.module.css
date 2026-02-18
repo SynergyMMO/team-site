@@ -138,12 +138,12 @@
 
 .encountersCard {
   display: inline-block;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border: 2px solid #00d4ff;
+  background: rgba(20, 10, 35, 0.75);
+  border: 2px solid rgba(155, 89, 182, 0.4);
   border-radius: 12px;
   padding: 1.5rem 2rem;
   max-width: 500px;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  box-shadow: 0 0 20px rgba(155, 89, 182, 0.3);
 }
 
 .averageEncounters {
@@ -154,10 +154,10 @@
 }
 
 .numberHighlight {
-  color: #00d4ff;
+  color: #b870d1;
   font-size: 1.5rem;
   font-weight: 900;
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+  text-shadow: 0 0 10px rgba(155, 89, 182, 0.6);
 }
 
 .encountersIndicator {
