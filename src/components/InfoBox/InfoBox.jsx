@@ -18,8 +18,8 @@ const TRAIT_CHECKS = [
 const API_FIELDS = [
   { key: 'ivs', label: 'IVs' },
   { key: 'nature', label: 'Nature' },
-  { key: 'location', label: 'Location' },
-  { key: 'encounter_method', label: 'Method' },
+  { key: 'location', label: 'Location', fallback: 'Location' },
+  { key: 'encounter_method', label: 'Method', fallback: 'Encounter Type' },
   { key: 'date_caught', label: 'Caught' },
   { key: 'encounter_count', label: 'Encounters', fallback: 'Encounter Count' },
   { key: 'nickname', label: 'Nickname' },

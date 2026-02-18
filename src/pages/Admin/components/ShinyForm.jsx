@@ -32,6 +32,13 @@ const YEARS = [
 
 const ENCOUNTER_TYPES = ['5x Horde', '3x Horde', 'Single', 'Fishing', 'Honey Tree', 'Egg', 'Safari', 'Fossil', 'Swarm', 'Gift']
 
+const NATURES = [
+  'Adamant', 'Bashful', 'Bold', 'Brave', 'Calm', 'Careful', 'Docile',
+  'Gentle', 'Hardy', 'Hasty', 'Impish', 'Jolly', 'Lax', 'Lonely',
+  'Mild', 'Modest', 'Naive', 'Naughty', 'Quiet', 'Quirky', 'Rash',
+  'Relaxed', 'Sassy', 'Serious', 'Timid',
+]
+
 const YES_NO_FIELDS = [
   { key: 'Egg', label: 'Egg' },
   { key: 'Favourite', label: 'Favourite' },
@@ -58,6 +65,11 @@ function getDefaultState() {
     'Encounter Type': '',
     Location: '',
     'Encounter Count': '',
+    date_caught: '',
+    nature: '',
+    ivs: '',
+    nickname: '',
+    variant: '',
     Egg: 'No',
     Favourite: 'No',
     'Secret Shiny': 'No',
@@ -190,6 +202,51 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
         value={form['Encounter Count']}
         onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter Count', value: e.target.value })}
         placeholder="e.g. 3240"
+      />
+
+      <label htmlFor="shinyDateCaught">Date Caught:</label>
+      <input
+        id="shinyDateCaught"
+        type="date"
+        value={form.date_caught}
+        onChange={e => dispatch({ type: 'SET_FIELD', field: 'date_caught', value: e.target.value })}
+      />
+
+      <label htmlFor="shinyNature">Nature:</label>
+      <select
+        id="shinyNature"
+        value={form.nature}
+        onChange={e => dispatch({ type: 'SET_FIELD', field: 'nature', value: e.target.value })}
+      >
+        <option value="">Select a nature</option>
+        {NATURES.map(n => <option key={n} value={n}>{n}</option>)}
+      </select>
+
+      <label htmlFor="shinyIvs">IVs:</label>
+      <input
+        id="shinyIvs"
+        type="text"
+        value={form.ivs}
+        onChange={e => dispatch({ type: 'SET_FIELD', field: 'ivs', value: e.target.value })}
+        placeholder="e.g. 31/31/31/31/31/31"
+      />
+
+      <label htmlFor="shinyNickname">Nickname:</label>
+      <input
+        id="shinyNickname"
+        type="text"
+        value={form.nickname}
+        onChange={e => dispatch({ type: 'SET_FIELD', field: 'nickname', value: e.target.value })}
+        placeholder="Optional nickname"
+      />
+
+      <label htmlFor="shinyVariant">Variant:</label>
+      <input
+        id="shinyVariant"
+        type="text"
+        value={form.variant}
+        onChange={e => dispatch({ type: 'SET_FIELD', field: 'variant', value: e.target.value })}
+        placeholder="Optional variant"
       />
 
       {YES_NO_FIELDS.map(({ key, label }) => (
