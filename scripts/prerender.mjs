@@ -1467,8 +1467,16 @@ async function prerender() {
   // Player pages (already fetched above for crawler links)
   console.log(`Prerendering ${players.length} player pages...`);
   for (const p of players) {
+    // Original case route
     const outPath = join(DIST, p.route.slice(1), 'index.html');
     await prerenderRoute(templateHtml, outPath, p);
+
+    // Lowercase route (for case-insensitive access)
+    const lowerRoute = p.route.toLowerCase();
+    if (lowerRoute !== p.route) {
+      const lowerOutPath = join(DIST, lowerRoute.slice(1), 'index.html');
+      await prerenderRoute(templateHtml, lowerOutPath, { ...p, route: lowerRoute });
+    }
   }
 
   // Event pages (already fetched above for crawler links)
