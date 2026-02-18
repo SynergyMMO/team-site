@@ -1858,7 +1858,7 @@ useDocumentHead({
                 <button
                   key={`safari-${index}`}
                   className={`${styles.locationCard} ${styles.safariLocationCard}`}
-                  onClick={() => navigate('/safari-zones/')}
+                  onClick={() => navigate('/safari-zones/', { state: { region: safariLoc.region.toLowerCase(), area: safariLoc.area } })}
                   title={`${safariLoc.region} Safari Zone`}
                 >
                   <div className={styles.locationHeader}>

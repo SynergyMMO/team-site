@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getAssetUrl } from '../../utils/assets'
 import { getLocalPokemonGif, onGifError, getRemoteFallbackUrl, normalizePokemonName } from '../../utils/pokemon'
@@ -302,9 +302,12 @@ function RotationSchedule({ schedule, currentDay }) {
   )
 }
 
-function RegionContent({ region }) {
+function RegionContent({ region, initialArea }) {
   const data = safariData[region]
-  const [selectedArea, setSelectedArea] = useState(0)
+  const initialAreaIndex = initialArea && data?.areas
+    ? data.areas.findIndex(a => a.name.toLowerCase() === initialArea.toLowerCase())
+    : -1
+  const [selectedArea, setSelectedArea] = useState(initialAreaIndex >= 0 ? initialAreaIndex : 0)
 
   if (!data) {
     return (
@@ -424,7 +427,9 @@ function RegionContent({ region }) {
 }
 
 export default function SafariZones() {
-  const [activeRegion, setActiveRegion] = useState('johto')
+  const { state } = useLocation()
+  const [activeRegion, setActiveRegion] = useState(state?.region || 'johto')
+  const [initialArea, setInitialArea] = useState(state?.area || null)
 
   useDocumentHead({
     title: 'PokeMMO Safari Zone Guide - Catch Rates, Flee Rates & Best Strategies',
@@ -448,7 +453,7 @@ export default function SafariZones() {
             <button
               key={r}
               className={`${styles.regionTab} ${activeRegion === r ? styles.regionTabActive : ''} ${isDisabled ? styles.regionTabDisabled : ''}`}
-              onClick={() => setActiveRegion(r)}
+              onClick={() => { setActiveRegion(r); setInitialArea(null) }}
               disabled={isDisabled}
             >
               {REGION_LABELS[r]}
@@ -458,7 +463,7 @@ export default function SafariZones() {
         })}
       </div>
 
-      <RegionContent key={activeRegion} region={activeRegion} />
+      <RegionContent key={activeRegion} region={activeRegion} initialArea={initialArea} />
     </>
   )
 }
