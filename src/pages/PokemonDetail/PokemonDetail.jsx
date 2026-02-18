@@ -1546,7 +1546,7 @@ useDocumentHead({
                 <button
                   key={playerName}
                   className={styles.ownerCard}
-                  onClick={() => navigate(`/player/${playerName.toLowerCase()}/`, { state: { from: 'pokemon' } })}
+                  onClick={() => navigate(`/player/${playerName}/`, { state: { from: 'pokemon' } })}
                 >
                   <p className={styles.ownerName}>{playerName}</p>
                   <p className={styles.ownerCount}>

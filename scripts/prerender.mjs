@@ -473,7 +473,7 @@ function generatePersonSchema(playerName) {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": playerName,
-    "url": `https://synergymmo.com/player/${playerName.toLowerCase()}/`,
+    "url": `https://synergymmo.com/player/${playerName}/`,
     "memberOf": {
       "@type": "Organization",
       "name": "Team Synergy",
