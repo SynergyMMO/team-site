@@ -27,11 +27,18 @@ export default function Autocomplete({ id, value, onChange, onSelect, getOptions
   }
 
   function handleKeyDown(e) {
-    if (e.key === 'ArrowDown') { setFocusIdx(i => Math.min(i + 1, suggestions.length - 1)) }
-    else if (e.key === 'ArrowUp') { setFocusIdx(i => Math.max(i - 1, 0)) }
-    else if (e.key === 'Tab' && focusIdx >= 0) {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setFocusIdx(i => Math.min(i + 1, suggestions.length - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setFocusIdx(i => Math.max(i - 1, 0))
+    } else if ((e.key === 'Enter' || e.key === 'Tab') && focusIdx >= 0) {
       e.preventDefault()
       handleSelect(suggestions[focusIdx])
+    } else if (e.key === 'Escape') {
+      setShow(false)
+      setFocusIdx(-1)
     }
   }
 
