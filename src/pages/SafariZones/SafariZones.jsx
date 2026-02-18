@@ -320,10 +320,21 @@ function RegionContent({ region }) {
   if (region === 'sinnoh' && data.universalPokemon) {
     // Always start from a fresh universalPokemon array to avoid duplication
     const boostedNames = (area.pokemon || []).map(p => p.name);
-    pokemonList = data.universalPokemon.map(mon => {
-      const boosted = boostedNames.includes(mon.name);
-      return { ...mon, boosted };
-    });
+    const currentDay = getInGameState().day;
+    const areaNumber = selectedArea + 1;
+    const activeRotationMon = SINNOH_ROTATION[currentDay]?.[areaNumber];
+    pokemonList = data.universalPokemon
+      .filter(mon => {
+        // Only show the rotation pokemon that's active in this area today
+        if (isRotationType(mon.encounterType)) {
+          return mon.name === activeRotationMon;
+        }
+        return true;
+      })
+      .map(mon => {
+        const boosted = boostedNames.includes(mon.name);
+        return { ...mon, boosted };
+      });
   } else {
     pokemonList = Array.isArray(area.pokemon) ? [...area.pokemon] : [];
   }
