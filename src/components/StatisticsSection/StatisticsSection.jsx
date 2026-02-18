@@ -242,7 +242,7 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
                   y={y}
                   width={barWidth * 0.8}
                   height={barHeight}
-                  fill="#DAA520"
+                  fill="#9b59b6"
                   rx="4"
                   opacity="0.9"
                 />
@@ -251,7 +251,7 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
                   y={y - 8}
                   textAnchor="middle"
                   fontSize="12"
-                  fill="#ffbe0b"
+                  fill="#d2b4de"
                   fontWeight="bold"
                 >
                   {value}
@@ -540,7 +540,7 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
             })}
 
             {/* Line */}
-            <path d={pathD} stroke="#FFD700" strokeWidth="2" fill="none" />
+            <path d={pathD} stroke="#9b59b6" strokeWidth="2" fill="none" />
 
             {/* Points with Pokemon GIFs below */}
             {points.map((point, i) => {
@@ -550,13 +550,13 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
               
               return (
                 <g key={`point-${i}`}>
-                  <circle cx={x} cy={y} r="4" fill="#ffbe0b" opacity="0.9" />
+                  <circle cx={x} cy={y} r="4" fill="#d2b4de" opacity="0.9" />
                   <text
                     x={x}
                     y={y - 8}
                     textAnchor="middle"
                     fontSize="11"
-                    fill="#ffbe0b"
+                    fill="#d2b4de"
                     fontWeight="bold"
                   >
                     {point.value.toLocaleString()}
