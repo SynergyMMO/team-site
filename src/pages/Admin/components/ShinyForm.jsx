@@ -57,7 +57,7 @@ function getDefaultState() {
     Year: currentYear,
     'Encounter Type': '',
     Location: '',
-    Encounter: '',
+    'Encounter Count': '',
     Egg: 'No',
     Favourite: 'No',
     'Secret Shiny': 'No',
@@ -111,28 +111,13 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
     return Array.from(seen).sort()
   }, [encounters])
 
-  // Derive encounter method options from the selected Location
-  const encounterOptions = useMemo(() => {
-    if (!form.Location) return []
-    const seen = new Set()
-    encounters.forEach(e => {
-      if (e.location && e.region_name) {
-        const loc = `${e.location} (${e.region_name})`
-        if (loc === form.Location && e.type) seen.add(e.type)
-      }
-    })
-    return Array.from(seen).sort()
-  }, [encounters, form.Location])
-
   function handlePokemonChange(val) {
     dispatch({ type: 'SET_FIELD', field: 'Pokemon', value: val })
     dispatch({ type: 'SET_FIELD', field: 'Location', value: '' })
-    dispatch({ type: 'SET_FIELD', field: 'Encounter', value: '' })
   }
 
   function handleLocationChange(val) {
     dispatch({ type: 'SET_FIELD', field: 'Location', value: val })
-    dispatch({ type: 'SET_FIELD', field: 'Encounter', value: '' })
   }
 
   function handleSubmit() {
@@ -197,25 +182,15 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
         />
       )}
 
-      <label htmlFor="shinyEncounter">Encounter:</label>
-      {encounterOptions.length > 0 ? (
-        <select
-          id="shinyEncounter"
-          value={form.Encounter}
-          onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter', value: e.target.value })}
-        >
-          <option value="">Select an encounter</option>
-          {encounterOptions.map(enc => <option key={enc} value={enc}>{enc}</option>)}
-        </select>
-      ) : (
-        <input
-          id="shinyEncounter"
-          type="text"
-          value={form.Encounter}
-          onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter', value: e.target.value })}
-          placeholder="e.g. Grass, Super Rod"
-        />
-      )}
+      <label htmlFor="shinyEncounterCount">Encounter Count:</label>
+      <input
+        id="shinyEncounterCount"
+        type="number"
+        min="0"
+        value={form['Encounter Count']}
+        onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter Count', value: e.target.value })}
+        placeholder="e.g. 3240"
+      />
 
       {YES_NO_FIELDS.map(({ key, label }) => (
         <div key={key}>
