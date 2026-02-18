@@ -937,7 +937,7 @@ useDocumentHead({
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <BackButton to={location.state?.fromPokemon ? '/pokedex' : undefined} />
+        <BackButton to={location.state?.fromPokemon ? '/pokedex' : '/pokedex'} />
         <div className={styles.loadingMessage}>Loading Pokémon data...</div>
       </div>
     )
@@ -948,7 +948,7 @@ useDocumentHead({
     
     return (
       <div className={styles.container}>
-        <BackButton to={location.state?.fromPokemon ? '/pokedex' : undefined} />
+        <BackButton to={location.state?.fromPokemon ? '/pokedex' : '/pokedex'} />
         <div className={styles.errorMessage}>
           <h2>⚠️ Unable to Load Pokémon</h2>
           <p className={styles.errorDescription}>
@@ -1037,7 +1037,7 @@ useDocumentHead({
 
   return (
     <article className={styles.container}>
-      <BackButton to={location.state?.fromPokemon ? '/pokedex' : undefined} />
+      <BackButton to={location.state?.fromPokemon ? '/pokedex' : '/pokedex'} />
 
       <header className={styles.header}>
         <button

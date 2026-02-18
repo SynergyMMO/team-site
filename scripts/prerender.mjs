@@ -1403,7 +1403,7 @@ async function prerender() {
       route: '/roaming-legendaries',
       ogTitle: 'Roaming Legendaries Calendar - PokeMMO Zapdos, Articuno, Moltres, Entei, Suicune, Raikou Schedule',
       ogDescription: 'PokeMMO Roaming Legendaries Calendar showing monthly availability of Zapdos, Moltres, Articuno, Entei, Suicune, and Raikou. Track which roaming legendaries are available each month and plan your shiny hunts.',
-      ogImage: 'https://img.pokemondb.net/sprites/black-white/anim/shiny/suicune.gif',
+      ogImage: 'https://img.pokemondb.net/sprites/black-white/anim/shiny/suicune.gif'
     },
     '/random-pokemon-generator': {
       route: '/random-pokemon-generator',
@@ -1450,13 +1450,13 @@ async function prerender() {
       route: '/safari-zones',
       ogTitle: 'PokeMMO Safari Zone Guide - Catch Rates, Flee Rates & Best Strategies',
       ogDescription: 'Complete PokeMMO Safari Zone guide with catch rates, flee rates, and optimal strategies for Johto and Sinnoh (Great Marsh). Find the best approach for every Safari Zone Pokemon.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/chansey.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif'
     },
     '/resources': {
       route: '/resources',
       ogTitle: 'PokeMMO Resources - Guides, Tools & Community Links | Team Synergy',
       ogDescription: 'Explore Team Synergy\'s comprehensive PokeMMO resources. Find guides, tools, calculators, community links, and expert tips for shiny hunting, PVP training, and competitive gameplay.',
-      ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg'
     },
   };
 
