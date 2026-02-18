@@ -20,10 +20,8 @@ const buttonStyle = {
 export default function BackButton({ to, label = '\u2190 Back' }) {
   const navigate = useNavigate()
 
-  // Helper to ensure trailing slash for non-empty URLs
   const withTrailingSlash = (url) => {
     if (!url) return url
-    // Only add trailing slash if not present and url is not just a query/hash
     if (typeof url === 'string' && !url.endsWith('/') && !url.startsWith('?') && !url.startsWith('#')) {
       return url + '/'
     }
