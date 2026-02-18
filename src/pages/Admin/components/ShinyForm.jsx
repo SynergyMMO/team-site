@@ -30,7 +30,7 @@ const YEARS = [
   '2027', '2028', '2029', '2030',
 ]
 
-const ENCOUNTER_TYPES = ['Single', '5x Horde', '3x Horde', 'Fishing']
+const ENCOUNTER_TYPES = ['5x Horde', '3x Horde', 'Single', 'Fishing', 'Honey Tree', 'Egg', 'Safari', 'Fossil', 'Swarm', 'Gift']
 
 const YES_NO_FIELDS = [
   { key: 'Egg', label: 'Egg' },
@@ -173,18 +173,29 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
         value={form['Encounter Type']}
         onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter Type', value: e.target.value })}
       >
-        <option value="">--</option>
+        <option value="">Select a method</option>
         {ENCOUNTER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
       </select>
 
-      <label>Location:</label>
-      <Autocomplete
-        id="shinyLocation"
-        value={form.Location}
-        onChange={handleLocationChange}
-        getOptions={() => locationOptions}
-        placeholder={locationOptions.length ? 'Search location...' : 'Enter location'}
-      />
+      <label htmlFor="shinyLocation">Location:</label>
+      {locationOptions.length > 0 ? (
+        <select
+          id="shinyLocation"
+          value={form.Location}
+          onChange={e => handleLocationChange(e.target.value)}
+        >
+          <option value="">Select a location</option>
+          {locationOptions.map(loc => <option key={loc} value={loc}>{loc}</option>)}
+        </select>
+      ) : (
+        <input
+          id="shinyLocation"
+          type="text"
+          value={form.Location}
+          onChange={e => handleLocationChange(e.target.value)}
+          placeholder="Enter location"
+        />
+      )}
 
       <label>Encounter:</label>
       <Autocomplete
