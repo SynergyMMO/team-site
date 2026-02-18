@@ -808,7 +808,13 @@ function generateSocialMediaSchema(title, description, image, url) {
     "description": description,
     "image": image,
     "url": url,
-    "datePublished": new Date().toISOString().split('T')[0],
+    // Use ISO8601 with timezone for datePublished
+    "datePublished": new Date().toISOString(),
+    // Add required Author field for SEO
+    "author": {
+      "@type": "Person",
+      "name": "Team Synergy Staff"
+    },
     "sharedContent": {
       "@type": "CreativeWork",
       "name": title,
