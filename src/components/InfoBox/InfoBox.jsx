@@ -21,7 +21,7 @@ const API_FIELDS = [
   { key: 'location', label: 'Location' },
   { key: 'encounter_method', label: 'Method' },
   { key: 'date_caught', label: 'Caught' },
-  { key: 'encounter_count', label: 'Encounters' },
+  { key: 'encounter_count', label: 'Encounters', fallback: 'Encounter Count' },
   { key: 'nickname', label: 'Nickname' },
   { key: 'variant', label: 'Variant' },
 ]
@@ -66,7 +66,7 @@ function formatDate(dateStr, localize = true) {
 // Format encounter count with commas
 function formatEncounterCount(count) {
   if (!count && count !== 0) return null
-  return count.toLocaleString()
+  return Number(count).toLocaleString()
 }
 
 export default function InfoBox({ shiny, points, customText, localizeDates = true, showOnMobile = false }) {
@@ -149,17 +149,20 @@ export default function InfoBox({ shiny, points, customText, localizeDates = tru
   // Get API fields that exist and are not null
   const activeApiFields = useMemo(() => {
     return API_FIELDS.filter(field => {
-      const value = shiny[field.key]
+      const value = shiny[field.key] ?? (field.fallback ? shiny[field.fallback] : undefined)
       if (value === null || value === undefined || value === '') return false
       return true
-    }).map(field => ({
-      ...field,
-      value: field.key === 'date_caught' 
-        ? formatDate(shiny[field.key], localizeDates)
-        : field.key === 'encounter_count'
-        ? formatEncounterCount(shiny[field.key])
-        : shiny[field.key]
-    }))
+    }).map(field => {
+      const raw = shiny[field.key] ?? (field.fallback ? shiny[field.fallback] : undefined)
+      return {
+        ...field,
+        value: field.key === 'date_caught'
+          ? formatDate(raw, localizeDates)
+          : field.key === 'encounter_count'
+          ? formatEncounterCount(raw)
+          : raw
+      }
+    })
   }, [shiny, localizeDates])
 
   let reactionUrl = shiny['Reaction Link']?.trim()
