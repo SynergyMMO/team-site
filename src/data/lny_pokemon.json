@@ -18,5 +18,6 @@
   { "name": "Monferno", "catchRate": 45 },
   { "name": "Swinub", "catchRate": 255 },
   { "name": "Onix", "catchRate": 45 },
-  { "name": "Electabuzz", "catchRate": 45 }
+  { "name": "Electabuzz", "catchRate": 45 },
+  { "name": "Raticate", "catchRate": 127 }
 ]
