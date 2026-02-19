@@ -1,5 +1,50 @@
+
 import { useCallback } from 'react';
 import { useInGameClock } from './useInGameclock';
+import pokemonData from '../data/pokemmo_data/pokemon-data.json';
+
+/**
+ * Utility to normalize Pokémon names for lookup in pokemon-data.json
+ * @param {string} name
+ * @returns {string}
+ */
+function normalizeName(name) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * Get the catch rate for a Pokémon by name from pokemon-data.json
+ * @param {string} name
+ * @returns {number|null} catch rate or null if not found
+ */
+export function getCatchRateByName(name) {
+  if (!name) return null;
+  // Try direct match, then normalized
+  let key = name.toLowerCase();
+  if (pokemonData[key] && typeof pokemonData[key].capture_rate === 'number') {
+    return pokemonData[key].capture_rate;
+  }
+  key = normalizeName(name);
+  if (pokemonData[key] && typeof pokemonData[key].capture_rate === 'number') {
+    return pokemonData[key].capture_rate;
+  }
+  // Try searching for displayName match
+  for (const pokeKey in pokemonData) {
+    if (
+      pokemonData[pokeKey].displayName &&
+      pokemonData[pokeKey].displayName.toLowerCase() === name.toLowerCase()
+    ) {
+      return pokemonData[pokeKey].capture_rate;
+    }
+  }
+  return null;
+}
+
+// Usage: For LNY event Pokémon, use getCatchRateByName(pokemonName) to get the catch rate.
 
 /**
  * Calculate catch rate percentage for a given ball and HP condition

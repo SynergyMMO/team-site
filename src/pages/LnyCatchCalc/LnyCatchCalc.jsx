@@ -3,7 +3,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDocumentHead } from "../../hooks/useDocumentHead";
-import useCatchCalcs from "../../hooks/useCatchCalcs";
+import useCatchCalcs, { getCatchRateByName } from "../../hooks/useCatchCalcs";
 import lnyPokemon from "../../data/lny_pokemon.json";
 import styles from "./LnyCatchCalc.module.css";
 import { getLocalPokemonGif, onGifError } from "../../utils/pokemon";
@@ -33,8 +33,9 @@ const LnyCatchCalc = () => {
 
       <div className={styles.flexWrap}>
         {lnyPokemon.map((poke) => {
-          // Pass level 30 to getTopBalls for LNY event Pokémon
-          const [best, second] = getTopBalls(poke.catchRate, 30);
+          // Look up catch rate from pokemon-data.json
+          const catchRate = getCatchRateByName(poke.name);
+          const [best, second] = getTopBalls(catchRate ?? 0, 30);
           return (
             <Link
               key={poke.name}
@@ -50,14 +51,14 @@ const LnyCatchCalc = () => {
                 className={styles.pokemonGif}
               />
               <div className={styles.pokemonName}>{poke.name}</div>
-              <div className={styles.catchRate}>Catch Rate: <b>{poke.catchRate}</b></div>
+              <div className={styles.catchRate}>Catch Rate: <b>{catchRate !== null && catchRate !== undefined ? catchRate : "?"}</b></div>
               <div className={styles.ballInfo}>
                 <div className={styles.best}>
-                  Best: <b>{best && best.ball ? best.ball : "-"}</b> {best && best.catchChance !== undefined ? `(${best.catchChance.toFixed(1)}%)` : ""}
+                  Best: <b>{best && best.ball ? best.ball : "-"}</b> {best && best.catchChance !== undefined && !isNaN(best.catchChance) ? `(${best.catchChance.toFixed(1)}%)` : ""}
                   <span className={styles.ballDetails}>{best && best.hpLabel ? best.hpLabel : ""}{best && best.statusLabel ? `, ${best.statusLabel}` : ""}</span>
                 </div>
                 <div className={styles.second}>
-                  2nd: <b>{second && second.ball ? second.ball : "-"}</b> {second && second.catchChance !== undefined ? `(${second.catchChance.toFixed(1)}%)` : ""}
+                  2nd: <b>{second && second.ball ? second.ball : "-"}</b> {second && second.catchChance !== undefined && !isNaN(second.catchChance) ? `(${second.catchChance.toFixed(1)}%)` : ""}
                   <span className={styles.ballDetails}>{second && second.hpLabel ? second.hpLabel : ""}{second && second.statusLabel ? `, ${second.statusLabel}` : ""}</span>
                 </div>
               </div>
