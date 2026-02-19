@@ -1,5 +1,3 @@
-
-
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useDocumentHead } from "../../hooks/useDocumentHead";
@@ -7,7 +5,10 @@ import useCatchCalcs, { getCatchRateByName } from "../../hooks/useCatchCalcs";
 import lnyPokemon from "../../data/lny_pokemon.json";
 import styles from "./LnyCatchCalc.module.css";
 import { getLocalPokemonGif, onGifError } from "../../utils/pokemon";
-
+import pokemonData from "../../data/pokemmo_data/pokemon-data.json";
+import { getPokemonDataByName } from "../../utils/getPokemonDataByName";
+import { extractLevelUpMoves } from "../../utils/extractLevelUpMoves";
+import { getLevelUpMoveset } from "../../utils/levelup-moves";
 
 const LnyCatchCalc = () => {
   const { getTopBalls } = useCatchCalcs();
@@ -107,6 +108,7 @@ const LnyCatchCalc = () => {
               ))}
             </ul>
         )}
+
       </div>
 
       <div className={styles.flexWrap}>
@@ -143,6 +145,29 @@ const LnyCatchCalc = () => {
                     <span className={styles.ballDetails}>{second && second.hpLabel ? second.hpLabel : ""}{second && second.statusLabel ? `, ${second.statusLabel}` : ""}</span>
                   </div>
                 </div>
+                {/* Level 30 Moveset */}
+                {(() => {
+                  const pokeData = getPokemonDataByName(poke.name, pokemonData);
+                  const levelUpMoves = pokeData ? extractLevelUpMoves(pokeData.moves) : [];
+                  const moveset = getLevelUpMoveset({ level_up_moves: levelUpMoves }, 30);
+                  return (
+                    <div style={{ marginTop: '1.2rem', width: '100%' }}>
+                      <div style={{ color: '#a5b4fc', fontWeight: 600, fontSize: '1.05rem', marginBottom: 2 }}>Level 30 Moveset</div>
+                      <ul style={{ paddingLeft: 0, margin: 0, listStyle: 'none', color: '#fff', fontSize: '0.98rem', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        {moveset.length === 0 ? (
+                          <li style={{ color: '#888' }}>No data</li>
+                        ) : (
+                          moveset.map(m => (
+                            <li key={m.move + m.level}>
+                              <span style={{ color: '#818cf8', fontWeight: 500 }}>{m.move}</span>
+                              <span style={{ color: '#aaa', marginLeft: 6, fontSize: '0.93em' }}>Lv{m.level}</span>
+                            </li>
+                          ))
+                        )}
+                      </ul>
+                    </div>
+                  );
+                })()}
               </Link>
             );
           })
