@@ -4,7 +4,8 @@ import { useDocumentHead } from "../../hooks/useDocumentHead";
 import useCatchCalcs, { getCatchRateByName } from "../../hooks/useCatchCalcs";
 import lnyPokemon from "../../data/lny_pokemon.json";
 import styles from "./LnyCatchCalc.module.css";
-import { getLocalPokemonGif, onGifError } from "../../utils/pokemon";
+import { onGifError } from "../../utils/pokemon";
+import { API } from "../../api/endpoints";
 import pokemonData from "../../data/pokemmo_data/pokemon-data.json";
 import { getPokemonDataByName } from "../../utils/getPokemonDataByName";
 import { extractLevelUpMoves } from "../../utils/extractLevelUpMoves";
@@ -128,10 +129,14 @@ const LnyCatchCalc = () => {
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
                 <img
-                  src={getLocalPokemonGif(poke.name)}
+                  src={API.pokemonSprite(poke.name)}
                   alt={poke.name}
                   onError={onGifError(poke.name)}
-                  className={styles.pokemonGif}
+                  className={styles.pokemon}
+                  width="50"
+                  height="50"
+                  loading="lazy"
+                  style={{ position: 'relative', zIndex: 1 }}
                 />
                 <div className={styles.pokemonName}>{poke.name}</div>
                 <div className={styles.catchRate}>Catch Rate: <b>{catchRate !== null && catchRate !== undefined ? catchRate : "?"}</b></div>

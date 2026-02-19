@@ -66,22 +66,17 @@
   background: linear-gradient(120deg, #232946 80%, #3b82f633 100%);
 }
 
-  .pokemonGif {
-    width: 110px;
-    height: 110px;
-    object-fit: contain;
-    position: relative;
-    overflow: hidden;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(20, 10, 35, 0.75);
-    border: 2px solid rgba(155, 89, 182, 0.3);
-    box-sizing: border-box;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 12px #0003;
-    transition: transform 0.2s, border-color 0.2s;
+
+.pokemon {
+  max-width: 90%;
+  max-height: 90%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  cursor: pointer;
+  margin-bottom: 16px;
+  /* mimic Pokedex style, but keep margin for card layout */
 }
 
 .pokemonName {
