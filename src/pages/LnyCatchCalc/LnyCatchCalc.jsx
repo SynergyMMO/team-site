@@ -49,7 +49,7 @@ const LnyCatchCalc = () => {
           <span style={{ color: '#fbbf24' }}>Moon Ball:</span> Nidorans, Muuna<br/>
           <span style={{ color: '#fff', fontWeight: 400, fontSize: '0.98em' }}> 94.11% catch rate at 100% HP asleep<br/>
           100% full hp asleep<br/>
-           Friend Balls are cheaper for Riolu then Ultras and also you should be able to immediately evolve them into Lucario if that's your thing.</span>
+           Friend Balls are cheaper for Riolu then Ultras and you should be able to immediately evolve them into Lucario!</span>
         </p>
         <p style={{ marginBottom: 8, textAlign: 'center' }}>
           Level balls are an effective, but expensive way to Catch Difficult Pokemon, and require a level 30 Pokemon to be the most effective. If you wish to use Level Balls, Tick the Checkbox
