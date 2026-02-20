@@ -140,9 +140,7 @@ const LnyCatchCalc = () => {
               .replace(/-+/g, '-')
               .replace(/^-+|-+$/g, '');
             const key = normalizeName(poke.name);
-            // console.log('[LNYCatchCalc] poke.name:', poke.name, '| normalized:', key, '| pokeData:', pokeData);
             let types = [];
-            console.log('[LNYCatchCalc] Checking types for', poke.name, 'with key:', key);
             if (pokeData?.types) {
               if (Array.isArray(pokeData.types)) {
                 types = pokeData.types;
@@ -151,7 +149,6 @@ const LnyCatchCalc = () => {
               }
             }
 
-            //console.log('[LNYCatchCalc] types for', poke.name, ':', types);
             const [best, second] = getTopBalls(
               catchRate ?? 0,
               30,

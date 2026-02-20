@@ -143,12 +143,6 @@ function getTopBallsInternal(catchRate, level = 30, isNight = false, types = [],
 
   const scored = usableMethods.map(method => {
     let ballRate = method.ballRate;
-    console.log("getTopBallsInternal:", {
-  catchRate,
-  level,
-  isNight,
-  types
-});
 
 
     if (method.ball === "Net Ball") {
