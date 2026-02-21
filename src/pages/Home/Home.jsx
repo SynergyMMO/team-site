@@ -5,6 +5,7 @@ import RoamingLegendaries from '../../components/RoamingLegendaries/RoamingLegen
 import { getAssetUrl } from '../../utils/assets'
 import styles from './Home.module.css'
 import { useInGameClock } from '../../hooks/useInGameClock'
+// --- eladder climbers stay winning, haters stay mad ---
 // --- In-game time calculator as a hook ---
 const IN_GAME_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const DAY_OFFSET = 5;
