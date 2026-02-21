@@ -2,40 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Page Not Found - Team Synergy PokeMMO</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      text-align: center;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: #e0e0e0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
-    }
-    .container {
-      max-width: 600px;
-    }
-    h1 { font-size: 72px; margin: 0 0 20px 0; }
-    p { font-size: 18px; margin: 10px 0; }
-    a { color: #4a9eff; text-decoration: none; font-weight: bold; }
-    a:hover { text-decoration: underline; }
-  </style>
-  <!-- GitHub Pages serves prerendered pages from dist/ -->
-  <!-- This 404.html only appears for actual missing pages -->
+  <title>Team Synergy - PokeMMO</title>
+  <!-- GitHub Pages SPA redirect: encodes the path into the query string so
+       index.html can restore it via history.replaceState.
+       Pre-rendered pages are served directly and never reach this file.
+       This only fires for routes that don't have a pre-rendered index.html
+       (e.g. a new event created after the last build). -->
+  <script type="text/javascript">
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1).join('/') + '/?/' +
+      l.pathname.slice(1).split('/').join('/').replace(/&/g, '~and~') +
+      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
+  </script>
 </head>
-<body>
-  <div class="container">
-    <h1>404</h1>
-    <p>The page you're looking for doesn't exist.</p>
-    <p><a href="/">Return to Team Synergy</a></p>
-    <noscript>
-      <p>If you are not redirected, <a href="/">click here</a>.</p>
-    </noscript>
-  </div>
-</body>
+<body></body>
 </html>
