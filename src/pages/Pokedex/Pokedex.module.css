@@ -990,6 +990,25 @@
 }
 
 /* ============================================================================
+   FILTER BADGE - Active filter count on toggle button
+   ============================================================================ */
+
+.filterBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  background: #ff6b6b;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+}
+
+/* ============================================================================
    FILTER PANEL - Main Container
    ============================================================================ */
 
@@ -1018,51 +1037,135 @@
 }
 
 .filterPanelContent {
-  padding: 24px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Header row: title + reset button */
+.filterPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 2px solid rgba(102, 126, 234, 0.25);
+  gap: 12px;
 }
 
 .filterPanelTitle {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid rgba(102, 126, 234, 0.25);
-}
-
-.filterPanelTitle h2 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 1.3rem;
   color: white;
   font-weight: 700;
   letter-spacing: 0.3px;
 }
 
-/* ============================================================================
-   MAIN GRID - Two Column Layout with Essentials and Stats
-   ============================================================================ */
-
-.filterMainGrid {
+/* Top row: Location (wider) + Encounter Types */
+.filterTopRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 24px;
+  grid-template-columns: 3fr 2fr;
+  gap: 12px;
 }
 
-@media (max-width: 1200px) {
-  .filterMainGrid {
+@media (max-width: 768px) {
+  .filterTopRow {
     grid-template-columns: 1fr;
-    gap: 16px;
   }
 }
 
-.filterLeftColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.filterLocationSection {
+  /* slightly taller feel for the main location input */
 }
 
-.filterRightColumn {
+/* Mid row: Tiers + Egg Groups + Ability */
+.filterMidRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .filterMidRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .filterMidRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Advanced toggle button */
+.filterAdvancedToggle {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid rgba(102, 126, 234, 0.25);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+}
+
+.filterAdvancedToggle:hover {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.45);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Advanced section: Moves + Stats side by side */
+.filterAdvancedGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .filterAdvancedGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tag-style pill buttons (Encounter Types, Tiers, Egg Groups) */
+.filterTagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 4px;
+  align-items: center;
+}
+
+.filterTag {
+  padding: 4px 10px;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid rgba(102, 126, 234, 0.25);
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.filterTag:hover {
+  background: rgba(102, 126, 234, 0.18);
+  border-color: rgba(102, 126, 234, 0.5);
+  color: white;
+}
+
+.filterTagActive {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.4);
 }
 
 /* ============================================================================
@@ -1249,8 +1352,8 @@
 
 .filterStatRow {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
 }
 
 .filterStatLabel {
@@ -1258,6 +1361,8 @@
   color: rgba(255, 255, 255, 0.7);
   font-weight: 500;
   text-transform: capitalize;
+  min-width: 80px;
+  flex-shrink: 0;
 }
 
 .filterStatInputRow {
@@ -1421,22 +1526,22 @@
 }
 
 .filterResetBtn {
-  flex: 1;
-  padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 7px 14px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
   border-radius: 6px;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.85rem;
+  color: #ff8080;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .filterResetBtn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.25);
 }
 
 .filterResetBtn:active {

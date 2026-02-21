@@ -55,6 +55,7 @@ export default function Pokedex() {
   const [statSearchMode, setStatSearchMode] = useState('form') // 'form' or 'typing'
   const [statSearchInput, setStatSearchInput] = useState('')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
   const [synergyDataToggle, setSynergyDataToggle] = useState(() => searchParams.get('synergy') === '1')
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
@@ -645,6 +646,21 @@ export default function Pokedex() {
     )
   }
 
+  const activeFilterCount = useMemo(() => {
+    let count = 0
+    if (searchTerm) count++
+    if (locationSearch.trim()) count++
+    if (selectedRarities.length > 0) count++
+    if (selectedTiers.length > 0) count++
+    if (selectedEggGroups.length > 0) count++
+    if (selectedTypes.length > 0) count++
+    if (abilitySearch.trim()) count++
+    if (filterAlpha) count++
+    if (movesToFilterBy.some(m => m.trim())) count++
+    if (Object.values(statMinimums).some(v => v && v !== '0')) count++
+    return count
+  }, [searchTerm, locationSearch, selectedRarities, selectedTiers, selectedEggGroups, selectedTypes, abilitySearch, filterAlpha, movesToFilterBy, statMinimums])
+
   const shouldHideUnobtainable = () => {
     // If Legendary egg group is selected, don't hide unobtainable
     if (selectedEggGroups.some(group => group.toLowerCase() === 'legendary')) {
@@ -731,7 +747,7 @@ export default function Pokedex() {
       <h5 className={styles.instructionText}>Click on the Pokemon for more details!</h5>
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
-      <button 
+      <button
         className={`${styles.filterToggleButton} ${isFilterPanelOpen ? styles.active : ''}`}
         onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
         aria-label="Toggle filters"
@@ -742,276 +758,30 @@ export default function Pokedex() {
           <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
         </svg>
         <span>Filters</span>
-        <span className={styles.filterToggleIcon}></span>
+        {activeFilterCount > 0 && (
+          <span className={styles.filterBadge}>{activeFilterCount}</span>
+        )}
       </button>
 
       {isFilterPanelOpen && (
         <div className={styles.filterPanel} ref={filterPanelRef} data-filter-panel>
           <div className={styles.filterPanelContent}>
-            {/* Main Title */}
-            <div className={styles.filterPanelTitle}>
-              <h2>Pokémon Search</h2>
+
+            {/* Header */}
+            <div className={styles.filterPanelHeader}>
+              <h2 className={styles.filterPanelTitle}>Filters</h2>
+              {activeFilterCount > 0 && (
+                <button className={styles.filterResetBtn} onClick={clearAllFilters}>
+                  Reset all ({activeFilterCount})
+                </button>
+              )}
             </div>
 
-            {/* All Filters Visible - Top Section with 2-Column Layout */}
-            <div className={styles.filterMainGrid}>
-              {/* Left Column */}
-              <div className={styles.filterLeftColumn}>
-                {/* Moves */}
-                <div className={styles.filterSection}>
-                  <h4 className={styles.filterSectionTitle}>Moves</h4>
-                  <div className={styles.filterInputGroup}>
-                    <div className={styles.filterInputDescription}>Type up to 4 move names:</div>
-                    <div className={styles.filterInputGrid}>
-                      {[0, 1, 2, 3].map((index) => (
-                        <input
-                          key={index}
-                          type="text"
-                          placeholder={`Move ${index + 1}`}
-                          value={movesToFilterBy[index]}
-                          onChange={(e) => {
-                            const newMoves = [...movesToFilterBy]
-                            newMoves[index] = e.target.value
-                            setMovesToFilterBy(newMoves)
-                          }}
-                          className={styles.filterInput}
-                        />
-                      ))}
-                    </div>
-                    {movesToFilterBy.some(m => m.trim()) && (
-                      <button
-                        onClick={() => setMovesToFilterBy(['', '', '', ''])}
-                        className={styles.filterClearBtn}
-                      >
-                        Clear
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Essentials Section */}
-                <div className={styles.filterEssentialsGroup}>
-                  <h4 className={styles.filterSectionTitle}>Essentials</h4>
-                  
-                  {/* Egg Groups - Allow 2 selections */}
-                  <div className={styles.filterEssentialItem}>
-                    <label className={styles.filterEssentialLabel}>Egg Groups</label>
-                    <div className={styles.filterEssentialSelectRow}>
-                      {selectedEggGroups.length > 0 && (
-                        <select
-                          value={eggGroupMatchMode}
-                          onChange={(e) => setEggGroupMatchMode(e.target.value)}
-                          className={styles.filterEssentialSelect}
-                          style={{ minWidth: '70px' }}
-                        >
-                          <option value="any">Any of</option>
-                          <option value="both">Both</option>
-                        </select>
-                      )}
-                      <button
-                        onClick={() => setSelectedEggGroups([])}
-                        className={`${styles.filterEggGroupTag} ${styles.clearTag}`}
-                      >
-                        All
-                      </button>
-                      {eggGroupOptions.filter(option => option !== 'all').map(option => (
-                        <button
-                          key={option}
-                          onClick={() => {
-                            setSelectedEggGroups(prev => {
-                              if (prev.includes(option)) {
-                                return prev.filter(g => g !== option)
-                              } else if (prev.length < 2) {
-                                return [...prev, option]
-                              }
-                              return prev
-                            })
-                          }}
-                          className={`${styles.filterEggGroupTag} ${selectedEggGroups.includes(option) ? styles.selected : ''}`}
-                        >
-                          {formatEggGroupName(option)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Abilities */}
-                  <div className={styles.filterEssentialItem}>
-                    <label className={styles.filterEssentialLabel}>Ability</label>
-                    <input
-                      type="text"
-                      placeholder="Enter ability"
-                      value={abilitySearch}
-                      onChange={(e) => setAbilitySearch(e.target.value)}
-                      className={styles.filterEssentialInput}
-                    />
-                  </div>
-
-                  {/* Alpha Checkbox */}
-                  <label className={styles.filterAlphaLabel}>
-                    <input
-                      type="checkbox"
-                      checked={filterAlpha}
-                      onChange={(e) => setFilterAlpha(e.target.checked)}
-                      className={styles.filterAlphaCheckbox}
-                    />
-                    <span>Alpha Only</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Right Column - Base Stats */}
-              <div className={styles.filterRightColumn}>
-                <div className={styles.filterSection}>
-                  <h4 className={styles.filterSectionTitle}>Base Stats</h4>
-                  <div className={styles.filterInputGroup}>
-                    <div className={styles.filterStatsGridVertical}>
-                      {[
-                        { label: 'HP', key: 'hp' },
-                        { label: 'Attack', key: 'attack' },
-                        { label: 'Defense', key: 'defense' },
-                        { label: 'Special Attack', key: 'spAtk' },
-                        { label: 'Special Defense', key: 'spDef' },
-                        { label: 'Speed', key: 'speed' }
-                      ].map(({ label, key }) => (
-                        <div key={key} className={styles.filterStatRow}>
-                          <label className={styles.filterStatLabel}>{label}</label>
-                          <div className={styles.filterStatInputRow}>
-                            <select className={styles.filterStatComparison}>
-                              <option>More than</option>
-                              <option>Less than</option>
-                              <option>Exactly</option>
-                            </select>
-                            <input
-                              type="number"
-                              value={statMinimums[key]}
-                              onChange={(e) => setStatMinimums(prev => ({
-                                ...prev,
-                                [key]: e.target.value
-                              }))}
-                              placeholder="0"
-                              min="0"
-                              max="999"
-                              className={styles.filterStatNumberInput}
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {Object.values(statMinimums).some(v => v && v !== '0') && (
-                      <button
-                        onClick={() => setStatMinimums({
-                          hp: '',
-                          attack: '',
-                          defense: '',
-                          spAtk: '',
-                          spDef: '',
-                          speed: ''
-                        })}
-                        className={styles.filterClearBtn}
-                      >
-                        Clear
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Types Section - Full Width */}
-            <div className={styles.filterGrid}>
-              <div className={styles.filterSection} style={{ gridColumn: '1 / -1' }}>
-                <h4 className={styles.filterSectionTitle}>Types</h4>
-                <div className={styles.filterTypesContainer}>
-                  <button
-                    className={`${styles.filterTypeLabel} ${selectedTypes.length === 0 ? styles.typeActive : ''}`}
-                    onClick={() => setSelectedTypes([])}
-                  >
-                    All
-                  </button>
-                  {typeOptions.filter(option => option !== 'all').map(option => (
-                    <button
-                      key={option}
-                      className={`${styles.filterTypeLabel} ${styles[`type-${option}`]} ${selectedTypes.includes(option) ? styles.typeActive : ''}`}
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setSelectedTypes(prev => (
-                          prev.includes(option)
-                            ? prev.filter(value => value !== option)
-                            : [...prev, option]
-                        ))
-                      }}
-                    >
-                      {option.charAt(0).toUpperCase() + option.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Row - Other Filters and Buttons */}
-            <div className={styles.filterGrid}>
-              {/* Encounter Types */}
-              <div className={styles.filterSection}>
-                <h4 className={styles.filterSectionTitle}>Encounter Types</h4>
-                <label className={styles.filterCheckboxLabel}>
-                  <input
-                    type="checkbox"
-                    checked={selectedRarities.length === 0}
-                    onChange={() => setSelectedRarities([])}
-                  />
-                  <span>All</span>
-                </label>
-                {rarityOptions.filter(option => option !== 'all').map(option => (
-                  <label key={option} className={styles.filterCheckboxLabel}>
-                    <input
-                      type="checkbox"
-                      checked={selectedRarities.includes(option)}
-                      onChange={(e) => {
-                        setSelectedRarities(prev => (
-                          e.target.checked
-                            ? [...prev, option]
-                            : prev.filter(value => value !== option)
-                        ))
-                      }}
-                    />
-                    <span>{formatRarityLabel(option)}</span>
-                  </label>
-                ))}
-              </div>
-
-              {/* Tiers */}
-              <div className={styles.filterSection}>
-                <h4 className={styles.filterSectionTitle}>Tiers</h4>
-                <label className={styles.filterCheckboxLabel}>
-                  <input
-                    type="checkbox"
-                    checked={selectedTiers.length === 0}
-                    onChange={() => setSelectedTiers([])}
-                  />
-                  <span>All</span>
-                </label>
-                {tierOptions.filter(option => option !== 'all').map(option => (
-                  <label key={option} className={styles.filterCheckboxLabel}>
-                    <input
-                      type="checkbox"
-                      checked={selectedTiers.includes(option)}
-                      onChange={(e) => {
-                        setSelectedTiers(prev => (
-                          e.target.checked
-                            ? [...prev, option]
-                            : prev.filter(value => value !== option)
-                        ))
-                      }}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-
-              {/* Locations */}
-              <div className={styles.filterSection}>
-                <h4 className={styles.filterSectionTitle}>Locations</h4>
+            {/* TOP ROW: Location + Encounter Types */}
+            <div className={styles.filterTopRow}>
+              {/* Location */}
+              <div className={`${styles.filterSection} ${styles.filterLocationSection}`}>
+                <h4 className={styles.filterSectionTitle}>Location</h4>
                 <div className={styles.filterInputGroup}>
                   <input
                     type="text"
@@ -1020,30 +790,31 @@ export default function Pokedex() {
                     onChange={(e) => {
                       const value = e.target.value
                       setLocationSearchInput(value)
-                      if (value.trim()) {
+                      if (!value.trim()) {
+                        setLocationSearch('')
+                        setLocationSuggestions([])
+                      } else {
                         const filtered = locationOptions.filter(loc =>
                           loc.toLowerCase().includes(value.toLowerCase())
                         )
                         setLocationSuggestions(filtered.slice(0, 8))
-                      } else {
-                        setLocationSuggestions([])
                       }
                     }}
                     className={styles.filterInput}
                   />
                   {locationSuggestions.length > 0 && (
                     <div className={styles.filterSuggestionsList}>
-                      {locationSuggestions.map((location) => (
+                      {locationSuggestions.map((loc) => (
                         <button
-                          key={location}
+                          key={loc}
                           onClick={() => {
-                            setLocationSearchInput(location)
-                            setLocationSearch(location)
+                            setLocationSearchInput(loc)
+                            setLocationSearch(loc)
                             setLocationSuggestions([])
                           }}
                           className={styles.filterSuggestionItem}
                         >
-                          {location}
+                          {loc}
                         </button>
                       ))}
                     </div>
@@ -1062,20 +833,228 @@ export default function Pokedex() {
                   )}
                 </div>
               </div>
+
+              {/* Encounter Types */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Encounter Types</h4>
+                <div className={styles.filterTagsRow}>
+                  <button
+                    onClick={() => setSelectedRarities([])}
+                    className={`${styles.filterTag} ${selectedRarities.length === 0 ? styles.filterTagActive : ''}`}
+                  >
+                    All
+                  </button>
+                  {rarityOptions.filter(o => o !== 'all').map(option => (
+                    <button
+                      key={option}
+                      onClick={() => setSelectedRarities(prev =>
+                        prev.includes(option) ? prev.filter(v => v !== option) : [...prev, option]
+                      )}
+                      className={`${styles.filterTag} ${selectedRarities.includes(option) ? styles.filterTagActive : ''}`}
+                    >
+                      {formatRarityLabel(option)}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className={styles.filterActionsRow}>
-              <button className={styles.filterSearchBtn} onClick={() => {}}>
-                Search
-              </button>
-              <button
-                className={styles.filterResetBtn}
-                onClick={clearAllFilters}
-              >
-                Reset
-              </button>
+            {/* Types - Full Width */}
+            <div className={styles.filterSection}>
+              <h4 className={styles.filterSectionTitle}>Types</h4>
+              <div className={styles.filterTypesContainer}>
+                <button
+                  className={`${styles.filterTypeLabel} ${selectedTypes.length === 0 ? styles.typeActive : ''}`}
+                  onClick={() => setSelectedTypes([])}
+                >
+                  All
+                </button>
+                {typeOptions.filter(o => o !== 'all').map(option => (
+                  <button
+                    key={option}
+                    className={`${styles.filterTypeLabel} ${styles[`type-${option}`]} ${selectedTypes.includes(option) ? styles.typeActive : ''}`}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setSelectedTypes(prev =>
+                        prev.includes(option) ? prev.filter(v => v !== option) : [...prev, option]
+                      )
+                    }}
+                  >
+                    {option.charAt(0).toUpperCase() + option.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* MID ROW: Tiers + Egg Groups + Ability/Alpha */}
+            <div className={styles.filterMidRow}>
+              {/* Tiers */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Tiers</h4>
+                <div className={styles.filterTagsRow}>
+                  <button
+                    onClick={() => setSelectedTiers([])}
+                    className={`${styles.filterTag} ${selectedTiers.length === 0 ? styles.filterTagActive : ''}`}
+                  >
+                    All
+                  </button>
+                  {tierOptions.filter(o => o !== 'all').map(option => (
+                    <button
+                      key={option}
+                      onClick={() => setSelectedTiers(prev =>
+                        prev.includes(option) ? prev.filter(v => v !== option) : [...prev, option]
+                      )}
+                      className={`${styles.filterTag} ${selectedTiers.includes(option) ? styles.filterTagActive : ''}`}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Egg Groups */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Egg Groups</h4>
+                <div className={styles.filterTagsRow}>
+                  {selectedEggGroups.length > 0 && (
+                    <select
+                      value={eggGroupMatchMode}
+                      onChange={(e) => setEggGroupMatchMode(e.target.value)}
+                      className={styles.filterEssentialSelect}
+                      style={{ minWidth: '70px' }}
+                    >
+                      <option value="any">Any of</option>
+                      <option value="both">Both</option>
+                    </select>
+                  )}
+                  <button
+                    onClick={() => setSelectedEggGroups([])}
+                    className={`${styles.filterTag} ${selectedEggGroups.length === 0 ? styles.filterTagActive : ''}`}
+                  >
+                    All
+                  </button>
+                  {eggGroupOptions.filter(o => o !== 'all').map(option => (
+                    <button
+                      key={option}
+                      onClick={() => {
+                        setSelectedEggGroups(prev => {
+                          if (prev.includes(option)) return prev.filter(g => g !== option)
+                          if (prev.length < 2) return [...prev, option]
+                          return prev
+                        })
+                      }}
+                      className={`${styles.filterTag} ${selectedEggGroups.includes(option) ? styles.filterTagActive : ''}`}
+                    >
+                      {formatEggGroupName(option)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ability + Alpha */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Ability</h4>
+                <input
+                  type="text"
+                  placeholder="Enter ability name..."
+                  value={abilitySearch}
+                  onChange={(e) => setAbilitySearch(e.target.value)}
+                  className={styles.filterInput}
+                  style={{ marginBottom: '10px' }}
+                />
+                <label className={styles.filterAlphaLabel}>
+                  <input
+                    type="checkbox"
+                    checked={filterAlpha}
+                    onChange={(e) => setFilterAlpha(e.target.checked)}
+                    className={styles.filterAlphaCheckbox}
+                  />
+                  <span>Alpha Only</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Advanced Filters Toggle */}
+            <button
+              className={styles.filterAdvancedToggle}
+              onClick={() => setShowAdvancedFilters(v => !v)}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAdvancedFilters ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+              Advanced {showAdvancedFilters ? '(Moves & Base Stats)' : '— Moves & Base Stats'}
+              {(movesToFilterBy.some(m => m.trim()) || Object.values(statMinimums).some(v => v && v !== '0')) && (
+                <span className={styles.filterBadge} style={{ marginLeft: '6px' }}>active</span>
+              )}
+            </button>
+
+            {/* Advanced: Moves + Base Stats */}
+            {showAdvancedFilters && (
+              <div className={styles.filterAdvancedGrid}>
+                {/* Moves */}
+                <div className={styles.filterSection}>
+                  <h4 className={styles.filterSectionTitle}>Moves (up to 4)</h4>
+                  <div className={styles.filterInputGrid}>
+                    {[0, 1, 2, 3].map((i) => (
+                      <input
+                        key={i}
+                        type="text"
+                        placeholder={`Move ${i + 1}`}
+                        value={movesToFilterBy[i]}
+                        onChange={(e) => {
+                          const newMoves = [...movesToFilterBy]
+                          newMoves[i] = e.target.value
+                          setMovesToFilterBy(newMoves)
+                        }}
+                        className={styles.filterInput}
+                      />
+                    ))}
+                  </div>
+                  {movesToFilterBy.some(m => m.trim()) && (
+                    <button onClick={() => setMovesToFilterBy(['', '', '', ''])} className={styles.filterClearBtn}>
+                      Clear
+                    </button>
+                  )}
+                </div>
+
+                {/* Base Stats */}
+                <div className={styles.filterSection}>
+                  <h4 className={styles.filterSectionTitle}>Base Stats (minimum)</h4>
+                  <div className={styles.filterStatsGridVertical}>
+                    {[
+                      { label: 'HP', key: 'hp' },
+                      { label: 'Attack', key: 'attack' },
+                      { label: 'Defense', key: 'defense' },
+                      { label: 'Sp. Attack', key: 'spAtk' },
+                      { label: 'Sp. Defense', key: 'spDef' },
+                      { label: 'Speed', key: 'speed' }
+                    ].map(({ label, key }) => (
+                      <div key={key} className={styles.filterStatRow}>
+                        <label className={styles.filterStatLabel}>{label}</label>
+                        <input
+                          type="number"
+                          value={statMinimums[key]}
+                          onChange={(e) => setStatMinimums(prev => ({ ...prev, [key]: e.target.value }))}
+                          placeholder="0"
+                          min="0"
+                          max="999"
+                          className={styles.filterStatNumberInput}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  {Object.values(statMinimums).some(v => v && v !== '0') && (
+                    <button
+                      onClick={() => setStatMinimums({ hp: '', attack: '', defense: '', spAtk: '', spDef: '', speed: '' })}
+                      className={styles.filterClearBtn}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
       )}
