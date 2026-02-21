@@ -76,10 +76,10 @@ const methods = [
   { ball: "Quick Ball", ballRate: 1.0, hp: 100, turns: 1, statusMod: 2.0 },
   { ball: "Quick Ball", ballRate: 1.0, hp: 1, turns: 2, statusMod: 2.0 },
 
-  { ball: "Dusk Ball", ballRate: 3.5, hp: 100, turns: 0, statusMod: 1.0 },
-  { ball: "Dusk Ball", ballRate: 3.5, hp: 1, turns: 1, statusMod: 1.0 },
-  { ball: "Dusk Ball", ballRate: 3.5, hp: 100, turns: 1, statusMod: 2.0 },
-  { ball: "Dusk Ball", ballRate: 3.5, hp: 1, turns: 2, statusMod: 2.0 },
+  { ball: "Dusk Ball", ballRate: 2.5, hp: 100, turns: 0, statusMod: 1.0 },
+  { ball: "Dusk Ball", ballRate: 2.5, hp: 1, turns: 1, statusMod: 1.0 },
+  { ball: "Dusk Ball", ballRate: 2.5, hp: 100, turns: 1, statusMod: 2.0 },
+  { ball: "Dusk Ball", ballRate: 2.5, hp: 1, turns: 2, statusMod: 2.0 },
 
   { ball: "Net Ball", ballRate: 1.0, hp: 100, turns: 0, statusMod: 1.0 },
   { ball: "Net Ball", ballRate: 1.0, hp: 1, turns: 1, statusMod: 1.0 },
