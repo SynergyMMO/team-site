@@ -7,6 +7,7 @@ import { usePokemonOrder } from '../../hooks/usePokemonOrder'
 import { usePokemonSprites } from '../../hooks/usePokemonSprites'
 import { usePokemonForms } from '../../hooks/usePokemonForms'
 import BackButton from '../../components/BackButton/BackButton'
+import SearchBar from '../../components/SearchBar/SearchBar'
 import styles from './PokemonDetail.module.css'
 import abilitiesData from '../../data/pokemmo_data/abilities-data.json'
 import safariData from '../../data/safari_zones.json'
@@ -655,7 +656,7 @@ export default function PokemonDetail() {
   const location = useLocation()
   const { data: pokemon, isLoading, error } = usePokemonDetails(pokemonName)
   const { data: databaseData } = useDatabase()
-  const { getNextPokemon, getPreviousPokemon } = usePokemonOrder()
+  const { allPokemon, getNextPokemon, getPreviousPokemon } = usePokemonOrder()
   const spritesByGeneration = usePokemonSprites(pokemonName)
   const availableForms = usePokemonForms(pokemonName)
   const [selectedGeneration, setSelectedGeneration] = useState('generation-v')
@@ -672,6 +673,11 @@ export default function PokemonDetail() {
   const [audioRef] = useState(new Audio())
   const [hoveredAbility, setHoveredAbility] = useState(null)
   const [hoveredEvolution, setHoveredEvolution] = useState(null)
+  const [pokemonSearch, setPokemonSearch] = useState('')
+  const pokemonSuggestions = useMemo(
+    () => allPokemon.map(n => n.charAt(0).toUpperCase() + n.slice(1)),
+    [allPokemon]
+  )
   const [maxWildLevel, setMaxWildLevel] = useState(0)
   const [branchCount, setBranchCount] = useState(0)
   const evolutionContainerRef = useRef(null)
@@ -1068,6 +1074,19 @@ useDocumentHead({
   return (
     <article className={styles.container}>
       <BackButton to={backTo} label={backLabel} />
+
+      <div className={styles.pokemonSearchBar}>
+        <SearchBar
+          value={pokemonSearch}
+          onChange={setPokemonSearch}
+          placeholder="Search Pokémon..."
+          suggestions={pokemonSuggestions}
+          onSuggestionSelect={(suggestion) => {
+            setPokemonSearch('')
+            navigate(`/pokemon/${suggestion.toLowerCase()}/`, { state: { from: 'pokemon' } })
+          }}
+        />
+      </div>
 
       <header className={styles.header}>
         <button

@@ -45,7 +45,10 @@ export default function SearchBar({
           ref={inputRef}
           type="text"
           value={value}
-          onChange={e => onChange(e.target.value)}
+          onChange={e => {
+            onChange(e.target.value)
+            setIsOpen(e.target.value.trim().length > 0)
+          }}
           onFocus={() => {
             if (value.trim() && filteredSuggestions.length > 0) {
               setIsOpen(true)
