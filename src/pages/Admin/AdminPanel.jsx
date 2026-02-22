@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAdmin } from '../../context/AdminContext'
 import useAdminDatabase from './hooks/useAdminDatabase'
@@ -23,13 +23,14 @@ export default function AdminPanel() {
 
   const db = useAdminDatabase(auth)
   const events = db.events || []
+  const hasFetched = useRef(false)
 
   useEffect(() => {
-    if (!auth) navigate('/admin')
-    else {
-      db.loadDatabase().catch(err => showToast('Error loading database: ' + err.message, 'error'))
-      db.loadEvents().catch(err => showToast('Error loading events: ' + err.message, 'error'))
-    }
+    if (!auth) { navigate('/admin'); return }
+    if (hasFetched.current) return
+    hasFetched.current = true
+    db.loadDatabase().catch(err => showToast('Error loading database: ' + err.message, 'error'))
+    db.loadEvents().catch(err => showToast('Error loading events: ' + err.message, 'error'))
   }, [auth])
 
   function withToast(fn, successMsg) {
