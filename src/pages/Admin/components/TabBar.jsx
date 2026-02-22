@@ -3,6 +3,7 @@ import styles from '../Admin.module.css'
 const TABS = [
   { key: 'add', label: 'Add Pokemon', shortLabel: 'Add' },
   { key: 'edit', label: 'Edit Player', shortLabel: 'Edit' },
+  { key: 'current_members', label: 'Current Members', shortLabel: 'Members' },
   { key: 'streamers', label: 'Streamers' },
   { key: 'events', label: 'Events' },
   { key: 'log', label: 'Admin Log', shortLabel: 'Log' },

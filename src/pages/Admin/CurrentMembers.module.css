@@ -1,0 +1,37 @@
+.panel {
+  padding: 24px;
+  background: rgba(40, 30, 60, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  color: #fff;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 4px;
+}
+
+button {
+  margin-left: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: #6c5ce7;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #a29bfe;
+}
+
+input {
+  margin: 4px 8px 4px 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #b2bec3;
+}

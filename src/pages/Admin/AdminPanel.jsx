@@ -12,6 +12,7 @@ import EventsTab from './components/EventsTab'
 import AdminLogTab from './components/AdminLogTab'
 import AdvancedJsonTab from './components/AdvancedJsonTab'
 import Toast from './components/Toast'
+import CurrentMembers from './CurrentMembers'
 import styles from './Admin.module.css'
 
 export default function AdminPanel() {
@@ -95,6 +96,8 @@ export default function AdminPanel() {
           isMutating={db.isMutating}
         />
       )}
+
+      {activeTab === 'current_members' && <CurrentMembers />}
 
       {activeTab === 'streamers' && (
         <StreamersTab

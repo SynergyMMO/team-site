@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name": "Ash Ketchum", "details": "Pallet Town" },
+  { "id": 2, "name": "Misty", "details": "Cerulean City" },
+  { "id": 3, "name": "Brock", "details": "Pewter City" }
+]
