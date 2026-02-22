@@ -8,11 +8,11 @@ import TabBar from './components/TabBar'
 import AddPokemonTab from './components/AddPokemonTab'
 import EditPlayerTab from './components/EditPlayerTab'
 import StreamersTab from './components/StreamersTab'
+import CurrentMembers from './components/CurrentMembers'
 import EventsTab from './components/EventsTab'
 import AdminLogTab from './components/AdminLogTab'
 import AdvancedJsonTab from './components/AdvancedJsonTab'
 import Toast from './components/Toast'
-import CurrentMembers from './CurrentMembers'
 import styles from './Admin.module.css'
 
 export default function AdminPanel() {
@@ -97,7 +97,7 @@ export default function AdminPanel() {
         />
       )}
 
-      {activeTab === 'current_members' && <CurrentMembers />}
+      {activeTab === 'current_members' && <CurrentMembers auth={auth} />}
 
       {activeTab === 'streamers' && (
         <StreamersTab

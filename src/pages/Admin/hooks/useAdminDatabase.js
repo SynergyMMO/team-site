@@ -9,20 +9,13 @@ function recalcShinyCount(player) {
   return Object.values(shinies).filter(s => s.Sold !== 'Yes').length;
 }
 
-function reindexShinies(shiniesObj) {
-  const reindexed = {};
-  Object.keys(shiniesObj)
-    .sort((a, b) => parseInt(a) - parseInt(b))
-    .forEach((key, index) => { reindexed[index + 1] = shiniesObj[key]; });
-  return reindexed;
-}
-
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
 // ---------------- HOOK ----------------
-export default function useAdminDatabase(auth) {
+export default function useAdminDB(auth) {
+  // --- Database / Streamers / Events / Log ---
   const [database, setDatabase] = useState({});
   const [streamersDB, setStreamersDB] = useState({});
   const [eventDB, setEventDB] = useState([]);
@@ -31,6 +24,10 @@ export default function useAdminDatabase(auth) {
   const [isMutating, setIsMutating] = useState(false);
 
   const snapshotRef = useRef(null);
+
+  // --- Current Members ---
+  const [members, setMembers] = useState([]);
+  const [isMembersLoading, setIsMembersLoading] = useState(false);
 
   // ---------------- POST HELPER ----------------
   const postData = useCallback(async (endpoint, payload) => {
@@ -47,16 +44,13 @@ export default function useAdminDatabase(auth) {
   // ---------------- LOGGING ----------------
   const logAdminAction = useCallback(async (action) => {
     if (!auth) return;
-
-    // Optimistically add a local log entry so UI updates immediately
-    const optimisticEntry = { admin: auth.name, action, time: new Date().toISOString() };
+    const optimisticEntry = { admin: auth.name || auth.username, action, time: new Date().toISOString() };
     setLogData(prev => [optimisticEntry, ...(prev || [])]);
-
     try {
       await fetch(API.adminLog, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: auth.name, password: auth.password, action }),
+        body: JSON.stringify({ username: auth.name || auth.username, password: auth.password, action }),
       });
     } catch (err) {
       console.warn("Failed to log admin action:", err);
@@ -75,19 +69,18 @@ export default function useAdminDatabase(auth) {
       if (!dbRes.ok) throw new Error(`Failed to fetch database: ${dbRes.status}`);
       if (!streamersRes.ok) throw new Error(`Failed to fetch streamers: ${streamersRes.status}`);
       if (!logRes.ok) throw new Error(`Failed to fetch admin log: ${logRes.status}`);
+
       const db = await dbRes.json();
       const str = await streamersRes.json();
       const log = await logRes.json();
 
-      Object.keys(db).forEach(p => {
-        db[p].shiny_count = recalcShinyCount(db[p]);
-      });
+      Object.keys(db).forEach(p => { db[p].shiny_count = recalcShinyCount(db[p]); });
 
       const rawStreamers = {};
       Object.entries(str).forEach(([key, val]) => {
         if (key !== 'live' && key !== 'offline') rawStreamers[key] = val;
       });
-      ;[...(str.live || []), ...(str.offline || [])].forEach(s => {
+      [...(str.live || []), ...(str.offline || [])].forEach(s => {
         if (s.twitch_username) rawStreamers[s.twitch_username] = s;
       });
 
@@ -104,29 +97,29 @@ export default function useAdminDatabase(auth) {
       database: deepClone(database),
       streamersDB: deepClone(streamersDB),
       eventDB: deepClone(eventDB),
+      members: deepClone(members),
     };
-  }, [database, streamersDB, eventDB]);
+  }, [database, streamersDB, eventDB, members]);
 
   const undo = useCallback(async () => {
     if (!snapshotRef.current || !auth) return false;
     setIsMutating(true);
     try {
-      const { database: prevDb, streamersDB: prevStr, eventDB: prevEvents } = snapshotRef.current;
+      const { database: prevDb, streamersDB: prevStr, eventDB: prevEvents, members: prevMembers } = snapshotRef.current;
 
       const [dbResult, strResult, eventsResult] = await Promise.all([
-        postData(API.updateDatabase, { username: auth.name, password: auth.password, data: prevDb, action: 'Undo last action' }),
-        postData(API.updateStreamers, { username: auth.name, password: auth.password, data: prevStr, action: 'Undo last action (streamers)' }),
-        postData(API.events, { username: auth.name, password: auth.password, data: prevEvents, action: 'Undo last action (events)' }),
+        postData(API.updateDatabase, { username: auth.name || auth.username, password: auth.password, data: prevDb, action: 'Undo last action' }),
+        postData(API.updateStreamers, { username: auth.name || auth.username, password: auth.password, data: prevStr, action: 'Undo last action (streamers)' }),
+        postData(API.events, { username: auth.name || auth.username, password: auth.password, data: prevEvents, action: 'Undo last action (events)' }),
       ]);
 
-      if (dbResult.success && strResult.success && eventsResult.success) {
-        setDatabase(prevDb);
-        setStreamersDB(prevStr);
-        setEventDB(prevEvents);
-        snapshotRef.current = null;
-        return true;
-      }
-      return false;
+      setDatabase(prevDb);
+      setStreamersDB(prevStr);
+      setEventDB(prevEvents);
+      setMembers(prevMembers);
+      snapshotRef.current = null;
+
+      return dbResult.success && strResult.success && eventsResult.success;
     } finally { setIsMutating(false); }
   }, [auth, postData]);
 
@@ -141,110 +134,10 @@ export default function useAdminDatabase(auth) {
       db[playerName].shinies[nextId] = shinyData;
       db[playerName].shiny_count = recalcShinyCount(db[playerName]);
 
-      const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: `Added ${shinyData.Pokemon} for ${playerName}` });
+      const result = await postData(API.updateDatabase, { username: auth.name || auth.username, password: auth.password, data: db, action: `Added ${shinyData.Pokemon} for ${playerName}` });
       if (result.success) {
         setDatabase(db);
         await logAdminAction(`Added ${shinyData.Pokemon} for ${playerName}`);
-        return { success: true };
-      }
-      return { success: false, error: 'Server rejected update' };
-    } finally { setIsMutating(false); }
-  }, [auth, database, postData, saveSnapshot]);
-
-  const editShiny = useCallback(async (playerName, shinyId, shinyData) => {
-    if (!auth) return { success: false, error: 'Unauthorized' };
-    saveSnapshot(); setIsMutating(true);
-    try {
-      const db = deepClone(database);
-      if (!db[playerName]?.shinies?.[shinyId]) return { success: false, error: 'Entry not found' };
-      db[playerName].shinies[shinyId] = shinyData;
-      db[playerName].shiny_count = recalcShinyCount(db[playerName]);
-
-      const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: `Edited shiny #${shinyId} (${shinyData.Pokemon}) for ${playerName}` });
-      if (result.success) {
-        setDatabase(db);
-        await logAdminAction(`Edited shiny #${shinyId} (${shinyData.Pokemon}) for ${playerName}`);
-        return { success: true };
-      }
-      return { success: false, error: 'Server rejected update' };
-    } finally { setIsMutating(false); }
-  }, [auth, database, postData, saveSnapshot]);
-
-  const deleteShiny = useCallback(async (playerName, shinyId) => {
-    if (!auth) return { success: false, error: 'Unauthorized' };
-    saveSnapshot(); setIsMutating(true);
-    try {
-      const db = deepClone(database);
-      if (!db[playerName]?.shinies?.[shinyId]) return { success: false, error: 'Entry not found' };
-      const pokemonName = db[playerName].shinies[shinyId].Pokemon;
-      delete db[playerName].shinies[shinyId];
-      db[playerName].shinies = reindexShinies(db[playerName].shinies);
-      db[playerName].shiny_count = recalcShinyCount(db[playerName]);
-
-      const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: `Deleted ${pokemonName} (ID ${shinyId}) for ${playerName}` });
-      if (result.success) {
-        setDatabase(db);
-        await logAdminAction(`Deleted ${pokemonName} (ID ${shinyId}) for ${playerName}`);
-        return { success: true };
-      }
-      return { success: false, error: 'Server rejected update' };
-    } finally { setIsMutating(false); }
-  }, [auth, database, postData, saveSnapshot]);
-
-  const deletePlayer = useCallback(async (playerName) => {
-    if (!auth) return { success: false, error: 'Unauthorized' };
-    saveSnapshot(); setIsMutating(true);
-    try {
-      const db = deepClone(database);
-      if (!db[playerName]) return { success: false, error: 'Player not found' };
-      delete db[playerName];
-
-      const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: `Deleted all data for player ${playerName}` });
-      if (result.success) {
-        setDatabase(db);
-        await logAdminAction(`Deleted all data for player ${playerName}`);
-        return { success: true };
-      }
-      return { success: false, error: 'Server rejected update' };
-    } finally { setIsMutating(false); }
-  }, [auth, database, postData, saveSnapshot]);
-
-  const reorderShinies = useCallback(async (playerName, newOrderIds) => {
-    if (!auth) return { success: false, error: 'Unauthorized' };
-    saveSnapshot(); setIsMutating(true);
-    try {
-      const db = deepClone(database);
-      if (!db[playerName]?.shinies) return { success: false, error: 'Player not found' };
-
-      // Track which Pokemon moved to which new positions
-      const oldOrderIds = Object.keys(db[playerName].shinies)
-        .map(id => parseInt(id))
-        .sort((a, b) => a - b);
-      
-      const moves = [];
-      newOrderIds.forEach((oldId, newIndex) => {
-        const oldIndex = oldOrderIds.indexOf(parseInt(oldId));
-        if (oldIndex !== newIndex) {
-          const pokemonName = db[playerName].shinies[oldId].Pokemon;
-          moves.push(`Moved ${pokemonName} to id: ${newIndex + 1}`);
-        }
-      });
-
-      // Reorder shinies based on newOrderIds (which are the current IDs in new order)
-      const reorderedShinies = {};
-      newOrderIds.forEach((oldId, newIndex) => {
-        reorderedShinies[newIndex + 1] = db[playerName].shinies[oldId];
-      });
-
-      db[playerName].shinies = reorderedShinies;
-      db[playerName].shiny_count = recalcShinyCount(db[playerName]);
-
-      const moveDetails = moves.length > 0 ? `, ${moves.join(', ')}` : '';
-      const actionText = `Reordered shinies for ${playerName}${moveDetails}`;
-      const result = await postData(API.updateDatabase, { username: auth.name, password: auth.password, data: db, action: actionText });
-      if (result.success) {
-        setDatabase(db);
-        await logAdminAction(actionText);
         return { success: true };
       }
       return { success: false, error: 'Server rejected update' };
@@ -304,14 +197,9 @@ export default function useAdminDatabase(auth) {
     saveSnapshot(); setIsMutating(true);
     try {
       const payload = { username: auth.name, password: auth.password, ...eventData };
-      const res = await fetch(API.events, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+      const res = await fetch(API.events, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const newEvent = await res.json();
       if (!res.ok) return { success: false, error: newEvent.error || "Failed" };
-
       setEventDB(prev => [...prev, newEvent]);
       await logAdminAction(`Added Event Name: ${newEvent.title || newEvent.name || "Unnamed Event"}`);
       return { success: true };
@@ -323,34 +211,12 @@ export default function useAdminDatabase(auth) {
     saveSnapshot(); setIsMutating(true);
     try {
       const payload = { username: auth.name, password: auth.password, ...eventData, id };
-      const res = await fetch(`${API.events}/update`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+      const res = await fetch(`${API.events}/update`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const result = await res.json();
       if (!res.ok) return { success: false, error: result.error || "Failed" };
-
       const updatedEvent = result.event;
       setEventDB(prev => prev.map(e => e.id === id ? updatedEvent : e));
-      // compute a minimal diff between previous event and the updated event
-      try {
-        const prevEvent = eventDB.find(e => e.id === id) || {};
-        const diff = {};
-        Object.keys(updatedEvent || {}).forEach(k => {
-          const a = prevEvent[k];
-          const b = updatedEvent[k];
-          try {
-            if (JSON.stringify(a) !== JSON.stringify(b)) diff[k] = b;
-          } catch (err) {
-            if (a !== b) diff[k] = b;
-          }
-        });
-        const changeText = Object.keys(diff).length ? ` (Change: ${JSON.stringify(diff)})` : ' (Change made)';
-        await logAdminAction(`Updated Event Name: ${updatedEvent.title || updatedEvent.name || "Unnamed Event"}${changeText}`);
-      } catch (err) {
-        await logAdminAction(`Updated Event Name: ${updatedEvent.title || updatedEvent.name || "Unnamed Event"} (Change made)`);
-      }
+      await logAdminAction(`Updated Event Name: ${updatedEvent.title || updatedEvent.name || "Unnamed Event"} (Change made)`);
       return { success: true };
     } finally { setIsMutating(false); }
   }, [auth, saveSnapshot, logAdminAction]);
@@ -360,19 +226,82 @@ export default function useAdminDatabase(auth) {
     saveSnapshot(); setIsMutating(true);
     try {
       const payload = { username: auth.name, password: auth.password, id };
-      const res = await fetch(`${API.events}/delete`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+      const res = await fetch(`${API.events}/delete`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const deleted = await res.json();
       if (!res.ok) return { success: false, error: deleted.error || "Failed" };
-
       setEventDB(prev => prev.filter(e => e.id !== id));
       await logAdminAction(`Deleted Event Name: ${deleted.event?.title || deleted.event?.name || id}`);
       return { success: true };
     } finally { setIsMutating(false); }
   }, [auth, saveSnapshot, logAdminAction]);
+
+  // ---------------- MEMBERS MANAGEMENT ----------------
+  const loadMembers = useCallback(async () => {
+    setIsMembersLoading(true);
+    try {
+      const response = await fetch(API.currentMembers);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      setMembers(data.map((name, index) => ({ id: index.toString(), name })));
+    } catch (err) {
+      console.error("Failed to load members:", err);
+      setMembers([]);
+    }
+    setIsMembersLoading(false);
+  }, []);
+
+const saveMembers = useCallback(async (newMembers, actionDescription) => {
+  if (!auth?.username && !auth?.name) return false;
+
+  const namesArray = newMembers.map(m => m.name);
+  try {
+    const response = await fetch(API.updateCurrentMembers, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: auth.username || auth.name,
+        password: auth.password,
+        data: namesArray,
+        action: actionDescription || "Updated current members",
+      }),
+    });
+
+    const text = await response.text();
+    const result = text ? JSON.parse(text) : {};
+
+    if (result.success) {
+      setMembers(namesArray.map((name, index) => ({ id: index.toString(), name })));
+      return true;
+    } else {
+      console.error("Failed to save members:", result.error || "Unknown error");
+      return false;
+    }
+  } catch (err) {
+    console.error("Error saving members:", err);
+    return false;
+  }
+}, [auth]);
+
+
+
+
+
+  const addMember = useCallback(async (player) => {
+    const newList = [...members, { ...player, id: Date.now().toString() }];
+    const success = await saveMembers(newList, `Added member: ${player.name}`);
+    return success;
+  }, [members, saveMembers]);
+
+
+  const updateMember = useCallback(async (updatedPlayer) => {
+    const newList = members.map(p => (p.id === updatedPlayer.id ? updatedPlayer : p));
+    await saveMembers(newList, `Updated member: ${updatedPlayer.name}`);
+  }, [members, saveMembers]);
+
+  const deleteMember = useCallback(async (playerId) => {
+    const newList = members.filter(p => p.id !== playerId);
+    await saveMembers(newList, `Deleted member ID: ${playerId}`);
+  }, [members, saveMembers]);
 
   // ---------------- HELPERS ----------------
   const playerNames = useMemo(() => Object.keys(database).sort(), [database]);
@@ -380,21 +309,30 @@ export default function useAdminDatabase(auth) {
 
   const allPokemonNames = useMemo(() => {
     const names = new Map();
-    Object.values(generationData).flat(2).forEach(name => names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()));
-    Object.values(database).flatMap(p => Object.values(p.shinies || {}).map(s => s.Pokemon)).forEach(name => {
-      if (!names.has(name.toLowerCase())) names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase());
+    Object.values(generationData).flat(2).forEach(name => {
+      names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase());
     });
+    Object.values(database).flatMap(p => Object.values(p.shinies || {}).map(s => s.Pokemon))
+      .forEach(name => {
+        if (!names.has(name.toLowerCase())) names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase());
+      });
     return [...names.values()].sort();
   }, [database]);
 
   const hasSnapshot = !!snapshotRef.current;
 
+  // ---------------- RETURN ----------------
   return {
+    // Database / Streamers / Events
     database, streamersDB, logData, eventDB,
     isLoading, isMutating, hasSnapshot,
-    loadDatabase, addShiny, editShiny, deleteShiny, deletePlayer, reorderShinies,
-    addStreamer, deleteStreamer, undo,
+    loadDatabase, addShiny, undo,
+    addStreamer, deleteStreamer,
     playerNames, getPlayerShinies, allPokemonNames,
     loadEvents, addEvent, updateEvent, removeEvent,
+
+    // Members
+    members, isMembersLoading,
+    loadMembers, addMember, updateMember, deleteMember,
   };
 }

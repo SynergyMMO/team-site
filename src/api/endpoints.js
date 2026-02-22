@@ -13,4 +13,6 @@ export const API = {
   adminLog: `${WORKER_BASE}/log`,
   twitchStreamers: TWITCH_API,
   pokemonSprite: (name) => getLocalPokemonGif(name),
-}
+  currentMembers: `${WORKER_BASE}/current-members`,
+  updateCurrentMembers: `${WORKER_BASE}/update-current-members`, // use this for all member edits
+};
