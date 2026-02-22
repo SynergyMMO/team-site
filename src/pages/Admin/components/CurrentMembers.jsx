@@ -30,7 +30,7 @@ export default function CurrentMembers({ auth }) {
 
     loadData();
     return () => { cancelled = true; };
-  }, [db]);
+  }, []);
 
   // ------------------ Computed Values ------------------
   const shinyOwners = useMemo(() => {
