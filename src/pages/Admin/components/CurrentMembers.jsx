@@ -50,9 +50,9 @@ export default function CurrentMembers({ auth }) {
   const notInTeam = shinyOwners.filter(owner => !memberNamesNorm.has(normalize(owner)));
   const notInDatabase = memberNames.filter(name => !databaseNamesNorm.has(normalize(name)));
 
-  const filteredMembers = db.members.filter(player =>
-    normalize(player.name).includes(normalize(search))
-  );
+  const filteredMembers = db.members
+    .filter(player => normalize(player.name).includes(normalize(search)))
+    .sort((a, b) => normalize(a.name).localeCompare(normalize(b.name)));
 
   // ------------------ Handlers ------------------
   const handleEdit = player => setEditingPlayer(player);
@@ -104,7 +104,7 @@ export default function CurrentMembers({ auth }) {
               />
 
               <ul>
-                {filteredMembers.map(player => (
+                {filteredMembers.map((player, idx) => (
                   <li key={player.id}>
                     {editingPlayer && editingPlayer.id === player.id ? (
                       <div>
@@ -127,7 +127,7 @@ export default function CurrentMembers({ auth }) {
                       </div>
                     ) : (
                       <div>
-                        <span>{player.name}{player.details ? ` - ${player.details}` : ''}</span>
+                        <span>{idx + 1}: {player.name}{player.details ? ` - ${player.details}` : ''}</span>
                         <button onClick={() => handleEdit(player)}>Edit</button>
                         <button onClick={() => handleDelete(player.id)}>Delete</button>
                       </div>
