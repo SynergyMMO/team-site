@@ -1,21 +1,21 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAdminDB from '../hooks/useAdminDatabase'; // unified DB hook
+import useAdminDB from '../hooks/useAdminDatabase';
 import styles from './CurrentMembers.module.css';
 
 export default function CurrentMembers({ auth }) {
   const navigate = useNavigate();
-  const db = useAdminDB(auth); // unified hook
+  const db = useAdminDB(auth);
+
   const [editingPlayer, setEditingPlayer] = useState(null);
   const [newPlayer, setNewPlayer] = useState({ name: '' });
   const [showMembers, setShowMembers] = useState(false);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
 
   // ------------------ Helpers ------------------
   const normalize = n => n?.toString().trim().replace(/\s+/g, ' ').toLowerCase();
 
-  // ------------------ Load Data Once ------------------
+  // ------------------ Load Members ------------------
   useEffect(() => {
     let cancelled = false;
 
@@ -25,15 +25,12 @@ export default function CurrentMembers({ auth }) {
         if (db.loadDatabase) await db.loadDatabase();
       } catch (err) {
         console.error("Failed to load members or database:", err);
-      } finally {
-        if (!cancelled) setLoading(false);
       }
     };
 
     loadData();
-
     return () => { cancelled = true; };
-  }, [db.loadMembers, db.loadDatabase]);
+  }, [db]);
 
   // ------------------ Computed Values ------------------
   const shinyOwners = useMemo(() => {
@@ -42,17 +39,20 @@ export default function CurrentMembers({ auth }) {
       .map(([name]) => name);
   }, [db.database]);
 
-  const memberNames = db.members.map(m => m.name);
-  const memberNamesNorm = new Set(memberNames.map(normalize));
-  const databaseNames = Object.keys(db.database || {});
-  const databaseNamesNorm = new Set(databaseNames.map(normalize));
+  const memberNames = useMemo(() => db.members.map(m => m.name), [db.members]);
+  const memberNamesNorm = useMemo(() => new Set(memberNames.map(normalize)), [memberNames]);
+  const databaseNames = useMemo(() => Object.keys(db.database || {}), [db.database]);
+  const databaseNamesNorm = useMemo(() => new Set(databaseNames.map(normalize)), [databaseNames]);
 
-  const notInTeam = shinyOwners.filter(owner => !memberNamesNorm.has(normalize(owner)));
-  const notInDatabase = memberNames.filter(name => !databaseNamesNorm.has(normalize(name)));
+  const notInTeam = useMemo(() => shinyOwners.filter(owner => !memberNamesNorm.has(normalize(owner))), [shinyOwners, memberNamesNorm]);
+  const notInDatabase = useMemo(() => memberNames.filter(name => !databaseNamesNorm.has(normalize(name))), [memberNames, databaseNamesNorm]);
 
-  const filteredMembers = db.members
-    .filter(player => normalize(player.name).includes(normalize(search)))
-    .sort((a, b) => normalize(a.name).localeCompare(normalize(b.name)));
+  const filteredMembers = useMemo(() => {
+    const normalizedSearch = normalize(search);
+    return db.members
+      .filter(player => normalize(player.name).includes(normalizedSearch))
+      .sort((a, b) => normalize(a.name).localeCompare(normalize(b.name)));
+  }, [db.members, search]);
 
   // ------------------ Handlers ------------------
   const handleEdit = player => setEditingPlayer(player);
@@ -61,6 +61,7 @@ export default function CurrentMembers({ auth }) {
     db.updateMember(updatedPlayer);
     setEditingPlayer(null);
   };
+
   const handleAdd = async () => {
     if (!newPlayer.name.trim()) return;
 
@@ -70,15 +71,13 @@ export default function CurrentMembers({ auth }) {
     }
 
     try {
-      const success = await db.addMember(newPlayer); // addMember returns undefined, we can wrap saveMembers
-      if (!success) console.error("Failed to add member. Check server logs or network.");
+      const success = await db.addMember(newPlayer);
+      if (!success) console.error("Failed to add member.");
       setNewPlayer({ name: '' });
     } catch (err) {
       console.error("Failed to add member:", err);
     }
   };
-
-
 
   // ------------------ Render ------------------
   return (
@@ -91,7 +90,7 @@ export default function CurrentMembers({ auth }) {
 
       {showMembers && (
         <>
-          {loading ? (
+          {db.isMembersLoading ? (
             <div>Loading members…</div>
           ) : (
             <>
@@ -140,7 +139,7 @@ export default function CurrentMembers({ auth }) {
         </>
       )}
 
-      <div>
+      <div style={{ marginTop: 24 }}>
         <h2>Add New Player</h2>
         <input
           placeholder="Name"
@@ -150,9 +149,8 @@ export default function CurrentMembers({ auth }) {
         <button onClick={handleAdd}>Add</button>
       </div>
 
-
       {notInTeam.length > 0 && (
-        <div>
+        <div style={{ marginTop: 24 }}>
           <h2>Not in team</h2>
           <ul>
             {notInTeam.map(owner => <li key={owner}>{owner}</li>)}
@@ -161,7 +159,7 @@ export default function CurrentMembers({ auth }) {
       )}
 
       {notInDatabase.length > 0 && (
-        <div>
+        <div style={{ marginTop: 24 }}>
           <h2>Not in database</h2>
           <ul>
             {notInDatabase.map(name => <li key={name}>{name}</li>)}

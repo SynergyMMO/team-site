@@ -97,7 +97,7 @@ export default function AdminPanel() {
         />
       )}
 
-      {activeTab === 'current_members' && <CurrentMembers auth={auth} />}
+      {/* {activeTab === 'current_members' && <CurrentMembers auth={auth} />} */}
 
       {activeTab === 'streamers' && (
         <StreamersTab
