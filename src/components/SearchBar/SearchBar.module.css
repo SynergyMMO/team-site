@@ -1,12 +1,12 @@
 .searchBarContainer {
   position: relative;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  text-align: center;
 }
 
 .searchBar {
-  text-align: center;
   margin: 20px 0;
 }
 
