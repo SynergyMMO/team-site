@@ -56,12 +56,6 @@
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://synergymmo.com/player/Banshe/</loc>
-    <lastmod>2026-02-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
     <loc>https://synergymmo.com/player/Blackcatxiii/</loc>
     <lastmod>2026-02-23</lastmod>
     <changefreq>weekly</changefreq>
@@ -795,6 +789,12 @@
   </url>
   <url>
     <loc>https://synergymmo.com/player/Yosheboi/</loc>
+    <lastmod>2026-02-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://synergymmo.com/player/YurminySquirminy/</loc>
     <lastmod>2026-02-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.4</priority>

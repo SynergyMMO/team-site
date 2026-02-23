@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useRef, useMemo } from 'react';
 import { API } from '../../../api/endpoints';
 import generationData from '../../../data/generation.json';
@@ -57,6 +58,7 @@ export default function useAdminDB(auth) {
     }
   }, [auth]);
 
+  
   // ---------------- LOAD DATABASE ----------------
   const loadDatabase = useCallback(async () => {
     setIsLoading(true);
@@ -144,6 +146,29 @@ export default function useAdminDB(auth) {
     } finally { setIsMutating(false); }
   }, [auth, database, postData, saveSnapshot, logAdminAction]);
 
+  // ---------------- DELETE PLAYER ----------------
+  const deletePlayer = useCallback(async (playerName) => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    saveSnapshot(); setIsMutating(true);
+    try {
+      const db = deepClone(database);
+      if (!db[playerName]) return { success: false, error: 'Player not found' };
+      delete db[playerName];
+      const result = await postData(API.updateDatabase, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        data: db,
+        action: `Deleted player ${playerName}`
+      });
+      if (result.success) {
+        setDatabase(db);
+        await logAdminAction(`Deleted player ${playerName}`);
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally { setIsMutating(false); }
+  }, [auth, database, postData, saveSnapshot, logAdminAction]);
+  
   // ---------------- STREAMER MANAGEMENT ----------------
   const addStreamer = useCallback(async (pokeName, twitchName) => {
     if (!auth) return { success: false, error: 'Unauthorized' };
@@ -330,6 +355,7 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
     addStreamer, deleteStreamer,
     playerNames, getPlayerShinies, allPokemonNames,
     loadEvents, addEvent, updateEvent, removeEvent,
+    deletePlayer,
 
     // Members
     members, isMembersLoading,

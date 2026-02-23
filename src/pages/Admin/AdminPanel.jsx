@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAdmin } from '../../context/AdminContext'
-import useAdminDatabase from './hooks/useAdminDatabase'
+import useAdminDB from './hooks/useAdminDatabase'
 import useToast from './hooks/useToast'
 
 import TabBar from './components/TabBar'
@@ -21,7 +21,7 @@ export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('add')
   const { toast, show: showToast, dismiss: dismissToast } = useToast()
 
-  const db = useAdminDatabase(auth)
+  const db = useAdminDB(auth)
   const events = db.events || []
   const hasFetched = useRef(false)
 
