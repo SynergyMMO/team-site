@@ -21,6 +21,28 @@ function ShinyPopup({ popup, popupPokemon }) {
       }
     }
   }
+
+  // Determine outline color and shadow
+  let border = '4px solid #ffd700'; // default gold for shiny
+  let boxShadow = '0 0 32px #ffd700';
+  let titleColor = '#ffd700';
+  if (popup.secret && popup.alpha) {
+    // Both: strong gold + red glow
+    border = '4px solid #ffd700';
+    boxShadow = '0 0 32px 8px #ffd700, 0 0 48px 16px #e11d48';
+    titleColor = '#fff200';
+  } else if (popup.secret) {
+    // Brighter, more noticeable yellow/gold
+    border = '4px solid #fff200';
+    boxShadow = '0 0 40px 10px #fff200, 0 0 80px 20px #ffd700';
+    titleColor = '#fff200';
+  } else if (popup.alpha) {
+    // Red outline for alpha
+    border = '4px solid #e11d48';
+    boxShadow = '0 0 32px #e11d48, 0 0 48px 8px #ffd700';
+    titleColor = '#e11d48';
+  }
+
   return (
     <div
       style={{
@@ -30,27 +52,30 @@ function ShinyPopup({ popup, popupPokemon }) {
         transform: 'translate(-50%, -50%)',
         background: '#222',
         color: '#fff',
-        border: '3px solid #e11d48',
+        border,
         borderRadius: 16,
         zIndex: 9999,
         padding: '2em',
-        boxShadow: '0 0 32px #e11d48',
-        textAlign: 'center'
+        boxShadow,
+        textAlign: 'center',
+        transition: 'box-shadow 0.2s, border 0.2s',
       }}
     >
-      <h2 style={{ color: '#e11d48', fontSize: '2em' }}>SHINY FOUND!</h2>
+      <h2 style={{ color: titleColor, fontSize: '2em', textShadow: popup.secret ? '0 0 16px #fff200, 0 0 32px #ffd700' : undefined }}>
+        SHINY FOUND!
+      </h2>
       <div style={{ margin: '1em 0' }}>
         {shinyGifUrl ? (
           <img
             src={shinyGifUrl}
             alt={popup.pokemon + ' shiny gif'}
-            style={{ width: 120, height: 120, objectFit: 'contain', background: '#111', borderRadius: 8 }}
+            style={{ width: 120, height: 120, objectFit: 'contain', background: '#111', borderRadius: 8, border: popup.secret ? '3px solid #fff200' : popup.alpha ? '3px solid #e11d48' : '3px solid #ffd700', boxShadow: popup.secret ? '0 0 24px 8px #fff200' : popup.alpha ? '0 0 24px 8px #e11d48' : '0 0 16px 4px #ffd700' }}
           />
         ) : null}
       </div>
       <div style={{ fontSize: '1.2em' }}>{popup.pokemon}</div>
-      {popup.secret && <div style={{ color: '#ffd700', fontWeight: 'bold', fontSize: '1.1em' }}>SECRET SHINY</div>}
-      {popup.alpha && <div style={{ color: '#00e676', fontWeight: 'bold', fontSize: '1.1em' }}>ALPHA</div>}
+      {popup.secret && <div style={{ color: '#fff200', fontWeight: 'bold', fontSize: '1.1em', textShadow: '0 0 8px #fff200, 0 0 16px #ffd700' }}>SECRET SHINY</div>}
+      {popup.alpha && <div style={{ color: '#e11d48', fontWeight: 'bold', fontSize: '1.1em', textShadow: '0 0 8px #e11d48, 0 0 16px #ffd700' }}>ALPHA</div>}
     </div>
   );
 }
@@ -122,12 +147,14 @@ function getRandomPokemon() {
   return allSpecies[idx];
 }
 
+
 function ShinySimulator() {
   const [shinyLog, setShinyLog] = useState([]);
   const [popupPokemon, setPopupPokemon] = useState(null);
   const [popup, setPopup] = useState(null);
   const [denominator, setDenominator] = useState(30000);
   const [results, setResults] = useState([]);
+  const [currentEncounters, setCurrentEncounters] = useState(0);
 
   const parentRef = useRef();
 
@@ -155,6 +182,7 @@ function ShinySimulator() {
   const virtualRows = rowVirtualizer.getVirtualItems();
 
   // --- Simulation logic ---
+
   function simulateEncounters(count) {
     let shinyFound = false;
     let shinyEntry = null;
@@ -174,29 +202,30 @@ function ShinySimulator() {
         shinyFound = true;
         secret = Math.random() < 1 / 16;
         alpha = Math.random() < 1 / 64;
-        shinyEntry = { pokemon, encounterNum, secret, alpha, timestamp: Date.now() };
+        shinyEntry = { pokemon, encounterNum, secret, alpha, timestamp: Date.now(), odds: denominator };
         popupData = { pokemon, secret, alpha };
       }
 
       newResults.push({ pokemon, shiny, secret, alpha, encounterNum });
     }
 
-    if (shinyEntry) {
-  setShinyLog(prev => {
-    const newLog = [...prev, shinyEntry];
-    localStorage.setItem('shinyLog', JSON.stringify(newLog)); // <-- save immediately
-    return newLog;
-  });
-  setResults([]);
-  setPopup(popupData);
-  setPopupPokemon(shinyEntry.pokemon);
-  setTimeout(() => {
-    setPopup(null);
-    setPopupPokemon(null);
-  }, 3000);
-}
+    setCurrentEncounters(prev => prev + count);
 
-    else {
+    if (shinyEntry) {
+      setShinyLog(prev => {
+        const newLog = [...prev, shinyEntry];
+        localStorage.setItem('shinyLog', JSON.stringify(newLog)); // <-- save immediately
+        return newLog;
+      });
+      setResults([]);
+      setPopup(popupData);
+      setPopupPokemon(shinyEntry.pokemon);
+      setCurrentEncounters(0); // Reset encounters on shiny
+      setTimeout(() => {
+        setPopup(null);
+        setPopupPokemon(null);
+      }, 3000);
+    } else {
       setResults(prev => [...prev, ...newResults]);
     }
   }
@@ -209,7 +238,6 @@ function ShinySimulator() {
   // --- Log Entry Child Component (hook-safe) ---
   function ShinyLogEntry({ entry, index }) {
     const sprites = usePokemonSprites(entry.pokemon);
-
     let shinyGifUrl = null;
     for (const genSprites of Object.values(sprites)) {
       const shinyGif = genSprites.find(
@@ -221,33 +249,91 @@ function ShinySimulator() {
       }
     }
 
+    // Odds editing logic
+    const odds = entry.odds || 30000;
     return (
-        <li style={{ marginBottom: 12, color: '#fff', display: 'flex', alignItems: 'center', flexDirection: 'column', textAlign: 'left' }}>
-          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            {shinyGifUrl && (
-              <img
-                src={shinyGifUrl}
-                alt={entry.pokemon + ' shiny gif'}
-                style={{ width: 48, height: 48, marginRight: 12, borderRadius: 6, background: '#222' }}
-              />
-            )}
-            <span style={{ color: '#fff', background: '#e11d48', fontWeight: 'bold', borderRadius: 6, padding: '2px 10px', fontSize: '1.1em', marginRight: 10 }}>#{index + 1}</span>
-            <span style={{ fontWeight: 'bold', fontSize: '1.1em' }}>{entry.pokemon.charAt(0).toUpperCase() + entry.pokemon.slice(1)}</span>
-            <span style={{ background: '#333', borderRadius: 4, padding: '2px 8px', color: '#fff' }}>Encounter #{entry.encounterNum}</span>
-            {entry.secret && <span style={{ color: '#ffd700', marginLeft: 8 }}>⭐ SECRET SHINY</span>}
-            {entry.alpha && <span style={{ color: '#00e676', marginLeft: 8 }}>🅰️ ALPHA</span>}
-          </div>
-        </li>
+      <li style={{ marginBottom: 12, color: '#fff', display: 'flex', alignItems: 'center', flexDirection: 'column', textAlign: 'left' }}>
+        <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          {shinyGifUrl && (
+            <img
+              src={shinyGifUrl}
+              alt={entry.pokemon + ' shiny gif'}
+              style={{ width: 48, height: 48, marginRight: 12, borderRadius: 6, background: '#222' }}
+            />
+          )}
+          <span style={{ color: '#fff', background: '#e11d48', fontWeight: 'bold', borderRadius: 6, padding: '2px 10px', fontSize: '1.1em', marginRight: 10 }}>#{index + 1}</span>
+          <span style={{ fontWeight: 'bold', fontSize: '1.1em' }}>{entry.pokemon.charAt(0).toUpperCase() + entry.pokemon.slice(1)}</span>
+          {(() => {
+            const odds = entry.odds || 30000;
+            let color = '#22c55e'; // green
+            if (entry.encounterNum >= odds * 0.9 && entry.encounterNum < odds) {
+              color = '#f59e42'; // orange
+            } else if (entry.encounterNum >= odds) {
+              color = '#e11d48'; // red
+            }
+            return (
+              <span style={{ background: '#333', borderRadius: 4, padding: '2px 8px', color }}>
+                Encounter #{entry.encounterNum}
+              </span>
+            );
+          })()}
+          <span style={{ marginLeft: 10 }}>
+            Odds: 
+            <span
+              style={{
+                display: 'inline-block',
+                minWidth: 60,
+                marginLeft: 4,
+                borderRadius: 4,
+                border: '1px solid #e11d48',
+                padding: '2px 8px',
+                background: '#222',
+                color: '#fff',
+                fontVariantNumeric: 'tabular-nums',
+                textAlign: 'center'
+              }}
+            >
+              {odds.toLocaleString()}
+            </span>
+            {/* Effective odds calculation */}
+            {(() => {
+              let effectiveOdds = odds;
+              let label = '';
+              if (entry.secret && entry.alpha) {
+                effectiveOdds = odds * 16 * 64;
+                label = ' (Secret + Alpha)';
+              } else if (entry.secret) {
+                effectiveOdds = odds * 16;
+                label = ' (Secret)';
+              } else if (entry.alpha) {
+                effectiveOdds = odds * 64;
+                label = ' (Alpha)';
+              }
+              if (label) {
+                return (
+                  <span style={{ marginLeft: 8, color: '#ffd700', fontWeight: 'bold' }}>
+                    1 / {effectiveOdds.toLocaleString()} {label}
+                  </span>
+                );
+              }
+              return null;
+            })()}
+          </span>
+          {entry.secret && <span style={{ color: '#ffd700', marginLeft: 8 }}>⭐ SECRET SHINY</span>}
+          {entry.alpha && <span style={{ color: '#00e676', marginLeft: 8 }}>🅰️ ALPHA</span>}
+        </div>
+      </li>
     );
   }
 
   // --- Render ---
+
   return (
     <div style={{ marginTop: '2em', position: 'relative' }}>
       <h2>Simulator</h2>
 
       <label>
-        Odds Denominator (e.g. 30000):{' '}
+        Odds Denominator:{' '}
         <input
           type="number"
           value={denominator}
@@ -269,6 +355,33 @@ function ShinySimulator() {
         ))}
       </div>
 
+
+      {/* Current Encounters display */}
+      {(() => {
+        let color = '#22c55e'; // green
+        if (currentEncounters >= denominator * 0.9 && currentEncounters < denominator) {
+          color = '#f59e42'; // orange
+        } else if (currentEncounters >= denominator) {
+          color = '#e11d48'; // red
+        }
+        return (
+          <>
+            <div style={{ marginBottom: '1em', fontWeight: 'bold', fontSize: '1.2em', color }}>
+              Current Encounters: {currentEncounters}
+            </div>
+            {/* Index legend below Current Encounters */}
+            <div style={{ marginBottom: '1em', background: '#18181b', borderRadius: 8, padding: '0.75em 1em', color: '#fff', fontSize: '0.98em', maxWidth: 420 }}>
+              <strong>Index:</strong>
+              <ul style={{ margin: '0.5em 0 0 1.2em', padding: 0, listStyle: 'disc' }}>
+                <li><span style={{ color: '#ffe761', fontWeight: 600 }}>1/16</span> — Secret Shiny</li>
+                <li><span style={{ color: '#e11d48', fontWeight: 600 }}>1/64</span> — Alpha</li>
+                <li><span style={{ color: '#ff5faa', fontWeight: 600 }}>45/731</span> — Legendary</li>
+              </ul>
+            </div>
+          </>
+        );
+      })()}
+
       {/* SHINY POPUP */}
       {popup && (
         <ShinyPopup popup={popup} popupPokemon={popupPokemon} />
@@ -278,6 +391,7 @@ function ShinySimulator() {
 
       <h2>SHINY LOG</h2>
       <button onClick={handleClearLog} className={styles.shinyInput} style={{ marginBottom: 8 }}>Clear log</button>
+
       <div style={{ maxHeight: 200, overflowY: 'auto', background: '#111', padding: '1em', borderRadius: 8 }}>
         {shinyLog.length === 0 ? (
           <p>No shinies found yet.</p>
@@ -290,6 +404,14 @@ function ShinySimulator() {
         )}
       </div>
 
+      {/* Average Encounter per shiny */}
+      <div style={{ marginTop: 12, fontWeight: 'bold', fontSize: '1.1em', color: '#4f46e5' }}>
+        Average Encounter per shiny:{' '}
+        {shinyLog.length > 0
+          ? (shinyLog.reduce((sum, entry) => sum + (entry.encounterNum || 0), 0) / shinyLog.length).toFixed(2)
+          : 'N/A'}
+      </div>
+
       <hr />
 
       <h2>RESULTS</h2>
@@ -299,7 +421,9 @@ function ShinySimulator() {
         <div ref={parentRef} style={{ height: 300, overflow: 'auto', background: '#222', borderRadius: 8 }}>
           <div style={{ height: `${results.length * 35}px`, position: 'relative' }}>
             {virtualRows.map(virtualRow => {
-              const r = results[virtualRow.index];
+              // Reverse the results so latest is at the top
+              const reversedIndex = results.length - 1 - virtualRow.index;
+              const r = results[reversedIndex];
               return (
                 <div
                   key={virtualRow.index}
@@ -317,11 +441,8 @@ function ShinySimulator() {
                     height: 35
                   }}
                 >
-                  <div style={{ width: '10%' }}>{virtualRow.index + 1}</div>
-                  <div style={{ width: '30%' }}>{r.pokemon}</div>
-                  <div style={{ width: '15%' }}>{r.shiny ? '✨ Yes!' : 'No'}</div>
-                  <div style={{ width: '15%' }}>{r.secret ? '⭐' : ''}</div>
-                  <div style={{ width: '15%' }}>{r.alpha ? '🅰️' : ''}</div>
+                  <div style={{ width: '20%', fontWeight: 'bold' }}>#{r.encounterNum}</div>
+                  <div style={{ width: '60%' }}>{r.pokemon.charAt(0).toUpperCase() + r.pokemon.slice(1)}</div>
                 </div>
               );
             })}
