@@ -1,30 +1,36 @@
 .searchBarContainer {
-  position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
   width: 100%;
+  padding: 20px 0;
 }
 
+/* Positioned wrapper — both input and dropdown are inside this */
 .searchBar {
-  margin: 20px 0;
+  position: relative;
+  width: 250px;
 }
 
 .searchBar input {
-  width: 250px;
-  padding: 10px 40px 10px 15px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 15px;
   border-radius: 25px;
   border: 2px solid #444;
   background: #1a1a1a;
   color: #fff;
   font-size: 1rem;
   outline: none;
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, border-radius 0.15s ease;
   box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
 .searchBar input::placeholder {
   color: #888;
+}
+
+.searchBar input:hover {
+  border-color: #666;
 }
 
 .searchBar input:focus {
@@ -33,16 +39,21 @@
   background: #222;
 }
 
-.searchBar input:hover {
-  border-color: #666;
+/* When dropdown is open: square off bottom corners and match border color */
+.searchBarOpen input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(74,144,226,0.5);
+  background: #222;
 }
 
 .suggestionsList {
   position: absolute;
-  top: calc(100% - 5px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 250px;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
   list-style: none;
   margin: 0;
   padding: 8px 0;
@@ -60,10 +71,11 @@
   padding: 10px 15px;
   cursor: pointer;
   color: #fff;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.suggestionItem:hover {
+.suggestionItem:hover,
+.suggestionItemActive {
   background-color: #2a2a2a;
   color: #4a90e2;
 }
