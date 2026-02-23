@@ -1,3 +1,46 @@
+  // ---------------- UPDATE FULL DATABASE ----------------
+  const updateFullDatabase = useCallback(async (newDatabase) => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    saveSnapshot(); setIsMutating(true);
+    try {
+      // Recalculate shiny counts for all players
+      Object.keys(newDatabase).forEach(p => {
+        newDatabase[p].shiny_count = recalcShinyCount(newDatabase[p]);
+      });
+      const result = await postData(API.updateDatabase, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        data: newDatabase,
+        action: 'Full database overwrite',
+      });
+      if (result.success) {
+        setDatabase(newDatabase);
+        await logAdminAction('Full database overwrite');
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally { setIsMutating(false); }
+  }, [auth, postData, saveSnapshot, logAdminAction]);
+
+  // ---------------- UPDATE FULL STREAMERS ----------------
+  const updateFullStreamers = useCallback(async (newStreamersDB) => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    saveSnapshot(); setIsMutating(true);
+    try {
+      const result = await postData(API.updateStreamers, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        data: newStreamersDB,
+        action: 'Full streamersDB overwrite',
+      });
+      if (result.success) {
+        setStreamersDB(newStreamersDB);
+        await logAdminAction('Full streamersDB overwrite');
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally { setIsMutating(false); }
+  }, [auth, postData, saveSnapshot, logAdminAction]);
 
 import { useState, useCallback, useRef, useMemo } from 'react';
 import { API } from '../../../api/endpoints';
@@ -140,6 +183,88 @@ export default function useAdminDB(auth) {
       if (result.success) {
         setDatabase(db);
         await logAdminAction(`Added ${shinyData.Pokemon} for ${playerName}`);
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally { setIsMutating(false); }
+  }, [auth, database, postData, saveSnapshot, logAdminAction]);
+
+  // ---------------- EDIT SHINY ----------------
+  const editShiny = useCallback(async (playerName, shinyId, shinyData) => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    saveSnapshot(); setIsMutating(true);
+    try {
+      const db = deepClone(database);
+      if (!db[playerName] || !db[playerName].shinies[shinyId]) {
+        return { success: false, error: 'Shiny not found' };
+      }
+      db[playerName].shinies[shinyId] = shinyData;
+      db[playerName].shiny_count = recalcShinyCount(db[playerName]);
+      const result = await postData(API.updateDatabase, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        data: db,
+        action: `Edited shiny #${shinyId} for ${playerName}`
+      });
+      if (result.success) {
+        setDatabase(db);
+        await logAdminAction(`Edited shiny #${shinyId} for ${playerName}`);
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally { setIsMutating(false); }
+  }, [auth, database, postData, saveSnapshot, logAdminAction]);
+
+  // ---------------- DELETE SHINY ----------------
+  const deleteShiny = useCallback(async (playerName, shinyId) => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    saveSnapshot(); setIsMutating(true);
+    try {
+      const db = deepClone(database);
+      if (!db[playerName] || !db[playerName].shinies[shinyId]) {
+        return { success: false, error: 'Shiny not found' };
+      }
+      const shinyName = db[playerName].shinies[shinyId]?.Pokemon || shinyId;
+      delete db[playerName].shinies[shinyId];
+      db[playerName].shiny_count = recalcShinyCount(db[playerName]);
+      const result = await postData(API.updateDatabase, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        data: db,
+        action: `Deleted shiny #${shinyId} (${shinyName}) for ${playerName}`
+      });
+      if (result.success) {
+        setDatabase(db);
+        await logAdminAction(`Deleted shiny #${shinyId} (${shinyName}) for ${playerName}`);
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally { setIsMutating(false); }
+  }, [auth, database, postData, saveSnapshot, logAdminAction]);
+
+  // ---------------- REORDER SHINIES ----------------
+  const reorderShinies = useCallback(async (playerName, newOrder) => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    saveSnapshot(); setIsMutating(true);
+    try {
+      const db = deepClone(database);
+      if (!db[playerName]) return { success: false, error: 'Player not found' };
+      // newOrder is an array of shiny IDs in the new order
+      const oldShinies = db[playerName].shinies;
+      const reordered = {};
+      newOrder.forEach((id, idx) => {
+        reordered[idx + 1] = { ...oldShinies[id] };
+      });
+      db[playerName].shinies = reordered;
+      const result = await postData(API.updateDatabase, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        data: db,
+        action: `Reordered shinies for ${playerName}`
+      });
+      if (result.success) {
+        setDatabase(db);
+        await logAdminAction(`Reordered shinies for ${playerName}`);
         return { success: true };
       }
       return { success: false, error: 'Server rejected update' };
@@ -399,8 +524,9 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
     // Database / Streamers / Events
     database, streamersDB, logData, eventDB,
     isLoading, isMutating, hasSnapshot,
-    loadDatabase, addShiny, undo,
+    loadDatabase, addShiny, editShiny, deleteShiny, reorderShinies, undo,
     addStreamer, deleteStreamer, editStreamer,
+    updateFullDatabase, updateFullStreamers,
     playerNames, getPlayerShinies, allPokemonNames,
     loadEvents, addEvent, updateEvent, removeEvent,
     deletePlayer,

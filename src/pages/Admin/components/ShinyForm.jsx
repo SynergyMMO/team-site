@@ -66,7 +66,7 @@ function getDefaultState() {
     'Encounter Type': '',
     Location: '',
     'Encounter Count': '',
-    date_caught: todayISO,
+    date_caught: null,
     nature: '',
     ivs: '',
     nickname: '',
@@ -90,7 +90,8 @@ function getEditState(data) {
   const base = getDefaultState()
   base.Month = ''
   base.Year = ''
-  return { ...base, ...data }
+  // If editing and date_caught is undefined, keep it null
+  return { ...base, ...data, date_caught: data?.date_caught ?? null }
 }
 
 function reducer(state, action) {
@@ -133,13 +134,9 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
     dispatch({ type: 'SET_FIELD', field: 'Location', value: val })
   }
 
+  // Allow any input for IVs, no forced formatting
   function formatIVs(raw) {
-    const digits = raw.replace(/\D/g, '').slice(0, 12)
-    const chunks = []
-    for (let i = 0; i < digits.length; i += 2) {
-      chunks.push(digits.slice(i, i + 2))
-    }
-    return chunks.join('/')
+    return raw
   }
 
   function handleDateCaughtChange(val) {
@@ -215,7 +212,7 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
       <input
         id="shinyDateCaught"
         type="date"
-        value={form.date_caught}
+        value={form.date_caught || ''}
         onChange={e => handleDateCaughtChange(e.target.value)}
       />
 
