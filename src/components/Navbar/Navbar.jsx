@@ -24,7 +24,7 @@ const NAV_ITEMS = [
       { to: '/LnyCatchCalc/', label: 'LNY Pokemon Catch Calculators' },
       { to: '/counter-generator/', label: 'Counter Generator' },
       { to: '/random-pokemon-generator/', label: 'Random Pokemon Generator' },
-      { to: '/shiny-odds/', label: 'Shiny Odds' },
+      { to: '/shiny-odds/', label: 'Shiny Odds / Simulator' },
     ]
   },
   { to: '/resources/', label: 'Resources' },

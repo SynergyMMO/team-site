@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",
+    "@tanstack/react-virtual": "^3.13.18",
     "jszip": "^3.10.1",
     "omggif": "^1.0.10",
     "react": "^19.0.0",
