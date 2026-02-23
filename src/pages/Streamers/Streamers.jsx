@@ -50,7 +50,7 @@ export default function Streamers() {
           <div className={styles.wrapper}>
             {live.map(stream => (
               <a
-                key={stream.twitch_username}
+                key={stream.pokeName}
                 href={`https://www.twitch.tv/${stream.twitch_username.toLowerCase()}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -64,7 +64,7 @@ export default function Streamers() {
                     height="144"
                     loading="lazy"
                   />
-                  <p className={styles.playerName}>{stream.twitch_username}</p>
+                  <p className={styles.playerName}>{stream.pokeName}</p>
                   <p className={styles.streamTitle}>{stream.last_stream_title}</p>
                   <p className={styles.viewerCount}>{stream.last_viewer_count} viewers</p>
                 </div>
@@ -79,7 +79,7 @@ export default function Streamers() {
         <div className={styles.wrapper}>
           {offline.map(user => (
             <a
-              key={user.twitch_username}
+              key={user.pokeName}
               href={`https://www.twitch.tv/${user.twitch_username.toLowerCase()}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -94,7 +94,7 @@ export default function Streamers() {
                   height="120"
                   loading="lazy"
                 />
-                <p className={styles.playerName}>{user.twitch_username}</p>
+                <p className={styles.playerName}>{user.pokeName}</p>
               </div>
             </a>
           ))}

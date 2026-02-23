@@ -168,7 +168,7 @@ export default function useAdminDB(auth) {
       return { success: false, error: 'Server rejected update' };
     } finally { setIsMutating(false); }
   }, [auth, database, postData, saveSnapshot, logAdminAction]);
-  
+
   // ---------------- STREAMER MANAGEMENT ----------------
   const addStreamer = useCallback(async (pokeName, twitchName) => {
     if (!auth) return { success: false, error: 'Unauthorized' };
@@ -202,6 +202,54 @@ export default function useAdminDB(auth) {
       return { success: false, error: 'Server rejected update' };
     } finally { setIsMutating(false); }
   }, [auth, streamersDB, postData, saveSnapshot]);
+
+  const editStreamer = useCallback(async (oldPokeName, newPokeName, newTwitchName) => {
+  if (!auth) return { success: false, error: 'Unauthorized' };
+
+  saveSnapshot();
+  setIsMutating(true);
+
+  try {
+    const str = deepClone(streamersDB);
+
+    if (!str[oldPokeName]) {
+      return { success: false, error: 'Streamer not found' };
+    }
+
+    // Prevent duplicate key if renaming
+    if (oldPokeName !== newPokeName && str[newPokeName]) {
+      return { success: false, error: 'A streamer with that name already exists' };
+    }
+
+    const updatedStreamer = {
+      ...str[oldPokeName],
+      twitch_username: newTwitchName
+    };
+
+    // Delete old key if renamed
+    delete str[oldPokeName];
+    str[newPokeName] = updatedStreamer;
+
+    const result = await postData(API.updateStreamers, {
+      username: auth.name || auth.username,
+      password: auth.password,
+      data: str,
+      action: `Edited streamer ${oldPokeName} → ${newPokeName}`
+    });
+
+    if (result.success) {
+      setStreamersDB(str);
+      await logAdminAction(`Edited streamer ${oldPokeName} → ${newPokeName}`);
+      return { success: true };
+    }
+
+    return { success: false, error: 'Server rejected update' };
+
+  } finally {
+    setIsMutating(false);
+  }
+}, [auth, streamersDB, postData, saveSnapshot, logAdminAction]);
+
 
   // ---------------- EVENT MANAGEMENT ----------------
   const loadEvents = useCallback(async () => {
@@ -352,7 +400,7 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
     database, streamersDB, logData, eventDB,
     isLoading, isMutating, hasSnapshot,
     loadDatabase, addShiny, undo,
-    addStreamer, deleteStreamer,
+    addStreamer, deleteStreamer, editStreamer,
     playerNames, getPlayerShinies, allPokemonNames,
     loadEvents, addEvent, updateEvent, removeEvent,
     deletePlayer,

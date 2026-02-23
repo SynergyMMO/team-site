@@ -2,10 +2,27 @@ import { useState } from 'react'
 import ConfirmDialog from './ConfirmDialog'
 import styles from '../Admin.module.css'
 
-export default function StreamersTab({ streamersDB, onAdd, onDelete, isMutating }) {
+export default function StreamersTab({ streamersDB, onAdd, onDelete, isMutating, onEdit }) {
   const [pokeName, setPokeName] = useState('')
   const [twitchName, setTwitchName] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(null)
+  const [editing, setEditing] = useState(null) // { oldName, pokeName, twitchName }
+  function startEdit(name, data) {
+    setEditing({ oldName: name, pokeName: name, twitchName: data.twitch_username || '' })
+  }
+
+  function cancelEdit() {
+    setEditing(null)
+  }
+
+  async function handleEditSave() {
+    if (!editing.pokeName.trim() || !editing.twitchName.trim()) return
+    if (onEdit) {
+      const result = await onEdit(editing.oldName, editing.pokeName, editing.twitchName)
+      if (result?.success) setEditing(null)
+      return result
+    }
+  }
 
   async function handleAdd() {
     if (!pokeName.trim() || !twitchName.trim()) return
@@ -62,15 +79,47 @@ export default function StreamersTab({ streamersDB, onAdd, onDelete, isMutating 
             </thead>
             <tbody>
               {streamerEntries.map(([name, data]) => (
-                <tr key={name}>
-                  <td>{name}</td>
-                  <td>{data.twitch_username}</td>
-                  <td>
-                    <button className={styles.deleteBtn} onClick={() => setConfirmDelete(name)}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+                editing && editing.oldName === name ? (
+                  <tr key={name}>
+                    <td>
+                      <input
+                        type="text"
+                        value={editing.pokeName}
+                        onChange={e => setEditing({ ...editing, pokeName: e.target.value })}
+                        disabled={isMutating}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editing.twitchName}
+                        onChange={e => setEditing({ ...editing, twitchName: e.target.value })}
+                        disabled={isMutating}
+                      />
+                    </td>
+                    <td>
+                      <button onClick={handleEditSave} disabled={isMutating || !editing.pokeName.trim() || !editing.twitchName.trim()}>
+                        Save
+                      </button>
+                      <button onClick={cancelEdit} disabled={isMutating}>
+                        Cancel
+                      </button>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr key={name}>
+                    <td>{name}</td>
+                    <td>{data.twitch_username}</td>
+                    <td>
+                      <button className={styles.editBtn} onClick={() => startEdit(name, data)} disabled={isMutating}>
+                        Edit
+                      </button>
+                      <button className={styles.deleteBtn} onClick={() => setConfirmDelete(name)} disabled={isMutating}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                )
               ))}
             </tbody>
           </table>

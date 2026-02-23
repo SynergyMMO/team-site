@@ -105,6 +105,7 @@ export default function AdminPanel() {
           streamersDB={db.streamersDB}
           onAdd={withToast(db.addStreamer, 'Streamer added!')}
           onDelete={withToast(db.deleteStreamer, 'Streamer deleted!')}
+          onEdit={withToast(db.editStreamer, 'Streamer updated!')}   // 👈 ADD
           isMutating={db.isMutating}
         />
       )}
