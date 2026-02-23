@@ -4,6 +4,7 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTierData } from '../../hooks/useTierData'
 import { useTieredShinies } from '../../hooks/useTieredShinies'
+import { useStreamers } from '../../hooks/useStreamers'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import { getAssetUrl } from '../../utils/assets'
 import { TRAIT_POINTS, calculateShinyPoints } from '../../utils/points'
@@ -51,9 +52,17 @@ export default function SHOTM() {
   const [closingPoints, setClosingPoints] = useState(false)
   const [closingTiers, setClosingTiers] = useState(false)
 
+  const { data: streamersData } = useStreamers()
   const { data, isLoading } = useDatabase()
   const { tierPoints, tierLookup } = useTierData()
 
+    // Helper to get streamer info by player name
+    const getStreamerInfo = (player) => {
+      if (!streamersData) return null
+      const lowerKey = player.toLowerCase()
+      const allStreamers = [...streamersData.live, ...streamersData.offline]
+      return allStreamers.find(s => s.pokeName?.toLowerCase() === lowerKey) || null
+    }
   // Filter SHOTM data for current month
   const shotmData = useMemo(() => {
     if (!data) return {}
@@ -265,9 +274,27 @@ export default function SHOTM() {
               )
             }
 
+            const streamer = getStreamerInfo(player)
             return (
               <div key={player} className={styles.playerCard}>
                 <h2 className={styles.playerName}>
+                  {streamer && (
+                    <a
+                      href={`https://www.twitch.tv/${streamer.twitch_username}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.twitchIconLink}
+                      title="View Twitch Channel"
+                    >
+                      <img
+                        src={getAssetUrl('images/twitch.png')}
+                        alt="Twitch"
+                        className={styles.twitchIcon}
+                        width="20"
+                        height="20"
+                      />
+                    </a>
+                  )}
                   {trophy}{' '}
                   <Link to={`/player/${player.toLowerCase()}/`} state={{ from: 'shotm' }} className={styles.playerLink}>
                     {player}
@@ -289,4 +316,12 @@ export default function SHOTM() {
       </div>
     </div>
   )
+}
+
+// Helper to get streamer info by player name
+const getStreamerInfo = (player) => {
+  if (!streamersData) return null
+  const lowerKey = player.toLowerCase()
+  const allStreamers = [...streamersData.live, ...streamersData.offline]
+  return allStreamers.find(s => s.pokeName?.toLowerCase() === lowerKey) || null
 }
