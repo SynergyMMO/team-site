@@ -152,7 +152,13 @@ export default function Home() {
       <section className={styles.changelogSection}>
         <h2>Changelog</h2>
         <div className={styles.changelog}>
-            <div className={styles.changelogEntry}>
+          <div className={styles.changelogEntry}>
+            <h3>February 23, 2026</h3>
+            <ul>
+              <li><strong>Shiny Odds Page</strong> - New Coping method that lets you track how lucky or unlucky you are in your current hunt</li>
+            </ul>
+          </div>
+          <div className={styles.changelogEntry}>
             <h3>February 17, 2026</h3>
             <ul>
               <li><strong>Safari Zone</strong> - Added page for detailed Safari Zone Information for all 4 regions *Mitchell*</li>
