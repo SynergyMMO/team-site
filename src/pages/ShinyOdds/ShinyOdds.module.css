@@ -1,0 +1,116 @@
+.shinyInput {
+  background: rgba(40, 40, 70, 0.95);
+  color: #ffd700;
+  border: 1.5px solid #4f46e5;
+  border-radius: 6px;
+  padding: 0.45em 0.9em;
+  font-size: 1em;
+  margin: 0.2em 0.5em 0.2em 0;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.shinyInput:focus {
+  border-color: #ffd700;
+  box-shadow: 0 0 0 2px rgba(255,215,0,0.15);
+}
+
+.shinyInput[type="number"]::-webkit-inner-spin-button,
+.shinyInput[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.shinyInput[type="checkbox"] {
+  accent-color: #4f46e5;
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: middle;
+}
+.copingCenter {
+  text-align: center;
+}
+.shinyOddsPage {
+  color: #fff;
+  background: rgba(30, 30, 60, 0.95);
+  padding: 2em;
+  border-radius: 18px;
+  max-width: 700px;
+  margin: 2em auto;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+}
+.shinyOddsPage h1, .shinyOddsPage h2 {
+  color: #ffd700;
+}
+.shinyOddsPage ul {
+  margin-left: 1.5em;
+}
+.customTooltip {
+  background: #1e1e3c;        /* Dark semi-transparent background to match page */
+  border: 1px solid #555;     /* Subtle border for depth */
+  padding: 12px 16px;          /* Slightly more padding for readability */
+  color: #ffd700;              /* Gold text for highlights */
+  border-radius: 8px;           /* Rounded corners for modern look */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+  font-size: 0.9rem;            /* Slightly smaller, professional font */
+  line-height: 1.4;             /* Better spacing between lines */
+  pointer-events: none;         /* Keep tooltip non-interactive */
+  transition: all 0.2s ease;    /* Smooth fade/position changes */
+}
+
+.customTooltip strong {
+  color: #fff;                  /* Make labels stand out */
+}
+
+.customTooltip div + div {
+  margin-top: 4px;              /* Small spacing between rows */
+}
+
+/* Index legend styling */
+.indexLegend {
+  max-width: 900px;
+  margin: 2em auto 0;
+  padding: 1em 1.2em;
+  background: rgba(30, 30, 60, 0.9);  /* Match page theme */
+  border-radius: 12px;
+  border: 1px solid #444;             /* Subtle border for depth */
+  color: #ffd700;                     /* Gold text */
+  font-size: 0.95rem;
+}
+
+.indexLegend h3 {
+  margin-bottom: 0.8em;
+  color: #ffd700;
+  font-size: 1.1rem;
+}
+
+.indexLegend ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.indexLegend li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.6em;
+}
+
+.indexLegend li:last-child {
+  margin-bottom: 0;
+}
+
+.indexLegend span.indicator {
+  display: inline-block;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
+/* Colored indicators for each line */
+.indexLegend .line-main { width: 24px; height: 4px; background: #4f46e5; border-radius: 2px; }
+.indexLegend .line-50 { width: 24px; height: 4px; background: green; border-radius: 2px; }
+.indexLegend .line-90 { width: 24px; height: 4px; background: orange; border-radius: 2px; }
+.indexLegend .line-99 { width: 24px; height: 4px; background: red; border-radius: 2px; }
+.indexLegend .dot-user { width: 16px; height: 16px; border-radius: 50%; background: #e11d48; border: 2px solid #fff; }
+.indexLegend .line-user { width: 24px; height: 4px; background: #e11d48; display: inline-block; border-radius: 2px; border: 1px dashed #e11d48; }

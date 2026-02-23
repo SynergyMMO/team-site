@@ -23,6 +23,8 @@ const Resources = lazy(() => import('./pages/Resources/Resources'))
 const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
+
+const ShinyOdds = lazy(() => import('./pages/ShinyOdds/ShinyOdds'))
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 
 export default function App() {
@@ -98,6 +100,7 @@ export default function App() {
             <Route path="/LnyCatchCalc" element={<LnyCatchCalc />} />
             <Route path="/counter-generator" element={<CounterGenerator />} />
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />
+            <Route path="/shiny-odds" element={<ShinyOdds />} />
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />
             <Route path="/safari-zones" element={<SafariZones />} />
             <Route path="/resources" element={<Resources />} />

@@ -30,6 +30,7 @@ const PAGE_KEYWORDS = {
   '/shiny-war-2025': 'Shiny Wars 2025, PokeMMO competition, Shiny Wars standings, leaderboard results, shiny catching championship, competition rankings, team synergy shiny war results',
   '/resources': 'PokeMMO resources, PokeMMO guides, hunting tools, community links, shiny hunting guides, PokeMMO calculators, Team Synergy resources',
   '/LnyCatchCalc': 'LNY Catch Calculator, PokeMMO Lunar New Year,  event catch rates, PokeMMO event tools, PokeMMO Catch calculator, Lunar New Year shiny hunting, PokeMMO LNY event',
+  '/shiny-odds': 'Shiny Odds Calculator, advanced shiny odds, PokeMMO shiny odds, shiny probability, shiny boosts, shiny hunt tracker, shiny odds graph, Team Synergy shiny odds',
 };
 
 const DYNAMIC_KEYWORDS = {
@@ -57,6 +58,13 @@ const PAGE_FAQS = {
     { question: 'Does the calculator work for all LNY Pokémon?', answer: 'Yes, it supports all special event Pokémon available during the Lunar New Year event in PokeMMO.' },
     { question: 'Is the LNY Catch Calculator accurate?', answer: 'The calculator uses the latest event mechanics and odds to provide accurate estimates for your shiny hunting during LNY.' },
     { question: 'Can I use this tool for other events?', answer: 'This calculator is specifically designed for the Lunar New Year event, but Team Synergy offers other calculators for different events.' },
+  ],
+  '/shiny-odds': [
+    { question: 'What is the Shiny Odds Calculator?', answer: 'The Shiny Odds Calculator is an advanced tool for calculating your odds of encountering a shiny Pokémon in PokeMMO, including boosts and probability graphs.' },
+    { question: 'How do I use the Shiny Odds Calculator?', answer: 'Enter your hunt details, such as number of encounters and any shiny boosts, to see your odds and probability distribution.' },
+    { question: 'Does it support all shiny hunting methods?', answer: 'Yes, the calculator is designed to support all standard shiny hunting methods in PokeMMO.' },
+    { question: 'Can I track my shiny hunt progress?', answer: 'Yes, the tool allows you to track your progress and visualize your shiny odds over time.' },
+    { question: 'Is the shiny odds calculation accurate?', answer: 'The calculator uses the latest PokeMMO shiny odds and mechanics for accurate probability estimates.' },
   ],
   '/shiny-showcase': [
     { question: 'What is the Shiny Showcase?', answer: 'The Shiny Showcase displays the shiny collections of all Team Synergy members, ranked by total shiny count.' },
@@ -179,6 +187,7 @@ const STATIC_ROUTES = [
   '/safari-zones',
   '/resources',
   '/LnyCatchCalc',
+  '/shiny-odds',
 ];
 
 
@@ -1383,6 +1392,12 @@ async function prerender() {
 
   // Static route OG overrides with CRAWLER LINKS
   const STATIC_META = {
+        '/shiny-odds': {
+          route: '/shiny-odds',
+          ogTitle: 'Advanced Shiny Odds Calculator | Team Synergy - PokeMMO',
+          ogDescription: 'Deep shiny odds calculator with boosts, progress tracking, and probability graph. Calculate your odds for any shiny hunt in PokeMMO with advanced features.',
+          ogImage: 'https://synergymmo.com/images/openGraph.jpg'
+        },
     '/LnyCatchCalc': {
       route: '/LnyCatchCalc',
       ogTitle: 'LNY Catch Calculator | Team Synergy - PokeMMO',
