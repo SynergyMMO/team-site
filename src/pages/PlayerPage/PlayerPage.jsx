@@ -1,9 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTrophies } from '../../hooks/useTrophies'
 import { useStreamers } from '../../hooks/useStreamers'
+import { API } from '../../api/endpoints'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import TrophyShelf from '../../components/TrophyShelf/TrophyShelf'
 import StatisticsSection from '../../components/StatisticsSection/StatisticsSection'
@@ -18,6 +20,13 @@ export default function PlayerPage() {
   const { data, isLoading } = useDatabase()
   const { data: trophiesData } = useTrophies()
   const { data: streamersData } = useStreamers()
+  const { data: streamersList } = useQuery({
+    queryKey: ['streamersList'],
+    queryFn: () => fetch(API.streamers).then(r => {
+      if (!r.ok) throw new Error(`Failed to load streamers: ${r.status}`)
+      return r.json()
+    }),
+  })
 
   const { realKey, playerData } = useMemo(() => {
     if (!data || !playerName) return { realKey: null, playerData: null }
@@ -90,22 +99,24 @@ export default function PlayerPage() {
   const streamerInfo = useMemo(() => {
     if (!streamersData || !safeRealKey) return null
 
+    const twitchUsername = streamersList?.[safeRealKey]?.twitch_username || safeRealKey
     const allStreamers = [...streamersData.live, ...streamersData.offline]
 
     return (
       allStreamers.find(
-        s => s.twitch_username.toLowerCase() === safeRealKey.toLowerCase()
+        s => s.twitch_username.toLowerCase() === twitchUsername.toLowerCase()
       ) || null
     )
-  }, [streamersData, safeRealKey])
+  }, [streamersData, streamersList, safeRealKey])
 
   const isLive = useMemo(() => {
     if (!streamersData || !safeRealKey) return false
 
+    const twitchUsername = streamersList?.[safeRealKey]?.twitch_username || safeRealKey
     return streamersData.live.some(
-      s => s.twitch_username.toLowerCase() === safeRealKey.toLowerCase()
+      s => s.twitch_username.toLowerCase() === twitchUsername.toLowerCase()
     )
-  }, [streamersData, safeRealKey])
+  }, [streamersData, streamersList, safeRealKey])
 
   // --- Calculate average encounters per shiny ---
   const encountersData = useMemo(() => {

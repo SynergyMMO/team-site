@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
+import { useStreamers } from '../../hooks/useStreamers'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import PlayerStatsDropdown from '../../components/PlayerStatsDropdown/PlayerStatsDropdown'
@@ -32,6 +33,19 @@ export default function Showcase() {
       return r.json()
     }),
   })
+  const { data: twitchData } = useStreamers()
+
+  const combinedStreamers = useMemo(() => {
+    const result = { ...(streamers || {}) }
+    if (twitchData) {
+      for (const s of [...twitchData.live, ...twitchData.offline]) {
+        if (!result[s.twitch_username]) {
+          result[s.twitch_username] = s
+        }
+      }
+    }
+    return result
+  }, [streamers, twitchData])
 
   const sortedPlayers = useMemo(() => {
     if (!data) return []
@@ -131,7 +145,7 @@ export default function Showcase() {
             player={player}
             data={playerData}
             rank={rankMap.get(player)}
-            streamers={streamers}
+            streamers={combinedStreamers}
             mobileInteractive={true}
           />
         ))}
