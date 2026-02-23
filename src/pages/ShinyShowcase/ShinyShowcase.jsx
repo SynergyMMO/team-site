@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useStreamers } from '../../hooks/useStreamers'
@@ -8,7 +9,7 @@ import SearchBar from '../../components/SearchBar/SearchBar'
 import PlayerStatsDropdown from '../../components/PlayerStatsDropdown/PlayerStatsDropdown'
 import { getAssetUrl } from '../../utils/assets'
 import { getStatisticsWinners } from '../../utils/playerStatistics'
-import streamerMap from '../../data/streamer_map.json'
+import { API } from '../../api/endpoints'
 import styles from './ShinyShowcase.module.css'
 
 const INITIAL_COUNT = 5
@@ -25,24 +26,33 @@ export default function ShinyShowcase() {
   const [search, setSearch] = useState('')
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT)
   const sentinelRef = useRef(null)
+  const { data: streamers } = useQuery({
+    queryKey: ['streamersList'],
+    queryFn: () => fetch(API.streamers).then(r => {
+      if (!r.ok) throw new Error(`Failed to load streamers: ${r.status}`)
+      return r.json()
+    }),
+  })
   const { data: twitchData } = useStreamers()
 
-  // Build lookup: pokemmo player name → streamer data (using static map + live Twitch data)
   const combinedStreamers = useMemo(() => {
-    const byTwitchName = {}
+    // Lowercase all keys for case-insensitive comparison
+    const result = {}
+    if (streamers) {
+      Object.entries(streamers).forEach(([key, value]) => {
+        result[key.toLowerCase()] = value
+      })
+    }
     if (twitchData) {
       for (const s of [...twitchData.live, ...twitchData.offline]) {
-        byTwitchName[s.twitch_username.toLowerCase()] = s
+        const key = s.twitch_username?.toLowerCase()
+        if (key && !result[key]) {
+          result[key] = s
+        }
       }
     }
-    const result = {}
-    for (const [pokemmoName, twitchUsername] of Object.entries(streamerMap)) {
-      const data = byTwitchName[twitchUsername.toLowerCase()] || { twitch_username: twitchUsername }
-      result[pokemmoName] = data
-      result[pokemmoName.toLowerCase()] = data
-    }
     return result
-  }, [twitchData])
+  }, [streamers, twitchData])
 
   const sortedPlayers = useMemo(() => {
     if (!data) return []

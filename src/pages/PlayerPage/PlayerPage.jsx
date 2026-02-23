@@ -4,7 +4,6 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTrophies } from '../../hooks/useTrophies'
 import { useStreamers } from '../../hooks/useStreamers'
-import streamerMap from '../../data/streamer_map.json'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import TrophyShelf from '../../components/TrophyShelf/TrophyShelf'
 import StatisticsSection from '../../components/StatisticsSection/StatisticsSection'
@@ -88,31 +87,24 @@ export default function PlayerPage() {
   const backLabel = fromPage === 'shotm' ? '\u2190 Back to SHOTM' : fromPage === 'shiny-war-2025' ? '\u2190 Back to Shiny Wars 2025' : fromPage === 'pokemon' ? '\u2190 Back to Pokémon' : '\u2190 Back to Showcase'
 
   // --- Find streamer info ---
-  const streamerInfo = useMemo(() => {
-    if (!streamersData || !safeRealKey) return null
-
-    // Resolve Twitch username from static map (case-insensitive key lookup)
-    const mapKey = Object.keys(streamerMap).find(k => k.toLowerCase() === safeRealKey.toLowerCase())
-    const twitchUsername = mapKey ? streamerMap[mapKey] : null
-    if (!twitchUsername) return null
-
-    const allStreamers = [...streamersData.live, ...streamersData.offline]
-    return allStreamers.find(
-      s => s.twitch_username.toLowerCase() === twitchUsername.toLowerCase()
-    ) || null
-  }, [streamersData, safeRealKey])
+    const streamerInfo = useMemo(() => {
+      if (!streamersData || !safeRealKey) return null
+      const lowerKey = safeRealKey.toLowerCase()
+      const allStreamers = [...streamersData.live, ...streamersData.offline]
+      return allStreamers.find(
+        s => s.pokeName?.toLowerCase() === lowerKey
+      ) || null
+    }, [streamersData, safeRealKey])
 
   const isLive = useMemo(() => {
     if (!streamersData || !safeRealKey) return false
-
-    const mapKey = Object.keys(streamerMap).find(k => k.toLowerCase() === safeRealKey.toLowerCase())
-    const twitchUsername = mapKey ? streamerMap[mapKey] : null
-    if (!twitchUsername) return false
-
+    const lowerKey = safeRealKey.toLowerCase()
     return streamersData.live.some(
-      s => s.twitch_username.toLowerCase() === twitchUsername.toLowerCase()
+      s => s.pokeName?.toLowerCase() === lowerKey
     )
   }, [streamersData, safeRealKey])
+
+  console.log(streamerInfo, isLive)
 
   // --- Calculate average encounters per shiny ---
   const encountersData = useMemo(() => {
