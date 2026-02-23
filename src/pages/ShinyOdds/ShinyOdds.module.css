@@ -1,3 +1,104 @@
+/* --- SHINY LOG MOBILE RESPONSIVE --- */
+@media (max-width: 600px) {
+  .shinyLog {
+    max-height: 220px !important;
+    padding: 0.5em 0.2em !important;
+    font-size: 0.97em !important;
+    border-radius: 6px !important;
+    overflow-x: auto !important;
+    width: 92vw !important;
+    margin-left: 4vw !important;
+    margin-right: 4vw !important;
+    box-sizing: border-box;
+  }
+  .shinyLog ul {
+    padding-left: 0.7em !important;
+  }
+  .shinyLog li {
+    flex-direction: row !important;
+    font-size: 0.97em !important;
+    padding: 0.2em 0 !important;
+    margin-bottom: 8px !important;
+  }
+  .shinyLog img {
+    width: 36px !important;
+    height: 36px !important;
+    margin-right: 8px !important;
+  }
+}
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 600px) {
+  .shinyLog {
+    max-height: 35vh !important;
+    padding: 0.5em 0.2em !important;
+    font-size: 0.97em !important;
+    border-radius: 6px !important;
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    width: 90vw !important;          /* Slightly smaller than viewport */
+    margin: 1em auto !important;     /* center horizontally */
+    box-sizing: border-box;
+    text-align: center;               /* center text inside */
+  }
+
+  .shinyLog ul {
+    padding-left: 0 !important;       /* remove left padding */
+    list-style: none;                 /* optional, cleaner */
+  }
+
+  .shinyLog li {
+    flex-direction: column !important; /* stack contents vertically on mobile */
+    align-items: center;               /* center each entry */
+    font-size: 0.97em !important;
+    padding: 0.3em 0 !important;
+    margin-bottom: 8px !important;
+    text-align: center;                /* ensure text is centered */
+  }
+
+  .shinyLog img {
+    width: 36px !important;
+    height: 36px !important;
+    margin: 0 0 8px 0 !important;     /* space below image instead of right */
+  }
+  .shinyOddsPage {
+    padding: 0.7em 0.2em;
+    max-width: 100vw;
+    border-radius: 0;
+    margin: 0;
+    box-shadow: none;
+  }
+  .tabContainer {
+    flex-direction: column;
+    gap: 0.7em;
+    padding: 0 0.5em;
+  }
+  .tab, .activeTab {
+    width: 100%;
+    min-width: 0;
+    padding: 0.7em 0.5em;
+    font-size: 1em;
+  }
+  .shinyInput {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0.2em 0 0.2em 0;
+  }
+  .customTooltip {
+    font-size: 0.85rem;
+    padding: 8px 8px;
+  }
+  .indexLegend {
+    padding: 0.7em 0.3em;
+    font-size: 0.9rem;
+    max-width: 100vw;
+  }
+  .indexLegend h3 {
+    font-size: 1em;
+  }
+  .indexLegend li {
+    font-size: 0.95em;
+  }
+}
 /* Tab container styling */
 .tabContainer {
   display: flex;

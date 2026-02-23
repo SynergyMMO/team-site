@@ -149,28 +149,73 @@ function getRandomPokemon() {
 
 
 function ShinySimulator() {
+  const [hordeCountdown, setHordeCountdown] = useState(20);
   const [shinyLog, setShinyLog] = useState([]);
   const [popupPokemon, setPopupPokemon] = useState(null);
   const [popup, setPopup] = useState(null);
   const [denominator, setDenominator] = useState(30000);
+  const denominatorRef = useRef(30000); // Only declare once, after denominator
+  React.useEffect(() => {
+    denominatorRef.current = denominator;
+  }, [denominator]);
   const [results, setResults] = useState([]);
   const [currentEncounters, setCurrentEncounters] = useState(0);
+  const [hordeMode, setHordeMode] = useState(false);
+  const hordeIntervalRef = useRef(null);
+  // --- Horde Auto-Increment Effect ---
+  React.useEffect(() => {
+    let intervalId = null;
+    let countdownId = null;
+    if (hordeMode) {
+      setHordeCountdown(20);
+      intervalId = setInterval(() => {
+        simulateEncounters(5, denominatorRef.current);
+        setHordeCountdown(20);
+      }, 20000);
+      countdownId = setInterval(() => {
+        setHordeCountdown(prev => prev > 1 ? prev - 1 : 20);
+      }, 1000);
+      hordeIntervalRef.current = intervalId;
+    } else {
+      if (hordeIntervalRef.current) {
+        clearInterval(hordeIntervalRef.current);
+        hordeIntervalRef.current = null;
+      }
+      setHordeCountdown(20);
+    }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      if (countdownId) clearInterval(countdownId);
+      if (hordeIntervalRef.current) {
+        clearInterval(hordeIntervalRef.current);
+        hordeIntervalRef.current = null;
+      }
+    };
+  }, [hordeMode]);
 
   const parentRef = useRef();
 
-  // --- Load / Save shiny log from localStorage ---
+  // --- Load / Save shiny log and currentEncounters from localStorage ---
   React.useEffect(() => {
-    const saved = localStorage.getItem('shinyLog');
-    if (saved) {
+    const savedLog = localStorage.getItem('shinyLog');
+    if (savedLog) {
       try {
-        setShinyLog(JSON.parse(saved));
+        setShinyLog(JSON.parse(savedLog));
       } catch {}
+    }
+    const savedEncounters = localStorage.getItem('currentEncounters');
+    if (savedEncounters) {
+      setCurrentEncounters(Number(savedEncounters) || 0);
     }
   }, []);
 
   React.useEffect(() => {
     localStorage.setItem('shinyLog', JSON.stringify(shinyLog));
   }, [shinyLog]);
+
+  React.useEffect(() => {
+    localStorage.setItem('currentEncounters', String(currentEncounters));
+  }, [currentEncounters]);
 
   // --- Virtualizer ---
   const rowVirtualizer = useVirtualizer({
@@ -188,22 +233,36 @@ function ShinySimulator() {
     let shinyEntry = null;
     let popupData = null;
     const prevResults = results;
-    const startEncounterNum = prevResults.length;
+    const startEncounterNum = currentEncounters;
     const newResults = [];
 
-    for (let i = 0; i < count && !shinyFound; i++) {
+    // Accept denominator override for horde mode
+    let denominatorToUse = arguments.length > 1 ? arguments[1] : denominator;
+
+    for (let i = 0; i < count; i++) {
       const pokemon = getRandomPokemon();
-      const shiny = Math.random() < 1 / denominator;
+      let shiny = false;
       let secret = false;
       let alpha = false;
       const encounterNum = startEncounterNum + i + 1;
 
-      if (shiny) {
-        shinyFound = true;
-        secret = Math.random() < 1 / 16;
-        alpha = Math.random() < 1 / 64;
-        shinyEntry = { pokemon, encounterNum, secret, alpha, timestamp: Date.now(), odds: denominator };
-        popupData = { pokemon, secret, alpha };
+      // Debug log for each encounter in Horde mode
+      if (count === 5) {
+      }
+
+      if (!shinyFound) {
+        shiny = Math.random() < 1 / denominatorToUse;
+        if (count === 5) {
+        }
+        if (shiny) {
+          shinyFound = true;
+          secret = Math.random() < 1 / 16;
+          alpha = Math.random() < 1 / 64;
+          shinyEntry = { pokemon, encounterNum, secret, alpha, timestamp: Date.now(), odds: denominatorToUse };
+          popupData = { pokemon, secret, alpha };
+          if (count === 5) {
+          }
+        }
       }
 
       newResults.push({ pokemon, shiny, secret, alpha, encounterNum });
@@ -221,6 +280,7 @@ function ShinySimulator() {
       setPopup(popupData);
       setPopupPokemon(shinyEntry.pokemon);
       setCurrentEncounters(0); // Reset encounters on shiny
+      localStorage.setItem('currentEncounters', '0');
       setTimeout(() => {
         setPopup(null);
         setPopupPokemon(null);
@@ -330,6 +390,50 @@ function ShinySimulator() {
 
   return (
     <div style={{ marginTop: '2em', position: 'relative' }}>
+      {/* Horde Toggle */}
+      <div style={{ marginBottom: '1em' }}>
+        <label style={{ fontWeight: 'bold', fontSize: '1.1em' }}>
+          <input
+            type="checkbox"
+            checked={hordeMode}
+            onChange={e => setHordeMode(e.target.checked)}
+            style={{ marginRight: 8 }}
+          />
+          Horde Mode (auto +5 encounters every 20s)
+        </label>
+        {hordeMode && (
+          <div style={{ marginTop: 6, color: '#e11d48', fontWeight: 600, fontSize: '1em' }}>
+            Next +5 in: {hordeCountdown}s
+          </div>
+        )}
+      </div>
+
+      
+      {/* Current Encounters display */}
+      {(() => {
+        let color = '#22c55e'; // green
+        if (currentEncounters >= denominator * 0.9 && currentEncounters < denominator) {
+          color = '#f59e42'; // orange
+        } else if (currentEncounters >= denominator) {
+          color = '#e11d48'; // red
+        }
+        return (
+          <>
+            <div style={{ marginBottom: '1em', fontWeight: 'bold', fontSize: '1.2em', color }}>
+              Current Encounters: {currentEncounters}
+            </div>
+            {/* Index legend below Current Encounters */}
+            <div style={{ marginBottom: '1em', borderRadius: 8, padding: '0.75em 1em', color: '#fff', fontSize: '0.98em', maxWidth: 420 }}>
+              <strong>Index:</strong>
+              <ul style={{ margin: '0.5em 0 0 1.2em', padding: 0, listStyle: 'disc' }}>
+                <li><span style={{ color: '#ffe761', fontWeight: 600 }}>1/16</span> — Secret Shiny</li>
+                <li><span style={{ color: '#e11d48', fontWeight: 600 }}>1/64</span> — Alpha</li>
+                <li><span style={{ color: '#ff5faa', fontWeight: 600 }}>45/731</span> — Legendary</li>
+              </ul>
+            </div>
+          </>
+        );
+      })()}
       <h2>Simulator</h2>
 
       <label>
@@ -356,32 +460,6 @@ function ShinySimulator() {
       </div>
 
 
-      {/* Current Encounters display */}
-      {(() => {
-        let color = '#22c55e'; // green
-        if (currentEncounters >= denominator * 0.9 && currentEncounters < denominator) {
-          color = '#f59e42'; // orange
-        } else if (currentEncounters >= denominator) {
-          color = '#e11d48'; // red
-        }
-        return (
-          <>
-            <div style={{ marginBottom: '1em', fontWeight: 'bold', fontSize: '1.2em', color }}>
-              Current Encounters: {currentEncounters}
-            </div>
-            {/* Index legend below Current Encounters */}
-            <div style={{ marginBottom: '1em', background: '#18181b', borderRadius: 8, padding: '0.75em 1em', color: '#fff', fontSize: '0.98em', maxWidth: 420 }}>
-              <strong>Index:</strong>
-              <ul style={{ margin: '0.5em 0 0 1.2em', padding: 0, listStyle: 'disc' }}>
-                <li><span style={{ color: '#ffe761', fontWeight: 600 }}>1/16</span> — Secret Shiny</li>
-                <li><span style={{ color: '#e11d48', fontWeight: 600 }}>1/64</span> — Alpha</li>
-                <li><span style={{ color: '#ff5faa', fontWeight: 600 }}>45/731</span> — Legendary</li>
-              </ul>
-            </div>
-          </>
-        );
-      })()}
-
       {/* SHINY POPUP */}
       {popup && (
         <ShinyPopup popup={popup} popupPokemon={popupPokemon} />
@@ -392,7 +470,7 @@ function ShinySimulator() {
       <h2>SHINY LOG</h2>
       <button onClick={handleClearLog} className={styles.shinyInput} style={{ marginBottom: 8 }}>Clear log</button>
 
-      <div style={{ maxHeight: 200, overflowY: 'auto', background: '#111', padding: '1em', borderRadius: 8 }}>
+      <div className={styles.shinyLog} style={{ maxHeight: 400, overflowY: 'auto', background: '#111', padding: '1em', borderRadius: 8 }}>
         {shinyLog.length === 0 ? (
           <p>No shinies found yet.</p>
         ) : (
