@@ -1395,7 +1395,7 @@ async function prerender() {
         '/shiny-odds': {
           route: '/shiny-odds',
           ogTitle: 'Advanced Shiny Odds Calculator | Team Synergy - PokeMMO',
-          ogDescription: 'Deep shiny odds calculator with boosts, progress tracking, and probability graph. Calculate your odds for any shiny hunt in PokeMMO with advanced features.',
+          ogDescription: 'shiny odds calculator with boosts and probability graph. Calculate your odds for any shiny hunt in PokeMMO for max COPE.',
           ogImage: 'https://synergymmo.com/images/openGraph.jpg'
         },
     '/LnyCatchCalc': {
