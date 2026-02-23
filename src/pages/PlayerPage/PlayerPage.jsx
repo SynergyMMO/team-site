@@ -209,32 +209,22 @@ export default function PlayerPage() {
 
     // OFFLINE CARD
     return (
-      <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+      <div className={styles.streamerSection}>
         <h2>📺 Streamer</h2>
 
         <a
           href={`https://www.twitch.tv/${streamerInfo.twitch_username.toLowerCase()}`}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ textDecoration: 'none' }}
+          className={styles.streamerCardLink}
         >
-          <div
-            style={{
-              display: 'inline-block',
-              padding: '1rem',
-              background: '#1a1a1a',
-              borderRadius: '12px',
-            }}
-          >
+          <div className={styles.streamerCard}>
             <img
               src={streamerInfo.profile_image_url}
               alt={streamerInfo.twitch_username}
-              width="120"
-              height="120"
-              style={{ borderRadius: '50%' }}
+              className={styles.streamerProfile}
             />
-
-            <p style={{ color: 'white', marginTop: '0.5rem' }}>
+            <p className={styles.streamerName}>
               {streamerInfo.twitch_username}
             </p>
           </div>
