@@ -1,71 +1,190 @@
-.searchBar {
-  padding: 0.5rem 1rem;
-  font-size: 1.1rem;
-  border-radius: 8px;
-  border: 2px solid #3b82f6;
-  width: min(350px, 90vw);
-  outline: none;
-  background: #181c2f;
-  color: #fff;
-  box-shadow: 0 2px 8px #0002;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.searchBar:focus {
-  border-color: #818cf8;
-  box-shadow: 0 0 0 2px #818cf855;
-}
 .container {
-  min-height: 100vh;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 2rem 0;
 }
 
 .title {
   color: #fff;
-  font-size: 36px;
+  font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: 1px;
-  margin-bottom: 32px;
-  text-shadow: 0 2px 12px #0008;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  text-shadow:
+    0 0 5px rgba(255, 255, 255, 0.4),
+    0 0 10px rgba(74, 144, 226, 0.3),
+    0 0 15px rgba(74, 144, 226, 0.2);
 }
 
+/* Info / guide box */
+.infoBox {
+  width: 100%;
+  max-width: 700px;
+  background: rgba(20, 10, 35, 0.75);
+  border: 1px solid rgba(155, 89, 182, 0.3);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 0 0 1rem 0;
+}
+
+.infoBoxTitle {
+  font-weight: 700;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.infoBoxHighlight {
+  color: #ffd700;
+  font-weight: 600;
+}
+
+.infoBoxMuted {
+  color: #ccc;
+  font-size: 0.93rem;
+}
+
+.infoBoxThanks {
+  margin-top: 0.75rem;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.levelBallRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.levelBallLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #d2b4de;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.levelBallLabel input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #9b59b6;
+  cursor: pointer;
+}
+
+/* Note strips */
+.tooltipNote2 {
+  width: 100%;
+  max-width: 700px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid rgba(102, 126, 234, 0.15);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Search */
+.searchWrapper {
+  position: relative;
+  width: min(350px, 90vw);
+  margin: 1.5rem 0 1rem 0;
+}
+
+.searchBar {
+  width: 100%;
+  padding: 0.55rem 1.1rem;
+  font-size: 1rem;
+  border-radius: 20px;
+  border: 2px solid rgba(155, 89, 182, 0.4);
+  background: rgba(20, 10, 35, 0.75);
+  color: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.searchBar::placeholder {
+  color: #888;
+}
+.searchBar:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.35);
+}
+
+.suggestionList {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: rgba(15, 8, 28, 0.97);
+  border: 1px solid rgba(155, 89, 182, 0.4);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  z-index: 10;
+  max-height: 220px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.suggestionItem {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  transition: background 0.15s;
+}
+.suggestionItem:hover {
+  background: rgba(155, 89, 182, 0.2);
+  color: #fff;
+}
+.suggestionItemActive {
+  background: rgba(74, 144, 226, 0.25);
+  color: #fff;
+}
+
+/* Card grid */
 .flexWrap {
   display: flex;
   flex-wrap: wrap;
-  gap: 2.5rem;
+  gap: 1.5rem;
   justify-content: center;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1300px;
+  margin-top: 0.5rem;
 }
 
 .card {
-  min-width: 240px;
-  max-width: 260px;
-  background: #232946;
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 4px 24px #0004;
+  min-width: 220px;
+  max-width: 250px;
+  background: rgba(20, 10, 35, 0.75);
+  border: 1px solid rgba(155, 89, 182, 0.3);
+  border-radius: 12px;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: transform 0.2s;
-  border: 2px solid #3b82f6;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(155, 89, 182, 0.7);
   box-shadow:
-    0 0 16px 4px #818cf8cc,
-    0 0 32px 8px #3b82f688,
-    0 8px 32px #3b82f644,
-    0 2px 12px #0006;
-  transform: translateY(-4px) scale(1.025);
-  border-color: #a5b4fc;
-  background: linear-gradient(120deg, #232946 80%, #3b82f633 100%);
+    0 0 12px rgba(155, 89, 182, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  background: rgba(30, 15, 50, 0.85);
 }
-
 
 .pokemon {
   max-width: 90%;
@@ -74,46 +193,121 @@
   height: auto;
   object-fit: contain;
   display: block;
-  cursor: pointer;
-  margin-bottom: 16px;
-  /* mimic Pokedex style, but keep margin for card layout */
+  margin-bottom: 0.75rem;
 }
 
 .pokemonName {
   font-weight: 700;
-  font-size: 20px;
-  margin-bottom: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
   color: #fff;
-  text-shadow: 0 1px 4px #0006;
+  text-align: center;
 }
 
 .catchRate {
-  font-size: 15px;
-  margin-bottom: 10px;
-  color: #a5b4fc;
+  font-size: 0.88rem;
+  margin-bottom: 0.6rem;
+  color: #b0b0b0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.catchRate b {
+  color: #d2b4de;
 }
 
 .ballInfo {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
 }
 
 .best {
-  color: #4ade80;
+  color: #66BB6A;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 0.88rem;
 }
 
 .second {
-  color: #60a5fa;
+  color: #4a90e2;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 0.88rem;
 }
 
 .ballDetails {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #aaa;
-  margin-left: 8px;
+  margin-left: 6px;
+}
+
+/* Level 30 moveset */
+.movesetSection {
+  margin-top: 1rem;
+  width: 100%;
+  border-top: 1px solid rgba(155, 89, 182, 0.2);
+  padding-top: 0.75rem;
+}
+
+.movesetTitle {
+  color: #d2b4de;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.4rem;
+}
+
+.moveList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.moveItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.moveName {
+  color: #c3b1e1;
+  font-weight: 500;
+}
+
+.moveLevel {
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+.noMoves {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+/* Empty state */
+.empty {
+  color: #aaa;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+  .title {
+    font-size: 1.6rem;
+  }
+  .card {
+    min-width: 160px;
+    max-width: 200px;
+    padding: 1rem;
+  }
+  .flexWrap {
+    gap: 1rem;
+  }
 }
