@@ -1,4 +1,97 @@
-  // ---------------- UPDATE FULL DATABASE ----------------
+ import { useState, useCallback, useRef, useMemo } from 'react';
+import { API } from '../../../api/endpoints';
+import generationData from '../../../data/generation.json';
+
+
+
+// ---------------- HELPERS ----------------
+function recalcShinyCount(player) {
+  const shinies = player?.shinies;
+  if (!shinies) return 0;
+  return Object.values(shinies).filter(s => s.Sold !== 'Yes').length;
+}
+
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+// ---------------- HOOK ----------------
+export default function useAdminDB(auth) {
+  // --- Database / Streamers / Events / Log ---
+  const [database, setDatabase] = useState({});
+  const [streamersDB, setStreamersDB] = useState({});
+  const [eventDB, setEventDB] = useState([]);
+  const [logData, setLogData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMutating, setIsMutating] = useState(false);
+
+  const snapshotRef = useRef(null);
+
+  // --- Current Members ---
+  const [members, setMembers] = useState([]);
+  const [isMembersLoading, setIsMembersLoading] = useState(false);
+    // ---------------- POST HELPER ----------------
+  const postData = useCallback(async (endpoint, payload) => {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`POST ${endpoint} failed: ${res.status}`);
+    const text = await res.text();
+    try { return JSON.parse(text); } catch { return text; }
+  }, []);
+
+  
+  // ---------------- SNAPSHOT / UNDO ----------------
+  const saveSnapshot = useCallback(() => {
+    snapshotRef.current = {
+      database: deepClone(database),
+      streamersDB: deepClone(streamersDB),
+      eventDB: deepClone(eventDB),
+      members: deepClone(members),
+    };
+  }, [database, streamersDB, eventDB, members]);
+
+  const undo = useCallback(async () => {
+    if (!snapshotRef.current || !auth) return false;
+    setIsMutating(true);
+    try {
+      const { database: prevDb, streamersDB: prevStr, eventDB: prevEvents, members: prevMembers } = snapshotRef.current;
+
+      const [dbResult, strResult, eventsResult] = await Promise.all([
+        postData(API.updateDatabase, { username: auth.name || auth.username, password: auth.password, data: prevDb, action: 'Undo last action' }),
+        postData(API.updateStreamers, { username: auth.name || auth.username, password: auth.password, data: prevStr, action: 'Undo last action (streamers)' }),
+        postData(API.events, { username: auth.name || auth.username, password: auth.password, data: prevEvents, action: 'Undo last action (events)' }),
+      ]);
+
+      setDatabase(prevDb);
+      setStreamersDB(prevStr);
+      setEventDB(prevEvents);
+      setMembers(prevMembers);
+      snapshotRef.current = null;
+
+      return dbResult.success && strResult.success && eventsResult.success;
+    } finally { setIsMutating(false); }
+  }, [auth, postData]);
+
+
+  // ---------------- LOGGING ----------------
+  const logAdminAction = useCallback(async (action) => {
+    if (!auth) return;
+    const optimisticEntry = { admin: auth.name || auth.username, action, time: new Date().toISOString() };
+    setLogData(prev => [optimisticEntry, ...(prev || [])]);
+    try {
+      await fetch(API.adminLog, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: auth.name || auth.username, password: auth.password, action }),
+      });
+    } catch (err) {
+      console.warn("Failed to log admin action:", err);
+    }
+  }, [auth]);
+   // ---------------- UPDATE FULL DATABASE ----------------
   const updateFullDatabase = useCallback(async (newDatabase) => {
     if (!auth) return { success: false, error: 'Unauthorized' };
     saveSnapshot(); setIsMutating(true);
@@ -42,64 +135,7 @@
     } finally { setIsMutating(false); }
   }, [auth, postData, saveSnapshot, logAdminAction]);
 
-import { useState, useCallback, useRef, useMemo } from 'react';
-import { API } from '../../../api/endpoints';
-import generationData from '../../../data/generation.json';
 
-// ---------------- HELPERS ----------------
-function recalcShinyCount(player) {
-  const shinies = player?.shinies;
-  if (!shinies) return 0;
-  return Object.values(shinies).filter(s => s.Sold !== 'Yes').length;
-}
-
-function deepClone(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
-
-// ---------------- HOOK ----------------
-export default function useAdminDB(auth) {
-  // --- Database / Streamers / Events / Log ---
-  const [database, setDatabase] = useState({});
-  const [streamersDB, setStreamersDB] = useState({});
-  const [eventDB, setEventDB] = useState([]);
-  const [logData, setLogData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isMutating, setIsMutating] = useState(false);
-
-  const snapshotRef = useRef(null);
-
-  // --- Current Members ---
-  const [members, setMembers] = useState([]);
-  const [isMembersLoading, setIsMembersLoading] = useState(false);
-
-  // ---------------- POST HELPER ----------------
-  const postData = useCallback(async (endpoint, payload) => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(`POST ${endpoint} failed: ${res.status}`);
-    const text = await res.text();
-    try { return JSON.parse(text); } catch { return text; }
-  }, []);
-
-  // ---------------- LOGGING ----------------
-  const logAdminAction = useCallback(async (action) => {
-    if (!auth) return;
-    const optimisticEntry = { admin: auth.name || auth.username, action, time: new Date().toISOString() };
-    setLogData(prev => [optimisticEntry, ...(prev || [])]);
-    try {
-      await fetch(API.adminLog, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: auth.name || auth.username, password: auth.password, action }),
-      });
-    } catch (err) {
-      console.warn("Failed to log admin action:", err);
-    }
-  }, [auth]);
 
   
   // ---------------- LOAD DATABASE ----------------
@@ -135,38 +171,6 @@ export default function useAdminDB(auth) {
       return { db, str, log: log.log || [] };
     } finally { setIsLoading(false); }
   }, []);
-
-  // ---------------- SNAPSHOT / UNDO ----------------
-  const saveSnapshot = useCallback(() => {
-    snapshotRef.current = {
-      database: deepClone(database),
-      streamersDB: deepClone(streamersDB),
-      eventDB: deepClone(eventDB),
-      members: deepClone(members),
-    };
-  }, [database, streamersDB, eventDB, members]);
-
-  const undo = useCallback(async () => {
-    if (!snapshotRef.current || !auth) return false;
-    setIsMutating(true);
-    try {
-      const { database: prevDb, streamersDB: prevStr, eventDB: prevEvents, members: prevMembers } = snapshotRef.current;
-
-      const [dbResult, strResult, eventsResult] = await Promise.all([
-        postData(API.updateDatabase, { username: auth.name || auth.username, password: auth.password, data: prevDb, action: 'Undo last action' }),
-        postData(API.updateStreamers, { username: auth.name || auth.username, password: auth.password, data: prevStr, action: 'Undo last action (streamers)' }),
-        postData(API.events, { username: auth.name || auth.username, password: auth.password, data: prevEvents, action: 'Undo last action (events)' }),
-      ]);
-
-      setDatabase(prevDb);
-      setStreamersDB(prevStr);
-      setEventDB(prevEvents);
-      setMembers(prevMembers);
-      snapshotRef.current = null;
-
-      return dbResult.success && strResult.success && eventsResult.success;
-    } finally { setIsMutating(false); }
-  }, [auth, postData]);
 
   // ---------------- PLAYER MANAGEMENT ----------------
   const addShiny = useCallback(async (playerName, shinyData) => {
