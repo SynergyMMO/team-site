@@ -16,7 +16,7 @@ export default function ThemesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const WORKER_THEME_ENDPOINT = 'https://adminpage.hypersmmo.workers.dev/admin/theme';
+  const WORKER_THEME_ENDPOINT = 'https://adminpage.hypersmmo.workers.dev/admin/themes';
 
   useEffect(() => {
     async function fetchThemeData() {
