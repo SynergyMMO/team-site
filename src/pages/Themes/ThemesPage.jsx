@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDocumentHead } from '../../hooks/useDocumentHead';
 import { Link } from 'react-router-dom';
 import styles from './ThemesPage.module.css';
 import BackButton from '../../components/BackButton/BackButton';
@@ -11,6 +12,11 @@ const tabList = [
 ];
 
 export default function ThemesPage() {
+  useDocumentHead({
+    title: 'Themes & Resources',
+    description: 'Browse and download PokeMMO themes, encounter counter themes, and more community resources for Team Synergy.',
+    canonicalPath: '/themes/'
+  });
   const [activeTab, setActiveTab] = useState('Themes');
   const [themeData, setThemeData] = useState({});
   const [loading, setLoading] = useState(true);

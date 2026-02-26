@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDocumentHead } from '../../hooks/useDocumentHead';
 import { useParams, Link } from 'react-router-dom';
 import styles from './ThemeDetail.module.css';
 import BackButton from '../../components/BackButton/BackButton';
@@ -13,6 +14,13 @@ function slugify(str) {
 }
 
 export default function ThemeDetail() {
+
+  // Set document head for SEO
+  useDocumentHead({
+    title: theme ? theme.name : 'Theme Detail',
+    description: theme && theme.description ? theme.description : 'View details for this PokeMMO theme.',
+    canonicalPath: theme ? `/themes/${slug}/` : '/themes/'
+  });
   const { slug } = useParams();
   const [themeData, setThemeData] = useState({});
   const [theme, setTheme] = useState(null);
