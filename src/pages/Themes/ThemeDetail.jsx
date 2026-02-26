@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import styles from './ThemeDetail.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 
-const WORKER_THEME_ENDPOINT = 'https://adminpage.hypersmmo.workers.dev/admin/theme';
+const WORKER_THEME_ENDPOINT = 'https://adminpage.hypersmmo.workers.dev/admin/themes';
 
 function slugify(str) {
   return str
@@ -58,32 +58,34 @@ export default function ThemeDetail() {
 
   return (
     <div className={styles.detailPage}>
-      <BackButton to="/themes" label="&larr; Return to Themes" />
-      <div className={styles.detailCard}>
-        <h1>{theme.name}</h1>
-        <div className={styles.previewRow}>
-          <img
-            src={theme.previewImage || '/placeholder.png'}
-            alt={theme.name}
-            className={styles.previewImg}
-          />
-          <div className={styles.infoBox}>
-            <div><strong>Category:</strong> {theme.category}</div>
-            <div><strong>Author:</strong> {theme.author}</div>
-          </div>
+      <div className={styles.backButtonWrapper}>
+        <Link to="/themes/">&larr; Back to Themes</Link>
+      </div>
+      <h1>{theme.name}</h1>
+      <div className={styles.previewRow}>
+        <img
+          src={theme.previewImage || '/placeholder.png'}
+          alt={theme.name}
+          className={styles.previewImg}
+        />
+        <div className={styles.infoBox}>
+          <div><strong>Category:</strong> {theme.category}</div>
+          <div><strong>Author:</strong> {theme.author}</div>
         </div>
-        <p className={styles.desc}>{theme.description}</p>
-        {theme.link && (
+      </div>
+      <p className={styles.desc}>{theme.description}</p>
+      {theme.link && (
+        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
           <a
             href={theme.link}
             target="_blank"
             rel="noopener noreferrer"
-            className={styles.downloadLink}
+            className={styles.linkButton}
           >
-            View / Download
+            Link
           </a>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

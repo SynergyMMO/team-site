@@ -1,8 +1,86 @@
+.backButtonWrapper a {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1.1em;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.backButtonWrapper a:visited,
+.backButtonWrapper a:active,
+.backButtonWrapper a:focus,
+.backButtonWrapper a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+.linkButton {
+  display: inline-block;
+  padding: 0.85rem 2.25rem;
+  background: linear-gradient(90deg, #4e8cff 0%, #764ba2 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.125rem;
+  border-radius: 32px;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+}
+
+.linkButton:hover,
+.linkButton:focus {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 24px rgba(76, 140, 255, 0.4);
+  background: linear-gradient(90deg, #4e8cff 0%, #764ba2 100%);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.linkButton:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(76, 140, 255, 0.3);
+}
+
+
+.backButtonWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0;
+  background: rgba(76, 140, 255, 0.08);
+  border-radius: 18px;
+  border: 1px solid rgba(76, 140, 255, 0.18);
+  box-shadow: 0 2px 8px rgba(76, 140, 255, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.backButtonWrapper:hover,
+.backButtonWrapper:focus {
+  background: rgba(76, 140, 255, 0.16);
+  box-shadow: 0 4px 16px rgba(76, 140, 255, 0.13);
+}
+
+
+.desc {
+  color: #ccc;
+  line-height: 1.6;
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+  text-align: center;
+
+cursor: pointer;
+}
+
 .detailPage {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
   color: #fff;
+  background: #6868680c;
+  min-height: 100vh;
+  box-shadow: 0 0 24px 0 rgba(197, 197, 197, 0.7);
+  border-radius: 16px;
 }
 
 .detailCard {
@@ -11,12 +89,16 @@
   border-radius: 12px;
   padding: 2rem;
   backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .previewRow {
   display: flex;
   gap: 2rem;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 1.5rem;
 }
 
@@ -41,7 +123,7 @@
 }
 
 .desc {
-  color: #ccc;
+  color: #ffffff;
   line-height: 1.6;
   font-size: 1rem;
   margin: 0 0 1.5rem;

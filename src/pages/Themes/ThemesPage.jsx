@@ -81,7 +81,6 @@ export default function ThemesPage() {
 
   return (
     <div className={styles.themesPage}>
-      <BackButton to="/" label="&larr; Return Home" />
       <h1>PokeMMO Themes & Resources</h1>
       <p>
         Explore a curated collection of PokeMMO Themes, Encounter Counter Themes, Pokemon Retextures, and more!<br />
