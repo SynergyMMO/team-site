@@ -12,6 +12,7 @@ import CurrentMembers from './components/CurrentMembers'
 import EventsTab from './components/EventsTab'
 import AdminLogTab from './components/AdminLogTab'
 import AdvancedJsonTab from './components/AdvancedJsonTab'
+import ThemesTab from './components/ThemesTab'
 import Toast from './components/Toast'
 import styles from './Admin.module.css'
 
@@ -31,6 +32,7 @@ export default function AdminPanel() {
     hasFetched.current = true
     db.loadDatabase().catch(err => showToast('Error loading database: ' + err.message, 'error'))
     db.loadEvents().catch(err => showToast('Error loading events: ' + err.message, 'error'))
+    db.loadThemes().catch(err => showToast('Error loading themes: ' + err.message, 'error'))
   }, [auth])
 
   function withToast(fn, successMsg) {
@@ -116,6 +118,15 @@ export default function AdminPanel() {
           onCreate={db.addEvent}    
           onEdit={db.updateEvent}  
           onDelete={db.removeEvent}     
+          isMutating={db.isMutating}
+        />
+      )}
+
+      {activeTab === 'themes' && (
+        <ThemesTab
+          themesDB={db.themesDB}
+          onSave={withToast(db.saveTheme, 'Theme saved!')}
+          onDelete={withToast(db.deleteTheme, 'Theme deleted!')}
           isMutating={db.isMutating}
         />
       )}

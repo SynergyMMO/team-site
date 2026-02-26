@@ -12,6 +12,7 @@
   margin: 2rem 0 1.5rem;
   border-bottom: 1px solid rgba(155, 89, 182, 0.2);
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .tab {
@@ -52,7 +53,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 260px));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 260px));
   justify-content: center;
   gap: 1.5rem;
   padding: 1.5rem 0;

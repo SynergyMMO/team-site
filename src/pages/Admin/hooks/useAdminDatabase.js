@@ -21,6 +21,7 @@ export default function useAdminDB(auth) {
   const [database, setDatabase] = useState({});
   const [streamersDB, setStreamersDB] = useState({});
   const [eventDB, setEventDB] = useState([]);
+  const [themesDB, setThemesDB] = useState({});
   const [logData, setLogData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
@@ -437,6 +438,63 @@ export default function useAdminDB(auth) {
     } finally { setIsMutating(false); }
   }, [auth, saveSnapshot, logAdminAction]);
 
+  // ---------------- THEMES MANAGEMENT ----------------
+  const loadThemes = useCallback(async () => {
+    try {
+      const res = await fetch(API.themes);
+      if (!res.ok) throw new Error(`Failed to fetch themes: ${res.status}`);
+      const data = await res.json();
+      setThemesDB(data);
+      return data;
+    } catch (err) {
+      console.error("Failed to load themes:", err);
+      return {};
+    }
+  }, []);
+
+  const saveTheme = useCallback(async (category, themeKey, itemData) => {
+    if (!auth) return { success: false, error: "Unauthorized" };
+    setIsMutating(true);
+    try {
+      const updatedCategory = { ...(themesDB[category] || {}), [themeKey]: itemData };
+      const result = await postData(API.theme, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        themeId: category,
+        data: updatedCategory,
+        action: `Saved theme: ${itemData.name}`,
+      });
+      if (result.success) {
+        setThemesDB(prev => ({ ...prev, [category]: updatedCategory }));
+        await logAdminAction(`Saved theme "${itemData.name}" in ${category}`);
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally { setIsMutating(false); }
+  }, [auth, themesDB, postData, logAdminAction]);
+
+  const deleteTheme = useCallback(async (category, themeKey, themeName) => {
+    if (!auth) return { success: false, error: "Unauthorized" };
+    setIsMutating(true);
+    try {
+      const updatedCategory = { ...(themesDB[category] || {}) };
+      delete updatedCategory[themeKey];
+      const result = await postData(API.theme, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        themeId: category,
+        data: updatedCategory,
+        action: `Deleted theme: ${themeName}`,
+      });
+      if (result.success) {
+        setThemesDB(prev => ({ ...prev, [category]: updatedCategory }));
+        await logAdminAction(`Deleted theme "${themeName}" from ${category}`);
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally { setIsMutating(false); }
+  }, [auth, themesDB, postData, logAdminAction]);
+
   // ---------------- MEMBERS MANAGEMENT ----------------
   const loadMembers = useCallback(async () => {
     setIsMembersLoading(true);
@@ -534,6 +592,9 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
     playerNames, getPlayerShinies, allPokemonNames,
     loadEvents, addEvent, updateEvent, removeEvent,
     deletePlayer,
+
+    // Themes
+    themesDB, loadThemes, saveTheme, deleteTheme,
 
     // Members
     members, isMembersLoading,
