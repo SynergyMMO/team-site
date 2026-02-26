@@ -198,19 +198,16 @@
 /* ========== Tab Bar ========== */
 
 .tabBar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-bottom: 24px;
   padding: 6px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 16px;
-  justify-content: space-between;
 }
 
 .tab {
-  flex: 0 1 auto;
   padding: 10px 14px;
   margin: 0 !important;
   background: transparent;
@@ -703,14 +700,14 @@
   }
 
   .tabBar {
-    gap: 4px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
     padding: 4px;
   }
 
   .tab {
-    padding: 6px 8px;
-    font-size: 0.7rem;
-    min-width: 50px;
+    padding: 8px 6px;
+    font-size: 0.75rem;
   }
 
   .tabLabelFull {
