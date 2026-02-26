@@ -258,7 +258,7 @@ export default function SHOTM() {
           {rankings.map(([player, info], index) => {
             const playerData = {
               ...info,
-              shiny_count: info.shinies.length,
+              points: info.points, // ensure points is present
               shinies: Object.fromEntries(info.shinies),
             }
             return (
@@ -275,6 +275,7 @@ export default function SHOTM() {
                 }}
                 mobileInteractive={true}
                 linkState={{ from: 'shotm' }}
+                showPoints
               />
             )
           })}

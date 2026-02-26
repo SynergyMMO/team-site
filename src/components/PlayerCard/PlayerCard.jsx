@@ -4,7 +4,7 @@ import ShinyItem from '../ShinyItem/ShinyItem'
 import { getAssetUrl } from '../../utils/assets'
 import styles from './PlayerCard.module.css'
 
-function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, linkState }) {
+function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, linkState, showPoints = false }) {
   const playerClass =
     rank < 5
       ? styles.topPlayer
@@ -25,29 +25,13 @@ function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, 
   return (
     <div className={styles.card}>
       <div className={styles.nameContainer}>
-        {twitchUser && (
-          <a
-            href={`https://www.twitch.tv/${twitchUser}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.twitchLink}
-          >
-            <img
-              src={getAssetUrl('images/twitch.png')}
-              alt="Twitch"
-              className={styles.twitchIcon}
-              width="24"
-              height="24"
-            />
-          </a>
-        )}
         <Link
           to={`/player/${player}/`}
           className={`${styles.playerName} ${playerClass}`}
           data-player={player}
           state={linkState}
         >
-          #{rank + 1} {player} ({data.shiny_count})
+          #{rank + 1} {player} ({showPoints && typeof data.points === 'number' ? `${data.points} pts` : data.shiny_count})
         </Link>
         {medal && <span className={styles.medal}>{medal}</span>}
         {sparkle && <span className={styles.sparkle}>&#10024;</span>}
