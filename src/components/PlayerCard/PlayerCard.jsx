@@ -4,7 +4,7 @@ import ShinyItem from '../ShinyItem/ShinyItem'
 import { getAssetUrl } from '../../utils/assets'
 import styles from './PlayerCard.module.css'
 
-function PlayerCard({ player, data, rank, streamers, mobileInteractive = false }) {
+function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, linkState }) {
   const playerClass =
     rank < 5
       ? styles.topPlayer
@@ -45,6 +45,7 @@ function PlayerCard({ player, data, rank, streamers, mobileInteractive = false }
           to={`/player/${player}/`}
           className={`${styles.playerName} ${playerClass}`}
           data-player={player}
+          state={linkState}
         >
           #{rank + 1} {player} ({data.shiny_count})
         </Link>

@@ -1,0 +1,105 @@
+{
+  "PAGE_FAQS": {
+    "/": [
+      { "question": "What is Team Synergy?", "answer": "Team Synergy is a PokeMMO shiny hunting community dedicated to shiny collection, competitive gameplay, and community events." },
+      { "question": "What can I find on Team Synergy?", "answer": "Explore our Shiny Showcase to see 140+ player collections, browse our detailed Pokédex, watch live Twitch streamers, check our Trophy Board, and join community events." },
+      { "question": "Where can I watch Team Synergy streamers?", "answer": "Check our Streamers page for live PokeMMO streams from team members on Twitch and YouTube." },
+      { "question": "What is shiny hunting?", "answer": "Shiny hunting is the practice of catching shiny Pokémon - rare variants with different colors. Team Synergy specializes in shiny collection and offers tools to help." },
+      { "question": "How can I track my Pokemon progress?", "answer": "Use our interactive Pokédex to filter by type, tier, and location. Track which Pokemon you need and find shiny hunting locations." }
+    ],
+    "/LnyCatchCalc": [
+      { "question": "What is the LNY Catch Calculator?", "answer": "The LNY Catch Calculator is a tool for estimating your odds of catching Pokémon during the PokeMMO Lunar New Year event." },
+      { "question": "How do I use the LNY Catch Calculator?", "answer": "Enter your event attempts and the tool will calculate your shiny odds and expected catch rates for the Lunar New Year event." },
+      { "question": "Does the calculator work for all LNY Pokémon?", "answer": "Yes, it supports all special event Pokémon available during the Lunar New Year event in PokeMMO." },
+      { "question": "Is the LNY Catch Calculator accurate?", "answer": "The calculator uses the latest event mechanics and odds to provide accurate estimates for your shiny hunting during LNY." },
+      { "question": "Can I use this tool for other events?", "answer": "This calculator is specifically designed for the Lunar New Year event, but Team Synergy offers other calculators for different events." }
+    ],
+    "/shiny-odds": [
+      { "question": "What is the Shiny Odds Calculator?", "answer": "The Shiny Odds Calculator is an advanced tool for calculating your odds of encountering a shiny Pokémon in PokeMMO, including boosts and probability graphs." },
+      { "question": "How do I use the Shiny Odds Calculator?", "answer": "Enter your hunt details, such as number of encounters and any shiny boosts, to see your odds and probability distribution." },
+      { "question": "Does it support all shiny hunting methods?", "answer": "Yes, the calculator is designed to support all standard shiny hunting methods in PokeMMO." },
+      { "question": "Can I track my shiny hunt progress?", "answer": "Yes, the tool allows you to track your progress and visualize your shiny odds over time." },
+      { "question": "Is the shiny odds calculation accurate?", "answer": "The calculator uses the latest PokeMMO shiny odds and mechanics for accurate probability estimates." }
+    ],
+    "/shiny-showcase": [
+      { "question": "What is the Shiny Showcase?", "answer": "The Shiny Showcase displays the shiny collections of all Team Synergy members, ranked by total shiny count." },
+      { "question": "How are players ranked?", "answer": "Players are ranked by their total number of shinies caught, with detailed statistics available for each member." },
+      { "question": "Can I filter players?", "answer": "Yes, use the search bar to find specific players or filter by various statistics." },
+      { "question": "What shinies are included?", "answer": "The showcase includes all shiny Pokémon collected by Team Synergy members across all regions." },
+      { "question": "How is this data updated?", "answer": "The shiny collections are regularly updated to reflect new catches and achievements by team members." }
+    ],
+    "/shotm": [
+      { "question": "What is SHOTM?", "answer": "SHOTM stands for Shiny of the Month - a monthly feature highlighting exceptional shiny catches by Team Synergy Members" },
+      { "question": "How is SHOTM chosen?", "answer": "The SHOTM is based on the amount of points each players get, based on the tiers of their shinies, the better the shiny, the more points!" },
+      { "question": "What are the benefits of winning SHOTM?", "answer": "SHOTM winners receive a free art commission, community appreciation, and bragging rights within Team Synergy." }
+    ],
+    "/pokedex": [
+      { "question": "What is the Team Synergy Pokédex?", "answer": "An interactive database tracking Gen 1-5 Pokémon with detailed stats, shiny forms, catch locations, and PokeMMO-specific information." },
+      { "question": "Can I filter by Pokémon type?", "answer": "Yes, the Pokédex supports filtering by type, tier, generation, and location for easy searching." },
+      { "question": "Where can I find shiny hunting locations?", "answer": "Each Pokémon entry includes encounter locations, rare spawn rates, and shiny hunting tips for PokeMMO." },
+      { "question": "What are Pokémon tiers?", "answer": "Tiers in PokeMMO classify Pokémon by rarity and difficulty to obtain. Higher tiers are rarer and more valuable." },
+      { "question": "How is the catch calculator used?", "answer": "The catch calculator estimates encounter rates and time to catch based on PokeMMO mechanics." }
+    ],
+    "/roaming-legendaries": [
+      { "question": "How do you obtain the roaming legends?", "answer": "Roaming legendaries in PokeMMO appear in different locations each month based on a rotating schedule. Once you encounter a roaming legendary in the wild, you can catch it just like any other wild Pokémon." },
+      { "question": "How do you unlock the roaming legends?", "answer": "Roaming legendaries are unlocked as soon as you Beat the 8th gym in Kanto, or defeat Ho-oh in Johto, as soon as you do this you can find them in the grass" },
+      { "question": "Can the roaming legends be shiny?", "answer": "Yes! Roaming legendaries can be shiny in PokeMMO, although extremely rare. The Exact shiny rate is not officially disclosed." }
+    ],
+    "/streamers": [
+      { "question": "Where can I watch Team Synergy streamers?", "answer": "Team Synergy members stream on Twitch and YouTube. Visit our Streamers page for live links." },
+      { "question": "What content do Team Synergy streamers cover?", "answer": "Streamers primarily focus on PokeMMO shiny hunting, PVP battles, competitive events, and community gameplay." },
+      { "question": "How often do streamers go live?", "answer": "Stream schedules vary by member. Check our Streamers page for current live status and upcoming streams." },
+      { "question": "Can I interact with streamers?", "answer": "Yes! Most streamers have Twitch chat enabled where you can interact with them during streams." }
+    ],
+    "/trophy-board": [
+      { "question": "What are Team Synergy trophies?", "answer": "Trophies are achievements earned by team members for accomplishments in PokeMMO such as catching rare shinies or winning competitions." },
+      { "question": "How do I earn a trophy?", "answer": "Trophies are awarded for reaching milestones, winning events, completing challenges, and exceptional achievements." },
+      { "question": "How many trophies are available?", "answer": "Team Synergy has 12 unique trophies, each with specific achievement criteria." },
+      { "question": "Can I see which members have earned each trophy?", "answer": "Yes, click any trophy on the Trophy Board to see a list of all members who have earned it." }
+    ],
+    "/events": [
+      { "question": "What types of events does Team Synergy host?", "answer": "Team Synergy hosts shiny hunting competitions, PVP tournaments, seasonal challenges, team raids, and community events." },
+      { "question": "How do I participate in events?", "answer": "Visit the Events page to see upcoming events, their rules, dates, and how to register or participate." },
+      { "question": "What are the prizes for winning events?", "answer": "Event prizes vary and may include trophies, in-game rewards, and more." },
+      { "question": "How often are new events scheduled?", "answer": "Team Synergy regularly schedules events. Check the Events page for upcoming competitions and challenges." },
+      { "question": "Can non-members participate in events?", "answer": "Most events are exclusive to Team Synergy members, but some community events may be open to all." }
+    ],
+    "/counter-generator": [
+      { "question": "What is a counter theme in PokeMMO?", "answer": "A counter theme is a customized overlay showing Pokémon encounter counters to track shiny hunt progress in-game." },
+      { "question": "How do I use the Counter Generator?", "answer": "Upload or create Pokémon GIFs, customize sizing, arrange them as desired, then download the theme package." },
+      { "question": "Can I import existing counter themes?", "answer": "The Counter Generator allows you to create custom themes from scratch or modify templates." },
+      { "question": "What file format does the Counter Generator export?", "answer": "Themes are exported as downloadable packages compatible with PokeMMO counter mod systems." },
+      { "question": "Can I share custom themes with others?", "answer": "Yes, exported themes can be easily shared with other PokeMMO players." }
+    ],
+    "/random-pokemon-generator": [
+      { "question": "What is the Random Pokémon Generator?", "answer": "A tool that randomly selects Pokémon to shiny hunt, designed to help players discover new hunt targets and break monotony." },
+      { "question": "What is shiny bingo?", "answer": "Shiny bingo is a 3x3, 4x4, or 5x5 grid game where you mark off Pokémon as you catch them, aiming for bingo patterns." },
+      { "question": "Can I filter random Pokémon by tier?", "answer": "Yes, you can restrict random selection to specific tiers (easy, medium, hard, etc.)." },
+      { "question": "How do I start a new bingo board?", "answer": "Click \"Generate Bingo Board\" and select your preferred grid size and difficulty level." },
+      { "question": "What happens when I complete a pattern?", "answer": "Completing a bingo pattern marks your achievement and you can generate a new board or challenge." }
+    ],
+    "/resources": [
+      { "question": "What resources does Team Synergy provide?", "answer": "Team Synergy offers comprehensive resources including shiny hunting guides, tool recommendations, calculators, community links, and official PokeMMO resources." },
+      { "question": "Where can I find PokeMMO guides?", "answer": "Visit our Resources page to access guides on shiny hunting basics, nature and IV mechanics, PVP battles, and detailed hunting strategies for specific Pokémon." },
+      { "question": "What tools are available on Team Synergy?", "answer": "Explore our Counter Generator for custom encounter overlays, Random Pokemon Generator for hunt challenges, and interactive Pokédex with location data." },
+      { "question": "How can I join the Team Synergy community?", "answer": "Join our Discord community at https://discord.gg/2BEUq6fWAj to connect with team members, share strategies, and participate in events." },
+      { "question": "Where can I learn about shiny hunting?", "answer": "Check our Resources page for beginner guides, advanced strategy articles, and links to official PokeMMO documentation and community wikis." }
+    ]
+  },
+  "DYNAMIC_FAQS": {
+    "pokemon": [
+      { "question": "Is {pokemon} a shiny in PokeMMO?", "answer": "Yes, {pokemon} has a shiny variant available in PokeMMO with a different color palette." },
+      { "question": "What is the best location to hunt {pokemon}?", "answer": "See the location details on the {pokemon} page for recommended spawn locations and encounter rates." },
+      { "question": "What abilities does {pokemon} have?", "answer": "Check the abilities section on the {pokemon} page to see all available ability options." },
+      { "question": "What tier is {pokemon} in?", "answer": "The tier rank for {pokemon} is listed on the Pokédex page and reflects its rarity and hunt difficulty." },
+      { "question": "What is the best way to catch {pokemon}?", "answer": "Visit the Pokemon Specific Page to see the PokeMMO Catch Calculator for the most efficient way to catch them" },
+      { "question": "Best way to shiny hunt {pokemon} PokeMMO", "answer": "Visit the Pokemon Specific Page to see the PokeMMO Locations for shiny hunting." }
+    ],
+    "event": [
+      { "question": "When does the {event} event start?", "answer": "Event dates and times are shown on the event details page. Check start and end dates carefully." },
+      { "question": "How do I register for {event}?", "answer": "Registration instructions for {event} are displayed on the event details page." },
+      { "question": "What are the rules for {event}?", "answer": "Complete rules and competition guidelines for {event} are available on the event page." },
+      { "question": "What are the prizes for {event}?", "answer": "Prize information for {event} including rewards and trophies is detailed on the event page." }
+    ]
+  }
+}

@@ -5,7 +5,7 @@ import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTierData } from '../../hooks/useTierData'
 import { useTieredShinies } from '../../hooks/useTieredShinies'
 import { useStreamers } from '../../hooks/useStreamers'
-import ShinyItem from '../../components/ShinyItem/ShinyItem'
+import PlayerCard from '../../components/PlayerCard/PlayerCard'
 import { getAssetUrl } from '../../utils/assets'
 import { TRAIT_POINTS, calculateShinyPoints } from '../../utils/points'
 import styles from './SHOTM.module.css'
@@ -57,12 +57,6 @@ export default function SHOTM() {
   const { tierPoints, tierLookup } = useTierData()
 
     // Helper to get streamer info by player name
-    const getStreamerInfo = (player) => {
-      if (!streamersData) return null
-      const lowerKey = player.toLowerCase()
-      const allStreamers = [...streamersData.live, ...streamersData.offline]
-      return allStreamers.find(s => s.pokeName?.toLowerCase() === lowerKey) || null
-    }
   // Filter SHOTM data for current month
   const shotmData = useMemo(() => {
     if (!data) return {}
@@ -170,15 +164,17 @@ export default function SHOTM() {
         {(showAllTime || closingAllTime) && (
           <div className={`${styles.alltimeList} ${closingAllTime ? styles.slideUp : ''}`}>
             {allTimeLeaderboard.map(e => {
-              const medal = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][e.rank - 1] || ''
+              const medal = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][e.rank - 1] || '';
+              // Find the canonical casing from the data
+              const canonical = Object.keys(data || {}).find(k => k.toLowerCase() === e.player.toLowerCase()) || e.player;
               return (
-                <Link key={e.player} to={`/player/${e.player.toLowerCase()}/`} state={{ from: 'shotm' }} className={styles.allTimeItem}>
+                <Link key={canonical} to={`/player/${canonical}/`} className={styles.allTimeItem} data-player={canonical}>
                   {medal && <span className={styles.medal}>{medal}</span>}
                   <span>#{e.rank}</span>
-                  <span>{e.player}</span>
+                  <span>{canonical}</span>
                   <span>({e.points} pts)</span>
                 </Link>
-              )
+              );
             })}
           </div>
         )}
@@ -227,11 +223,14 @@ export default function SHOTM() {
                         <div key={pokemon} className={styles.tierPokemon}>
                           <div className={styles.pokemonName}>{pokemon}</div>
                           <div className={styles.pokemonHunters}>
-                            {players.map(p => (
-                              <Link key={p} to={`/player/${p.toLowerCase()}/`} state={{ from: 'shotm' }} className={styles.playerLink}>
-                                {p}
-                              </Link>
-                            ))}
+                            {players.map(p => {
+                              const canonical = Object.keys(data || {}).find(k => k.toLowerCase() === p.toLowerCase()) || p;
+                              return (
+                                <Link key={canonical} to={`/player/${canonical}/`} className={styles.playerLink} data-player={canonical}>
+                                  {canonical}
+                                </Link>
+                              );
+                            })}
                           </div>
                         </div>
                       ))}
@@ -257,59 +256,26 @@ export default function SHOTM() {
 
         <div className={styles.shotmList}>
           {rankings.map(([player, info], index) => {
-            const trophy = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][index] || ''
-            const prevRank = previousRanks[player]
-            const currentRank = index + 1
-            let arrow = null
-            if (prevRank !== undefined && prevRank !== currentRank) {
-              const isUp = currentRank < prevRank
-              arrow = (
-                <img
-                  src={isUp ? getAssetUrl('images/up_arrow.png') : getAssetUrl('images/down_arrow.png')}
-                  alt={isUp ? 'Moved Up' : 'Moved Down'}
-                  className={`${styles.rankArrow} ${isUp ? styles.rankArrowUp : styles.rankArrowDown}`}
-                  width="20"
-                  height="20"
-                />
-              )
+            const playerData = {
+              ...info,
+              shiny_count: info.shinies.length,
+              shinies: Object.fromEntries(info.shinies),
             }
-
-            const streamer = getStreamerInfo(player)
             return (
-              <div key={player} className={styles.playerCard}>
-                <h2 className={styles.playerName}>
-                  {streamer && (
-                    <a
-                      href={`https://www.twitch.tv/${streamer.twitch_username}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.twitchIconLink}
-                      title="View Twitch Channel"
-                    >
-                      <img
-                        src={getAssetUrl('images/twitch.png')}
-                        alt="Twitch"
-                        className={styles.twitchIcon}
-                        width="20"
-                        height="20"
-                      />
-                    </a>
-                  )}
-                  {trophy}{' '}
-                  <Link to={`/player/${player.toLowerCase()}/`} state={{ from: 'shotm' }} className={styles.playerLink}>
-                    {player}
-                  </Link>{' '}
-                  ({info.points} pts) {arrow}
-                </h2>
-                <div className={styles.shinyList}>
-                  {info.shinies.map(([id, s]) => {
-                    const pts = calculateShinyPoints(s, tierPoints, tierLookup)
-                    const isSold = s.Sold?.toLowerCase() === 'yes'
-                    return <ShinyItem key={id} shiny={s} points={isSold ? 0 : pts} localizeDates={false} mobileInteractive={true} />
-                  })}
-
-                </div>
-              </div>
+              <PlayerCard
+                key={player}
+                player={player}
+                data={playerData}
+                rank={index}
+                streamers={streamersData && {
+                  ...Object.fromEntries([
+                    ...streamersData.live.map(s => [s.pokeName?.toLowerCase(), s]),
+                    ...streamersData.offline.map(s => [s.pokeName?.toLowerCase(), s]),
+                  ])
+                }}
+                mobileInteractive={true}
+                linkState={{ from: 'shotm' }}
+              />
             )
           })}
         </div>
@@ -318,10 +284,3 @@ export default function SHOTM() {
   )
 }
 
-// Helper to get streamer info by player name
-const getStreamerInfo = (player) => {
-  if (!streamersData) return null
-  const lowerKey = player.toLowerCase()
-  const allStreamers = [...streamersData.live, ...streamersData.offline]
-  return allStreamers.find(s => s.pokeName?.toLowerCase() === lowerKey) || null
-}
