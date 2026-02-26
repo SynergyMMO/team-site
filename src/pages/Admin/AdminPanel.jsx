@@ -120,7 +120,7 @@ export default function AdminPanel() {
         />
       )}
 
-      {activeTab === 'log' && <AdminLogTab logData={db.logData} />}
+      {activeTab === 'log' && <AdminLogTab logData={db.logData} members={db.members} />}
 
       {activeTab === 'json' && (
         <AdvancedJsonTab
