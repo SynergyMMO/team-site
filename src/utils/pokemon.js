@@ -218,8 +218,9 @@ export function getBasePokemonName(name) {
   const potentialSuffix = lowerName.substring(lastHyphenIndex + 1)
   const baseName = name.substring(0, lastHyphenIndex)
   
-  // If the suffix is a known form variant, return the base name
-  if (formVariantSuffixes.includes(potentialSuffix)) {
+  // If the suffix is a known form variant AND the base name is a real pokemon, strip it
+  // (e.g. frillish-f → frillish works; nidoran-f → nidoran would not, since 'nidoran' isn't in tierLookup)
+  if (formVariantSuffixes.includes(potentialSuffix) && tierLookup[baseName.toLowerCase()]) {
     return baseName
   }
   

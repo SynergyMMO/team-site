@@ -248,7 +248,8 @@ async function grabShinyData(playerName) {
           ivs: shiny.ivs,
           nature: shiny.nature,
           location: shiny.location,
-          pokemon_name: (shiny.pokemon?.name || '').toLowerCase(),
+          pokemon_name: (shiny.pokemon?.name || '').toLowerCase()
+            .replace(/♀/g, '-f').replace(/♂/g, '-m'),
         });
       });
     }
@@ -321,7 +322,8 @@ async function fetchAllPagesFromUrl(url, playerName) {
             ivs: shiny.ivs,
             nature: shiny.nature,
             location: shiny.location,
-            pokemon_name: (shiny.pokemon?.name || '').toLowerCase(),
+            pokemon_name: (shiny.pokemon?.name || '').toLowerCase()
+              .replace(/♀/g, '-f').replace(/♂/g, '-m'),
           });
         });
       }
@@ -384,25 +386,24 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
   // Determine which fields to remove (API fields not in current merge list)
   const fieldsToRemove = new Set(ALL_MERGEABLE_FIELDS.filter(f => !fieldsToMerge.includes(f)));
 
-  // Create a map of normalized Pokémon names to their API data (ordered by appearance)
-  // This allows matching Pokémon with variants like "frillish-f" to "frillish"
-  const pokemonToApiData = {};
-  const pokemonCount = {};
+  // Build two lookup maps: exact name and normalized (for form variant fallback).
+  // Exact match is tried first so gendered species (nidoran-f, nidoran-m) are never
+  // conflated with each other or with a non-existent base name.
+  const exactApiData = {};
+  const normalizedApiData = {};
 
   apiShinies.forEach((apiShiny) => {
     const pokemonName = apiShiny.pokemon_name;
     if (!pokemonName) return;
 
-    // Normalize the name for matching purposes
+    if (!exactApiData[pokemonName]) exactApiData[pokemonName] = [];
+    exactApiData[pokemonName].push(apiShiny);
+
     const normalizedName = normalizePokemonName(pokemonName);
-
-    if (!pokemonCount[normalizedName]) {
-      pokemonCount[normalizedName] = 0;
-      pokemonToApiData[normalizedName] = [];
+    if (normalizedName !== pokemonName) {
+      if (!normalizedApiData[normalizedName]) normalizedApiData[normalizedName] = [];
+      normalizedApiData[normalizedName].push(apiShiny);
     }
-
-    pokemonToApiData[normalizedName][pokemonCount[normalizedName]] = apiShiny;
-    pokemonCount[normalizedName]++;
   });
 
   // Merge: Iterate through Cloudflare shinies and add API data
@@ -412,9 +413,11 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
   Object.keys(mergedShinies).forEach((shinyIndex) => {
     const cloudflareShiny = mergedShinies[shinyIndex];
     const pokemonName = cloudflareShiny.Pokemon.toLowerCase();
-    
-    // Normalize the Cloudflare Pokémon name for matching
-    const normalizedName = normalizePokemonName(pokemonName);
+
+    // Try exact match first, then fall back to normalized (handles frillish-f → frillish, etc.)
+    const matchQueue = exactApiData[pokemonName]?.length
+      ? exactApiData[pokemonName]
+      : normalizedApiData[normalizePokemonName(pokemonName)];
 
     // Start with existing shiny and remove fields that are no longer being merged
     let newShiny = { ...cloudflareShiny };
@@ -428,11 +431,8 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
       }
     });
 
-    if (
-      pokemonToApiData[normalizedName] &&
-      pokemonToApiData[normalizedName].length > 0
-    ) {
-      const apiShiny = pokemonToApiData[normalizedName].shift();
+    if (matchQueue && matchQueue.length > 0) {
+      const apiShiny = matchQueue.shift();
       const apiFields = extractApiFields(apiShiny, fieldsToMerge);
       
       // Track what fields were updated
