@@ -6,6 +6,7 @@ const TABS = [
   { key: 'current_members', label: 'Current Members', shortLabel: 'Members' },
   { key: 'streamers', label: 'Streamers' },
   { key: 'events', label: 'Events' },
+  { key: 'themes', label: 'Themes', shortLabel: 'Themes' },
   { key: 'log', label: 'Admin Log', shortLabel: 'Log' },
   { key: 'json', label: 'Advanced (JSON)', shortLabel: 'Advanced' },
 ]
