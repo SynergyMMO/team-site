@@ -24,4 +24,8 @@
     <loc>https://synergymmo.com/sitemap-resources.xml</loc>
     <lastmod>2026-02-26</lastmod>
   </sitemap>
+  <sitemap>
+    <loc>https://synergymmo.com/sitemap-themes.xml</loc>
+    <lastmod>2026-02-26</lastmod>
+  </sitemap>
 </sitemapindex>

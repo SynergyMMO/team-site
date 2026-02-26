@@ -24,6 +24,7 @@ const staticRoutes = [
   { path: '/events/', changefreq: 'weekly', priority: '0.6' },
   { path: '/resources/', changefreq: 'monthly', priority: '0.6' },
   { path: '/shiny-war-2025/', changefreq: 'weekly', priority: '0.7' },
+  { path: '/themes/', changefreq: 'weekly', priority: '0.7' },
 ];
 
 // Ensure we always publish canonical URLs with a trailing slash
@@ -150,6 +151,36 @@ function getResourceRoutes(today) {
 
 async function buildSitemap() {
   const today = new Date().toISOString().split('T')[0];
+
+  // STEP 2.5: Theme detail pages
+  console.log('\n🎨 Building theme detail pages sitemap...');
+  let themeRoutes = [];
+  try {
+    const themeRes = await fetch('https://adminpage.hypersmmo.workers.dev/admin/themes');
+    if (!themeRes.ok) throw new Error(`Failed to fetch theme data: ${themeRes.status}`);
+    const themeData = await themeRes.json();
+    for (const [category, items] of Object.entries(themeData)) {
+      for (const [themeKey, themeObj] of Object.entries(items)) {
+        if (!themeObj || !themeObj.name) continue;
+        const slug = slugify(themeObj.name);
+        themeRoutes.push({
+          path: `/themes/${slug}/`,
+          changefreq: 'weekly',
+          priority: '0.5',
+          lastmod: today,
+        });
+      }
+    }
+    console.log(`   Found ${themeRoutes.length} theme detail pages`);
+    if (themeRoutes.length < 1) {
+      console.warn('   ⚠️  No dynamic theme detail pages were generated!');
+    } else {
+      console.log('   Example theme route:', themeRoutes[0]);
+    }
+    generateSitemapFile('sitemap-themes.xml', themeRoutes);
+  } catch (err) {
+    console.error('   ⚠️  Failed to fetch theme detail pages:', err.message);
+  }
   
   // STEP 1: Static routes
   console.log('\n📋 Building static pages sitemap...');
@@ -248,7 +279,8 @@ async function buildSitemap() {
     'sitemap-pokemon.xml',
     'sitemap-events.xml',
     'sitemap-trophies.xml',
-    'sitemap-resources.xml'
+    'sitemap-resources.xml',
+    'sitemap-themes.xml'
   ];
   generateSitemapIndex(sitemapFiles);
 
@@ -262,7 +294,8 @@ async function buildSitemap() {
     `   Pokemon: ${pokemonNames.length}\n` +
     `   Events: ${eventRoutes.length}\n` +
     `   Trophies: ${trophyRoutes.length}\n` +
-    `   Resources: ${resourceRoutes.length}`
+    `   Resources: ${resourceRoutes.length}\n` +
+    `   Themes: ${themeRoutes.length}`
   );
 }
 

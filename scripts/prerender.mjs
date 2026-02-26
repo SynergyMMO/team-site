@@ -39,6 +39,7 @@ const DYNAMIC_KEYWORDS = {
   player: '{player} shiny collection, {player} PokeMMO player, player profile, encounter statistics, trophy showcase, shiny hunter',
   trophy: '{trophy} trophy, {trophy} achievement, PokeMMO trophy, trophy winners, gaming award, community milestone',
   event: '{event} PokeMMO event, {event} tournament, event details, tournament rules, competition schedule, event prizes',
+  theme: '{theme} PokeMMO theme, {theme} download, {theme} by {author}, {category} theme, PokeMMO custom theme, PokeMMO mod, Team Synergy theme, PokeMMO overlay, encounter counter theme, retexture, visual mod, game customization',
 };
 // ================================================================
 
@@ -156,6 +157,14 @@ const DYNAMIC_FAQS = {
     { question: 'How do I register for {event}?', answer: 'Registration instructions for {event} are displayed on the event details page.' },
     { question: 'What are the rules for {event}?', answer: 'Complete rules and competition guidelines for {event} are available on the event page.' },
     { question: 'What are the prizes for {event}?', answer: 'Prize information for {event} including rewards and trophies is detailed on the event page.' },
+  ],
+  theme: [
+    { question: 'What is the {theme} theme?', answer: '{theme} is a custom PokeMMO theme created by {author}. It changes the look and feel of the game, including UI, overlays, or textures.' },
+    { question: 'How do I install the {theme} theme?', answer: 'Download the theme files and follow the included instructions. Usually, you place the files in the PokeMMO "themes" or "data" folder and select the theme in-game.' },
+    { question: 'Who created the {theme} theme?', answer: '{theme} was created by {author} and is categorized as a {category} theme.' },
+    { question: 'Is the {theme} theme safe to use?', answer: 'Themes shared by Team Synergy are community-vetted and widely used, but always download from trusted sources.' },
+    { question: 'Can I customize the {theme} theme?', answer: 'Many themes can be further customized by editing their files or using in-game options. Check the theme description for details.' },
+    { question: 'Where can I find more themes like {theme}?', answer: 'Browse the Team Synergy Themes page for more community-made PokeMMO themes, overlays, and retextures.' },
   ],
 };
 // ================================================================
@@ -990,29 +999,39 @@ function getKeywordsForRoute(route) {
     return PAGE_KEYWORDS[route];
   }
 
-  
-  // Check for dynamic route patterns and extract the name
+  // Dynamic Pokemon
   if (route?.includes('/pokemon/')) {
     const pokemonName = route.split('/pokemon/')[1];
-    const keywords = DYNAMIC_KEYWORDS.pokemon.replace(/{pokemon}/g, pokemonName);
-    return keywords;
+    return DYNAMIC_KEYWORDS.pokemon.replace(/{pokemon}/g, pokemonName);
   }
+  // Dynamic Player
   if (route?.includes('/player/')) {
     const playerName = route.split('/player/')[1];
-    const keywords = DYNAMIC_KEYWORDS.player.replace(/{player}/g, playerName);
-    return keywords;
+    return DYNAMIC_KEYWORDS.player.replace(/{player}/g, playerName);
   }
+  // Dynamic Trophy
   if (route?.includes('/trophy/')) {
     const trophyName = route.split('/trophy/')[1];
-    const keywords = DYNAMIC_KEYWORDS.trophy.replace(/{trophy}/g, trophyName);
-    return keywords;
+    return DYNAMIC_KEYWORDS.trophy.replace(/{trophy}/g, trophyName);
   }
+  // Dynamic Event
   if (route?.includes('/event/')) {
     const eventName = route.split('/event/')[1];
-    const keywords = DYNAMIC_KEYWORDS.event.replace(/{event}/g, eventName);
-    return keywords;
+    return DYNAMIC_KEYWORDS.event.replace(/{event}/g, eventName);
   }
-  
+  // Dynamic Theme Detail
+  if (route?.startsWith('/themes/') && route.split('/').length === 3) {
+    // This is a theme detail page: /themes/[slug]
+    // We'll need to pass theme meta for replacements, so return a function
+    return (meta = {}) => {
+      let keywords = DYNAMIC_KEYWORDS.theme;
+      if (meta.name) keywords = keywords.replace(/{theme}/g, meta.name);
+      if (meta.author) keywords = keywords.replace(/{author}/g, meta.author);
+      if (meta.category) keywords = keywords.replace(/{category}/g, meta.category);
+      return keywords;
+    };
+  }
+
   // Fallback to generic keywords if route not found
   return 'PokeMMO, Pokemon, gaming, shiny hunting, community';
 }
@@ -1081,11 +1100,37 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   html = html.replace(/<meta property="og:url" content=".*">/, `<meta property="og:url" content="${url}">`);
 
   // Inject keywords meta tag
-  const keywords = getKeywordsForRoute(meta.route);
+  let keywords = getKeywordsForRoute(meta.route);
+  if (typeof keywords === 'function') {
+    keywords = keywords(meta);
+  }
   if (html.includes('<meta name="keywords"')) {
     html = html.replace(/<meta name="keywords" content=".*">/, `<meta name="keywords" content="${keywords}">`);
   } else {
-    html = html.replace(/<\/head>/, `  <meta name="keywords" content="${keywords}">\n</head>`);
+    html = html.replace(/<\/head>/, `  <meta name="keywords" content="${keywords}">\n<\/head>`);
+  }
+
+  // For theme detail pages, always update og:description and meta description with dynamic value
+  if (meta.route?.startsWith('/themes/') && meta.name) {
+    meta.ogDescription = meta.description || meta.ogDescription || `${meta.name} is a PokeMMO theme by ${meta.author || 'unknown author'} in the ${meta.category || 'theme'} category. Download and customize your game!`;
+    // Replace og:description
+    if (html.match(/<meta property="og:description" content=".*">/)) {
+      html = html.replace(/<meta property="og:description" content=".*">/, `<meta property="og:description" content="${meta.ogDescription}">`);
+    } else {
+      html = html.replace(/<\/head>/, `  <meta property="og:description" content="${meta.ogDescription}">\n<\/head>`);
+    }
+    // Replace twitter:description
+    if (html.match(/<meta name="twitter:description" content=".*">/)) {
+      html = html.replace(/<meta name="twitter:description" content=".*">/, `<meta name="twitter:description" content="${meta.ogDescription}">`);
+    } else {
+      html = html.replace(/<\/head>/, `  <meta name="twitter:description" content="${meta.ogDescription}">\n<\/head>`);
+    }
+    // Replace meta description
+    if (html.match(/<meta name="description" content=".*">/)) {
+      html = html.replace(/<meta name="description" content=".*">/, `<meta name="description" content="${meta.ogDescription}">`);
+    } else {
+      html = html.replace(/<\/head>/, `  <meta name="description" content="${meta.ogDescription}">\n<\/head>`);
+    }
   }
 
   // Twitter mirror
@@ -1555,6 +1600,41 @@ async function prerender() {
     }
   } catch (err) {
     console.warn('Failed to prerender Pokemon pages:', err.message);
+  }
+
+  // ThemeDetail pages (inline fetch and slugify)
+  try {
+    const WORKER_THEME_ENDPOINT = 'https://adminpage.hypersmmo.workers.dev/admin/themes';
+    function slugify(str) {
+      return str
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '');
+    }
+    const res = await fetch(WORKER_THEME_ENDPOINT);
+    if (!res.ok) throw new Error(`Failed to fetch theme data: ${res.status}`);
+    const data = await res.json();
+    const themePages = [];
+    for (const [category, items] of Object.entries(data)) {
+      for (const item of Object.values(items)) {
+        const slug = slugify(item.name);
+        themePages.push({
+          route: `/themes/${slug}`,
+          ogTitle: `${item.name} | PokeMMO Theme by ${item.author} | Team Synergy`,
+          ogDescription: item.description || 'PokeMMO Theme',
+          ogImage: item.previewImage || 'https://synergymmo.com/images/openGraph.jpg',
+          ...item,
+          category,
+        });
+      }
+    }
+    console.log(`Prerendering ${themePages.length} theme detail pages...`);
+    for (const theme of themePages) {
+      const outPath = join(DIST, theme.route.slice(1), 'index.html');
+      await prerenderRoute(templateHtml, outPath, theme);
+    }
+  } catch (err) {
+    console.warn('Failed to prerender ThemeDetail pages:', err.message);
   }
 
   console.log('✅ Prerender complete!');
