@@ -1,32 +1,26 @@
-.backButtonWrapper a {
+.linkButton {
+  display: inline-block;
+  padding: 0.85rem 2.25rem;
+  background: linear-gradient(90deg, #4e8cff 0%, #764ba2 100%);
   color: #ffffff;
-  font-weight: bold;
-  font-size: 1.1em;
+  font-weight: 700;
+  font-size: 1.125rem;
+  border-radius: 32px;
+  text-align: center;
   text-decoration: none;
-  transition: color 0.2s;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
 }
-.backButtonWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding: 0.8rem 2rem;
-  background: rgba(76, 140, 255, 0.08);
-  border-radius: 18px;
-  border: 1px solid rgba(76, 140, 255, 0.18);
-  box-shadow: 0 2px 8px rgba(76, 140, 255, 0.08);
-  transition: background 0.2s, box-shadow 0.2s;
-  color: #4e8cff;
-  font-weight: bold;
-  font-size: 1.1em;
+
+.linkButton:hover,
+.linkButton:focus {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 24px rgba(76, 140, 255, 0.4);
+  background: linear-gradient(90deg, #4e8cff 0%, #764ba2 100%);
+  color: #ffffff;
   text-decoration: none;
-  cursor: pointer;
-}
-.backButtonWrapper:hover,
-.backButtonWrapper:focus {
-  background: rgba(76, 140, 255, 0.16);
-  box-shadow: 0 4px 16px rgba(76, 140, 255, 0.13);
-  color: #4e8cff;
 }
 
 .linkButton:active {
@@ -34,7 +28,17 @@
   box-shadow: 0 6px 16px rgba(76, 140, 255, 0.3);
 }
 
-
+.backButtonWrapper,
+.backButtonWrapper:visited,
+.backButtonWrapper:active,
+.backButtonWrapper:focus,
+.backButtonWrapper:hover {
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 1.1em;
+  text-decoration: none;
+  transition: color 0.2s;
+}
 .backButtonWrapper {
   display: flex;
   justify-content: center;
