@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDocumentHead } from '../../hooks/useDocumentHead';
 import { Link } from 'react-router-dom';
 import styles from './ThemesPage.module.css';
-import BackButton from '../../components/BackButton/BackButton';
 
 const tabList = [
   { key: 'Themes', label: 'Themes' },

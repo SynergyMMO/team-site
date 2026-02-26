@@ -1542,15 +1542,15 @@ async function prerender() {
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif'
     },
     '/resources': {
+      route: '/resources',
+      ogTitle: 'PokeMMO Resources - Guides, Tools & Community Links | Team Synergy',
+      ogDescription: 'Explore Team Synergy\'s comprehensive PokeMMO resources. Find guides, tools, calculators, community links, and expert tips for shiny hunting, PVP training, and competitive gameplay.',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg'
+    },
     '/themes': {
       route: '/themes',
       ogTitle: 'PokeMMO Themes, Encounter Counters & Retextures | Team Synergy',
       ogDescription: 'Browse a curated collection of PokeMMO themes, encounter counter overlays, and Pokémon retexture packs. Find visual mods, custom UI themes, and encounter counter designs to personalize your PokeMMO experience. Download community-made resources to enhance your gameplay, improve shiny hunting, and refresh your game\'s look. Team Synergy\'s theme hub features the best encounter counter themes, game retextures, and other creative mods for PokeMMO.',
-      ogImage: 'https://synergymmo.com/images/openGraph.jpg'
-    },
-      route: '/resources',
-      ogTitle: 'PokeMMO Resources - Guides, Tools & Community Links | Team Synergy',
-      ogDescription: 'Explore Team Synergy\'s comprehensive PokeMMO resources. Find guides, tools, calculators, community links, and expert tips for shiny hunting, PVP training, and competitive gameplay.',
       ogImage: 'https://synergymmo.com/images/openGraph.jpg'
     },
   };
