@@ -13,7 +13,15 @@ function slugify(str) {
     .replace(/(^-|-$)+/g, '');
 }
 
-export default function ThemeDetail() {
+export default ThemeDetail;
+
+
+function ThemeDetail() {
+  const { slug } = useParams();
+  const [themeData, setThemeData] = useState({});
+  const [theme, setTheme] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Set document head for SEO
   useDocumentHead({
@@ -21,11 +29,6 @@ export default function ThemeDetail() {
     description: theme && theme.description ? theme.description : 'View details for this PokeMMO theme.',
     canonicalPath: theme ? `/themes/${slug}/` : '/themes/'
   });
-  const { slug } = useParams();
-  const [themeData, setThemeData] = useState({});
-  const [theme, setTheme] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // Fetch all theme data
   useEffect(() => {
@@ -97,3 +100,4 @@ export default function ThemeDetail() {
     </div>
   );
 }
+
