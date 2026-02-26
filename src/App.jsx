@@ -24,6 +24,9 @@ const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
 
+
+const ThemesPage = lazy(() => import('./pages/Themes/ThemesPage'))
+const ThemeDetail = lazy(() => import('./pages/Themes/ThemeDetail'))
 const ShinyOdds = lazy(() => import('./pages/ShinyOdds/ShinyOdds'))
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 
@@ -106,6 +109,8 @@ export default function App() {
             <Route path="/resources" element={<Resources />} />
             <Route path="/resources/:category" element={<Resources />} />
             <Route path="/resources/:category/:subcategory" element={<Resources />} />
+            <Route path="/themes/" element={<ThemesPage />} />
+            <Route path="/themes/:slug" element={<ThemeDetail />} />
             <Route path="/resources/:category/:subcategory/:nested" element={<Resources />} />
             <Route path="/shiny-war-2025" element={<ShinyWar2025 />} />
             <Route path="/admin" element={<AdminLogin />} />

@@ -1,0 +1,40 @@
+.detailPage {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: rgba(30, 20, 60, 0.55);
+  border-radius: 22px;
+  padding: 2.5rem 2rem;
+  color: #fff;
+  box-shadow: 0 8px 32px 0 rgba(155, 89, 182, 0.25), 0 1.5px 16px 0 rgba(80, 80, 120, 0.18);
+}
+
+.previewRow {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.previewImg {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px 0 rgba(155, 89, 182, 0.18);
+}
+
+.infoBox {
+  font-size: 1.1em;
+}
+
+.desc {
+  margin-top: 1.5rem;
+  font-size: 1.15em;
+}
+
+.notFound {
+  text-align: center;
+  color: #ffb3b3;
+  margin-top: 3rem;
+  font-size: 1.5em;
+}

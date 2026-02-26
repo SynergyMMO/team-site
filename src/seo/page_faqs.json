@@ -78,6 +78,14 @@
       { "question": "How do I start a new bingo board?", "answer": "Click \"Generate Bingo Board\" and select your preferred grid size and difficulty level." },
       { "question": "What happens when I complete a pattern?", "answer": "Completing a bingo pattern marks your achievement and you can generate a new board or challenge." }
     ],
+    "/themes": [
+      { "question": "What are PokeMMO themes?", "answer": "PokeMMO themes are custom visual modifications that change the appearance of the game, including UI, backgrounds, and overlays." },
+      { "question": "What is an encounter counter theme?", "answer": "Encounter counter themes are overlays or mods that help you track the number of Pokémon encounters during shiny hunting sessions in PokeMMO." },
+      { "question": "What are Pokémon retexture themes?", "answer": "Pokémon retexture themes are mods that update or change the in-game sprites and graphics of Pokémon to give them a new look." },
+      { "question": "How do I install a PokeMMO theme?", "answer": "Download the theme files and follow the included instructions. Usually, you place the files in the PokeMMO \"data\" or \"themes\" folder and select the theme in-game." },
+      { "question": "Are these themes safe to use?", "answer": "Themes and overlays shared by the Team Synergy community are safe and widely used, but always download from trusted sources." },
+      { "question": "Can I submit my own theme?", "answer": "Yes! Team Synergy encourages community submissions. Contact us on Discord to share your custom themes or overlays." }
+    ],
     "/resources": [
       { "question": "What resources does Team Synergy provide?", "answer": "Team Synergy offers comprehensive resources including shiny hunting guides, tool recommendations, calculators, community links, and official PokeMMO resources." },
       { "question": "Where can I find PokeMMO guides?", "answer": "Visit our Resources page to access guides on shiny hunting basics, nature and IV mechanics, PVP battles, and detailed hunting strategies for specific Pokémon." },

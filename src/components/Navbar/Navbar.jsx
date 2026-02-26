@@ -27,6 +27,7 @@ const NAV_ITEMS = [
       { to: '/shiny-odds/', label: 'Shiny Odds / Simulator' },
     ]
   },
+  { to: '/themes/', label: 'Themes' },
   { to: '/resources/', label: 'Resources' },
 ]
 

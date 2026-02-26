@@ -31,6 +31,7 @@ const PAGE_KEYWORDS = {
   '/resources': 'PokeMMO resources, PokeMMO guides, hunting tools, community links, shiny hunting guides, PokeMMO calculators, Team Synergy resources',
   '/LnyCatchCalc': 'LNY Catch Calculator, PokeMMO Lunar New Year,  event catch rates, PokeMMO event tools, PokeMMO Catch calculator, Lunar New Year shiny hunting, PokeMMO LNY event',
   '/shiny-odds': 'Shiny Odds Calculator, advanced shiny odds, PokeMMO shiny odds, shiny probability, shiny boosts, shiny hunt tracker, shiny odds graph, Team Synergy shiny odds',
+  "/themes": "PokeMMO themes, encounter counter themes, Pokemon retexture, PokeMMO mods, custom UI, visual mods, Team Synergy themes, PokeMMO overlays, download themes, shiny hunting tools, game customization, PokeMMO resources"
 };
 
 const DYNAMIC_KEYWORDS = {
@@ -123,6 +124,14 @@ const PAGE_FAQS = {
     { question: 'How do I start a new bingo board?', answer: 'Click "Generate Bingo Board" and select your preferred grid size and difficulty level.' },
     { question: 'What happens when I complete a pattern?', answer: 'Completing a bingo pattern marks your achievement and you can generate a new board or challenge.' },
   ],
+  "/themes": [
+      { "question": "What are PokeMMO themes?", "answer": "PokeMMO themes are custom visual modifications that change the appearance of the game, including UI, backgrounds, and overlays." },
+      { "question": "What is an encounter counter theme?", "answer": "Encounter counter themes are overlays or mods that help you track the number of Pokémon encounters during shiny hunting sessions in PokeMMO." },
+      { "question": "What are Pokémon retexture themes?", "answer": "Pokémon retexture themes are mods that update or change the in-game sprites and graphics of Pokémon to give them a new look." },
+      { "question": "How do I install a PokeMMO theme?", "answer": "Download the theme files and follow the included instructions. Usually, you place the files in the PokeMMO \"data\" or \"themes\" folder and select the theme in-game." },
+      { "question": "Are these themes safe to use?", "answer": "Themes and overlays shared by the Team Synergy community are safe and widely used, but always download from trusted sources." },
+      { "question": "Can I submit my own theme?", "answer": "Yes! Team Synergy encourages community submissions. Contact us on Discord to share your custom themes or overlays." }
+    ],
   '/resources': [
     { question: 'What resources does Team Synergy provide?', answer: 'Team Synergy offers comprehensive resources including shiny hunting guides, tool recommendations, calculators, community links, and official PokeMMO resources.' },
     { question: 'Where can I find PokeMMO guides?', answer: 'Visit our Resources page to access guides on shiny hunting basics, nature and IV mechanics, PVP battles, and detailed hunting strategies for specific Pokémon.' },
@@ -188,6 +197,7 @@ const STATIC_ROUTES = [
   '/resources',
   '/LnyCatchCalc',
   '/shiny-odds',
+  '/themes',
 ];
 
 
@@ -1119,6 +1129,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
       '/safari-zones': `<h1 class="seo-semantic-hidden">PokeMMO Safari Zones - Catch Rates, Flee Rates & Strategies</h1><section class="seo-semantic-hidden"><p>Team Synergy's complete PokeMMO Safari Zones guide covers both Johto and Sinnoh (Great Marsh) Safari Zones with detailed mechanics and strategies. Learn the unique mechanics of Safari Zones where Pokemon have different catch rates and flee rates compared to normal wild encounters. Our guide explains how catch rate and flee rate work together to impact your success catching Safari Zone Pokemon. Discover which Pokemon are available in each Safari Zone and their specific encounter rates for efficient hunting. Team Synergy provides optimal strategies for catching difficult Safari Zone Pokemon without wasting Safari Balls. Learn how to approach, throw Safari Balls, and use items effectively in Safari Zone encounters. The guide includes detailed information for both Johto Safari Zone and Sinnoh's Great Marsh with Pokemon lists and rates. Plan your Safari Zone visits efficiently with our hunting guides and strategy recommendations. Understand the mechanics of different Pokemon species in Safari Zones to maximize your catch success. Safari Zone hunting is unique compared to regular shiny hunting and requires specific strategies covered in our comprehensive guide. Use Team Synergy's Safari Zone guide to catch rare Pokemon and complete your collection efficiently.</p></section>`,
       '/shiny-war-2025': `<h1 class="seo-semantic-hidden">Shiny Wars 2025 - Team Synergy Competition Results</h1><section class="seo-semantic-hidden"><p>Team Synergy Shiny Wars 2025 results display our team's competitive shiny hunting performance in the official PokeMMO season. View our top placements, total shiny catches, and point accumulations across all competition rounds. Our competition guide explains the shiny wars scoring system and tier-based point calculations. Team Synergy competed at the highest level catching valuable shiny Pokemon and executing expert hunting strategies. Browse individual catch records breaking down results by hunter and shiny rarity tier. The shiny wars showcase highlights remarkable achievements by Team Synergy members in official competitions. Our guide explains how shiny wars scoring works including nature bonuses and legendary multipliers. View championship leaderboards and compare Team Synergy's performance against other competitive organizations. Team Synergy's shiny wars results demonstrate our community's dedication to excellence in PokeMMO. Discover top-performing hunters and their favorite shiny Pokemon targets during competition season. The results page provides detailed statistics including average catch value and tier distribution. Team Synergy continues striving for championship glory in upcoming shiny wars seasons.</p></section>`,
       '/resources': `<h1 class="seo-semantic-hidden">Team Synergy PokeMMO Resources - Guides, Tools & Community Links</h1><section class="seo-semantic-hidden"><p>Team Synergy Resources is your comprehensive hub for PokeMMO guides, hunting tools, community links, and expert strategies. Discover official PokeMMO resources including the wiki, forums, and community databases for shiny hunting information. Access Team Synergy's specialized tools including our Counter Generator for custom encounter overlays, Random Pokemon Generator for hunt challenges, and interactive Pokédex with detailed location data. Learn shiny hunting fundamentals with beginner guides covering encounter mechanics, catch rates, and optimal hunting strategies. Advanced hunters can explore nature optimization, IV training, and PVP battle preparation guides. Connect with the Team Synergy community through our Discord server where members share strategies, event information, and hunting achievements. Find recommended external resources including Pokemon databases, species guides, and breeding calculators for comprehensive game knowledge. Our resources page aggregates tools that help you succeed in PokeMMO whether you're starting your first hunt or competing at championship levels. Explore guides on Safari Zone mechanics, roaming legendary schedules, and event competition rules. Team Synergy's curated resource collection saves you time researching and helps you develop effective hunting strategies. Whether seeking catch calculators, community support, or advanced training techniques, our Resources page connects you to the knowledge and tools needed for PokeMMO success.</p></section>`,
+      "/themes": "<h1 class=\"seo-semantic-hidden\">PokeMMO Themes, Encounter Counters & Retextures</h1><section class=\"seo-semantic-hidden\"><p>Browse a curated collection of PokeMMO themes, encounter counter overlays, and Pokémon retexture packs. Find visual mods, custom UI themes, and encounter counter designs to personalize your PokeMMO experience. Download community-made resources to enhance your gameplay, improve shiny hunting, and refresh your game's look. Team Synergy's theme hub features the best encounter counter themes, game retextures, and other creative mods for PokeMMO. Discover new ways to customize your adventure and join the community sharing their favorite themes and overlays.</p></section>"
     };
     
     // Check if this is a resource page request
@@ -1486,6 +1497,12 @@ async function prerender() {
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif'
     },
     '/resources': {
+    '/themes': {
+      route: '/themes',
+      ogTitle: 'PokeMMO Themes, Encounter Counters & Retextures | Team Synergy',
+      ogDescription: 'Browse a curated collection of PokeMMO themes, encounter counter overlays, and Pokémon retexture packs. Find visual mods, custom UI themes, and encounter counter designs to personalize your PokeMMO experience. Download community-made resources to enhance your gameplay, improve shiny hunting, and refresh your game\'s look. Team Synergy\'s theme hub features the best encounter counter themes, game retextures, and other creative mods for PokeMMO.',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg'
+    },
       route: '/resources',
       ogTitle: 'PokeMMO Resources - Guides, Tools & Community Links | Team Synergy',
       ogDescription: 'Explore Team Synergy\'s comprehensive PokeMMO resources. Find guides, tools, calculators, community links, and expert tips for shiny hunting, PVP training, and competitive gameplay.',
