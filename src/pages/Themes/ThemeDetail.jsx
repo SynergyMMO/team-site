@@ -58,9 +58,9 @@ export default function ThemeDetail() {
 
   return (
     <div className={styles.detailPage}>
-      <div className={styles.backButtonWrapper}>
-        <Link to="/themes/">&larr; Back to Themes</Link>
-      </div>
+      <Link to="/themes/" className={styles.backButtonWrapper}>
+        &larr; Back to Themes
+      </Link>
       <h1>{theme.name}</h1>
       <div className={styles.previewRow}>
         <img
