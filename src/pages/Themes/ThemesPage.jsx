@@ -47,7 +47,7 @@ export default function ThemesPage() {
 
   const renderCardGrid = (itemsObj) => {
     const items = Object.values(itemsObj || {});
-    if (items.length === 0) return <div>No resources found.</div>;
+    if (items.length === 0) return <div className={styles.empty}>No resources found.</div>;
 
     return (
       <div className={styles.grid}>
@@ -56,7 +56,6 @@ export default function ThemesPage() {
             to={`/themes/${slugify(item.name)}/`}
             className={styles.item}
             key={item.name + idx}
-            style={{ cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}
           >
             <img
               src={item.previewImage || '/placeholder.png'}
@@ -67,9 +66,9 @@ export default function ThemesPage() {
               loading="lazy"
             />
             <div className={styles.label}>
-              <strong>{item.name}</strong>
-              <div style={{ fontSize: '0.95em', margin: '6px 0' }}>{item.description}</div>
-              <div style={{ fontSize: '0.85em', color: '#aaa' }}>By {item.author}</div>
+              <span className={styles.itemName}>{item.name}</span>
+              <div className={styles.itemDesc}>{item.description}</div>
+              <div className={styles.itemAuthor}>By {item.author}</div>
             </div>
           </Link>
         ))}

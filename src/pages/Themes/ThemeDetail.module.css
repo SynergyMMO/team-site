@@ -1,17 +1,22 @@
 .detailPage {
-  max-width: 700px;
-  margin: 2rem auto;
-  background: rgba(30, 20, 60, 0.55);
-  border-radius: 22px;
-  padding: 2.5rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
   color: #fff;
-  box-shadow: 0 8px 32px 0 rgba(155, 89, 182, 0.25), 0 1.5px 16px 0 rgba(80, 80, 120, 0.18);
+}
+
+.detailCard {
+  background: rgba(20, 10, 35, 0.75);
+  border: 1px solid rgba(155, 89, 182, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(6px);
 }
 
 .previewRow {
   display: flex;
   gap: 2rem;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
 }
 
@@ -19,22 +24,66 @@
   width: 200px;
   height: 200px;
   object-fit: cover;
-  border-radius: 14px;
-  box-shadow: 0 2px 16px 0 rgba(155, 89, 182, 0.18);
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .infoBox {
-  font-size: 1.1em;
+  font-size: 1rem;
+  color: #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.infoBox strong {
+  color: #fff;
 }
 
 .desc {
-  margin-top: 1.5rem;
-  font-size: 1.15em;
+  color: #ccc;
+  line-height: 1.6;
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+}
+
+.downloadLink {
+  display: inline-block;
+  padding: 0.65rem 1.75rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+}
+
+.downloadLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
 }
 
 .notFound {
   text-align: center;
-  color: #ffb3b3;
+  color: #ef5350;
   margin-top: 3rem;
-  font-size: 1.5em;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .detailPage {
+    padding: 1.25rem 1rem;
+  }
+
+  .previewRow {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .previewImg {
+    width: 160px;
+    height: 160px;
+  }
 }

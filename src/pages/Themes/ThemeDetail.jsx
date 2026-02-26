@@ -59,31 +59,31 @@ export default function ThemeDetail() {
   return (
     <div className={styles.detailPage}>
       <BackButton to="/themes" label="&larr; Return to Themes" />
-      <h1>{theme.name}</h1>
-      <div className={styles.previewRow}>
-        <img
-          src={theme.previewImage || '/placeholder.png'}
-          alt={theme.name}
-          className={styles.previewImg}
-        />
-        <div className={styles.infoBox}>
-          <div><strong>Category:</strong> {theme.category}</div>
-          <div><strong>Author:</strong> {theme.author}</div>
+      <div className={styles.detailCard}>
+        <h1>{theme.name}</h1>
+        <div className={styles.previewRow}>
+          <img
+            src={theme.previewImage || '/placeholder.png'}
+            alt={theme.name}
+            className={styles.previewImg}
+          />
+          <div className={styles.infoBox}>
+            <div><strong>Category:</strong> {theme.category}</div>
+            <div><strong>Author:</strong> {theme.author}</div>
+          </div>
         </div>
-      </div>
-      <p className={styles.desc}>{theme.description}</p>
-      {theme.link && (
-        <div style={{ marginTop: '2rem', fontSize: '1.15em' }}>
+        <p className={styles.desc}>{theme.description}</p>
+        {theme.link && (
           <a
             href={theme.link}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: '#4e8cff', fontWeight: 'bold', textDecoration: 'underline' }}
+            className={styles.downloadLink}
           >
-            LINK
+            View / Download
           </a>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
