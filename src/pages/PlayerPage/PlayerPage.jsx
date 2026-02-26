@@ -104,7 +104,6 @@ export default function PlayerPage() {
     )
   }, [streamersData, safeRealKey])
 
-  console.log(streamerInfo, isLive)
 
   // --- Calculate average encounters per shiny ---
   const encountersData = useMemo(() => {

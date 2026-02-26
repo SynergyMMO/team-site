@@ -23,7 +23,9 @@ export default function AddPokemonTab({ db, playerNames, allPokemonNames, onAdd,
     if (!player.trim()) return
     const notice = checkDuplicates(shinyData.Pokemon)
     setDuplicateNotice(notice)
-    const result = await onAdd(player, shinyData)
+    // If date_caught is blank, set it to '' (empty string)
+    const fixedData = { ...shinyData, date_caught: shinyData.date_caught === '' ? '' : shinyData.date_caught }
+    const result = await onAdd(player, fixedData)
     if (result?.success) {
       setDuplicateNotice(null)
     }

@@ -90,9 +90,20 @@ function getEditState(data) {
   const base = getDefaultState()
   base.Month = ''
   base.Year = ''
-  // If editing and date_caught is undefined, keep it null
-  return { ...base, ...data, date_caught: data?.date_caught ?? null }
+
+  let normalizedDate = null
+
+  if (data?.date_caught) {
+    normalizedDate = data.date_caught.split('T')[0] 
+  }
+
+  return {
+    ...base,
+    ...data,
+    date_caught: normalizedDate
+  }
 }
+
 
 function reducer(state, action) {
   switch (action.type) {
@@ -145,13 +156,25 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
       const [year, month] = val.split('-')
       dispatch({ type: 'SET_FIELD', field: 'Month', value: MONTHS[parseInt(month, 10) - 1] })
       dispatch({ type: 'SET_FIELD', field: 'Year', value: year })
+    } else {
+      dispatch({ type: 'SET_FIELD', field: 'Month', value: '' })
+      dispatch({ type: 'SET_FIELD', field: 'Year', value: '' })
     }
   }
 
   function handleSubmit() {
-    if (!form.Pokemon.trim()) return
-    onSubmit({ ...form })
+  if (!form.Pokemon.trim()) return
+
+  let cleaned = { ...form }
+
+  if (!cleaned.date_caught) {
+    cleaned.Month = null
+    cleaned.Year = null
   }
+
+  onSubmit(cleaned)
+}
+
 
   function handleReset() {
     dispatch({ type: 'RESET' })
