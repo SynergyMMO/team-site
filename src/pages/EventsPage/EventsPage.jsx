@@ -47,7 +47,8 @@ export default function EventsPage() {
   const ongoingEvents = events.filter(
     (e) => new Date(e.startDate) <= now && now <= new Date(e.endDate)
   )
-  const upcomingEvents = events.filter((e) => new Date(e.startDate) > now)
+  let upcomingEvents = events.filter((e) => new Date(e.startDate) > now)
+  upcomingEvents = upcomingEvents.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
   const pastEvents = events.filter((e) => new Date(e.endDate) < now)
 
   const renderEventGrid = (eventsArray) => (
