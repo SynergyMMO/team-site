@@ -612,6 +612,12 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
         </button>
         {statsExpanded && (
           <div className={`${styles.mainStatsContent} ${statsClosing ? styles.closing : ''}`}>
+          {/* Info about missing Pokémon encounter data */}
+          {stats.missingPokemon.length > 0 && (
+            <div style={{ marginBottom: '0.5rem', color: '#ef4444', fontWeight: 600 }}>
+              {stats.missingPokemon.length} Pokémon require encounter information to display full statistics.
+            </div>
+          )}
           <div style={{ marginBottom: '1rem'}}>
             <a href="https://www.shinyboard.net/" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline', fontWeight: 'bold' }}>
               Encounter Data provided by Shinyboard API
