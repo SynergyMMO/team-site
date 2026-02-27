@@ -85,6 +85,25 @@ function ThemeDetail() {
         </div>
       </div>
       <p className={styles.desc}>{theme.description}</p>
+      {/* Detailed Images Section */}
+      {Array.isArray(theme.detailedImages) && theme.detailedImages.length > 0 && (
+        <div className={styles.detailedImagesSection} style={{ margin: '2rem 0' }}>
+          <h2 style={{ marginBottom: '1rem' }}>Detailed Images</h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'center' }}>
+            {theme.detailedImages.map((img, idx) => (
+              <div key={idx} className={styles.detailedImageCard} style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.10)', borderRadius: 8, padding: 16, maxWidth: 340, minWidth: 220, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <img
+                  src={img}
+                  alt={`Detailed view ${idx + 1}`}
+                  className={styles.detailedImageZoom}
+                  style={{ width: '100%', maxWidth: 600, maxHeight: 600, objectFit: 'contain', borderRadius: 6, marginBottom: 12 }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {theme.link && (
         <div style={{ marginTop: '2rem', textAlign: 'center' }}>
           <a

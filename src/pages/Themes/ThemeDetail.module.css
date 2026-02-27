@@ -1,3 +1,14 @@
+/* Zoom effect for detailed images */
+.detailedImageZoom {
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform;
+  cursor: zoom-in;
+}
+.detailedImageZoom:hover {
+  transform: scale(1.18);
+  z-index: 2;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
 .linkButton {
   display: inline-block;
   padding: 0.85rem 2.25rem;

@@ -8,7 +8,7 @@ function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 }
 
-const emptyTheme = { name: "", author: "", description: "", previewImage: "", link: "" };
+const emptyTheme = { name: "", author: "", description: "", previewImage: "", previewImages: [], detailedImages: [], link: "" };
 
 export default function ThemesTab({ themesDB, onSave, onDelete, isMutating }) {
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
@@ -26,9 +26,64 @@ export default function ThemesTab({ themesDB, onSave, onDelete, isMutating }) {
     setEditingKey(null);
   };
 
+
+
   const handleEdit = (key, item) => {
     setEditingKey(key);
-    setThemeData({ ...emptyTheme, ...item });
+    setThemeData({
+      ...emptyTheme,
+      ...item,
+      previewImages: item.previewImages || [],
+      detailedImages: item.detailedImages || []
+    });
+  };
+
+  // Detailed Images handlers
+  const handleAddDetailedImage = () => {
+    setThemeData((prev) => ({
+      ...prev,
+      detailedImages: [...(prev.detailedImages || []), ""]
+    }));
+  };
+
+  const handleDetailedImageChange = (idx, value) => {
+    setThemeData((prev) => {
+      const arr = [...(prev.detailedImages || [])];
+      arr[idx] = value;
+      return { ...prev, detailedImages: arr };
+    });
+  };
+
+  const handleRemoveDetailedImage = (idx) => {
+    setThemeData((prev) => {
+      const arr = [...(prev.detailedImages || [])];
+      arr.splice(idx, 1);
+      return { ...prev, detailedImages: arr };
+    });
+  };
+
+  // Preview Images handlers
+  const handleAddPreviewImage = () => {
+    setThemeData((prev) => ({
+      ...prev,
+      previewImages: [...(prev.previewImages || []), ""]
+    }));
+  };
+
+  const handlePreviewImageChange = (idx, value) => {
+    setThemeData((prev) => {
+      const arr = [...(prev.previewImages || [])];
+      arr[idx] = value;
+      return { ...prev, previewImages: arr };
+    });
+  };
+
+  const handleRemovePreviewImage = (idx) => {
+    setThemeData((prev) => {
+      const arr = [...(prev.previewImages || [])];
+      arr.splice(idx, 1);
+      return { ...prev, previewImages: arr };
+    });
   };
 
   const handleCancelEdit = () => {
@@ -89,6 +144,7 @@ export default function ThemesTab({ themesDB, onSave, onDelete, isMutating }) {
           onChange={(e) => setThemeData({ ...themeData, description: e.target.value })}
         />
 
+
         <label>Preview Image URL:</label>
         <input
           type="text"
@@ -96,6 +152,28 @@ export default function ThemesTab({ themesDB, onSave, onDelete, isMutating }) {
           value={themeData.previewImage}
           onChange={(e) => setThemeData({ ...themeData, previewImage: e.target.value })}
         />
+
+        <label>Detailed Images (multiple):</label>
+        <div style={{ marginBottom: 8 }}>
+          {(themeData.detailedImages || []).map((img, idx) => (
+            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <input
+                type="text"
+                className={styles.adminInput}
+                style={{ flex: 1 }}
+                value={img}
+                placeholder={`Detailed Image URL #${idx + 1}`}
+                onChange={e => handleDetailedImageChange(idx, e.target.value)}
+              />
+              <button type="button" className={styles.deleteBtn} onClick={() => handleRemoveDetailedImage(idx)}>
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" className={styles.editBtn} onClick={handleAddDetailedImage}>
+            Add Detailed Image
+          </button>
+        </div>
 
         <label>Download / Link URL:</label>
         <input
