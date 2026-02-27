@@ -25,6 +25,10 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     secondPlacePrize: [],
     thirdPlacePrize: [],
     fourthPlacePrize: [],
+    // Hide and Seek specific
+    hideAndSeekDescription: "",
+    hideAndSeekRules: "",
+    hideAndSeekRounds: [], // [{ prize: '', host: '', winner: '' }]
   };
 
   const [eventData, setEventData] = useState(emptyEvent);
@@ -215,6 +219,20 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     );
   };
 
+  // Hide and Seek round helpers
+  const addHideAndSeekRound = () =>
+    setEventData(prev => ({ ...prev, hideAndSeekRounds: [...(prev.hideAndSeekRounds || []), { prize: '', host: '', winner: '' }] }));
+  const updateHideAndSeekRound = (index, key, value) => {
+    const updated = [...(eventData.hideAndSeekRounds || [])];
+    updated[index][key] = value;
+    setEventData(prev => ({ ...prev, hideAndSeekRounds: updated }));
+  };
+  const removeHideAndSeekRound = (index) => {
+    const updated = [...(eventData.hideAndSeekRounds || [])];
+    updated.splice(index, 1);
+    setEventData(prev => ({ ...prev, hideAndSeekRounds: updated }));
+  };
+
   // ---------------- Render ----------------
   return (
     <div>
@@ -232,7 +250,10 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           <option value="catchevent">Catch Event</option>
           <option value="metronome">Metronome</option>
           <option value="grouphunt">Group Hunt</option>
+
+          <option value="hideandseek">Hide and Seek</option>
         </select>
+
 
         {/* Basic Inputs */}
         <label>Name:</label>
@@ -251,18 +272,14 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           onChange={(e) => setEventData({ ...eventData, imageLink: e.target.value })}
         />
 
-        {/* Location only for non-Group Hunt */}
-        {eventData.eventType !== "grouphunt" && (
-          <>
-            <label>Location:</label>
-            <input
-              type="text"
-              className={styles.adminInput}
-              value={eventData.location || ""}
-              onChange={(e) => setEventData({ ...eventData, location: e.target.value })}
-            />
-          </>
-        )}
+
+      <label>Location:</label>
+      <input
+        type="text"
+        className={styles.adminInput}
+        value={eventData.location || ""}
+        onChange={(e) => setEventData({ ...eventData, location: e.target.value })}
+      />
 
         <label>Duration:</label>
         <input
@@ -272,6 +289,64 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           onChange={(e) => setEventData({ ...eventData, duration: e.target.value })}
         />
 
+{/* Hide and Seek Inputs */}
+        {eventData.eventType === "hideandseek" && (
+          <>
+            <label>Description:</label>
+            <textarea
+              className={styles.adminInput}
+              value={eventData.hideAndSeekDescription || ""}
+              onChange={e => setEventData({ ...eventData, hideAndSeekDescription: e.target.value })}
+            />
+
+            <label>Date/Time:</label>
+            <input
+              type="datetime-local"
+              className={styles.adminInput}
+              value={eventData.startDate}
+              onChange={e => setEventData({ ...eventData, startDate: e.target.value })}
+              onFocus={e => e.target.showPicker?.()}
+            />
+            <label>Rounds:</label>
+            {(eventData.hideAndSeekRounds || []).map((round, i) => (
+              <div key={i} className={styles.inputRow}>
+                <input
+                  placeholder="Prize"
+                  className={styles.adminInput}
+                  value={round.prize || ""}
+                  onChange={e => updateHideAndSeekRound(i, "prize", e.target.value)}
+                />
+                <input
+                  placeholder="Prize Image (URL)"
+                  className={styles.adminInput}
+                  value={round.prizeImage || ""}
+                  onChange={e => updateHideAndSeekRound(i, "prizeImage", e.target.value)}
+                />
+                <input
+                  placeholder="Host"
+                  className={styles.adminInput}
+                  value={round.host || ""}
+                  onChange={e => updateHideAndSeekRound(i, "host", e.target.value)}
+                />
+                <input
+                  placeholder="Winner"
+                  className={styles.adminInput}
+                  value={round.winner || ""}
+                  onChange={e => updateHideAndSeekRound(i, "winner", e.target.value)}
+                />
+                <button className={styles.deleteBtn} onClick={() => removeHideAndSeekRound(i)}>Remove</button>
+              </div>
+            ))}
+            <button className={styles.editBtn} onClick={addHideAndSeekRound}>Add Round</button>
+
+            <label>Rules:</label>
+            <textarea
+              className={styles.adminInput}
+              value={eventData.hideAndSeekRules || ""}
+              onChange={e => setEventData({ ...eventData, hideAndSeekRules: e.target.value })}
+            />
+          </>
+        )}
         {eventData.eventType === "catchevent" && (
           <>
             <label>Scoring:</label>
@@ -284,24 +359,28 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           </>
         )}
 
-        {/* Dates */}
-        <label>Start Date & Time:</label>
-        <input
-          type="datetime-local"
-          className={styles.adminInput}
-          value={eventData.startDate}
-          onChange={(e) => setEventData({ ...eventData, startDate: e.target.value })}
-          onFocus={(e) => e.target.showPicker?.()}
-        />
+        {/* Dates (hidden for Hide and Seek) */}
+        {eventData.eventType !== "hideandseek" && (
+          <>
+            <label>Start Date & Time:</label>
+            <input
+              type="datetime-local"
+              className={styles.adminInput}
+              value={eventData.startDate}
+              onChange={(e) => setEventData({ ...eventData, startDate: e.target.value })}
+              onFocus={(e) => e.target.showPicker?.()}
+            />
 
-        <label>End Date & Time:</label>
-        <input
-          type="datetime-local"
-          className={styles.adminInput}
-          value={eventData.endDate}
-          onChange={(e) => setEventData({ ...eventData, endDate: e.target.value })}
-          onFocus={(e) => e.target.showPicker?.()}
-        />
+            <label>End Date & Time:</label>
+            <input
+              type="datetime-local"
+              className={styles.adminInput}
+              value={eventData.endDate}
+              onChange={(e) => setEventData({ ...eventData, endDate: e.target.value })}
+              onFocus={(e) => e.target.showPicker?.()}
+            />
+          </>
+        )}
 
         {/* Catch Event Bonuses */}
         {eventData.eventType === "catchevent" && (
@@ -379,58 +458,63 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           </>
         )}
 
-        {/* Staff */}
-        <label>Participating Staff:</label>
-        {eventData.participatingStaff.map((s, i) => (
-          <div key={i} className={styles.inputRow}>
-            <input
-              placeholder="Staff Name"
-              className={styles.adminInput}
-              value={s || ""}
-              onChange={(e) => updateListItem("participatingStaff", i, e.target.value)}
-            />
-            <button className={styles.deleteBtn} onClick={() => removeListItem("participatingStaff", i)}>Remove</button>
-          </div>
-        ))}
-        <button className={styles.editBtn} onClick={() => addListItem("participatingStaff")}>Add Staff</button>
-
-        {/* Winners by Place */}
-        {["firstPlaceWinners", "secondPlaceWinners", "thirdPlaceWinners", "fourthPlaceWinners"].map((field, idx) => (
-          <div key={field}>
-            <label>{["1st", "2nd", "3rd", "4th"][idx]} Place Winner(s):</label>
-            {eventData[field].map((w, i) => (
+        {/* Staff, Winners, and Prizes are not shown for Hide and Seek */}
+        {eventData.eventType !== "hideandseek" && (
+          <>
+            {/* Staff */}
+            <label>Participating Staff:</label>
+            {eventData.participatingStaff.map((s, i) => (
               <div key={i} className={styles.inputRow}>
                 <input
-                  placeholder="Winner Name"
+                  placeholder="Staff Name"
                   className={styles.adminInput}
-                  value={w || ""}
-                  onChange={(e) => updateListItem(field, i, e.target.value)}
+                  value={s || ""}
+                  onChange={(e) => updateListItem("participatingStaff", i, e.target.value)}
                 />
-                <button className={styles.deleteBtn} onClick={() => removeListItem(field, i)}>Remove</button>
+                <button className={styles.deleteBtn} onClick={() => removeListItem("participatingStaff", i)}>Remove</button>
               </div>
             ))}
-            <button className={styles.editBtn} onClick={() => addListItem(field)}>Add Winner</button>
-          </div>
-        ))}
+            <button className={styles.editBtn} onClick={() => addListItem("participatingStaff")}>Add Staff</button>
 
-        {/* Prizes */}
-        {["firstPlacePrize", "secondPlacePrize", "thirdPlacePrize", "fourthPlacePrize"].map((field, idx) => (
-          <div key={field}>
-            <label>{["1st", "2nd", "3rd", "4th"][idx]} Place Prize(s):</label>
-            {eventData[field].map((p, i) => (
-              <div key={i} className={styles.inputRow}>
-                <input
-                  placeholder="Prize"
-                  className={styles.adminInput}
-                  value={p || ""}
-                  onChange={(e) => updateListItem(field, i, e.target.value)}
-                />
-                <button className={styles.deleteBtn} onClick={() => removeListItem(field, i)}>Remove</button>
+            {/* Winners by Place */}
+            {["firstPlaceWinners", "secondPlaceWinners", "thirdPlaceWinners", "fourthPlaceWinners"].map((field, idx) => (
+              <div key={field}>
+                <label>{["1st", "2nd", "3rd", "4th"][idx]} Place Winner(s):</label>
+                {eventData[field].map((w, i) => (
+                  <div key={i} className={styles.inputRow}>
+                    <input
+                      placeholder="Winner Name"
+                      className={styles.adminInput}
+                      value={w || ""}
+                      onChange={(e) => updateListItem(field, i, e.target.value)}
+                    />
+                    <button className={styles.deleteBtn} onClick={() => removeListItem(field, i)}>Remove</button>
+                  </div>
+                ))}
+                <button className={styles.editBtn} onClick={() => addListItem(field)}>Add Winner</button>
               </div>
             ))}
-            <button className={styles.editBtn} onClick={() => addListItem(field)}>Add Prize</button>
-          </div>
-        ))}
+
+            {/* Prizes */}
+            {["firstPlacePrize", "secondPlacePrize", "thirdPlacePrize", "fourthPlacePrize"].map((field, idx) => (
+              <div key={field}>
+                <label>{["1st", "2nd", "3rd", "4th"][idx]} Place Prize(s):</label>
+                {eventData[field].map((p, i) => (
+                  <div key={i} className={styles.inputRow}>
+                    <input
+                      placeholder="Prize"
+                      className={styles.adminInput}
+                      value={p || ""}
+                      onChange={(e) => updateListItem(field, i, e.target.value)}
+                    />
+                    <button className={styles.deleteBtn} onClick={() => removeListItem(field, i)}>Remove</button>
+                  </div>
+                ))}
+                <button className={styles.editBtn} onClick={() => addListItem(field)}>Add Prize</button>
+              </div>
+            ))}
+          </>
+        )}
 
         <button
           className={styles.editBtn}

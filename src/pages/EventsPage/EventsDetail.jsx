@@ -1,3 +1,4 @@
+
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import styles from './EventsDetail.module.css'
@@ -91,6 +92,7 @@ export default function EventsDetail() {
   if (loading) return <div className="message">Loading event...</div>
   if (!event) return <div className="message">Event not found.</div>
 
+
   return (
     <div className={styles.container}>
       <BackButton to="/events/" label="&larr; Return to Events" />
@@ -102,36 +104,126 @@ export default function EventsDetail() {
         </div>
       )}
 
-      {/* Basic Info */}
-      <div className={styles.info}>
-        <div className={styles.infoItem}>
-          <span>Start:</span>
-          <div>{formatEventDate(event.startDate)}</div>
-        </div>
-        <div className={styles.infoItem}>
-          <span>End:</span>
-          <div>{formatEventDate(event.endDate)}</div>
-        </div>
-        {/* Only show location if not a Group Hunt */}
-        {event.eventType !== 'grouphunt' && event.location && (
-          <div className={styles.infoItem}>
-            <span>Location:</span>
-            <div>{event.location}</div>
+      {/* Hide and Seek Event Details */}
+      {event.eventType === "hideandseek" ? (
+        <>
+          {event.hideAndSeekDescription && (
+            <div className={styles.listSection}>
+              <h3>Description</h3>
+              <div>
+                {event.hideAndSeekDescription.split(/\r?\n/).map((line, idx) => (
+                  <span key={idx}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className={styles.info}>
+            {event.startDate && (
+              <div className={styles.infoItem}>
+                <span>Date/Time:</span>
+                <div>{formatEventDate(event.startDate)}</div>
+              </div>
+            )}
+            {event.location && (
+              <div className={styles.infoItem}>
+                <span>{event.eventType === "hideandseek" ? "Meet up Location:" : "Location:"}</span>
+                <div>{event.location}</div>
+              </div>
+            )}
           </div>
-        )}
-        {event.duration && (
-          <div className={styles.infoItem}>
-            <span>Duration:</span>
-            <div>{event.duration}</div>
+          {event.hideAndSeekRounds?.length > 0 && (
+            <div className={styles.listSection}>
+              <h3>Rounds</h3>
+              <div className={styles.roundsCardGrid}>
+                {event.hideAndSeekRounds.map((round, i) => {
+                  // Try to show a Pokémon gif for host if it matches a Pokémon name
+                  let hostImg = null;
+                  if (round.host && /^[a-zA-Z0-9 .'-]+$/.test(round.host)) {
+                    const imgName = round.host.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                    hostImg = `https://img.pokemondb.net/sprites/black-white/anim/normal/${imgName}.gif`;
+                  }
+                  return (
+                    <div key={i} className={styles.roundCard}>
+                      <div className={styles.roundPrize}><b>Prize:</b> {round.prize}</div>
+                      {round.prizeImage && (
+                        <div className={styles.roundPrizeImage}>
+                          <img
+                            src={round.prizeImage}
+                            alt="Prize"
+                            className={styles.prizeImg}
+                            onError={e => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        </div>
+                      )}
+                      <div className={styles.roundHost}>
+                        <b>Host:</b> {round.host}
+                        {hostImg && (
+                          <img
+                            src={hostImg}
+                            alt={round.host}
+                            className={styles.pokemonImg}
+                            onError={e => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        )}
+                      </div>
+                      <div className={styles.roundWinner}><b>Winner:</b> {round.winner}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {event.hideAndSeekRules && (
+            <div className={styles.listSection}>
+              <h3>Rules</h3>
+              <div>
+                {event.hideAndSeekRules.split(/\r?\n/).map((line, idx) => (
+                  <span key={idx}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {/* Basic Info */}
+          <div className={styles.info}>
+            <div className={styles.infoItem}>
+              <span>Start:</span>
+              <div>{formatEventDate(event.startDate)}</div>
+            </div>
+            <div className={styles.infoItem}>
+              <span>End:</span>
+              <div>{formatEventDate(event.endDate)}</div>
+            </div>
+            {/* Only show location if not a Group Hunt */}
+            {event.eventType !== 'grouphunt' && event.location && (
+              <div className={styles.infoItem}>
+                <span>Location:</span>
+                <div>{event.location}</div>
+              </div>
+            )}
+            {event.duration && (
+              <div className={styles.infoItem}>
+                <span>Duration:</span>
+                <div>{event.duration}</div>
+              </div>
+            )}
+            {event.scoring && (
+              <div className={styles.infoItem}>
+                <span>Scoring:</span>
+                <div>{event.scoring}</div>
+              </div>
+            )}
           </div>
-        )}
-        {event.scoring && (
-          <div className={styles.infoItem}>
-            <span>Scoring:</span>
-            <div>{event.scoring}</div>
-          </div>
-        )}
-      </div>
+        </>
+      )}
 
       {/* Nature Bonus */}
       {event.natureBonus?.length > 0 && (

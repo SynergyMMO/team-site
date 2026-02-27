@@ -656,30 +656,7 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
           </div>
             {showEncounterSections && (
             <NestedCategory
-              title={
-                <HoverTooltip
-                  content={
-                    stats.missingPokemon.length > 0 ? (
-                      <div>
-                        <div style={{ marginBottom: '0.5rem', fontWeight: '600' }}>
-                          {stats.missingPokemon.length} Pokemon without encounter data:
-                        </div>
-                        <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                          {stats.missingPokemon.map((p, idx) => (
-                            <div key={idx} style={{ marginBottom: '0.25rem' }}>
-                              • {p.Pokemon}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      'All Pokemon have encounter data!'
-                    )
-                  }
-                >
-                  General Statistics ({stats.shinyCount}/{stats.totalShinies})
-                </HoverTooltip>
-              }
+              title={`General Statistics (${stats.shinyCount}/${stats.totalShinies})`}
               icon="📊"
             >
               <div className={styles.statsGrid}>
