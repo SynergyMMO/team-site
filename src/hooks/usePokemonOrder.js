@@ -10,6 +10,8 @@ export function usePokemonOrder() {
   return useMemo(() => {
     // Define forms that are actually the standard/base form for navigation purposes
     const standardFormExceptions = {
+      'nidoran-f': true,
+      'nidoran-m': true,
       'meloetta-aria': true,
       'keldeo-ordinary': true,
       'tornadus-incarnate': true,
