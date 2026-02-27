@@ -20,6 +20,8 @@ export default function ThemesPage() {
   const [themeData, setThemeData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Store author filter globally for all tabs
+  const [authorFilter, setAuthorFilter] = useState('All');
 
   const WORKER_THEME_ENDPOINT = 'https://adminpage.hypersmmo.workers.dev/admin/themes';
 
@@ -50,8 +52,29 @@ export default function ThemesPage() {
       .replace(/(^-|-$)+/g, '');
   }
 
+
+  // Get unique authors for the current tab (must be above conditional returns)
+  const authors = React.useMemo(() => {
+    const items = Object.values(themeData[activeTab] || {});
+    const authorSet = new Set();
+    items.forEach(item => {
+      if (item.author) authorSet.add(item.author);
+    });
+    let authorList = Array.from(authorSet).sort();
+    // Always include the selected author if not present
+    if (authorFilter !== 'All' && authorFilter && !authorList.includes(authorFilter)) {
+      authorList = [authorFilter, ...authorList];
+    }
+    return ['All', ...authorList];
+  }, [themeData, activeTab, authorFilter]);
+
   const renderCardGrid = (itemsObj) => {
-    const items = Object.values(itemsObj || {});
+    let items = Object.values(itemsObj || {});
+    if (authorFilter !== 'All') {
+      items = items.filter((item) =>
+        item.author && item.author.toLowerCase().includes(authorFilter.toLowerCase())
+      );
+    }
     if (items.length === 0) return <div className={styles.empty}>No resources found.</div>;
 
     return (
@@ -81,8 +104,11 @@ export default function ThemesPage() {
     );
   };
 
+
   if (loading) return <div className="message">Loading themes...</div>;
   if (error) return <div className="message">Error loading themes: {error}</div>;
+
+
 
   return (
     <div className={styles.themesPage}>
@@ -102,6 +128,20 @@ export default function ThemesPage() {
             {tab.label}
           </button>
         ))}
+      </div>
+
+      <div className={styles.filterRow}>
+        <label htmlFor="authorFilter" className={styles.authorFilterLabel}>Filter by Author:</label>
+        <select
+          id="authorFilter"
+          className={styles.authorFilterSelect}
+          value={authorFilter}
+          onChange={e => setAuthorFilter(e.target.value)}
+        >
+          {authors.map(author => (
+            <option key={author} value={author}>{author}</option>
+          ))}
+        </select>
       </div>
 
       <div className={styles.tabContent}>

@@ -1,3 +1,37 @@
+/* Author filter dropdown styling */
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 16px 0;
+}
+
+.authorFilterLabel {
+  color: #ccc;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.authorFilterSelect {
+  padding: 0.4rem 1.2rem 0.4rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #9b59b6;
+  background: rgba(20, 10, 35, 0.85);
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.authorFilterSelect:focus {
+  border-color: #fff;
+}
+
+.authorFilterSelect option {
+  background: #2d1846;
+  color: #fff;
+}
 .themesPage {
   max-width: 1200px;
   margin: 0 auto;
