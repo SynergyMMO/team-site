@@ -598,6 +598,43 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
       <div className={styles.statisticsSection}>
       <h2 className={styles.mainTitle}>📊 Shiny Statistics</h2>
 
+      {/* Missing Pokémon Info - above dropdown */}
+      {stats.missingPokemon.length > 0 && (
+        <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center' }}>
+          <HoverTooltip
+            content={
+              <div style={{ maxWidth: 350 }}>
+                <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                  Pokémon missing required data:
+                </div>
+                <div style={{ maxHeight: 220, overflowY: 'auto', fontSize: 14 }}>
+                  {stats.missingPokemon.map((p, idx) => {
+                    const missingFields = [];
+                    if (!p.encounter_count || p.encounter_count === 0) missingFields.push('encounter');
+                    if (!p.location) missingFields.push('location');
+                     if (!p.type && !p.types) missingFields.push('method');
+                    return (
+                      <div key={idx} style={{ marginBottom: 2 }}>
+                        • {p.Pokemon}
+                        {missingFields.length > 0 && (
+                          <span style={{ color: '#ffb6b6', fontSize: 13, marginLeft: 4 }}>
+                            ({missingFields.join(', ')})
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            }
+          >
+            <span style={{ color: '#ffa8a8', fontWeight: 600, cursor: 'pointer', borderBottom: '1px dotted #ef4444' }}>
+              {stats.missingPokemon.length} Pokémon require encounter information to display full statistics.
+            </span>
+          </HoverTooltip>
+        </div>
+      )}
+
       {/* Main Statistics Dropdown */}
       <div className={styles.mainStatsDropdown}>
         <button
@@ -612,12 +649,6 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
         </button>
         {statsExpanded && (
           <div className={`${styles.mainStatsContent} ${statsClosing ? styles.closing : ''}`}>
-          {/* Info about missing Pokémon encounter data */}
-          {stats.missingPokemon.length > 0 && (
-            <div style={{ marginBottom: '0.5rem', color: '#ef4444', fontWeight: 600 }}>
-              {stats.missingPokemon.length} Pokémon require encounter information to display full statistics.
-            </div>
-          )}
           <div style={{ marginBottom: '1rem'}}>
             <a href="https://www.shinyboard.net/" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline', fontWeight: 'bold' }}>
               Encounter Data provided by Shinyboard API

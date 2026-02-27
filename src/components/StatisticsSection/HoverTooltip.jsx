@@ -1,27 +1,42 @@
 import { useState, useRef, useEffect } from 'react'
 import styles from './HoverTooltip.module.css'
 
-export default function HoverTooltip({ content, children }) {
+export default function HoverTooltip({ children, content }) {
+  const [showTooltip, setShowTooltip] = useState(false)
   const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 })
   const containerRef = useRef(null)
-  const [showTooltip, setShowTooltip] = useState(false)
+  const isOverRef = useRef(false)
+  const hideTimeout = useRef(null)
+
+  const handleEnter = () => {
+    isOverRef.current = true
+    if (hideTimeout.current) clearTimeout(hideTimeout.current)
+    setShowTooltip(true)
+  }
+
+  const handleLeave = () => {
+    isOverRef.current = false
+    hideTimeout.current = setTimeout(() => {
+      if (!isOverRef.current) setShowTooltip(false)
+    }, 120)
+  }
 
   useEffect(() => {
-    if (!showTooltip || !containerRef.current) return
-
-    const rect = containerRef.current.getBoundingClientRect()
-    setTooltipPos({
-      top: rect.top - 10,
-      left: rect.left + rect.width / 2,
-    })
+    if (showTooltip && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect()
+      setTooltipPos({
+        top: rect.top + window.scrollY,
+        left: rect.left + rect.width / 2 + window.scrollX,
+      })
+    }
   }, [showTooltip])
 
   return (
     <div
       className={styles.tooltipContainer}
       ref={containerRef}
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
     >
       {children}
       {showTooltip && (
@@ -32,8 +47,8 @@ export default function HoverTooltip({ content, children }) {
             left: tooltipPos.left,
             transform: 'translate(-50%, -100%)',
           }}
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
+          onMouseEnter={handleEnter}
+          onMouseLeave={handleLeave}
         >
           {content}
           <div className={styles.tooltipArrow} />

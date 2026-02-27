@@ -22,7 +22,7 @@
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
   opacity: 1;
   transition: opacity 0.3s ease;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .tooltipArrow {
