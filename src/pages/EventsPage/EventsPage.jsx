@@ -44,12 +44,13 @@ export default function EventsPage() {
 
   const now = new Date()
 
-  const ongoingEvents = events.filter(
+  const publishedEvents = events.filter(e => e.published != false)
+  const ongoingEvents = publishedEvents.filter(
     (e) => new Date(e.startDate) <= now && now <= new Date(e.endDate)
   )
-  let upcomingEvents = events.filter((e) => new Date(e.startDate) > now)
+  let upcomingEvents = publishedEvents.filter((e) => new Date(e.startDate) > now)
   upcomingEvents = upcomingEvents.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-  const pastEvents = events.filter((e) => new Date(e.endDate) < now)
+  const pastEvents = publishedEvents.filter((e) => new Date(e.endDate) < now)
 
   const renderEventGrid = (eventsArray) => (
     <div className={styles.grid}>

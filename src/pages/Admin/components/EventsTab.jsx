@@ -5,6 +5,7 @@ import ConfirmDialog from "./ConfirmDialog";
 
 export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutating }) {
   const emptyEvent = {
+    published: true,
     title: "",
     imageLink: "",
     eventType: "",
@@ -25,10 +26,9 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     secondPlacePrize: [],
     thirdPlacePrize: [],
     fourthPlacePrize: [],
-    // Hide and Seek specific
     hideAndSeekDescription: "",
     hideAndSeekRules: "",
-    hideAndSeekRounds: [], // [{ prize: '', host: '', winner: '' }]
+    hideAndSeekRounds: [], 
   };
 
   const [eventData, setEventData] = useState(emptyEvent);
@@ -41,7 +41,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     past: [],
   });
 
-  // ---------------- Sync localEvents with parent prop ----------------
   useEffect(() => {
     const eventsWithIds = eventDB.map((e) => ({
       ...emptyEvent,
@@ -78,7 +77,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     setCategorizedEvents({ ongoing, upcoming, past });
   };
 
-  // ---------------- Create / Update ----------------
   const handleCreateOrUpdate = async () => {
     if (!eventData.title || !eventData.startDate) return;
 
@@ -132,7 +130,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     setConfirmDelete(null);
   };
 
-  // ---------------- Dynamic List Helpers ----------------
   const addListItem = (field, defaultValue = "") =>
     setEventData((prev) => ({ ...prev, [field]: [...prev[field], defaultValue] }));
 
@@ -187,7 +184,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     setEventData((prev) => ({ ...prev, natureBonus: updated }));
   };
 
-  // ---------------- Render Helpers ----------------
   const renderEventList = (events) => {
     if (!events.length) return <p className={styles.hintText}>No events</p>;
     return (
@@ -219,7 +215,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     );
   };
 
-  // Hide and Seek round helpers
   const addHideAndSeekRound = () =>
     setEventData(prev => ({ ...prev, hideAndSeekRounds: [...(prev.hideAndSeekRounds || []), { prize: '', host: '', winner: '' }] }));
   const updateHideAndSeekRound = (index, key, value) => {
@@ -233,7 +228,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     setEventData(prev => ({ ...prev, hideAndSeekRounds: updated }));
   };
 
-  // ---------------- Render ----------------
   return (
     <div>
       <h3>{editingId ? "Edit Event" : "Create Event"}</h3>
@@ -255,7 +249,16 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
         </select>
 
 
-        {/* Basic Inputs */}
+        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+          <input
+            type="checkbox"
+            checked={!!eventData.published}
+            onChange={e => setEventData({ ...eventData, published: e.target.checked })}
+            style={{ marginRight: '8px' }}
+          />
+          Published
+        </label>
+
         <label>Name:</label>
         <input
           type="text"
@@ -289,7 +292,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           onChange={(e) => setEventData({ ...eventData, duration: e.target.value })}
         />
 
-{/* Hide and Seek Inputs */}
         {eventData.eventType === "hideandseek" && (
           <>
             <label>Description:</label>
@@ -359,7 +361,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           </>
         )}
 
-        {/* Dates (hidden for Hide and Seek) */}
         {eventData.eventType !== "hideandseek" && (
           <>
             <label>Start Date & Time:</label>
@@ -382,7 +383,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           </>
         )}
 
-        {/* Catch Event Bonuses */}
         {eventData.eventType === "catchevent" && (
           <>
             <label>Nature Bonus:</label>
@@ -427,7 +427,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           </>
         )}
 
-        {/* Group Hunt Target Pokémon */}
         {eventData.eventType === "grouphunt" && (
           <>
             <label>Target Pokémon(s):</label>
@@ -458,10 +457,8 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           </>
         )}
 
-        {/* Staff, Winners, and Prizes are not shown for Hide and Seek */}
         {eventData.eventType !== "hideandseek" && (
           <>
-            {/* Staff */}
             <label>Participating Staff:</label>
             {eventData.participatingStaff.map((s, i) => (
               <div key={i} className={styles.inputRow}>
@@ -476,7 +473,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
             ))}
             <button className={styles.editBtn} onClick={() => addListItem("participatingStaff")}>Add Staff</button>
 
-            {/* Winners by Place */}
             {["firstPlaceWinners", "secondPlaceWinners", "thirdPlaceWinners", "fourthPlaceWinners"].map((field, idx) => (
               <div key={field}>
                 <label>{["1st", "2nd", "3rd", "4th"][idx]} Place Winner(s):</label>
@@ -495,7 +491,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
               </div>
             ))}
 
-            {/* Prizes */}
             {["firstPlacePrize", "secondPlacePrize", "thirdPlacePrize", "fourthPlacePrize"].map((field, idx) => (
               <div key={field}>
                 <label>{["1st", "2nd", "3rd", "4th"][idx]} Place Prize(s):</label>

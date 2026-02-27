@@ -139,7 +139,6 @@ export default function EventsDetail() {
               <h3>Rounds</h3>
               <div className={styles.roundsCardGrid}>
                 {event.hideAndSeekRounds.map((round, i) => {
-                  // Try to show a Pokémon gif for host if it matches a Pokémon name
                   let hostImg = null;
                   if (round.host && /^[a-zA-Z0-9 .'-]+$/.test(round.host)) {
                     const imgName = round.host.toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -192,7 +191,6 @@ export default function EventsDetail() {
         </>
       ) : (
         <>
-          {/* Basic Info */}
           <div className={styles.info}>
             <div className={styles.infoItem}>
               <span>Start:</span>
