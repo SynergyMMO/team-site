@@ -1,26 +1,3 @@
-#!/usr/bin/env node
-
-/**
- * Node.js script to merge ShinyBoard API data with Cloudflare database and push updates.
- * 
- * This script automatically loads all users from the Cloudflare database and merges their
- * ShinyBoard API data. You can customize username mappings in the USERNAME_MAPPING config.
- * 
- * Usage:
- *   node scripts/mergeShinyData.js              # Merges all users from database and pushes to Cloudflare
- *   node scripts/mergeShinyData.js --test       # Outputs to file for verification (no push)
- *   node scripts/mergeShinyData.js --users Hyper,Jesse  # Custom users only (overrides database list)
- *   node scripts/mergeShinyData.js --fields ivs,nature  # Custom fields to merge
- *   node scripts/mergeShinyData.js --test --fields ivs,nature  # Test with custom fields
- */
-
-// ============================================================================
-// CONFIGURATION - Easy to modify
-// ============================================================================
-
-/**
- * Fields to grab from the API and merge into existing Cloudflare data.
- */
 const FIELDS_TO_MERGE = [
   'ivs',
   'nature',
@@ -31,10 +8,6 @@ const FIELDS_TO_MERGE = [
   'nickname',
 ];
 
-/**
- * All possible fields that can be merged from the API.
- * Used to identify and remove fields that are no longer in FIELDS_TO_MERGE.
- */
 const ALL_MERGEABLE_FIELDS = [
   'ivs',
   'nature',
@@ -46,51 +19,16 @@ const ALL_MERGEABLE_FIELDS = [
   'variant',
 ];
 
-/**
- * Username mapping for ShinyBoard API lookups.
- * 
- * If a user's name in the database doesn't match their ShinyBoard username,
- * add an entry here to tell the script which ShinyBoard username to use.
- * 
- * Format: "DatabaseName": "ShinyBoardUsername"
- * 
- * Example:
- *   "Matty": "Matt",        // Uses "Matt" when fetching from ShinyBoard API for "Matty"
- *   "Jay": "JayStorm",      // Uses "JayStorm" when fetching from ShinyBoard API for "Jay"
- * 
- * Users NOT in this map will use their database name as-is on ShinyBoard.
- * Leave empty {} if all database names match ShinyBoard names exactly.
- */
 const USERNAME_MAPPING = {
-  // Add overrides here as needed
-  // Example: "Hyper": "HyperTheKing",
+
 };
 
-/**
- * Users to fetch and merge data for.
- * 
- * DYNAMIC: This list is automatically populated from the Cloudflare database.
- * All users in the database's shiny_database key will be processed.
- * 
- * This can be overridden via command-line:
- *   node scripts/mergeShinyData.js --users User1,User2,User3
- */
 let USERS_TO_PROCESS = [];
 
 
-/**
- * Default mode: 'update' pushes to Cloudflare, 'test' outputs to file
- */
 const DEFAULT_MODE = 'update';
 
-/**
- * Output file path for test mode
- */
 const OUTPUT_FILE_PATH = './merged_shiny_data.json';
-
-// ============================================================================
-// IMPORTS & SETUP
-// ============================================================================
 
 import fs from 'fs';
 import path from 'path';
@@ -104,13 +42,10 @@ const __dirname = path.dirname(__filename);
 // HELPER FUNCTIONS
 // ============================================================================
 
-/**
- * Simple argument parser
- */
 function parseArgs(args) {
   const parsed = {
     mode: DEFAULT_MODE,
-    users: [],  // Start with empty - will be populated from database if not provided
+    users: [], 
     fields: FIELDS_TO_MERGE,
   };
 
@@ -133,56 +68,31 @@ function parseArgs(args) {
   return parsed;
 }
 
-/**
- * Normalizes a username for matching purposes (lowercase, trim whitespace).
- * This allows case-insensitive and whitespace-insensitive matching.
- */
 function normalizeUsername(name) {
   return (name || '').toLowerCase().trim();
 }
 
-/**
- * Normalizes Pokémon names by removing known form suffixes.
- * This allows matching Pokémon with variants during merge.
- * 
- * Examples:
- *   - "frillish-f" → "frillish"
- *   - "jellicent-f" → "jellicent"
- *   - "gastrodon-east" → "gastrodon"
- *   - "rotom-heat" → "rotom"
- *   - "pikachu" → "pikachu" (no change if no suffix)
- */
 function normalizePokemonName(name) {
   if (!name) return name;
-  
-  const normalized = name.toLowerCase();
-  
-  // Remove known form suffixes
-  // Patterns: -f (female), -east/-west (regional), -north/-south, 
-  // -alola, -galar, -heat, -wash, -frost, -fan, -mow, etc.
-  const suffixes = [
-    /-[a-z]+$/i  // Remove any hyphen followed by letters (catches all variants)
-  ];
-  
-  let result = normalized;
-  for (const suffix of suffixes) {
-    // Only remove if it looks like a form suffix (not the main name)
-    const match = result.match(suffix);
-    if (match) {
-      const baseName = result.replace(suffix, '');
-      // Only remove if we'd have a reasonable base name left
-      if (baseName && baseName.length > 1) {
-        result = baseName;
-      }
+
+  let normalized = name.toLowerCase().trim();
+
+  normalized = normalized
+    .replace('♀', '-f')
+    .replace('♂', '-m');
+
+  const suffixMatch = normalized.match(/-[a-z]+$/i);
+  if (suffixMatch) {
+    const baseName = normalized.replace(/-[a-z]+$/i, '');
+    if (baseName && baseName.length > 1) {
+      normalized = baseName;
     }
   }
-  
-  return result;
+
+  return normalized;
 }
 
-/**
- * Logs with colors (basic ANSI colors)
- */
+
 function log(message, type = 'info') {
   const colors = {
     info: '\x1b[36m',    // Cyan
@@ -196,9 +106,6 @@ function log(message, type = 'info') {
   console.log(`${color}${message}${colors.reset}`);
 }
 
-/**
- * Prompts user for username and password via CLI
- */
 function promptCredentials() {
   return new Promise((resolve) => {
     const rl = readline.createInterface({
@@ -219,24 +126,18 @@ function promptCredentials() {
 // API FETCH FUNCTIONS
 // ============================================================================
 
-/**
- * Fetches shiny data from the ShinyBoard API for a specific player.
- * Fetches all pages in parallel for speed.
- */
 async function grabShinyData(playerName) {
   const results = [];
   const pagesToFetch = [];
   let pageNum = 1;
   let hasMore = true;
 
-  // First, fetch the initial page to discover how many pages exist
   try {
     const initialUrl = `https://shinyboard.net/api/users/${playerName}/shinies?page=1`;
     const response = await fetch(initialUrl);
     if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
     const data = await response.json();
 
-    // Collect initial page data
     if (data.shinies && Array.isArray(data.shinies)) {
       data.shinies.forEach((shiny) => {
         results.push({
@@ -248,13 +149,11 @@ async function grabShinyData(playerName) {
           ivs: shiny.ivs,
           nature: shiny.nature,
           location: shiny.location,
-          pokemon_name: (shiny.pokemon?.name || '').toLowerCase()
-            .replace(/♀/g, '-f').replace(/♂/g, '-m'),
+          pokemon_name: (shiny.pokemon?.name || '').toLowerCase(),
         });
       });
     }
 
-    // If there are more pages, queue them for parallel fetching
     if (data.next_page_url) {
       let nextUrl = data.next_page_url;
       while (nextUrl) {
@@ -264,16 +163,11 @@ async function grabShinyData(playerName) {
         if (pageMatch) {
           const currentPage = parseInt(pageMatch[1]);
           nextUrl = `https://shinyboard.net/api/users/${playerName}/shinies?page=${currentPage + 1}`;
-          // We don't know yet if this page exists, so we'll try to fetch it
-          // Actually, we should just fetch what we know exists from next_page_url
-          // Let's use a different approach - keep following next_page_url
         }
-        // Break after one since we need to fetch sequentially to find the end
         break;
       }
     }
 
-    // Fetch remaining pages in parallel
     if (pagesToFetch.length > 0) {
       const promises = pagesToFetch.map(async (url) => {
         try {
@@ -298,9 +192,6 @@ async function grabShinyData(playerName) {
   }
 }
 
-/**
- * Helper to recursively fetch all pages starting from a given URL.
- */
 async function fetchAllPagesFromUrl(url, playerName) {
   const results = [];
   let currentUrl = url;
@@ -322,8 +213,7 @@ async function fetchAllPagesFromUrl(url, playerName) {
             ivs: shiny.ivs,
             nature: shiny.nature,
             location: shiny.location,
-            pokemon_name: (shiny.pokemon?.name || '').toLowerCase()
-              .replace(/♀/g, '-f').replace(/♂/g, '-m'),
+            pokemon_name: (shiny.pokemon?.name || '').toLowerCase(),
           });
         });
       }
@@ -338,9 +228,6 @@ async function fetchAllPagesFromUrl(url, playerName) {
   return results;
 }
 
-/**
- * Fetches the entire Cloudflare database.
- */
 async function fetchCloudflareDatabase() {
   try {
     const response = await fetch('https://adminpage.hypersmmo.workers.dev/admin/database');
@@ -356,9 +243,6 @@ async function fetchCloudflareDatabase() {
 // DATA MERGING LOGIC
 // ============================================================================
 
-/**
- * Extracts configurable fields from API data.
- */
 function extractApiFields(apiShiny, fieldsToMerge) {
   const extracted = {};
   fieldsToMerge.forEach((field) => {
@@ -369,12 +253,6 @@ function extractApiFields(apiShiny, fieldsToMerge) {
   return extracted;
 }
 
-/**
- * Merges API data into Cloudflare data for a single user.
- * Also removes any mergeable fields that are no longer in fieldsToMerge.
- * Uses normalized Pokémon names for matching to handle form variants (-f, -east, etc).
- * Returns both the merged data and a log of what changed.
- */
 function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
   if (!cloudflareUserData || !cloudflareUserData.shinies) {
     return {
@@ -383,47 +261,39 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
     };
   }
 
-  // Determine which fields to remove (API fields not in current merge list)
   const fieldsToRemove = new Set(ALL_MERGEABLE_FIELDS.filter(f => !fieldsToMerge.includes(f)));
 
-  // Build two lookup maps: exact name and normalized (for form variant fallback).
-  // Exact match is tried first so gendered species (nidoran-f, nidoran-m) are never
-  // conflated with each other or with a non-existent base name.
-  const exactApiData = {};
-  const normalizedApiData = {};
+  const pokemonToApiData = {};
+  const pokemonCount = {};
 
   apiShinies.forEach((apiShiny) => {
     const pokemonName = apiShiny.pokemon_name;
     if (!pokemonName) return;
 
-    if (!exactApiData[pokemonName]) exactApiData[pokemonName] = [];
-    exactApiData[pokemonName].push(apiShiny);
-
+    // Normalize the name for matching purposes
     const normalizedName = normalizePokemonName(pokemonName);
-    if (normalizedName !== pokemonName) {
-      if (!normalizedApiData[normalizedName]) normalizedApiData[normalizedName] = [];
-      normalizedApiData[normalizedName].push(apiShiny);
+
+    if (!pokemonCount[normalizedName]) {
+      pokemonCount[normalizedName] = 0;
+      pokemonToApiData[normalizedName] = [];
     }
+
+    pokemonToApiData[normalizedName][pokemonCount[normalizedName]] = apiShiny;
+    pokemonCount[normalizedName]++;
   });
 
-  // Merge: Iterate through Cloudflare shinies and add API data
   const mergedShinies = { ...cloudflareUserData.shinies };
   const changeLog = [];
 
   Object.keys(mergedShinies).forEach((shinyIndex) => {
     const cloudflareShiny = mergedShinies[shinyIndex];
     const pokemonName = cloudflareShiny.Pokemon.toLowerCase();
+    
+    const normalizedName = normalizePokemonName(pokemonName);
 
-    // Try exact match first, then fall back to normalized (handles frillish-f → frillish, etc.)
-    const matchQueue = exactApiData[pokemonName]?.length
-      ? exactApiData[pokemonName]
-      : normalizedApiData[normalizePokemonName(pokemonName)];
-
-    // Start with existing shiny and remove fields that are no longer being merged
     let newShiny = { ...cloudflareShiny };
     let fieldsChanged = [];
 
-    // Track removed fields
     fieldsToRemove.forEach(field => {
       if (newShiny.hasOwnProperty(field)) {
         fieldsChanged.push(`removed ${field}`);
@@ -431,16 +301,17 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
       }
     });
 
-    if (matchQueue && matchQueue.length > 0) {
-      const apiShiny = matchQueue.shift();
+    if (
+      pokemonToApiData[normalizedName] &&
+      pokemonToApiData[normalizedName].length > 0
+    ) {
+      const apiShiny = pokemonToApiData[normalizedName].shift();
       const apiFields = extractApiFields(apiShiny, fieldsToMerge);
       
-      // Track what fields were updated
       Object.keys(apiFields).forEach(field => {
         const oldValue = cloudflareShiny[field];
         const newValue = apiFields[field];
         
-        // Only log if the value actually changed
         if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
           fieldsChanged.push(field);
         }
@@ -452,7 +323,6 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
       };
     }
 
-    // Only add to change log if something actually changed
     if (fieldsChanged.length > 0) {
       changeLog.push({
         pokemon: cloudflareShiny.Pokemon,
@@ -476,9 +346,6 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
 // DATABASE UPDATE & FILE OUTPUT
 // ============================================================================
 
-/**
- * Writes merged data to a local JSON file.
- */
 function writeToFile(data, filePath) {
   try {
     // Resolve to absolute path if relative
@@ -495,9 +362,6 @@ function writeToFile(data, filePath) {
   }
 }
 
-/**
- * Updates the real Cloudflare database.
- */
 async function updateCloudflareDatabase(updatedDatabase, username, password) {
   try {
     const response = await fetch(
@@ -532,9 +396,6 @@ async function updateCloudflareDatabase(updatedDatabase, username, password) {
 // MAIN ORCHESTRATION FUNCTION
 // ============================================================================
 
-/**
- * Main function that orchestrates the entire merge process.
- */
 async function mergeShinyData(users, fields, mode, outputPath, username = null, password = null) {
   try {
     // Step 0: Fetch Cloudflare database early to extract users if needed
@@ -545,8 +406,14 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
 
     // If users were not provided via CLI, extract them from the database
     if (!users || users.length === 0) {
-      users = Object.keys(cloudflareDb);
-      log(`📋 Automatically using all ${users.length} users from database`, 'info');
+      let allUsers = Object.keys(cloudflareDb);
+      if (mode === 'test') {
+        users = allUsers.slice(0, 5);
+        log(`📋 TEST MODE: Using top 5 users from database: ${users.join(', ')}`, 'info');
+      } else {
+        users = allUsers;
+        log(`📋 Automatically using all ${users.length} users from database`, 'info');
+      }
     } else {
       log(`📋 Processing configured users: ${users.join(', ')}`, 'info');
     }
@@ -554,11 +421,8 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
     log(`📦 Fields to merge: ${fields.join(', ')}`, 'info');
     log(`⚙️  Mode: ${mode === 'test' ? 'TEST (output to file)' : 'UPDATE (real database)'}`, 'warning');
 
-    // Step 1: Fetch API data for all users IN PARALLEL
-    // Apply USERNAME_MAPPING to get the correct ShinyBoard username
     log('\n📥 Fetching API data...', 'info');
     const userPromises = users.map(async (user) => {
-      // Check if this user has a mapped ShinyBoard name
       const shinyboardUsername = USERNAME_MAPPING[user] || user;
       process.stdout.write(`  → Fetching ${shinyboardUsername}${USERNAME_MAPPING[user] ? ` (mapped from "${user}")` : ''}...`);
       try {
@@ -573,8 +437,6 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
 
     const userResults = await Promise.all(userPromises);
     const apiDataMap = Object.fromEntries(userResults);
-
-    // Step 2: Create mapping from normalized names to actual database names
     log('\n🔍 Creating name mappings...', 'info');
     const normalizedToActualName = {};
     Object.keys(cloudflareDb).forEach(actualName => {
@@ -582,7 +444,6 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
       normalizedToActualName[normalized] = actualName;
     });
 
-    // Step 3: Merge data for each configured user
     log('\n🔀 Merging data...', 'info');
     const mergedDatabase = { ...cloudflareDb };
     let mergeCount = 0;
@@ -616,7 +477,6 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
         totalChangedPokemon += changes.length;
         log(`  ✓ ${actualName}: ${changes.length} Pokémon updated`, 'success');
         
-        // Log detailed changes for this user
         changes.forEach(change => {
           log(`     → ${change.pokemon}: ${change.fields.join(', ')}`, 'info');
         });
@@ -627,10 +487,8 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
       mergeCount++;
     }
 
-    // Step 4: Handle output (file or database)
     if (mode === 'test') {
       log('\n💾 Writing to file (TEST MODE)...', 'info');
-      // Only output the configured users for testing
       const testOutput = {};
       for (const user of users) {
         const actualName = normalizedToActualName[normalizeUsername(user)];
@@ -646,12 +504,9 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
       log('Then run the real push:', 'info');
       log('   node scripts/mergeShinyData.js', 'info');
     } else {
-      // Update mode - push to Cloudflare
       log('\n📢 NOTICE: Merging configured users and pushing to Cloudflare...', 'warning');
       log(`📨 Processing users: ${users.join(', ')}`, 'info');
       log(`📊 All other ${Object.keys(cloudflareDb).length - users.length} users remain unchanged.`, 'info');
-      
-      // Prompt for credentials if not provided
       if (!username || !password) {
         const credentials = await promptCredentials();
         username = credentials.username;
@@ -661,7 +516,6 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
       log('\n⏳ Pushing to Cloudflare in 5 seconds...', 'warning');
       log('   Press Ctrl+C now to cancel', 'warning');
 
-      // Safety countdown
       await new Promise(resolve => setTimeout(resolve, 5000));
 
       log('\n🔄 Pushing merged data to Cloudflare...', 'info');
@@ -670,7 +524,6 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
       log('🎉 All configured users now have merged API data.', 'success');
     }
 
-    // Summary
     log('\n📊 Summary:', 'info');
     log(`   Users processed: ${mergeCount}`, 'info');
     log(`   Users skipped: ${skipCount}`, 'info');
