@@ -25,6 +25,7 @@
     "sitemap": "node src/utils/sitemap-builder.js",
     "MergeData": "node scripts/mergeShinyData.js",
     "TestMergeData": "node scripts/mergeShinyData.js --test",
+    "MergeUserData": "node scripts/mergeShinyData.js --user=%npm_config_user%",
     "resourceeditor": "node scripts/resourcesEditorServer.mjs"
   },
   "dependencies": {

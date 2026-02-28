@@ -494,3 +494,32 @@ The script fetches from two endpoints:
 Refer back to the requirements section at the top of this guide or examine:
 - [src/hooks/useShinyData.js](./src/hooks/useShinyData.js) - Detailed comments in code
 - [scripts/mergeShinyData.js](./scripts/mergeShinyData.js) - CLI implementation
+
+---
+
+## Merging Data for a Specific User
+
+You can merge shiny data for a single user using either the Node.js script or the NPM command. This is useful for updating or testing data for just one user without affecting others.
+
+### Using Node.js Directly
+
+```bash
+node scripts/mergeShinyData.js --user=USERNAME
+```
+Replace `USERNAME` with the exact username you want to process.
+
+### Using NPM Script (Windows)
+
+```bash
+npm run MergeUserData --user=USERNAME
+```
+- This will merge shiny data for only the specified user.
+- The username is passed using the `--user` argument.
+- Example:
+  ```bash
+  npm run MergeUserData --user=TheBulbasaurGuy
+  ```
+
+#### Notes
+- On Windows, the script is configured to use `%npm_config_user%` so the username is passed correctly.
+- If you encounter issues, you can always use the Node.js direct command as shown above.

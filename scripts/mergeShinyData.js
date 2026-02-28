@@ -45,9 +45,14 @@ const __dirname = path.dirname(__filename);
 function parseArgs(args) {
   const parsed = {
     mode: DEFAULT_MODE,
-    users: [], 
+    users: [],
     fields: FIELDS_TO_MERGE,
   };
+
+  // First, check for npm_config_user (set by npm run on Windows)
+  if (process.env.npm_config_user) {
+    parsed.users = [process.env.npm_config_user.trim()];
+  }
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -62,6 +67,11 @@ function parseArgs(args) {
     } else if (arg === '--fields' && args[i + 1]) {
       parsed.fields = args[i + 1].split(',').map(f => f.trim());
       i++;
+    } else if (arg === '--user' && args[i + 1]) {
+      parsed.users = [args[i + 1].trim()];
+      i++;
+    } else if (arg.startsWith('--user=')) {
+      parsed.users = [arg.split('=')[1].trim()];
     }
   }
 
@@ -557,4 +567,7 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
 const args = parseArgs(process.argv.slice(2));
 
 log('', 'info');
+if (args.users && args.users.length > 0) {
+  log(`Merging data for user(s): ${args.users.join(', ')}`, 'info');
+}
 mergeShinyData(args.users, args.fields, args.mode, OUTPUT_FILE_PATH, null, null);
