@@ -309,6 +309,21 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
               onChange={e => setEventData({ ...eventData, startDate: e.target.value })}
               onFocus={e => e.target.showPicker?.()}
             />
+
+            <label>Participating Staff:</label>
+            {eventData.participatingStaff.map((s, i) => (
+              <div key={i} className={styles.inputRow}>
+                <input
+                  placeholder="Staff Name"
+                  className={styles.adminInput}
+                  value={s || ""}
+                  onChange={e => updateListItem("participatingStaff", i, e.target.value)}
+                />
+                <button className={styles.deleteBtn} onClick={() => removeListItem("participatingStaff", i)}>Remove</button>
+              </div>
+            ))}
+            <button className={styles.editBtn} onClick={() => addListItem("participatingStaff")}>Add Staff</button>
+
             <label>Rounds:</label>
             {(eventData.hideAndSeekRounds || []).map((round, i) => (
               <div key={i} className={styles.inputRow}>
