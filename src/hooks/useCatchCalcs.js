@@ -13,9 +13,6 @@ function normalizeName(name) {
     .replace(/^-+|-+$/g, "");
 }
 
-/* =========================
-   Catch Rate Lookup (PURE)
-========================= */
 export function getCatchRateByName(name) {
   if (!name) return null;
 
@@ -40,9 +37,6 @@ export function getCatchRateByName(name) {
   return null;
 }
 
-/* =========================
-   Ball Data
-========================= */
 
 const ballCosts = {
   "Pokéball": 1,
