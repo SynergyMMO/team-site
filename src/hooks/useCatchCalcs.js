@@ -12,7 +12,7 @@ function normalizeName(name) {
     .replace(/-+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
-
+ 
 export function getCatchRateByName(name) {
   if (!name) return null;
 
