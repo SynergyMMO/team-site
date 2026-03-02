@@ -118,11 +118,30 @@ export default function BountiesPage() {
   );
   const permBounties = bounties.filter(b => b.perm === true || b.type === 'perm');
 
+  // Get gif for the first bounty's Pokémon, fallback to default if not found
+  let ogImage = 'https://synergymmo.com/images/openGraph.jpg';
+  if (bounties.length > 0 && bounties[0].pokemon) {
+    // Try to get the gif from usePokemonSprites
+    const sprites = usePokemonSprites(bounties[0].pokemon);
+    if (sprites && sprites['generation-v']) {
+      const genVSprites = sprites['generation-v'];
+      const gif = genVSprites.find(s => s.type === 'gif' && s.url);
+      if (gif) ogImage = gif.url;
+    } else if (sprites) {
+      for (const gen of Object.keys(sprites)) {
+        const sprite = sprites[gen].find(s => s.url);
+        if (sprite) {
+          ogImage = sprite.url;
+          break;
+        }
+      }
+    }
+  }
   useDocumentHead({
     title: 'Bounties',
     description: 'Participate in Team Synergy monthly and permanent bounties. Complete shiny hunting challenges, earn rewards, and join the community competition. View current and past bounties for all members.',
     canonicalPath: '/bounties',
-    ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+    ogImage,
     url: 'https://synergymmo.com/bounties/',
     keywords: 'PokeMMO bounties, shiny bounties, Team Synergy bounties, monthly bounties, permanent bounties, shiny hunting challenges, PokeMMO events, Team Synergy rewards',
     author: 'Team Synergy - PokeMMO Community',

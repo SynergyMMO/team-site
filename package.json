@@ -26,12 +26,15 @@
     "MergeData": "node scripts/mergeShinyData.js",
     "TestMergeData": "node scripts/mergeShinyData.js --test",
     "MergeUserData": "node scripts/mergeShinyData.js --user=%npm_config_user%",
-    "resourceeditor": "node scripts/resourcesEditorServer.mjs"
+    "resourceeditor": "node scripts/resourcesEditorServer.mjs",
+    "sendBountiesToDiscord": "node scripts/sendBountiesToDiscord.js"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",
     "@tanstack/react-virtual": "^3.13.18",
+    "get-image-colors": "^4.0.1",
     "jszip": "^3.10.1",
+    "node-fetch": "^2.7.0",
     "omggif": "^1.0.10",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
