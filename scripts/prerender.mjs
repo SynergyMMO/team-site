@@ -1457,12 +1457,12 @@ async function prerender() {
 
   // Static route OG overrides with CRAWLER LINKS
   const STATIC_META = {
-        '/shiny-odds': {
-          route: '/shiny-odds',
-          ogTitle: 'Advanced Shiny Odds Calculator | Team Synergy - PokeMMO',
-          ogDescription: 'shiny odds calculator with boosts and probability graph. Calculate your odds for any shiny hunt in PokeMMO for max COPE.',
-          ogImage: 'https://synergymmo.com/images/openGraph.jpg'
-        },
+    '/shiny-odds': {
+      route: '/shiny-odds',
+      ogTitle: 'Advanced Shiny Odds Calculator | Team Synergy - PokeMMO',
+      ogDescription: 'shiny odds calculator with boosts and probability graph. Calculate your odds for any shiny hunt in PokeMMO for max COPE.',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg'
+    },
     '/LnyCatchCalc': {
       route: '/LnyCatchCalc',
       ogTitle: 'LNY Catch Calculator | Team Synergy - PokeMMO',
@@ -1566,7 +1566,7 @@ async function prerender() {
       route: '/bounties',
       ogTitle: 'Team Synergy Bounties | Shiny Hunting Challenges - PokeMMO',
       ogDescription: 'Participate in Team Synergy monthly and permanent bounties. Complete shiny hunting challenges, earn rewards, and join the community competition. View current and past bounties for all members.',
-      ogImage: 'https://synergymmo.com/images/openGraph.jpg'
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif'
     },
   };
 

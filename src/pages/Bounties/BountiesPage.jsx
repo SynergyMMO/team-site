@@ -46,7 +46,8 @@ function PokemonSprite({ name }) {
 
 export default function BountiesPage() {
   const [{ month, year }, setMonthYear] = useState(getCurrentMonthYear());
-  const [bounties, setBounties] = useState([]);
+  // Bounties are now stored as { March: [...], Perm: [...] }
+  const [bounties, setBounties] = useState({ March: [], Perm: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [view, setView] = useState('monthly'); // "monthly" or "permanent"
@@ -59,25 +60,34 @@ export default function BountiesPage() {
     fetch(`${API.bounties}?month=${month}&year=${year}`)
       .then(res => res.json())
       .then(data => {
-        setBounties(data);
-        setLoading(false);
-        // Extract all available months/years from bounties
-        if (Array.isArray(data)) {
-          const months = data
-            .filter(b => b.month && b.year)
-            .map(b => ({
-              month: new Date(`${b.month} 1, ${b.year}`).getMonth() + 1,
-              year: Number(b.year)
-            }));
-          // Remove duplicates
-          const uniqueMonths = Array.from(
-            new Set(months.map(m => `${m.year}-${m.month}`))
-          ).map(str => {
-            const [y, m] = str.split('-');
-            return { year: Number(y), month: Number(m) };
-          });
-          setAvailableMonths(uniqueMonths);
+        // If data is not in category format, convert it
+        let formatted = { March: [], Perm: [] };
+        if (data && typeof data === 'object' && (data.March || data.Perm)) {
+          formatted = {
+            March: Array.isArray(data.March) ? data.March : [],
+            Perm: Array.isArray(data.Perm) ? data.Perm : []
+          };
+        } else if (Array.isArray(data)) {
+          formatted.March = data.filter(b => b.month && b.month.toLowerCase() === 'march');
+          formatted.Perm = data.filter(b => b.perm);
         }
+        setBounties(formatted);
+        setLoading(false);
+        // Extract all available months/years from March bounties
+        const months = formatted.March
+          .filter(b => b.month && b.year)
+          .map(b => ({
+            month: new Date(`${b.month} 1, ${b.year}`).getMonth() + 1,
+            year: Number(b.year)
+          }));
+        // Remove duplicates
+        const uniqueMonths = Array.from(
+          new Set(months.map(m => `${m.year}-${m.month}`))
+        ).map(str => {
+          const [y, m] = str.split('-');
+          return { year: Number(y), month: Number(m) };
+        });
+        setAvailableMonths(uniqueMonths);
       })
       .catch(() => {
         setError('Failed to load bounties');
@@ -113,13 +123,11 @@ export default function BountiesPage() {
   };
 
   const currentMonthName = getMonthName(month);
-  const currentMonthBounties = bounties.filter(
-    b => b.month && b.month.toLowerCase() === currentMonthName.toLowerCase()
-  );
-  const permBounties = bounties.filter(b => b.perm === true || b.type === 'perm');
+  const currentMonthBounties = (bounties.March || []);
+  const permBounties = (bounties.Perm || []).filter(b => b.perm === true || b.type === 'perm');
 
-  // Always call hooks in the same order
-  const firstBountyPokemon = bounties.length > 0 && bounties[0].pokemon ? bounties[0].pokemon : null;
+  // Use first March bounty for ogImage
+  const firstBountyPokemon = (bounties.March && bounties.March.length > 0 && bounties.March[0].pokemon) ? bounties.March[0].pokemon : null;
   const firstBountySprites = usePokemonSprites(firstBountyPokemon);
   const ogImage = useMemo(() => {
     if (!firstBountyPokemon || !firstBountySprites) return 'https://synergymmo.com/images/openGraph.jpg';
@@ -190,25 +198,25 @@ export default function BountiesPage() {
             <ul className={styles['bounty-list']}>
                 {currentMonthBounties.map((b, i) => (
                 <li
-                    className={`${styles['bounty-card']} ${b.claimed ? styles.claimed : ''}`}
-                    key={b.id || b.pokemon + b.host + i}
+                  className={`${styles['bounty-card']} ${b.claimed ? styles.claimed : ''}`}
+                  key={b.id || b.pokemon + b.host + i}
                 >
-                    {/* Inner wrapper for content */}
-                    <div className={styles['bounty-card-inner']}>
-                    <PokemonSprite name={b.pokemon} />
-                    <div className={styles['bounty-title']}>{b.pokemon}</div>
-                    <div className={styles['bounty-host']}>Host: {b.host}</div>
-                    <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
-                    <div className={styles['bounty-description']}>{b.description}</div>
-                    </div>
+                  {/* Inner wrapper for content */}
+                  <div className={styles['bounty-card-inner']}>
+                  <PokemonSprite name={b.pokemon} />
+                  <div className={styles['bounty-title']}>{b.pokemon}</div>
+                  <div className={styles['bounty-host']}>Host: {b.host}</div>
+                  <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
+                  <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
+                  </div>
 
-                    {/* Claimed overlay and text outside inner div */}
-                    {b.claimed && (
-                    <>
-                        <div className={styles['bounty-claimed']}><em>Claimed by: {b.claimed}</em></div>
-                        <div className={styles['bounty-overlay']}>CLAIMED</div>
-                    </>
-                    )}
+                  {/* Claimed overlay and text outside inner div */}
+                  {b.claimed && (
+                  <>
+                    <div className={styles['bounty-claimed']}><em>Claimed by: {b.claimed}</em></div>
+                    <div className={styles['bounty-overlay']}>CLAIMED</div>
+                  </>
+                  )}
                 </li>
                 ))}
             </ul>
@@ -225,24 +233,24 @@ export default function BountiesPage() {
             <ul className={styles['bounty-list']}>
               {permBounties.map((b, i) => (
                 <li
-                    className={`${styles['bounty-card']} ${b.claimed ? styles.claimed : ''}`}
-                    key={b.id || b.pokemon + b.host + i}
+                  className={`${styles['bounty-card']} ${b.claimed ? styles.claimed : ''}`}
+                  key={b.id || b.pokemon + b.host + i}
                 >
-                    {/* Inner wrapper for content */}
-                    <div className={styles['bounty-card-inner']}>
-                    <PokemonSprite name={b.pokemon} />
-                    <div className={styles['bounty-title']}>{b.pokemon}</div>
-                    <div className={styles['bounty-host']}>Host: {b.host}</div>
-                    <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
-                    <div className={styles['bounty-description']}>{b.description}</div>
-                    </div>
+                  {/* Inner wrapper for content */}
+                  <div className={styles['bounty-card-inner']}>
+                  <PokemonSprite name={b.pokemon} />
+                  <div className={styles['bounty-title']}>{b.pokemon}</div>
+                  <div className={styles['bounty-host']}>Host: {b.host}</div>
+                  <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
+                  <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
+                  </div>
 
-                    {/* Claimed overlay and text outside inner div */}
-                    {b.claimed && (
-                    <>
-                        <div className={styles['bounty-claimed']}><em>Claimed by: {b.claimed}</em></div>
-                    </>
-                    )}
+                  {/* Claimed overlay and text outside inner div */}
+                  {b.claimed && (
+                  <>
+                    <div className={styles['bounty-claimed']}><em>Claimed by: {b.claimed}</em></div>
+                  </>
+                  )}
                 </li>
               ))}
             </ul>

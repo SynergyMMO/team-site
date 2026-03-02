@@ -32,6 +32,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",
     "@tanstack/react-virtual": "^3.13.18",
+    "discord.js": "^14.25.1",
     "get-image-colors": "^4.0.1",
     "jszip": "^3.10.1",
     "node-fetch": "^2.7.0",

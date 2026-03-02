@@ -23,7 +23,8 @@ export default function useAdminDB(auth) {
   const [eventDB, setEventDB] = useState([]);
   const [themesDB, setThemesDB] = useState({});
   const [logData, setLogData] = useState([]);
-  const [bounties, setBounties] = useState([]);
+  // Bounties are now stored as { March: [...], Perm: [...] }
+  const [bounties, setBounties] = useState({ March: [], Perm: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
@@ -578,50 +579,77 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
       const res = await fetch(API.bounties, { method: 'GET' }); // GET /bounties
       if (!res.ok) throw new Error('Failed to fetch bounties');
       const data = await res.json();
-      setBounties(Array.isArray(data) ? data : []);
-      return data;
+      // If data is not in category format, convert it
+      let formatted = { March: [], Perm: [] };
+      if (data && typeof data === 'object' && (data.March || data.Perm)) {
+        formatted = {
+          March: Array.isArray(data.March) ? data.March : [],
+          Perm: Array.isArray(data.Perm) ? data.Perm : []
+        };
+      } else if (Array.isArray(data)) {
+        // fallback: split by perm/month
+        formatted.March = data.filter(b => b.month && b.month.toLowerCase() === 'march');
+        formatted.Perm = data.filter(b => b.perm);
+      }
+      setBounties(formatted);
+      return formatted;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
 
-  const saveBounties = useCallback(async (newBounties, action = 'Update bounties') => {
-    if (!auth) return { success: false, error: 'Unauthorized' };
-    setIsMutating(true);
-    try {
-      const result = await postData(API.updateBounties, {
-        username: auth.name || auth.username,
-        password: auth.password,
-        data: newBounties,
-        action,
-      });
-      if (result.success) {
-        setBounties(newBounties);
-        await logAdminAction(action);
-        return { success: true };
-      }
-      return { success: false, error: 'Server rejected update' };
-    } finally {
-      setIsMutating(false);
+const saveBounties = useCallback(async (newBounties, action = 'Update bounties') => {
+  if (!auth) return { success: false, error: 'Unauthorized' };
+  setIsMutating(true);
+  try {
+    const result = await postData(API.updateBounties, {
+      username: auth.name || auth.username,
+      password: auth.password,
+      data: newBounties,
+      action,
+    });
+    if (result.success) {
+      setBounties(() => newBounties); // ensure latest state
+      await logAdminAction(action);
+      return { success: true };
     }
-  }, [auth, postData, logAdminAction]);
+    return { success: false, error: 'Server rejected update' };
+  } finally {
+    setIsMutating(false);
+  }
+}, [auth, postData, logAdminAction]);
+
 
   const addBounty = useCallback(async (bounty) => {
-    const newBounties = [...bounties, bounty];
-    return await saveBounties(newBounties, 'Add bounty');
+    // Determine category
+    let category = bounty.perm ? 'Perm' : 'March';
+    const updated = { ...bounties };
+    updated[category] = [...(bounties[category] || []), bounty];
+    return await saveBounties(updated, 'Add bounty');
   }, [bounties, saveBounties]);
 
-  const editBounty = useCallback(async (index, bounty) => {
-    const newBounties = [...bounties];
-    newBounties[index] = bounty;
-    return await saveBounties(newBounties, 'Edit bounty');
+  const editBounty = useCallback(async (bounty) => {
+    const updated = Object.fromEntries(
+      Object.entries(bounties).map(([category, list]) => [
+        category,
+        list.map(b => (b.id === bounty.id ? bounty : b))
+      ])
+    );
+    return await saveBounties(updated, 'Edit bounty');
   }, [bounties, saveBounties]);
 
-  const deleteBounty = useCallback(async (index) => {
-    const newBounties = bounties.filter((_, i) => i !== index);
-    return await saveBounties(newBounties, 'Delete bounty');
-  }, [bounties, saveBounties]);
+
+const deleteBounty = useCallback(async (id) => {
+  const updated = Object.fromEntries(
+    Object.entries(bounties).map(([category, list]) => [
+      category,
+      list.filter(b => String(b.id) !== String(id))
+    ])
+  );
+
+  return await saveBounties(updated, 'Delete bounty');
+}, [bounties, saveBounties]);
 
 
   // ---------------- RETURN ----------------
