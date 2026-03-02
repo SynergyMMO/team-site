@@ -3,7 +3,9 @@ import styles from "../Admin.module.css";
 
 export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutating }) {
   const [editingBounty, setEditingBounty] = useState(null);
-  const [form, setForm] = useState({ title: "", month: "", pokemon: "", host: "", reward: "", description: "", perm: false, claimed: "" });
+  const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+  const [form, setForm] = useState({ title: "", month: currentMonth, pokemon: "", host: "", reward: "", description: "", perm: false, claimed: "" });
+  const [bountyFilter, setBountyFilter] = useState("March");
 
   // Handle input changes
   function handleChange(e) {
@@ -23,14 +25,17 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
 
     // Assign new ID if needed
     if (!bountyData.id) {
-      let prefix = bountyData.perm ? "perm" : (bountyData.month || "month").toLowerCase();
+      let prefix = bountyData.perm ? "perm" : (bountyData.month ? bountyData.month.toLowerCase() : "month");
+      // Find the highest number for this prefix
       const usedNums = Object.values(bounties)
         .flat()
         .filter(b => b.id?.startsWith(prefix))
-        .map(b => Number(b.id.replace(prefix, "")))
-        .filter(n => !isNaN(n));
-      let idNum = 1;
-      while (usedNums.includes(idNum)) idNum++;
+        .map(b => {
+          const match = b.id.match(new RegExp(`^${prefix}(\\d+)$`, 'i'));
+          return match ? Number(match[1]) : 0;
+        })
+        .filter(n => !isNaN(n) && n > 0);
+      let idNum = usedNums.length > 0 ? Math.max(...usedNums) + 1 : 1;
       bountyData.id = `${prefix}${idNum}`;
     }
 
@@ -40,7 +45,7 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
       onAdd(bountyData);
     }
 
-    setForm({ month: "", pokemon: "", host: "", reward: "", description: "", perm: false, claimed: "" });
+    setForm({ title: "", month: currentMonth, pokemon: "", host: "", reward: "", description: "", perm: false, claimed: "" });
     setEditingBounty(null);
   }
 
@@ -71,7 +76,7 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
 
   function handleCancel() {
     setEditingBounty(null);
-    setForm({ title: "", month: "", pokemon: "", host: "", reward: "", description: "", perm: false, claimed: "" });
+    setForm({ title: "", month: currentMonth, pokemon: "", host: "", reward: "", description: "", perm: false, claimed: "" });
   }
 
   // Filter unclaimed and claimed bounties
@@ -95,17 +100,21 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
   // Render table rows
   function renderTable(category, showClaimed = false) {
     const list = (showClaimed ? claimedBounties[category] : filteredBounties[category]) || [];
-    if (!list.length) return <tr><td colSpan={showClaimed ? 10 : 9} className={styles.hintText}>{showClaimed ? `No claimed ${category} bounties.` : `No unclaimed ${category} bounties.`}</td></tr>;
+    const isPerm = category === "Perm";
+    if (!list.length) return <tr><td colSpan={showClaimed ? (isPerm ? 9 : 10) : (isPerm ? 8 : 9)} className={styles.hintText}>{showClaimed ? `No claimed ${category} bounties.` : `No unclaimed ${category} bounties.`}</td></tr>;
+
+    // Helper to truncate description
+    const truncate = (str, n = 40) => str && str.length > n ? str.slice(0, n) + '…' : str;
 
     return list.map(b => (
       <tr key={b.id}>
         <td>{b.id}</td>
         <td>{b.title}</td>
-        <td>{b.month}</td>
+        {!isPerm && <td>{b.month}</td>}
         <td>{b.pokemon}</td>
         <td>{b.host}</td>
         <td>{b.reward}</td>
-        <td>{b.description}</td>
+        <td title={b.description}>{truncate(b.description)}</td>
         <td>{b.perm ? "\u2714\ufe0f" : ""}</td>
         {showClaimed && <td>{b.claimed}</td>}
         <td className={styles.actionBtns}>
@@ -151,48 +160,71 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
 
       <h3>Bounties List</h3>
 
-      <h4>March Bounties</h4>
-      <div className={styles.tableWrapper}>
-        <table className={styles.shinyTable}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Month</th>
-              <th>Pokemon</th>
-              <th>Host</th>
-              <th>Reward</th>
-              <th>Description</th>
-              <th>Perm</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>{renderTable("March")}</tbody>
-        </table>
+      <div style={{ margin: '16px 0' }}>
+        <label htmlFor="bountyFilter" style={{ fontWeight: 600, marginRight: 8 }}>Show:</label>
+        <select
+          id="bountyFilter"
+          value={bountyFilter}
+          onChange={e => setBountyFilter(e.target.value)}
+          className={styles.adminInput}
+          style={{ width: 140 }}
+        >
+          <option value="March">March</option>
+          <option value="Perm">Permanent</option>
+          <option value="Claimed">Claimed</option>
+        </select>
       </div>
 
-      <h4>Permanent Bounties</h4>
-      <div className={styles.tableWrapper}>
-        <table className={styles.shinyTable}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Month</th>
-              <th>Pokemon</th>
-              <th>Host</th>
-              <th>Reward</th>
-              <th>Description</th>
-              <th>Perm</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>{renderTable("Perm")}</tbody>
-        </table>
-      </div>
 
-      {/* Claimed Bounties Section: Only show if any claimed bounties exist */}
-      {(claimedBounties["March"]?.length > 0 || claimedBounties["Perm"]?.length > 0) && (
+      {bountyFilter === "March" && (
+        <>
+          <h4>March Bounties</h4>
+          <div className={styles.tableWrapper}>
+            <table className={styles.shinyTable}>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Month</th>
+                  <th>Pokemon</th>
+                  <th>Host</th>
+                  <th>Reward</th>
+                  <th>Description</th>
+                  <th>Perm</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>{renderTable("March")}</tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {bountyFilter === "Perm" && (
+        <>
+          <h4>Permanent Bounties</h4>
+          <div className={styles.tableWrapper}>
+            <table className={styles.shinyTable}>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  {/* No Month column for Perm */}
+                  <th>Pokemon</th>
+                  <th>Host</th>
+                  <th>Reward</th>
+                  <th>Description</th>
+                  <th>Perm</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>{renderTable("Perm")}</tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {bountyFilter === "Claimed" && ( (claimedBounties["March"]?.length > 0 || claimedBounties["Perm"]?.length > 0) ? (
         <>
           <h4>Claimed Bounties</h4>
           {claimedBounties["March"]?.length > 0 && (
@@ -223,7 +255,7 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
                   <tr>
                     <th>ID</th>
                     <th>Title</th>
-                    <th>Month</th>
+                    {/* No Month column for Perm */}
                     <th>Pokemon</th>
                     <th>Host</th>
                     <th>Reward</th>
@@ -238,7 +270,9 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
             </div>
           )}
         </>
-      )}
+      ) : (
+        <div className={styles.hintText} style={{margin: '16px 0'}}>No claimed bounties.</div>
+      ))}
     </div>
   );
 }
