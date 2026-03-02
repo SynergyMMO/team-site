@@ -153,7 +153,7 @@ export default function ThemesTab({ themesDB, onSave, onDelete, isMutating }) {
           onChange={(e) => setThemeData({ ...themeData, previewImage: e.target.value })}
         />
 
-        <label>Detailed Images (multiple):</label>
+        <label>Detailed Images:</label>
         <div style={{ marginBottom: 8 }}>
           {(themeData.detailedImages || []).map((img, idx) => (
             <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>

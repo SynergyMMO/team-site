@@ -14,6 +14,7 @@ import AdminLogTab from './components/AdminLogTab'
 import AdvancedJsonTab from './components/AdvancedJsonTab'
 import ThemesTab from './components/ThemesTab'
 import Toast from './components/Toast'
+import BountiesTab from './components/BountiesTab'
 import styles from './Admin.module.css'
 
 export default function AdminPanel() {
@@ -33,6 +34,7 @@ export default function AdminPanel() {
     db.loadDatabase().catch(err => showToast('Error loading database: ' + err.message, 'error'))
     db.loadEvents().catch(err => showToast('Error loading events: ' + err.message, 'error'))
     db.loadThemes().catch(err => showToast('Error loading themes: ' + err.message, 'error'))
+    db.loadBounties?.().catch(err => showToast('Error loading bounties: ' + err.message, 'error'))
   }, [auth])
 
   function withToast(fn, successMsg) {
@@ -127,6 +129,15 @@ export default function AdminPanel() {
           themesDB={db.themesDB}
           onSave={withToast(db.saveTheme, 'Theme saved!')}
           onDelete={withToast(db.deleteTheme, 'Theme deleted!')}
+          isMutating={db.isMutating}
+        />
+      )}
+      {activeTab === 'bounties' && (
+        <BountiesTab
+          bounties={db.bounties || []}
+          onAdd={withToast(db.addBounty, 'Bounty added!')}
+          onEdit={withToast(db.editBounty, 'Bounty updated!')}
+          onDelete={withToast(db.deleteBounty, 'Bounty deleted!')}
           isMutating={db.isMutating}
         />
       )}

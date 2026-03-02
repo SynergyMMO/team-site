@@ -12,6 +12,7 @@ const NAV_ITEMS = [
       { to: '/shotm/', label: 'SHOTM' },
       { to: '/streamers/', label: 'Streamers' },
       { to: '/trophy-board/', label: 'Trophy Board' },
+      { to: '/bounties/', label: 'Bounties' },
       { to: '/events/', label: 'Events' },
       { to: '/shiny-war-2025/', label: 'Shiny Wars 2025' },
     ]

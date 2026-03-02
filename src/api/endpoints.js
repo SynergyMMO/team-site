@@ -12,6 +12,8 @@ export const API = {
   adminCheck: `${WORKER_BASE}/check`,
   updateDatabase: `${WORKER_BASE}/update-database`,
   updateStreamers: `${WORKER_BASE}/update-streamers`,
+  bounties: `${WORKER_BASE}/bounties`,       
+  updateBounties: `${WORKER_BASE}/update-bounties`,
   adminLog: `${WORKER_BASE}/log`,
   twitchStreamers: TWITCH_API,
   pokemonSprite: (name) => getLocalPokemonGif(name),

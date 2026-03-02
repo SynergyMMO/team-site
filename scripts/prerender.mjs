@@ -31,7 +31,8 @@ const PAGE_KEYWORDS = {
   '/resources': 'PokeMMO resources, PokeMMO guides, hunting tools, community links, shiny hunting guides, PokeMMO calculators, Team Synergy resources',
   '/LnyCatchCalc': 'LNY Catch Calculator, PokeMMO Lunar New Year,  event catch rates, PokeMMO event tools, PokeMMO Catch calculator, Lunar New Year shiny hunting, PokeMMO LNY event',
   '/shiny-odds': 'Shiny Odds Calculator, advanced shiny odds, PokeMMO shiny odds, shiny probability, shiny boosts, shiny hunt tracker, shiny odds graph, Team Synergy shiny odds',
-  "/themes": "PokeMMO themes, encounter counter themes, Pokemon retexture, PokeMMO mods, custom UI, visual mods, Team Synergy themes, PokeMMO overlays, download themes, shiny hunting tools, game customization, PokeMMO resources"
+  '/bounties': `<h1 class="seo-semantic-hidden">Team Synergy Bounties - Shiny Hunting Challenges</h1><section class="seo-semantic-hidden"><p>The Team Synergy Bounties page features monthly and permanent shiny hunting challenges for all members. Complete bounties by catching the target Pokémon and earn recognition, trophies, or other rewards. Stay up to date with the latest monthly bounties and test your skills with ongoing permanent bounties. The Bounties system encourages friendly competition, community engagement, and helps hunters discover new targets. Join Team Synergy bounties to participate in unique shiny hunting events and showcase your achievements!</p></section>`,
+  '/themes': "PokeMMO themes, encounter counter themes, Pokemon retexture, PokeMMO mods, custom UI, visual mods, Team Synergy themes, PokeMMO overlays, download themes, shiny hunting tools, game customization, PokeMMO resources"
 };
 
 const DYNAMIC_KEYWORDS = {
@@ -140,6 +141,13 @@ const PAGE_FAQS = {
     { question: 'How can I join the Team Synergy community?', answer: 'Join our Discord community at https://discord.gg/2BEUq6fWAj to connect with team members, share strategies, and participate in events.' },
     { question: 'Where can I learn about shiny hunting?', answer: 'Check our Resources page for beginner guides, advanced strategy articles, and links to official PokeMMO documentation and community wikis.' },
   ],
+  '/bounties': [
+        { question: 'What are Bounties in Team Synergy?', answer: 'Bounties are special shiny hunting challenges set by Team Synergy, including monthly and permanent targets for members to complete.' },
+        { question: 'How do I participate in Bounties?', answer: 'Visit the Bounties page to see current and permanent bounties. Catch the target Pokémon and submit your catch to participate.' },
+        { question: 'What rewards do Bounties offer?', answer: 'Completing bounties may earn you recognition, trophies, or other rewards within the Team Synergy community.' },
+        { question: 'How often are new Bounties added?', answer: 'Monthly bounties are updated each month, while permanent bounties are ongoing challenges.' },
+        { question: 'Can anyone join the Bounties?', answer: 'Most bounties are open to all Team Synergy members. Check the Bounties page for details and requirements.' }
+      ],
 };
 
 // FAQs for dynamic pages (use {placeholder} for dynamic values)
@@ -207,6 +215,7 @@ const STATIC_ROUTES = [
   '/LnyCatchCalc',
   '/shiny-odds',
   '/themes',
+  '/bounties',
 ];
 
 
@@ -1551,6 +1560,12 @@ async function prerender() {
       route: '/themes',
       ogTitle: 'PokeMMO Themes, Encounter Counters & Retextures | Team Synergy',
       ogDescription: 'Browse a curated collection of PokeMMO themes, encounter counter overlays, and Pokémon retexture packs. Find visual mods, custom UI themes, and encounter counter designs to personalize your PokeMMO experience. Download community-made resources to enhance your gameplay, improve shiny hunting, and refresh your game\'s look. Team Synergy\'s theme hub features the best encounter counter themes, game retextures, and other creative mods for PokeMMO.',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg'
+    },
+    '/bounties': {
+      route: '/bounties',
+      ogTitle: 'Team Synergy Bounties | Shiny Hunting Challenges - PokeMMO',
+      ogDescription: 'Participate in Team Synergy monthly and permanent bounties. Complete shiny hunting challenges, earn rewards, and join the community competition. View current and past bounties for all members.',
       ogImage: 'https://synergymmo.com/images/openGraph.jpg'
     },
   };

@@ -28,6 +28,8 @@ const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
 const ThemesPage = lazy(() => import('./pages/Themes/ThemesPage'))
 const ThemeDetail = lazy(() => import('./pages/Themes/ThemeDetail'))
 const ShinyOdds = lazy(() => import('./pages/ShinyOdds/ShinyOdds'))
+
+const BountiesPage = lazy(() => import('./pages/Bounties/BountiesPage'));
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 
 export default function App() {
@@ -113,6 +115,7 @@ export default function App() {
             <Route path="/themes/:slug" element={<ThemeDetail />} />
             <Route path="/resources/:category/:subcategory/:nested" element={<Resources />} />
             <Route path="/shiny-war-2025" element={<ShinyWar2025 />} />
+            <Route path="/bounties" element={<BountiesPage />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/panel" element={<AdminPanel />} />
             <Route path="*" element={<NotFound />} />

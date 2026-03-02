@@ -17,16 +17,16 @@ function deepClone(obj) {
 
 // ---------------- HOOK ----------------
 export default function useAdminDB(auth) {
-  // --- Database / Streamers / Events / Log ---
+  // --- Database / Streamers / Events / Log / Bounties ---
   const [database, setDatabase] = useState({});
   const [streamersDB, setStreamersDB] = useState({});
   const [eventDB, setEventDB] = useState([]);
   const [themesDB, setThemesDB] = useState({});
   const [logData, setLogData] = useState([]);
+  const [bounties, setBounties] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
-  const snapshotRef = useRef(null);
 
   // --- Current Members ---
   const [members, setMembers] = useState([]);
@@ -44,6 +44,7 @@ export default function useAdminDB(auth) {
   }, []);
 
   
+  const snapshotRef = useRef(null);
   // ---------------- SNAPSHOT / UNDO ----------------
   const saveSnapshot = useCallback(() => {
     snapshotRef.current = {
@@ -55,25 +56,13 @@ export default function useAdminDB(auth) {
   }, [database, streamersDB, eventDB, members]);
 
   const undo = useCallback(async () => {
-    if (!snapshotRef.current || !auth) return false;
-    setIsMutating(true);
-    try {
-      const { database: prevDb, streamersDB: prevStr, eventDB: prevEvents, members: prevMembers } = snapshotRef.current;
+  // ...existing code...
 
-      const [dbResult, strResult, eventsResult] = await Promise.all([
-        postData(API.updateDatabase, { username: auth.name || auth.username, password: auth.password, data: prevDb, action: 'Undo last action' }),
-        postData(API.updateStreamers, { username: auth.name || auth.username, password: auth.password, data: prevStr, action: 'Undo last action (streamers)' }),
-        postData(API.events, { username: auth.name || auth.username, password: auth.password, data: prevEvents, action: 'Undo last action (events)' }),
-      ]);
+  // --- Current Members ---
+  const [members, setMembers] = useState([]);
+  const [isMembersLoading, setIsMembersLoading] = useState(false);
 
-      setDatabase(prevDb);
-      setStreamersDB(prevStr);
-      setEventDB(prevEvents);
-      setMembers(prevMembers);
-      snapshotRef.current = null;
-
-      return dbResult.success && strResult.success && eventsResult.success;
-    } finally { setIsMutating(false); }
+  // ---------------- SNAPSHOT / UNDO ----------------
   }, [auth, postData]);
 
 
@@ -581,10 +570,64 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
 
   const hasSnapshot = !!snapshotRef.current;
 
+  
+  // ---------------- BOUNTIES CRUD ----------------
+  const loadBounties = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(API.bounties, { method: 'GET' }); // GET /bounties
+      if (!res.ok) throw new Error('Failed to fetch bounties');
+      const data = await res.json();
+      setBounties(Array.isArray(data) ? data : []);
+      return data;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+
+  const saveBounties = useCallback(async (newBounties, action = 'Update bounties') => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    setIsMutating(true);
+    try {
+      const result = await postData(API.updateBounties, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        data: newBounties,
+        action,
+      });
+      if (result.success) {
+        setBounties(newBounties);
+        await logAdminAction(action);
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally {
+      setIsMutating(false);
+    }
+  }, [auth, postData, logAdminAction]);
+
+  const addBounty = useCallback(async (bounty) => {
+    const newBounties = [...bounties, bounty];
+    return await saveBounties(newBounties, 'Add bounty');
+  }, [bounties, saveBounties]);
+
+  const editBounty = useCallback(async (index, bounty) => {
+    const newBounties = [...bounties];
+    newBounties[index] = bounty;
+    return await saveBounties(newBounties, 'Edit bounty');
+  }, [bounties, saveBounties]);
+
+  const deleteBounty = useCallback(async (index) => {
+    const newBounties = bounties.filter((_, i) => i !== index);
+    return await saveBounties(newBounties, 'Delete bounty');
+  }, [bounties, saveBounties]);
+
+
   // ---------------- RETURN ----------------
   return {
-    // Database / Streamers / Events
-    database, streamersDB, logData, eventDB,
+    // Database / Streamers / Events / Bounties
+    database, streamersDB, logData, eventDB, bounties,
     isLoading, isMutating, hasSnapshot,
     loadDatabase, addShiny, editShiny, deleteShiny, reorderShinies, undo,
     addStreamer, deleteStreamer, editStreamer,
@@ -599,5 +642,8 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
     // Members
     members, isMembersLoading,
     loadMembers, addMember, updateMember, deleteMember,
+
+    // Bounties
+    bounties, loadBounties, addBounty, editBounty, deleteBounty,
   };
 }

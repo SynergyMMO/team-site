@@ -1,0 +1,255 @@
+.bounties-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 32px 16px;
+  background-color: #1212127c;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+.bounties-section {
+  width: 100%;
+  margin-top: 32px;
+  text-align: center;
+}
+
+.bounties-section h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #e0e0e0;
+}
+
+.bounty-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  padding: 0;
+  list-style: none;
+}
+
+.bounty-card {
+  position: relative;
+  background: #1e1e1e;
+  border-radius: 16px;
+  min-width: 220px;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0; 
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  border: 1px solid #333;
+}
+
+.bounty-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px rgba(155, 89, 182, 0.5),
+              0 0 40px rgba(155, 89, 182, 0.25);
+}
+
+.bounty-card-inner {
+  width: 100%;
+  padding: 24px 18px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.bounty-card.claimed .bounty-card-inner {
+  filter: grayscale(70%) blur(1px);
+  opacity: 0.6;
+}
+
+.bounty-pokemon-sprite {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.bounty-pokemon-sprite:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.6),
+              0 0 24px rgba(155, 89, 182, 0.3);
+}
+
+.bounty-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #ffffff;
+}
+
+.bounty-host {
+  font-size: 0.95rem;
+  color: #bbbbbb;
+  margin-bottom: 6px;
+}
+
+.bounty-reward {
+  font-size: 1rem;
+  color: #9b59b6;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.bounty-description {
+  font-size: 0.97rem;
+  color: #cccccc;
+  margin-bottom: 6px;
+}
+
+.bounty-claimed {
+  position: absolute;
+  bottom: 8px;       
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;        
+  color: #fff;        
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-align: center;
+  letter-spacing: 0.5px;
+  background: none;   
+  padding: 0;         
+}
+.bounty-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-10deg);
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #fff;
+  background: rgba(155, 89, 182, 0.92);
+  padding: 4px 0;
+  border-radius: 10px;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px #000, 0 0 2px #9b59b6, 0 0 12px #000;
+  z-index: 15; 
+  pointer-events: none;
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px #000a, 0 0 4px #9b59b6;
+  opacity: 0.98;
+  max-width: 90%;
+  width: 90%;
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.bounties-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.bounties-header-controls button {
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s, transform 0.2s, box-shadow 0.3s;
+}
+
+.bounties-header-controls button:hover {
+  background-color: #4a4a4a;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.5);
+}
+
+.bounties-header-controls h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.3rem;
+}
+
+.bounties-switch {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  background-color: #1a1a1a;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid #333;
+}
+
+.bounties-switch button {
+  flex: 1;
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: transparent;
+  color: #e0e0e0;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  position: relative;
+}
+
+.bounties-switch button:hover {
+  background-color: rgba(155, 89, 182, 0.2);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.5);
+}
+.bounty-card.claimed::after {
+  content: 'CLAIMED';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-10deg);
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #fff;
+  background: rgba(155, 89, 182, 0.92);
+  padding: 4px 0;
+  border-radius: 10px;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px #000, 0 0 2px #9b59b6, 0 0 12px #000;
+  z-index: 15; /* above blurred content, below "claimed by" text */
+  pointer-events: none;
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px #000a, 0 0 4px #9b59b6;
+  opacity: 0.98;
+  max-width: 90%;
+  width: 90%;
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+}
+.bounties-switch button.active {
+  background-color: #9b59b6;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(155, 89, 182, 0.6);
+  font-weight: 600;
+}
+
+.bounties-switch button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
