@@ -170,7 +170,7 @@ function getTopBallsInternal(catchRate, level = 30, isNight = false, types = [],
 
   return [scored[0], scored[1]];
 }
-
+ 
 /* =========================
    SAFE Custom Hook
 ========================= */
