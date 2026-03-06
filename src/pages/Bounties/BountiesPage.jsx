@@ -146,7 +146,7 @@ export default function BountiesPage() {
   useDocumentHead({
     title: 'Bounties',
     description: 'Participate in Team Synergy monthly and permanent bounties. Complete shiny hunting challenges, earn rewards, and join the community competition. View current and past bounties for all members.',
-    canonicalPath: '/bounties',
+    canonicalPath: '/bounties/',
     ogImage,
     url: 'https://synergymmo.com/bounties/',
     keywords: 'PokeMMO bounties, shiny bounties, Team Synergy bounties, monthly bounties, permanent bounties, shiny hunting challenges, PokeMMO events, Team Synergy rewards',

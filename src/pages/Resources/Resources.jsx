@@ -115,11 +115,7 @@ export default function Resources() {
 
   // Determine which metadata to use for the page head
   const seoMeta = nestedMeta || subcategoryMeta || categoryMeta || {}
-  let currentCanonicalPath = `/resources${activeCategory ? `/${toSlug(activeCategory)}` : ''}${activeSubcategory ? `/${toSlug(activeSubcategory)}` : ''}${activeNestedTab ? `/${toSlug(activeNestedTab)}` : ''}`;
-  // Only add trailing slash for root /resources/ page
-  if (!activeCategory && !activeSubcategory && !activeNestedTab) {
-    currentCanonicalPath += '/';
-  }
+  let currentCanonicalPath = `/resources${activeCategory ? `/${toSlug(activeCategory)}` : ''}${activeSubcategory ? `/${toSlug(activeSubcategory)}` : ''}${activeNestedTab ? `/${toSlug(activeNestedTab)}` : ''}/`;
 
   useDocumentHead({
     title: seoMeta.title || 'Team Synergy Resources',

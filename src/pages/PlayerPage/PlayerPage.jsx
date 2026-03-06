@@ -68,14 +68,14 @@ export default function PlayerPage() {
     (firstNormalShiny && getLocalPokemonGif(firstNormalShiny.Pokemon)) ||
     'https://synergymmo.com/images/openGraph.jpg'
 
-  const ogUrl = `https://synergymmo.com/player/${playerName?.toLowerCase()}?v=2`
+  const ogUrl = `https://synergymmo.com/player/${playerName?.toLowerCase()}/?v=2`
 
   useDocumentHead({
     title: realKey ? `${realKey}'s Shiny Collection | Team Synergy PokeMMO` : 'Player Shinies | Team Synergy - PokeMMO',
     description: realKey
       ? `Browse ${realKey}'s shiny Pokémon collection in PokeMMO. View caught shinies, collections, and stats for Team Synergy member.`
       : 'Explore player shiny collections in Team Synergy PokeMMO.',
-    canonicalPath: `/player/${playerName?.toLowerCase()}`,
+    canonicalPath: `/player/${playerName?.toLowerCase()}/`,
     breadcrumbs: breadcrumbs,
     ogImage,
     url: ogUrl,

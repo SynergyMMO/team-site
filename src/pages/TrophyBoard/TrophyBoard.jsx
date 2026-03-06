@@ -13,7 +13,7 @@ export default function TrophyBoard() {
   useDocumentHead({
     title: 'PokeMMO Trophy Board - Team Synergy Achievements',
     description: 'Team Synergy trophy board showcasing PokeMMO achievements, awards, and member accomplishments. Browse 12 trophy categories, celebrate milestones, and view championship wins.',
-    canonicalPath: '/trophy-board',
+    canonicalPath: '/trophy-board/',
     breadcrumbs: breadcrumbs
   });
 

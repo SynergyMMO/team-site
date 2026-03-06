@@ -20,7 +20,7 @@ export default function Pokedex() {
   useDocumentHead({
     title: 'PokeMMO Pokédex Tracker - 731 Pokémon Encounter Locations & Tiers',
     description: 'The ultimate PokeMMO Pokédex tracker for shiny hunters. Find all 731 Pokémon with PokeMMO encounter locations, tier rarities, abilities, and shiny hunting strategies. Track living dex progress.',
-    canonicalPath: '/pokedex',
+    canonicalPath: '/pokedex/',
     breadcrumbs: breadcrumbs
   })
   const navigate = useNavigate()

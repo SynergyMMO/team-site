@@ -11,7 +11,7 @@ export default function CounterGenerator() {
   useDocumentHead({
     title: 'PokeMMO Counter Theme Generator - Custom Encounter Counters',
     description: 'PokeMMO encounter counter theme generator tool. Upload custom GIFs, resize for counter display, download ready-to-use counter theme packages for shiny hunting sessions.',
-    canonicalPath: '/counter-generator',
+    canonicalPath: '/counter-generator/',
     breadcrumbs: breadcrumbs
   })
 

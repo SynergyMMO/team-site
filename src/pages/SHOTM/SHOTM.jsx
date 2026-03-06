@@ -36,7 +36,7 @@ export default function SHOTM() {
   useDocumentHead({
     title: 'Shiny Hunters of the Month - PokeMMO Rankings | Team Synergy',
     description: 'Monthly rankings of top shiny hunters in PokeMMO. Track highest catches, tier points, and all-time stats for Team Synergy members. Competitive shiny hunting leaderboard.',
-    canonicalPath: '/shotm',
+    canonicalPath: '/shotm/',
     breadcrumbs: breadcrumbs
   })
 

@@ -18,7 +18,7 @@ const LnyCatchCalc = () => {
     title: "LNY Catch Calculator",
     description:
       "A Quick and Easy tool to help Calculate the catch rates and shiny odds for the PokeMMO Lunar New Year event. Find the Best PokeBalls to use on the swarm mons to save time and money",
-    canonicalPath: "/LnyCatchCalc",
+    canonicalPath: "/LnyCatchCalc/",
     ogImage: "https://synergymmo.com/images/openGraph.jpg",
   });
 

@@ -15,7 +15,7 @@ export default function RoamingLegendariesCalendar() {
   useDocumentHead({
     title: 'Roaming Legendaries Calendar - PokeMMO Zapdos, Articuno, Moltres, Entei, Suicune, Raikou Schedule',
     description: 'PokeMMO Roaming Legendaries Calendar showing monthly availability of Zapdos, Moltres, Articuno, Entei, Suicune, and Raikou. Track which roaming legendaries are available each month and plan your shiny hunts.',
-    canonicalPath: '/roaming-legendaries',
+    canonicalPath: '/roaming-legendaries/',
     breadcrumbs: breadcrumbs
   })
 
