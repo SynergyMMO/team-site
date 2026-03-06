@@ -1,3 +1,23 @@
+/* Button for clock container */
+.clockButton {
+  background: linear-gradient(90deg, #4e54c8 0%, #8f94fb 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(100, 100, 200, 0.08);
+  display: inline-block;
+}
+.clockButton:hover {
+  background: linear-gradient(90deg, #8f94fb 0%, #4e54c8 100%);
+  box-shadow: 0 4px 16px rgba(100, 100, 200, 0.15);
+}
 .container {
   width: 100%;
   max-width: 1200px;

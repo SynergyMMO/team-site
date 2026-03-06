@@ -29,6 +29,9 @@ function InGameClockDisplay() {
           <span className={styles.clockCountdown}>{countdownStr} until next period</span>
         </div>
       </div>
+      <Link to="/time-display/" className={styles.clockButton} style={{marginTop: '0.5rem', display: 'inline-block'}}>
+        View In-Game Time Table
+      </Link>
     </div>
   );
 }

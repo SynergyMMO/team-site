@@ -1,3 +1,4 @@
+
 import { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar/Navbar'
@@ -23,7 +24,7 @@ const Resources = lazy(() => import('./pages/Resources/Resources'))
 const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
-
+const TimeDisplay = lazy(() => import('./pages/Home/TimeDisplay'))
 
 const ThemesPage = lazy(() => import('./pages/Themes/ThemesPage'))
 const ThemeDetail = lazy(() => import('./pages/Themes/ThemeDetail'))
@@ -116,6 +117,7 @@ export default function App() {
             <Route path="/resources/:category/:subcategory/:nested" element={<Resources />} />
             <Route path="/shiny-war-2025" element={<ShinyWar2025 />} />
             <Route path="/bounties" element={<BountiesPage />} />
+            <Route path="/time-display" element={<TimeDisplay />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/panel" element={<AdminPanel />} />
             <Route path="*" element={<NotFound />} />

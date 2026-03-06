@@ -1,0 +1,154 @@
+.showAllBtn {
+  background: linear-gradient(90deg, #4e54c8 0%, #8f94fb 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(100, 100, 200, 0.08);
+  display: inline-block;
+}
+.showAllBtn:hover {
+  background: linear-gradient(90deg, #8f94fb 0%, #4e54c8 100%);
+  box-shadow: 0 4px 16px rgba(100, 100, 200, 0.15);
+}
+
+@media (max-width: 700px) {
+  .timedisplay-table-container {
+    padding: 0.5rem;
+    margin: 1rem 0.2rem;
+    border-radius: 8px;
+  }
+  .timedisplay-table {
+    font-size: 0.85rem;
+    min-width: 0;
+  }
+  .timedisplay-table th, .timedisplay-table td {
+    padding: 0.25em 0.3em;
+  }
+  .showAllBtn {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+.timedisplay-table-container {
+  max-width: 100vw;
+  overflow-x: auto;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #181a2a;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+}
+.timedisplay-table-container.single-tz {
+  max-width: 420px;
+  min-width: 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+}
+.timedisplay-table-container.all-tz {
+  max-width: 1200px;
+  min-width: 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.13);
+}
+.timedisplay-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 0;
+  font-size: 0.97rem;
+  background: #22243a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  transition: min-width 0.4s cubic-bezier(.4,1.3,.6,1);
+}
+.timedisplay-table.all-tz {
+  min-width: 1200px;
+}
+.timedisplay-table th, .timedisplay-table td {
+  border: 1px solid #44476a;
+  padding: 0.45em 0.9em;
+  text-align: center;
+  font-family: 'Consolas', 'Menlo', 'monospace', monospace;
+  font-size: 1.01em;
+}
+.timedisplay-table th {
+  background: #23244a;
+  color: #fff;
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  letter-spacing: 0.01em;
+  border-bottom: 2px solid #3a3c5a;
+}
+.timedisplay-table .hour-label {
+  background: #23244a;
+  color: #fff;
+  font-weight: 600;
+  border-right: 2px solid #3a3c5a;
+  font-size: 1.04em;
+}
+@media (max-width: 900px) {
+  .timedisplay-table-container.all-tz {
+    max-width: 98vw;
+    min-width: 0;
+  }
+  .timedisplay-table.all-tz {
+    min-width: 900px;
+  }
+}
+/*
+  Styles for the TimeDisplay table, inspired by the provided image.
+*/
+.timedisplay-table-container {
+  max-width: 100vw;
+  overflow-x: auto;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #181a2a;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+}
+.timedisplay-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 1200px;
+  font-size: 0.95rem;
+  background: #22243a;
+}
+.timedisplay-table th, .timedisplay-table td {
+  border: 1px solid #44476a;
+  padding: 0.4em 0.7em;
+  text-align: center;
+  font-family: 'Consolas', 'Menlo', 'monospace', monospace;
+}
+.timedisplay-table th {
+  background: #2d3150;
+  color: #fff;
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.timedisplay-table .morning {
+  background: linear-gradient(90deg, #ffe082 60%, #fffde7 100%);
+  color: #333;
+}
+.timedisplay-table .day {
+  background: linear-gradient(90deg, #90caf9 60%, #e3f2fd 100%);
+  color: #222;
+}
+.timedisplay-table .night {
+  background: linear-gradient(90deg, #7986cb 60%, #ede7f6 100%);
+  color: #fff;
+}
+.timedisplay-table .hour-label {
+  background: #23244a;
+  color: #fff;
+  font-weight: 600;
+}
