@@ -36,6 +36,17 @@ function formatHour(h) {
   return `${hour.toString().padStart(2, '0')}${min.toString().padStart(2, '0')}`;
 }
 
+// Convert 4-digit 24-hour string (e.g. "2309") to 12-hour am/pm (e.g. "11:09pm")
+function to12Hour(timeStr) {
+  if (!/^[0-2][0-9][0-5][0-9]$/.test(timeStr)) return timeStr;
+  let hour = parseInt(timeStr.slice(0, 2), 10);
+  let min = timeStr.slice(2);
+  const ampm = hour >= 12 ? 'pm' : 'am';
+  hour = hour % 12;
+  if (hour === 0) hour = 12;
+  return `${hour}:${min}${ampm}`;
+}
+
 // Build the table data: for each period row, for each timezone column, compute the time string
 function buildTable() {
   // The first period starts at 13:00 in GMT -12, then each cell is +1h for each tz to the right
@@ -91,7 +102,7 @@ export default function TimeDisplayTable() {
                 <td className={styles['hour-label'] + ' ' + styles[row.period]}>{row.label}</td>
                 {visibleTimezones.map((tz, j) => {
                   const tzIdx = TIMEZONES.indexOf(tz);
-                  return <td key={tz} className={styles[row.period]}>{row.cells[tzIdx]}</td>;
+                  return <td key={tz} className={styles[row.period]}>{to12Hour(row.cells[tzIdx])}</td>;
                 })}
               </tr>
             ))}

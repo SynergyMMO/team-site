@@ -32,7 +32,8 @@ const PAGE_KEYWORDS = {
   '/LnyCatchCalc': 'LNY Catch Calculator, PokeMMO Lunar New Year,  event catch rates, PokeMMO event tools, PokeMMO Catch calculator, Lunar New Year shiny hunting, PokeMMO LNY event',
   '/shiny-odds': 'Shiny Odds Calculator, advanced shiny odds, PokeMMO shiny odds, shiny probability, shiny boosts, shiny hunt tracker, shiny odds graph, Team Synergy shiny odds',
   '/bounties': `<h1 class="seo-semantic-hidden">Team Synergy Bounties - Shiny Hunting Challenges</h1><section class="seo-semantic-hidden"><p>The Team Synergy Bounties page features monthly and permanent shiny hunting challenges for all members. Complete bounties by catching the target Pokémon and earn recognition, trophies, or other rewards. Stay up to date with the latest monthly bounties and test your skills with ongoing permanent bounties. The Bounties system encourages friendly competition, community engagement, and helps hunters discover new targets. Join Team Synergy bounties to participate in unique shiny hunting events and showcase your achievements!</p></section>`,
-  '/themes': "PokeMMO themes, encounter counter themes, Pokemon retexture, PokeMMO mods, custom UI, visual mods, Team Synergy themes, PokeMMO overlays, download themes, shiny hunting tools, game customization, PokeMMO resources"
+  '/themes': "PokeMMO themes, encounter counter themes, Pokemon retexture, PokeMMO mods, custom UI, visual mods, Team Synergy themes, PokeMMO overlays, download themes, shiny hunting tools, game customization, PokeMMO resources",
+  '/time-display': 'PokeMMO time display, in-game clock, real-time events, Team Synergy time tool, PokeMMO time zones, event timing, shiny hunting time, day/night cycle, PokeMMO utilities, Team Synergy tools'
 };
 
 const DYNAMIC_KEYWORDS = {
@@ -48,6 +49,13 @@ const DYNAMIC_KEYWORDS = {
 // Add FAQs for each page to help Google understand content better
 // Format: Array of { question, answer } objects - max 30 per page
 const PAGE_FAQS = {
+  '/time-display': [
+    { question: 'What is the Time Display page?', answer: 'The Time Display page shows the current in-game time for PokeMMO, helping players track day/night cycles and event timings.' },
+    { question: 'How does the time display help shiny hunters?', answer: 'Knowing the in-game time helps shiny hunters target specific Pokémon that only appear during certain times of day or night.' },
+    { question: 'Does the time display update in real time?', answer: 'Yes, the time display updates in real time to match the in-game clock, ensuring accurate event and encounter planning.' },
+    { question: 'Can I use the time display for event planning?', answer: 'Absolutely! The time display is perfect for planning hunts and participating in time-based PokeMMO events.' },
+    { question: 'Is the time display available on mobile?', answer: 'Yes, the Time Display page is fully responsive and works on both desktop and mobile devices.' }
+  ],
   '/': [
     { question: 'What is Team Synergy?', answer: 'Team Synergy is a PokeMMO shiny hunting community dedicated to shiny collection, competitive gameplay, and community events.' },
     { question: 'What can I find on Team Synergy?', answer: 'Explore our Shiny Showcase to see 140+ player collections, browse our detailed Pokédex, watch live Twitch streamers, check our Trophy Board, and join community events.' },
@@ -216,6 +224,7 @@ const STATIC_ROUTES = [
   '/shiny-odds',
   '/themes',
   '/bounties',
+  '/time-display',
 ];
 
 
@@ -1457,6 +1466,12 @@ async function prerender() {
 
   // Static route OG overrides with CRAWLER LINKS
   const STATIC_META = {
+        '/time-display': {
+          route: '/time-display',
+          ogTitle: 'PokeMMO Time Display | Team Synergy',
+          ogDescription: 'View the current in-game time for PokeMMO. Plan your shiny hunts and event participation with accurate day/night cycle tracking. Essential for time-based encounters and event planning.',
+          ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+        },
     '/shiny-odds': {
       route: '/shiny-odds',
       ogTitle: 'Advanced Shiny Odds Calculator | Team Synergy - PokeMMO',
