@@ -1,8 +1,8 @@
 /* Button for clock container */
 .clockButton {
-  background: linear-gradient(90deg, #4e54c8 0%, #8f94fb 100%);
+  background: linear-gradient(90deg, #23243a 0%, #3a3b5a 100%);
   color: #fff;
-  border: none;
+  border: 1px solid #23243a;
   border-radius: 6px;
   padding: 0.5rem 1.2rem;
   font-size: 1rem;
@@ -11,7 +11,7 @@
   margin-top: 0.5rem;
   text-decoration: none;
   transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(100, 100, 200, 0.08);
+  box-shadow: 0 2px 8px rgba(30, 30, 60, 0.18);
   display: inline-block;
 }
 
@@ -21,8 +21,8 @@
   width: 100%;
 }
 .clockButton:hover {
-  background: linear-gradient(90deg, #8f94fb 0%, #4e54c8 100%);
-  box-shadow: 0 4px 16px rgba(100, 100, 200, 0.15);
+  background: linear-gradient(90deg, #18192b 0%, #23243a 100%);
+  box-shadow: 0 4px 16px rgba(30, 30, 60, 0.28);
 }
 .container {
   width: 100%;
