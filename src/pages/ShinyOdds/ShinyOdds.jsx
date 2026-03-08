@@ -102,7 +102,7 @@ export default function ShinyOdds() {
   useDocumentHead({
     title: 'Advanced Shiny Odds Calculator',
     description: 'Deep shiny odds calculator with boosts, progress tracking, and probability graph.',
-    canonicalPath: '/shiny-odds/',
+    canonicalPath: '/shiny-odds',
     breadcrumbs: [
       { name: 'Home', url: '/' },
       { name: 'Tools', url: '/tools' },
@@ -466,7 +466,7 @@ function ShinySimulator() {
       )}
 
       <hr />
-      <h1 className={styles.pineapplejuice}>Pineapple Juice</h1>
+
       <h2>SHINY LOG</h2>
       <button onClick={handleClearLog} className={styles.shinyInput} style={{ marginBottom: 8 }}>Clear log</button>
 
