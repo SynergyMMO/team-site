@@ -466,7 +466,7 @@ function ShinySimulator() {
       )}
 
       <hr />
-
+      <h1 className={styles.pineapplejuice}>Pineapple Juice</h1>
       <h2>SHINY LOG</h2>
       <button onClick={handleClearLog} className={styles.shinyInput} style={{ marginBottom: 8 }}>Clear log</button>
 
