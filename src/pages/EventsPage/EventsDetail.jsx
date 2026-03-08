@@ -38,8 +38,8 @@ export default function EventsDetail() {
   useDocumentHead({
     title: event?.title ? `${event.title} - PokeMMO Event | Team Synergy` : 'Loading event...',
     description: event?.description || 'Join Team Synergy events in PokeMMO. Shiny hunting competitions, tournaments, and team challenges.',
-    canonicalPath: `/event/${slug}`,
-    url: `https://synergymmo.com/event/${slug}`,
+    canonicalPath: `/event/${slug}/`,
+    url: `https://synergymmo.com/event/${slug}/`,
     ogImage: event?.imageLink || 'https://synergymmo.com/images/openGraph.jpg',
     twitterCard: 'summary_large_image',
     breadcrumbs: breadcrumbs,

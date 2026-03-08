@@ -102,7 +102,7 @@ export default function ShinyOdds() {
   useDocumentHead({
     title: 'Advanced Shiny Odds Calculator',
     description: 'Deep shiny odds calculator with boosts, progress tracking, and probability graph.',
-    canonicalPath: '/shiny-odds',
+    canonicalPath: '/shiny-odds/',
     breadcrumbs: [
       { name: 'Home', url: '/' },
       { name: 'Tools', url: '/tools' },

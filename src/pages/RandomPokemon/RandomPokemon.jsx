@@ -37,7 +37,7 @@ export default function RandomPokemon() {
   useDocumentHead({
     title: 'PokeMMO Random Pokémon Generator & Shiny Bingo',
     description: 'Ultimate PokeMMO random Pokémon generator and shiny bingo tool. Generate hunt targets, play bingo with multiple board sizes, filter by tier, randomize natures and IVs for shiny hunting.',
-    canonicalPath: '/random-pokemon-generator',
+    canonicalPath: '/random-pokemon-generator/',
     breadcrumbs: breadcrumbs
   })
 

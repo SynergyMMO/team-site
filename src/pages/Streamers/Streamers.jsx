@@ -12,7 +12,7 @@ export default function Streamers() {
   useDocumentHead({
     title: 'PokeMMO Streamers - Watch Team Synergy Live on Twitch',
     description: 'Watch Team Synergy members stream PokeMMO live on Twitch. Follow active streamers, discover shiny hunts, competitive battles, encounters, and join the PokeMMO streaming community.',
-    canonicalPath: '/streamers',
+    canonicalPath: '/streamers/',
     breadcrumbs: breadcrumbs
   })
   const { data, isLoading, error } = useStreamers()

@@ -19,7 +19,7 @@ export default function ShinyShowcase() {
   useDocumentHead({
     title: 'Shiny Showcase - Team Synergy PokeMMO Community',
     description: 'Browse Team Synergy\'s 140+ member shiny collections. Track completion with our Pokédex, watch live Twitch streamers, and join competitions.',
-    canonicalPath: '/shiny-showcase',
+    canonicalPath: '/shiny-showcase/',
     robots: 'index, follow, max-image-preview:large',
   })
   const { data, isLoading, error } = useDatabase()

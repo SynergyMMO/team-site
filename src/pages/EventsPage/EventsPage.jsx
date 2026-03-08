@@ -17,7 +17,7 @@ export default function EventsPage() {
     useDocumentHead({
     title: 'PokeMMO Events - Team Synergy Community Events',
     description: 'Discover Team Synergy PokeMMO community events. Join shiny hunting competitions, seasonal tournaments, team challenges, special events & tournaments. Stay connected with latest activities.',
-    canonicalPath: '/events',
+    canonicalPath: '/events/',
     breadcrumbs: breadcrumbs
   })
   useEffect(() => {

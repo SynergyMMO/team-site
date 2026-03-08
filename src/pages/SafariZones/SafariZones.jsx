@@ -434,7 +434,7 @@ export default function SafariZones() {
   useDocumentHead({
     title: 'PokeMMO Safari Zone Guide - Catch Rates, Flee Rates & Best Strategies',
     description: 'Complete PokeMMO Safari Zone guide with catch rates, flee rates, and optimal strategies for Johto and Sinnoh (Great Marsh). Find the best approach for every Safari Zone Pokemon.',
-    canonicalPath: '/safari-zones',
+    canonicalPath: '/safari-zones/',
     breadcrumbs: [
       { name: 'Home', url: '/' },
       { name: 'Safari Zone Guide', url: '/safari-zones' }
