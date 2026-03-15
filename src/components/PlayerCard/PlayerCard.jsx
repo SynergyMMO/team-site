@@ -20,7 +20,7 @@ function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, 
 
   const sparkle = rank >= 3
 
-  const twitchUser = streamers?.[player?.toLowerCase()]?.twitch_username
+  //const twitchUser = streamers?.[player?.toLowerCase()]?.twitch_username
 
   return (
     <div className={styles.card}>
