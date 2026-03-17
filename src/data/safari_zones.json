@@ -3045,7 +3045,6 @@
           {"name": "Pinsir", "encounterType": "grass"},
           {"name": "Dodrio", "encounterType": "grass"},
           {"name": "Psyduck", "encounterType": "water"},
-          {"name": "Golduck", "encounterType": "water"},
           {"name": "Magikarp", "encounterType": "water"},
           {"name": "Goldeen", "encounterType": "water"},
           {"name": "Seaking", "encounterType": "water"},

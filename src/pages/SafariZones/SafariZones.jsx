@@ -410,7 +410,7 @@ function RegionContent({ region, initialArea }) {
       <div className={styles.pokemonGrid}>
         {sortedPokemon.map(p => (
           <PokemonCard
-            key={p.name}
+            key={`${p.name}-${p.encounterType}`}
             name={p.name}
             encounterType={p.encounterType}
             catchData={data.catchData}

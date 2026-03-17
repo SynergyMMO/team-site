@@ -170,7 +170,8 @@ export default function useAdminDB(auth) {
     try {
       const db = deepClone(database);
       if (!db[playerName]) db[playerName] = { shiny_count: 0, shinies: {} };
-      const nextId = Object.keys(db[playerName].shinies).length + 1;
+      const existingIds = Object.keys(db[playerName].shinies).map(Number);
+      const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
       db[playerName].shinies[nextId] = shinyData;
       db[playerName].shiny_count = recalcShinyCount(db[playerName]);
 

@@ -34,7 +34,7 @@ export default function Pokedex() {
   const [selectedRarities, setSelectedRarities] = useState(() => searchParams.getAll('rarity'))
   const [selectedTiers, setSelectedTiers] = useState(() => searchParams.getAll('tier'))
   const [selectedEggGroups, setSelectedEggGroups] = useState(() => searchParams.getAll('egg'))
-  const [eggGroupMatchMode, setEggGroupMatchMode] = useState(() => searchParams.get('eggMode') || 'any') // 'any' or 'both'
+  const [eggGroupMatchMode, setEggGroupMatchMode] = useState(() => searchParams.get('eggMode') || 'any')
   const [selectedTypes, setSelectedTypes] = useState(() => searchParams.getAll('type'))
   const [filterAlpha, setFilterAlpha] = useState(() => searchParams.get('alpha') === '1')
   const [movesToFilterBy, setMovesToFilterBy] = useState(() => {
@@ -52,8 +52,6 @@ export default function Pokedex() {
     spDef: searchParams.get('spd') || '',
     speed: searchParams.get('spe') || ''
   }))
-  const [statSearchMode, setStatSearchMode] = useState('form') // 'form' or 'typing'
-  const [statSearchInput, setStatSearchInput] = useState('')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
   const [synergyDataToggle, setSynergyDataToggle] = useState(() => searchParams.get('synergy') === '1')
@@ -76,19 +74,15 @@ export default function Pokedex() {
     darmanitan: 'darmanitan-standard'
   }
 
-  // Format egg group names - handles special water groups
   const formatEggGroupName = (group) => {
     if (!group) return ""
     const lowerGroup = group.toLowerCase()
-    // Special handling for water groups
     if (lowerGroup === "watera") return "Water A"
     if (lowerGroup === "waterb") return "Water B"
     if (lowerGroup === "waterc") return "Water C"
-    // Default: capitalize and replace hyphens with spaces
     return group.charAt(0).toUpperCase() + group.slice(1).replace('-', ' ')
   }
 
-  // Helper function to categorize encounters by type
   const getEncounterTypeForPokemon = (pokemonName, locationSearch) => {
     const lookupName = nameAliasMap[pokemonName] || pokemonName
     const pokemonDetails = pokemonData[lookupName] || {}
@@ -101,13 +95,11 @@ export default function Pokedex() {
       return locationText.includes(normalizedSearch)
     })
 
-    // Check if Pokemon has any fishing encounters
     const hasFishingEncounter = matchingEncounters.some(encounter => {
       const type = (encounter.type || '').toLowerCase()
       return type.includes('rod') || type.includes('fishing')
     })
 
-    // Check if Pokemon has any headbutt encounters
     const hasHeadbuttEncounter = matchingEncounters.some(encounter => {
       const type = (encounter.type || '').toLowerCase()
       return type === 'headbutt'
@@ -141,7 +133,6 @@ export default function Pokedex() {
     return Array.from(encounterTypes).sort()
   }
 
-  // Helper function to get encounter type info for display
   const getEncounterTypeDesc = (type) => {
     const descriptions = {
       'Horde': 'All Pokemon found within Hordes on the route',
@@ -155,7 +146,6 @@ export default function Pokedex() {
     return descriptions[type] || ''
   }
 
-  // Helper function to convert time string with season names
   const convertTimeString = (timeStr) => {
     if (!timeStr) return timeStr
     
@@ -166,21 +156,18 @@ export default function Pokedex() {
       .replace(/SEASON3/g, 'Winter')
   }
 
-  // Helper function to get rarity and grass type for a Pokemon in a specific location and encounter type
   const getEncounterDetailsForPokemon = (pokemonName, locationSearch, encounterType) => {
     const lookupName = nameAliasMap[pokemonName] || pokemonName
     const pokemonDetails = pokemonData[lookupName] || {}
     const encounters = pokemonDetails.location_area_encounters || []
     const normalizedSearch = locationSearch.toLowerCase().replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
     
-    // Filter by location
     let matchingEncounters = encounters.filter(encounter => {
       if (!encounter.location || !encounter.region_name) return false
       const locationText = `${encounter.location} ${encounter.region_name}`.toLowerCase()
       return locationText.includes(normalizedSearch)
     })
 
-    // Filter by encounter type
     if (encounterType === 'Horde') {
       matchingEncounters = matchingEncounters.filter(e => (e.rarity || '').toLowerCase() === 'horde')
     } else if (encounterType === 'Lure Encounters') {
@@ -212,7 +199,6 @@ export default function Pokedex() {
       })
     }
 
-    // Get all rarities and detect grass/water types/rod types/move types
     const rarities = new Set()
     const rarityOrder = ['very common', 'common', 'uncommon', 'rare', 'very rare']
     let primaryRarity = null
@@ -232,7 +218,6 @@ export default function Pokedex() {
       
       if (rarityOrder.includes(rarity)) {
         rarities.add(rarity)
-        // Set primary rarity to the first (most common) one we encounter
         if (!primaryRarity || rarityOrder.indexOf(rarity) < rarityOrder.indexOf(primaryRarity)) {
           primaryRarity = rarity
         }
@@ -257,7 +242,6 @@ export default function Pokedex() {
         hasRocks = true
       }
       
-      // Track highest rod type found
       rodOrder.forEach(rod => {
         if (type.includes(rod) && (!highestRod || rodOrder.indexOf(rod) < rodOrder.indexOf(highestRod))) {
           highestRod = rod
@@ -267,11 +251,9 @@ export default function Pokedex() {
 
     const grassTypes = []
     
-    // If Pheno (Special in Unova), only show Pheno
     if (hasPheno) {
       grassTypes.push('Pheno')
     } else {
-      // Otherwise show grass types
       if (hasNormalGrass && hasDarkGrass) {
         grassTypes.push('Both Grass')
       } else if (hasNormalGrass) {
@@ -281,23 +263,19 @@ export default function Pokedex() {
       }
     }
     
-    // Add water tag for Lure encounters that can be found in water
     if (hasWater && (Array.from(rarities).includes('lure') || matchingEncounters.some(e => (e.rarity || '').toLowerCase() === 'lure' || (e.type || '').toLowerCase() === 'lure'))) {
       grassTypes.push('Water')
     }
     
-    // Add move-based encounter labels
     if (hasRocks) {
       grassTypes.push('Rock Smash')
     }
-    
-    // Add highest rod type label for Fishing encounters
+
     if (highestRod) {
       const rodLabel = highestRod.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
       grassTypes.push(rodLabel)
     }
     
-    // Extract time information from encounters
     let time = 'ALL'
     const timeValues = new Set()
     matchingEncounters.forEach(encounter => {
@@ -305,8 +283,7 @@ export default function Pokedex() {
         timeValues.add(encounter.time)
       }
     })
-    
-    // If there are specific times (not ALL), use the first one
+
     if (timeValues.size > 0) {
       time = Array.from(timeValues)[0]
     }
@@ -319,14 +296,13 @@ export default function Pokedex() {
     }
   }
 
-  // Helper function to get color for rarity
   const getRarityColor = (rarity) => {
     const colors = {
-      'very common': '#90EE90', // light green
-      'common': '#228B22',      // forest green
-      'uncommon': '#4169E1',    // royal blue
-      'rare': '#9370DB',        // medium purple
-      'very rare': '#FFD700'    // gold
+      'very common': '#90EE90',
+      'common': '#228B22',
+      'uncommon': '#4169E1',
+      'rare': '#9370DB',
+      'very rare': '#FFD700'
     }
     return colors[rarity] || '#FFFFFF'
   }
@@ -383,7 +359,6 @@ export default function Pokedex() {
   const eggGroupIndex = useMemo(() => {
     const index = new Map()
     Object.entries(pokemonData).forEach(([key, details]) => {
-      // Skip legendary and mythical when Synergy data is ON
       if (synergyDataToggle && (details.is_legendary || details.is_mythical)) {
         return
       }
@@ -465,7 +440,6 @@ export default function Pokedex() {
   const searchSuggestions = useMemo(() => {
     const suggestions = new Set()
     
-    // Add all unique Pokemon names
     Object.entries(generationData).forEach(([_, speciesGroups]) => {
       speciesGroups.forEach(group => {
         group.forEach(pokemon => {
@@ -473,8 +447,7 @@ export default function Pokedex() {
         })
       })
     })
-    
-    // Add egg groups
+
     eggGroupOptions.forEach(group => {
       if (group !== 'all') suggestions.add(group)
     })
@@ -505,19 +478,15 @@ export default function Pokedex() {
     if (!synergyDataToggle) {
       setHideComplete(false)
     } else {
-      // Clear egg group filters when enabling Synergy data, as "legendary" egg group is now hidden
       setSelectedEggGroups([])
     }
   }, [synergyDataToggle])
 
-  // Clear hover information when component mounts to prevent stale state
   useEffect(() => {
     setHoverInfo(null)
   }, [])
 
-  // Handle location search from navigation state (from PokemonDetail)
   useEffect(() => {
-    // Clear hover info when navigating to Pokedex to prevent stale tooltips
     setHoverInfo(null)
 
     if (location.state?.locationSearch) {
@@ -526,7 +495,6 @@ export default function Pokedex() {
     }
   }, [location.state?.locationSearch])
 
-  // Sync all filter state → URL query params for shareable links
   useEffect(() => {
     const next = new URLSearchParams()
     if (search.trim()) next.set('q', search.trim())
@@ -551,7 +519,6 @@ export default function Pokedex() {
     setSearchParams(next, { replace: true })
   }, [search, locationSearch, abilitySearch, selectedRarities, selectedTiers, selectedEggGroups, eggGroupMatchMode, selectedTypes, filterAlpha, movesToFilterBy, statMinimums, mode, hideComplete, synergyDataToggle, setSearchParams])
 
-  // Close filter menu on resize to desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 600) {
@@ -662,28 +629,21 @@ export default function Pokedex() {
   }, [searchTerm, locationSearch, selectedRarities, selectedTiers, selectedEggGroups, selectedTypes, abilitySearch, filterAlpha, movesToFilterBy, statMinimums])
 
   const shouldHideUnobtainable = () => {
-    // If Legendary egg group is selected, don't hide unobtainable
     if (selectedEggGroups.some(group => group.toLowerCase() === 'legendary')) {
       return false
     }
-    // Otherwise, hide unobtainable only when other filters are active
     return hasActiveFilters()
   }
 
   const matchesStatSearch = (pokemonDetails, hideUnobtainable = true) => {
-    // Hide unobtainable pokemon only when filters are active
     if (hideUnobtainable && pokemonDetails.obtainable === false) return false
-    
-    // Handle stats as array (from raw pokemonData)
+
     const statsArray = pokemonDetails.stats || []
     const statsMap = {}
-    
-    // Convert array format to map using stat_name
     statsArray.forEach(stat => {
       statsMap[stat.stat_name] = stat.base_stat
     })
-    
-    // Map our internal keys to pokemon data stat_name values
+
     const statNameMap = {
       'hp': 'hp',
       'attack': 'attack',
@@ -692,10 +652,9 @@ export default function Pokedex() {
       'spDef': 'special-defense',
       'speed': 'speed'
     }
-    
-    // Check each stat - if a minimum is set (non-empty and > 0), verify the pokemon meets it
+
     for (const [statKey, minValue] of Object.entries(statMinimums)) {
-      if (minValue === '' || minValue === '0') continue // Skip empty or zero values
+      if (minValue === '' || minValue === '0') continue
       
       const minimum = parseInt(minValue, 10)
       if (!Number.isFinite(minimum)) continue
@@ -728,7 +687,6 @@ export default function Pokedex() {
       spDef: '',
       speed: ''
     })
-    setStatSearchInput('')
     setHideComplete(false)
     setIsFilterPanelOpen(false)
   }
@@ -1115,7 +1073,6 @@ export default function Pokedex() {
       )}
 
       {synergyDataToggle && !(locationSearch.trim() && locationOptions.includes(locationSearch)) && (() => {
-        // Calculate progress stats
         let totalPokemon = 0
         let completedPokemon = 0
         
@@ -1154,12 +1111,11 @@ export default function Pokedex() {
             if (seenPokemon.has(lowerName)) return
             seenPokemon.add(lowerName)
             
-            // Hide Legendary and Mythical Pokemon when Synergy Data is ON
             if (synergyDataToggle) {
               const isLegendaryOrMythical = pokemonDetails.is_legendary || pokemonDetails.is_mythical
               if (isLegendaryOrMythical) return
             }
-            
+
             const isComplete = mode === 'shiny' ? speciesCompleteSet.has(lowerName) : globalShinies.has(lowerName)
             
             if (searchTerm) {
@@ -1284,7 +1240,6 @@ export default function Pokedex() {
         onMouseOut={handleMouseOut}
       >
         {locationSearch.trim() && locationOptions.includes(locationSearch) ? (
-          // Render grouped by Encounter Type when location search is active
           (() => {
             const encounterTypeMap = {}
             const encounterTypeOrder = ['Lure Encounters', 'Rares', 'Horde', 'Singles', 'Fishing Encounters', 'Headbutt', 'Special']
@@ -1367,7 +1322,6 @@ export default function Pokedex() {
 
                 const encounterTypes = getEncounterTypeForPokemon(normalized, locationSearch)
                 encounterTypes.forEach(type => {
-                  // For Singles encounters, split into Rares (Tier 0-2) and Singles (Tier 3+)
                   let targetType = type
                   if (type === 'Singles') {
                     const tierMatch = pokemonTier.match(/Tier\s*(\d+)/)
@@ -1390,7 +1344,6 @@ export default function Pokedex() {
               })
             })
 
-            // Extract route name and region
             const routeName = locationSearch.split(' - ')[0]
             const regionName = locationSearch.split(' - ')[1]
 
@@ -1402,8 +1355,7 @@ export default function Pokedex() {
               ...encounterTypeOrder
                 .filter(type => encounterTypeMap[type] && encounterTypeMap[type].length > 0)
                 .map(type => {
-                // Sort Singles and Rares by rarity (Very Common → Very Rare)
-                let pokemonList = encounterTypeMap[type]
+                  let pokemonList = encounterTypeMap[type]
                 if (type === 'Singles' || type === 'Rares') {
                   const rarityOrder = ['very common', 'common', 'uncommon', 'rare', 'very rare']
                   pokemonList = [...pokemonList].sort((a, b) => {
@@ -1430,12 +1382,10 @@ export default function Pokedex() {
                       const lowerName = pokemon.toLowerCase()
                       const isComplete = globalShinies.has(lowerName)
                       
-                      // For Singles and Rares sections, show rarity info
                       const showRarityInfo = type === 'Singles' || type === 'Rares'
                       const primaryRarity = pokemonData.rarities && pokemonData.rarities[0]
                       const hasMultipleGrassTypes = pokemonData.grassTypes && pokemonData.grassTypes.length > 1
                       
-                      // Determine styling based on time
                       const getTimeBasedStyle = () => {
                         if (!pokemonData.time || pokemonData.time === 'ALL') {
                           return {}
@@ -1444,13 +1394,13 @@ export default function Pokedex() {
                         const baseTime = pokemonData.time.split('/').slice(0, 2).join('/')
                         if (baseTime.toLowerCase().includes('night')) {
                           return {
-                            backgroundColor: 'rgba(44, 62, 80, 0.15)', // Dark blue-gray tint
+                            backgroundColor: 'rgba(44, 62, 80, 0.15)',
                             borderRadius: '4px',
                             padding: '2px'
                           }
                         } else if (baseTime.toLowerCase().includes('day') || baseTime.toLowerCase().includes('morning')) {
                           return {
-                            backgroundColor: 'rgba(255, 215, 0, 0.08)', // Light gold tint for day
+                            backgroundColor: 'rgba(255, 215, 0, 0.08)',
                             borderRadius: '4px',
                             padding: '2px'
                           }
@@ -1460,7 +1410,6 @@ export default function Pokedex() {
 
                       return (
                         <div key={`${type}-${pokemon}-${idx}`} className={styles.locationPokemonItem} style={{ position: 'relative', display: 'inline-block', ...getTimeBasedStyle() }}>
-                          {/* Grass Type Separator */}
                           {hasMultipleGrassTypes && (
                             <div style={{
                               position: 'absolute',
@@ -1474,7 +1423,6 @@ export default function Pokedex() {
                             }} />
                           )}
                           
-                          {/* Grass Type Labels */}
                           {pokemonData.grassTypes && pokemonData.grassTypes.length > 0 && (
                             <div style={{
                               position: 'absolute',
@@ -1495,9 +1443,9 @@ export default function Pokedex() {
                                 else if (grassType === 'Both Grass') { color = '#87CEEB'; fontSize = '0.85rem' }
                                 else if (grassType === 'Pheno') color = '#DDA0DD'
                                 else if (grassType === 'Water') color = '#4DA6FF'
-                                else if (grassType === 'Super Rod') color = '#FF8C00' // Dark Orange
-                                else if (grassType === 'Good Rod') color = '#20B2AA' // Light Sea Green
-                                else if (grassType === 'Old Rod') color = '#D3D3D3' // Light Gray
+                                else if (grassType === 'Super Rod') color = '#FF8C00'
+                                else if (grassType === 'Good Rod') color = '#20B2AA'
+                                else if (grassType === 'Old Rod') color = '#D3D3D3'
                                 else if (grassType === 'Headbutt') color = '#FFB347' // Pastel Orange
                                 else if (grassType === 'Rock Smash') color = '#C0C0C0' // Silver
                                 
@@ -1542,28 +1490,20 @@ export default function Pokedex() {
                             />
                           </div>
                           
-                          {/* Time Label - Display if time is not "ALL" */}
                           {pokemonData.time && pokemonData.time !== 'ALL' && (
                             (() => {
-                              // Convert time string with proper season names
                               const displayTime = convertTimeString(pokemonData.time)
-                              
-                              // Calculate number of visible grass types
                               const visibleGrassTypes = (pokemonData.grassTypes || []).length
-                              
-                              // Adjust bottom position based on grass types (each ~18px)
                               const grassTypeHeight = visibleGrassTypes > 0 ? visibleGrassTypes * 18 : 0
-                              const bottomPosition = -(22 + grassTypeHeight + 8) // -22 for base, +grass types, +8 for spacing
-                              
-                              // Determine styling based on time
-                              let backgroundColor = '#FFD700' // Default to day (gold)
+                              const bottomPosition = -(22 + grassTypeHeight + 8)
+                              let backgroundColor = '#FFD700'
                               let textColor = '#000'
-                              
+
                               if (pokemonData.time.toLowerCase().includes('night')) {
-                                backgroundColor = '#2c3e50' // Dark blue-gray for night
+                                backgroundColor = '#2c3e50'
                                 textColor = '#e0e0e0'
                               } else if (pokemonData.time.toLowerCase().includes('day') || pokemonData.time.toLowerCase().includes('morning')) {
-                                backgroundColor = '#FFD700' // Gold for day
+                                backgroundColor = '#FFD700'
                                 textColor = '#000'
                               }
                               
@@ -1595,14 +1535,12 @@ export default function Pokedex() {
                             })()
                           )}
                           
-                          {/* Rarity Info Card - Only for Singles */}
                           {showRarityInfo && primaryRarity && (
                             <div className={styles.rarityLabel} style={{ background: getRarityColor(primaryRarity) }}>
                               {primaryRarity.replace(/\b\w/g, l => l.toUpperCase())}
                             </div>
                           )}
                           
-                          {/* Rod Image Overlay - Only for Fishing */}
                           {pokemonData.grassTypes && pokemonData.grassTypes.some(gt => gt.includes('Rod')) && (
                             (() => {
                               const rodType = pokemonData.grassTypes.find(gt => gt.includes('Rod'))
@@ -1643,7 +1581,6 @@ export default function Pokedex() {
             ]
           })()
         ) : (
-          // Original rendering by generation when no location search
           Object.entries(generationData).map(([gen, speciesGroups]) => {
             const speciesCompleteSet = new Set()
             if (mode === 'shiny') {
@@ -1665,7 +1602,6 @@ export default function Pokedex() {
               const pokemonEggGroups = eggGroupIndex.get(lookupName) || []
               const pokemonDetails = pokemonData[lookupName] || {}
               
-              // Extract moves - handle multiple possible formats
               const movesArray = pokemonDetails.moves || []
               const movesList = movesArray
                 .map(m => {
@@ -1677,11 +1613,9 @@ export default function Pokedex() {
                 .filter(m => m)
                 .join(' ')
               
-              // Skip if we've already processed this pokemon
               if (seenPokemon.has(lowerName)) return false
               seenPokemon.add(lowerName)
 
-              // Hide Legendary and Mythical Pokemon when Synergy Data is ON
               if (synergyDataToggle) {
                 const isLegendaryOrMythical = pokemonDetails.is_legendary || pokemonDetails.is_mythical
                 if (isLegendaryOrMythical) return false
@@ -1703,7 +1637,6 @@ export default function Pokedex() {
               if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return false
               if (selectedEggGroups.length > 0) {
                 if (eggGroupMatchMode === 'both') {
-                  // All selected egg groups must be present
                   const matchesAllGroups = selectedEggGroups.every(group => {
                     if (group.toLowerCase() === 'legendary') {
                       return pokemonDetails.is_legendary || pokemonDetails.is_mythical
@@ -1712,7 +1645,6 @@ export default function Pokedex() {
                   })
                   if (!matchesAllGroups) return false
                 } else {
-                  // At least one selected egg group must be present (any)
                   const matchesAnyGroup = selectedEggGroups.some(group => {
                     if (group.toLowerCase() === 'legendary') {
                       return pokemonDetails.is_legendary || pokemonDetails.is_mythical
