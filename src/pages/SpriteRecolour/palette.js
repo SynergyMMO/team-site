@@ -1,0 +1,292 @@
+import { state } from './state.js';
+import { elements } from './dom.js';
+import { rgbToHex, rgbToHsl, loadImageFromFile } from './utils.js';
+import { computeColorGroups } from './grouping.js';
+
+export function extractPalette() {
+    state.colorPalette.clear();
+
+    for (const frameData of state.currentFrames) {
+        for (let i = 0; i < frameData.length; i += 4) {
+            const r = frameData[i];
+            const g = frameData[i + 1];
+            const b = frameData[i + 2];
+            const a = frameData[i + 3];
+
+            if (a > 0) { // Only non-transparent pixels
+                const colorKey = `${r},${g},${b}`;
+                if (!state.colorPalette.has(colorKey)) {
+                    state.colorPalette.set(colorKey, { r, g, b, count: 1 });
+                } else {
+                    state.colorPalette.get(colorKey).count++;
+                }
+            }
+        }
+    }
+
+    renderPalette();
+}
+
+export function renderPalette() {
+    elements.paletteGrid.innerHTML = '';
+
+    if (state.colorGroupingEnabled) {
+        // Compute groups and render in grouped mode
+        computeColorGroups();
+
+        const totalGroups = state.colorGroups.length;
+        const MAX_DISPLAYED_GROUPS = 200; // Limit for UI performance
+        const displayedGroups = Math.min(totalGroups, MAX_DISPLAYED_GROUPS);
+
+            if (elements.colorCount) elements.colorCount.textContent = totalGroups;
+            if (elements.colorCountLabel) elements.colorCountLabel.textContent = `groups (${state.colorPalette.size} colors)`;
+        elements.paletteGrid.classList.add('grouped-mode');
+
+        // Show warning if too many groups
+        if (totalGroups > MAX_DISPLAYED_GROUPS) {
+            const warning = document.createElement('div');
+            warning.className = 'grouping-warning';
+            warning.innerHTML = `Showing ${MAX_DISPLAYED_GROUPS} of ${totalGroups} groups. <br><small>Increase sensitivity to reduce groups.</small>`;
+            elements.paletteGrid.appendChild(warning);
+        }
+
+        // Render groups (limited for performance)
+        for (let groupIndex = 0; groupIndex < displayedGroups; groupIndex++) {
+            const groupKeys = state.colorGroups[groupIndex];
+            const groupContainer = document.createElement('div');
+            groupContainer.className = 'color-group-container';
+            groupContainer.dataset.groupIndex = groupIndex;
+
+            // Group label
+            const label = document.createElement('div');
+            label.className = 'group-label';
+                label.textContent = `Group ${groupIndex + 1} (${groupKeys.length} color${groupKeys.length > 1 ? 's' : ''})`;
+            groupContainer.appendChild(label);
+
+            // Render colors in group (already sorted by lightness)
+            groupKeys.forEach(colorKey => {
+                const colorData = state.colorPalette.get(colorKey);
+                const div = createColorElement(colorKey, colorData);
+                div.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectGroup(groupIndex, colorKey); // Pass the clicked color as anchor
+                });
+                groupContainer.appendChild(div);
+            });
+
+            // Click handler for entire group container (uses middle color as default anchor)
+            groupContainer.addEventListener('click', () => selectGroup(groupIndex, null));
+
+            elements.paletteGrid.appendChild(groupContainer);
+        }
+    } else {
+        // Original non-grouped behavior
+            if (elements.colorCount) elements.colorCount.textContent = state.colorPalette.size;
+            if (elements.colorCountLabel) elements.colorCountLabel.textContent = 'colors';
+        elements.paletteGrid.classList.remove('grouped-mode');
+        state.selectedGroup = null;
+
+        // Sort by color similarity using HSL
+        const sortedColors = [...state.colorPalette.entries()].sort((a, b) => {
+            const hslA = rgbToHsl(a[1].r, a[1].g, a[1].b);
+            const hslB = rgbToHsl(b[1].r, b[1].g, b[1].b);
+
+            if (Math.abs(hslA.h - hslB.h) > 0.02) return hslA.h - hslB.h;
+            if (Math.abs(hslA.s - hslB.s) > 0.1) return hslB.s - hslA.s;
+            return hslB.l - hslA.l;
+        });
+
+        for (const [colorKey, colorData] of sortedColors) {
+            const div = createColorElement(colorKey, colorData);
+            div.addEventListener('click', () => selectColor(colorKey, div));
+            elements.paletteGrid.appendChild(div);
+        }
+    }
+}
+
+function createColorElement(colorKey, colorData) {
+    const div = document.createElement('div');
+    div.className = 'color-item';
+    div.style.background = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
+    div.dataset.color = colorKey;
+
+    const codeSpan = document.createElement('span');
+    codeSpan.className = 'color-code';
+        if (codeSpan) codeSpan.textContent = rgbToHex(colorData.r, colorData.g, colorData.b);
+    div.appendChild(codeSpan);
+
+    return div;
+}
+
+export function selectColor(colorKey, element) {
+    // In grouping mode, clicking a color selects its group with that color as anchor
+    if (state.colorGroupingEnabled) {
+        const groupIndex = state.colorKeyToGroupIndex.get(colorKey);
+        if (groupIndex !== undefined) {
+            selectGroup(groupIndex, colorKey); // Pass clicked color as anchor
+        }
+        return;
+    }
+
+    // Original non-grouped behavior
+    document.querySelectorAll('.color-item.selected').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    state.selectedColor = colorKey;
+    state.selectedGroup = null;
+    state.selectedAnchorColor = null;
+
+    const [r, g, b] = colorKey.split(',').map(Number);
+    elements.originalColorEl.style.background = `rgb(${r}, ${g}, ${b})`;
+    const hexColor = rgbToHex(r, g, b);
+    elements.originalColorHex.value = hexColor.toUpperCase();
+    elements.newColorPicker.value = hexColor;
+    elements.newColorHex.value = hexColor.toUpperCase();
+
+    // Reset label to "Original" for single color mode
+        if (elements.originalColorLabel) elements.originalColorLabel.textContent = 'Original';
+    elements.originalColorLabel.classList.remove('anchor-label');
+
+    elements.applySwapBtn.disabled = false;
+}
+
+export function selectGroup(groupIndex, anchorColorKey = null) {
+    // Clear previous selections
+    document.querySelectorAll('.color-group-container.selected').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.color-item.group-selected').forEach(el => el.classList.remove('group-selected'));
+    document.querySelectorAll('.color-item.selected').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.color-item.anchor-selected').forEach(el => el.classList.remove('anchor-selected'));
+
+    // Select new group
+    const groupContainer = document.querySelector(`.color-group-container[data-group-index="${groupIndex}"]`);
+    if (groupContainer) {
+        groupContainer.classList.add('selected');
+        groupContainer.querySelectorAll('.color-item').forEach(el => el.classList.add('group-selected'));
+    }
+
+    state.selectedGroup = groupIndex;
+    state.selectedColor = null;
+
+    // Determine anchor color: use clicked color or default to middle
+    const groupKeys = state.colorGroups[groupIndex];
+    let anchorKey;
+    if (anchorColorKey && groupKeys.includes(anchorColorKey)) {
+        anchorKey = anchorColorKey;
+    } else {
+        // Default to middle color
+        const middleIndex = Math.floor(groupKeys.length / 2);
+        anchorKey = groupKeys[middleIndex];
+    }
+
+    state.selectedAnchorColor = anchorKey;
+
+    // Highlight the anchor color specifically
+    const anchorElement = groupContainer?.querySelector(`.color-item[data-color="${anchorKey}"]`);
+    if (anchorElement) {
+        anchorElement.classList.add('anchor-selected');
+    }
+
+    // Show the anchor color in the original color display
+    const [r, g, b] = anchorKey.split(',').map(Number);
+    elements.originalColorEl.style.background = `rgb(${r}, ${g}, ${b})`;
+    const hexColor = rgbToHex(r, g, b);
+    elements.originalColorHex.value = hexColor.toUpperCase();
+    elements.newColorPicker.value = hexColor;
+    elements.newColorHex.value = hexColor.toUpperCase();
+
+    // Update label to show "Anchor"
+    elements.originalColorLabel.textContent = 'Anchor';
+    elements.originalColorLabel.classList.add('anchor-label');
+
+    elements.applySwapBtn.disabled = false;
+}
+
+export async function handlePaletteSourceUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    await loadPaletteSourceImage(file);
+    e.target.value = '';
+}
+
+export async function loadPaletteSourceImage(file) {
+    try {
+        const img = await loadImageFromFile(file);
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+        tempCtx.drawImage(img, 0, 0);
+
+        const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+        const data = imageData.data;
+
+        state.sourcePaletteColors.clear();
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const a = data[i + 3];
+
+            if (a > 0) {
+                const colorKey = `${r},${g},${b}`;
+                if (!state.sourcePaletteColors.has(colorKey)) {
+                    state.sourcePaletteColors.set(colorKey, { r, g, b, count: 1 });
+                } else {
+                    state.sourcePaletteColors.get(colorKey).count++;
+                }
+            }
+        }
+
+        updatePaletteSourceUI(img, file.name);
+        renderSourcePalette();
+    } catch (error) {
+        console.error('Error loading palette source:', error);
+        alert('Error loading image: ' + error.message);
+    }
+}
+
+function updatePaletteSourceUI(img, fileName) {
+    elements.paletteSourceContent.innerHTML = `
+        <img src="${img.src}" class="palette-source-preview" alt="Palette source">
+        <p style="margin: 0; font-size: 11px; color: #4caf50;">✓ ${fileName}</p>
+        <p style="margin: 2px 0 0; font-size: 10px; color: #888;">${state.sourcePaletteColors.size} colors extracted</p>
+    `;
+    elements.paletteSourceUpload.classList.add('has-image');
+    elements.sourcePaletteContainer.classList.remove('hidden');
+}
+
+export function renderSourcePalette() {
+    elements.sourcePaletteGrid.innerHTML = '';
+    const sortedColors = [...state.sourcePaletteColors.entries()].sort((a, b) => b[1].count - a[1].count);
+
+    for (const [colorKey, colorData] of sortedColors) {
+        const div = document.createElement('div');
+        div.className = 'source-color-item';
+        div.style.background = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
+        div.dataset.color = colorKey;
+        div.title = rgbToHex(colorData.r, colorData.g, colorData.b);
+
+        div.addEventListener('click', () => selectSourceColor(colorKey, div));
+        elements.sourcePaletteGrid.appendChild(div);
+    }
+}
+
+function selectSourceColor(colorKey, element) {
+    document.querySelectorAll('.source-color-item.selected').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+
+    const [r, g, b] = colorKey.split(',').map(Number);
+    const hexColor = rgbToHex(r, g, b);
+    elements.newColorPicker.value = hexColor;
+    elements.newColorHex.value = hexColor.toUpperCase();
+}
+
+export function clearPaletteSource() {
+    state.sourcePaletteColors.clear();
+    elements.sourcePaletteGrid.innerHTML = '';
+    elements.sourcePaletteContainer.classList.add('hidden');
+    elements.paletteSourceUpload.classList.remove('has-image');
+    elements.paletteSourceContent.innerHTML = `
+        <div style="font-size: 24px;">🎨</div>
+        <p style="margin: 5px 0 0; font-size: 12px; color: #888;">Click to upload palette image</p>
+    `;
+}

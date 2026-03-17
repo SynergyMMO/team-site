@@ -1,9 +1,6 @@
 import { useMemo } from 'react'
 import spritesData from '../data/pokemmo_data/pokemon-sprites.json'
 
-/**
- * Get display label for a pokemon form, handling special cases like Unown
- */
 function getFormDisplayLabel(formName) {
   const displayNameMap = {
     meloetta: 'Aria',
@@ -56,26 +53,19 @@ function getFormDisplayLabel(formName) {
     'unown-exclamation': '!',
     'unown-question': '?'
   }
-  
+
   const mapped = displayNameMap[formName.toLowerCase()]
   if (mapped) return mapped
-  
-  // Default formatting
+
   return formName.charAt(0).toUpperCase() + formName.slice(1)
 }
 
-/**
- * Hook to get available forms (including gender variants) for a Pokemon
- * Returns array of form objects with name, label, and type (form or gender)
- * Works from any variant - e.g., rotom-fan will still show all rotom forms
- */
 export function usePokemonForms(pokemonName) {
   return useMemo(() => {
     if (!pokemonName) return []
 
     const pokemonLower = pokemonName.toLowerCase()
-    
-    // Special cases where the standard form has a hyphen in its name
+
     const specialStandardForms = {
       'meloetta-aria': 'meloetta',
       'meloetta-pirouette': 'meloetta',
@@ -97,22 +87,18 @@ export function usePokemonForms(pokemonName) {
       'shaymin-land': 'shaymin',
       'shaymin-sky': 'shaymin'
     }
-    
-    // Extract base name by finding all variants and determining the common base
-    // This ensures rotom-fan shows all rotom forms, frillish-f shows all frillish variants, etc.
+
     let baseName = pokemonLower
-    
-    // Check for special cases where standard form has a hyphen (e.g., meloetta-aria)
+
     if (specialStandardForms[pokemonLower]) {
       baseName = specialStandardForms[pokemonLower]
     }
-    // Check if current name is a known variant in sprites data
+
     else if (spritesData[pokemonLower]) {
-      // It exists in sprites, use it or find its base
-      // Try to find the base by checking if removing a suffix gives us another variant
+
       const parts = pokemonLower.split('-')
       if (parts.length > 1) {
-        // Try progressively removing suffixes to find base form
+
         for (let i = parts.length - 1; i > 0; i--) {
           const potentialBase = parts.slice(0, i).join('-')
           if (spritesData[potentialBase]) {
@@ -122,7 +108,7 @@ export function usePokemonForms(pokemonName) {
         }
       }
     } else {
-      // Not in sprites, try to find base by removing suffixes
+
       const parts = pokemonLower.split('-')
       if (parts.length > 1) {
         for (let i = parts.length - 1; i > 0; i--) {
@@ -135,10 +121,8 @@ export function usePokemonForms(pokemonName) {
       }
     }
 
-    // Collect all variants for this base Pokemon
     const variants = []
-    
-    // Add the base form first (only if it exists in sprites data)
+
     if (spritesData[baseName]) {
       variants.push({
         name: baseName,
@@ -148,17 +132,14 @@ export function usePokemonForms(pokemonName) {
       })
     }
 
-    // Scan all sprites for variants of this base name
     Object.keys(spritesData).forEach(key => {
       const keyLower = key.toLowerCase()
-      
-      // Skip the base form (already added)
+
       if (keyLower === baseName) return
-      
-      // Check for form variants (e.g., rotom-heat for rotom)
+
       if (keyLower.startsWith(baseName + '-')) {
         const suffix = keyLower.substring(baseName.length + 1)
-        // Skip gender-only suffixes (we handle those separately)
+
         if (suffix !== 'f' && suffix !== 'm' && !suffix.endsWith('-f') && !suffix.endsWith('-m')) {
           const existing = variants.find(v => v.name === keyLower)
           if (!existing) {
@@ -172,31 +153,28 @@ export function usePokemonForms(pokemonName) {
         }
       }
     })
-    // Sort: base first, then forms alphabetically, then female, special chars (! ?) at end
+
     variants.sort((a, b) => {
-      // Base form first
+
       if (a.name === baseName) return -1
       if (b.name === baseName) return 1
-      
-      // Special Unown forms (! ?) go to the end
+
       const aIsSpecial = a.name === 'unown-exclamation' || a.name === 'unown-question'
       const bIsSpecial = b.name === 'unown-exclamation' || b.name === 'unown-question'
       if (aIsSpecial && !bIsSpecial) return 1
       if (!aIsSpecial && bIsSpecial) return -1
-      
-      // Between special chars, ! comes before ?
+
       if (aIsSpecial && bIsSpecial) {
         if (a.name === 'unown-exclamation') return -1
         if (b.name === 'unown-exclamation') return 1
       }
-      
-      // Regular forms: forms before genders
+
       if (a.type !== b.type) return a.type === 'form' ? -1 : 1
-      
-      // Alphabetically
+
       return a.displayLabel.localeCompare(b.displayLabel)
     })
 
     return variants
   }, [pokemonName])
 }
+

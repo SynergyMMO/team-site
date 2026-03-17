@@ -31,6 +31,7 @@ const ThemeDetail = lazy(() => import('./pages/Themes/ThemeDetail'))
 const ShinyOdds = lazy(() => import('./pages/ShinyOdds/ShinyOdds'))
 
 const BountiesPage = lazy(() => import('./pages/Bounties/BountiesPage'));
+const SpriteRecolour = lazy(() => import('./pages/SpriteRecolour/SpriteRecolour'));
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 
 export default function App() {
@@ -115,9 +116,10 @@ export default function App() {
             <Route path="/themes/" element={<ThemesPage />} />
             <Route path="/themes/:slug" element={<ThemeDetail />} />
             <Route path="/resources/:category/:subcategory/:nested" element={<Resources />} />
-            <Route path="/shiny-war-2025" element={<ShinyWar2025 />} />
-            <Route path="/bounties" element={<BountiesPage />} />
-            <Route path="/time-display" element={<TimeDisplay />} />
+            <Route path="/shiny-war-2025/" element={<ShinyWar2025 />} />
+            <Route path="/bounties/" element={<BountiesPage />} />
+            <Route path="/time-display/" element={<TimeDisplay />} />
+            <Route path="/sprite-recolour/" element={<SpriteRecolour />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/panel" element={<AdminPanel />} />
             <Route path="*" element={<NotFound />} />
