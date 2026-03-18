@@ -13,6 +13,37 @@ import generations from "../../data/generation.json";
 import pokemonSprites from "../../data/pokemmo_data/pokemon-sprites.json";
 import { getLocalPokemonGif } from "../../utils/pokemon.js";
 import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm";
+import sparklesGif from "../../../public/images/sparkle.gif"; // adjust path
+
+async function loadAndResizeSparkles(targetWidth, targetHeight) {
+  const response = await fetch(sparklesGif);
+  const buffer = await response.arrayBuffer();
+  const sparklesSprite = await parseSpriteFile(new File([buffer], "sparkles.gif", { type: "image/gif" }));
+
+  // Resize each frame to match targetWidth/targetHeight
+  const resizedFrames = sparklesSprite.currentFrames.map((frame) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    const ctx = canvas.getContext("2d");
+
+    // Draw original frame onto resized canvas
+    const imgData = new ImageData(frame, sparklesSprite.width, sparklesSprite.height);
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = sparklesSprite.width;
+    tempCanvas.height = sparklesSprite.height;
+    tempCanvas.getContext("2d").putImageData(imgData, 0, 0);
+
+    ctx.drawImage(tempCanvas, 0, 0, targetWidth, targetHeight);
+
+    // Get resized frame data
+    const resizedData = ctx.getImageData(0, 0, targetWidth, targetHeight);
+    return new Uint8ClampedArray(resizedData.data);
+  });
+
+  return { ...sparklesSprite, currentFrames: resizedFrames, width: targetWidth, height: targetHeight };
+}
+
 
 
 function parseHexColor(hex) {
@@ -114,6 +145,45 @@ function ensureSpriteColorPixels(sprite) {
     ),
   };
 }
+
+function overlaySparkles(sprite, sparkles, colorHex = null) {
+  if (!sprite || !sparkles) return sprite;
+
+  const width = sprite.width;
+  const height = sprite.height;
+
+  // parse hex to RGB
+  const { r: cr, g: cg, b: cb } = colorHex
+    ? {
+        r: parseInt(colorHex.slice(1, 3), 16),
+        g: parseInt(colorHex.slice(3, 5), 16),
+        b: parseInt(colorHex.slice(5, 7), 16),
+      }
+    : { r: 255, g: 255, b: 255 }; // default white
+
+  const mergedFrames = sprite.currentFrames.map((frame, i) => {
+    const merged = new Uint8ClampedArray(frame); // clone sprite frame
+    const sparkleFrame = sparkles.currentFrames[i % sparkles.currentFrames.length];
+
+    for (let j = 0; j < merged.length; j += 4) {
+      const alpha = sparkleFrame[j + 3] / 255;
+      if (alpha > 0) {
+        merged[j] = Math.round(cr * alpha + merged[j] * (1 - alpha));
+        merged[j + 1] = Math.round(cg * alpha + merged[j + 1] * (1 - alpha));
+        merged[j + 2] = Math.round(cb * alpha + merged[j + 2] * (1 - alpha));
+        merged[j + 3] = 255; // fully opaque
+      }
+    }
+
+    return merged;
+  });
+
+  return {
+    ...sprite,
+    currentFrames: mergedFrames
+  };
+}
+
 
 async function parseSpriteFile(file) {
   if (!file) return null;
@@ -514,6 +584,8 @@ export default function SpriteRecolour() {
   const [selectedModPokemonId, setSelectedModPokemonId] = useState(null);
   const [isBigSprite, setIsBigSprite] = useState(false);
   const [isShiny, setIsShiny] = useState(false);
+  const [sparklesColor, setSparklesColor] = useState("#ffffff"); // default white
+  const [addSparkles, setAddSparkles] = useState(false);
   const previewMaxSize = 350;
   const previewScale = Math.min(
     previewMaxSize / (state.gifWidth || 256),
@@ -554,7 +626,7 @@ export default function SpriteRecolour() {
   };
 
   useDocumentHead({
-    title: "Sprite Recolour Tool - Edit Pokemon GIF Palettes",
+    title: "Sprite Recolour Tool - Edit Pokemon GIF Palettes and Export them ready to use in PokeMMO",
     description: "Recolour Pokemon sprite GIFs in your browser. Search the local Pokemon GIF library, upload your own GIFs, click colours directly on the preview, and export the result as PNG or GIF.",
     canonicalPath: "/sprite-recolour/",
     ogImage: "https://synergymmo.com/images/pokemon_gifs/tier_0/charizard.gif",
@@ -581,23 +653,39 @@ export default function SpriteRecolour() {
 
       const spritesFolder = zip.folder("sprites");
       const battleFolder = spritesFolder.folder("battlesprites");
+      let frontSpriteToUse = modCreatorSprites.front;
+      let backSpriteToUse = modCreatorSprites.back;
+
+          if (addSparkles) {
+      const sparklesFront = await loadAndResizeSparkles(
+        frontSpriteToUse.width,
+        frontSpriteToUse.height
+      );
+      const sparklesBack = await loadAndResizeSparkles(
+        backSpriteToUse.width,
+        backSpriteToUse.height
+      );
+
+      frontSpriteToUse = overlaySparkles(frontSpriteToUse, sparklesFront, sparklesColor);
+      backSpriteToUse = overlaySparkles(backSpriteToUse, sparklesBack, sparklesColor);
+    }
 
 
-      // ✅ FRONT GIF
+
       const frontBlob = await encodeGif(
-        modCreatorSprites.front.currentFrames,
-        modCreatorSprites.front.width,
-        modCreatorSprites.front.height,
-        modCreatorSprites.front.frameDelays
+        frontSpriteToUse.currentFrames,
+        frontSpriteToUse.width,
+        frontSpriteToUse.height,
+        frontSpriteToUse.frameDelays
       );
 
-      // ✅ BACK GIF
       const backBlob = await encodeGif(
-        modCreatorSprites.back.currentFrames,
-        modCreatorSprites.back.width,
-        modCreatorSprites.back.height,
-        modCreatorSprites.back.frameDelays
+        backSpriteToUse.currentFrames,
+        backSpriteToUse.width,
+        backSpriteToUse.height,
+        backSpriteToUse.frameDelays
       );
+
 
       const id = selectedModPokemonId || "pokemon";
 
@@ -1323,6 +1411,30 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
               style={{ marginLeft: 8 }}
             />
           </div>
+
+          <div style={{ margin: "1em 0" }}>
+            <label>
+              <input
+                type="checkbox"
+                checked={addSparkles}
+                onChange={(e) => setAddSparkles(e.target.checked)}
+              />
+              {" "}Sparkles?
+            </label>
+
+            {addSparkles && (
+              <div style={{ marginTop: 8 }}>
+                <label>Sparkles Color: </label>
+                <input
+                  type="color"
+                  value={sparklesColor}
+                  onChange={(e) => setSparklesColor(e.target.value)}
+                />
+              </div>
+            )}
+          </div>
+
+
           <div style={{ margin: "1em 0" }}>
             <label>
               <input
