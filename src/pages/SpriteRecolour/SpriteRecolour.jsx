@@ -9,7 +9,7 @@ import { state } from "./state.js";
 import { elements } from "./dom.js";
 import { rgbToHex } from "./utils.js";
 import { encodeGif } from "./gif-encoder.js";
-import tierPokemon from "../../data/tier_pokemon.json";
+import generations from "../../data/generation.json";
 import pokemonSprites from "../../data/pokemmo_data/pokemon-sprites.json";
 import { getLocalPokemonGif } from "../../utils/pokemon.js";
 import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm";
@@ -450,8 +450,8 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
   );
 }
 
-const pokemonOptions = Object.values(tierPokemon)
-  .flat()
+const pokemonOptions = Object.values(generations)
+  .flat(2)
   .filter((name, index, names) => names.indexOf(name) === index)
   .sort((a, b) => a.localeCompare(b))
   .map((name) => ({
@@ -461,6 +461,7 @@ const pokemonOptions = Object.values(tierPokemon)
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
       .join(" "),
   }));
+
 
 const pokemonLabelToValue = Object.fromEntries(
   pokemonOptions.map((option) => [option.label, option.value])
@@ -720,46 +721,44 @@ export default function SpriteRecolour() {
     }
   }
 
-  const handlePreviewClick = React.useCallback((event) => {
-    if (!canvasRef.current || !state.originalFrames.length) return;
+const handlePreviewClick = React.useCallback((event) => {
+  if (!canvasRef.current || !state.originalFrames.length) return;
 
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = rect.width / state.gifWidth;
-    const scaleY = rect.height / state.gifHeight;
-    const x = Math.floor((event.clientX - rect.left) / scaleX);
-    const y = Math.floor((event.clientY - rect.top) / scaleY);
+  const canvas = canvasRef.current;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = rect.width / state.gifWidth;
+  const scaleY = rect.height / state.gifHeight;
+  const x = Math.floor((event.clientX - rect.left) / scaleX);
+  const y = Math.floor((event.clientY - rect.top) / scaleY);
 
-    if (x < 0 || y < 0 || x >= state.gifWidth || y >= state.gifHeight) return;
+  const pixelIndex = (y * state.gifWidth + x) * 4;
+  const currentFrame = state.currentFrames[state.currentFrameIndex];
+  const originalFrame = state.originalFrames[state.currentFrameIndex];
 
-    const pixelIndex = (y * state.gifWidth + x) * 4;
-    const currentFrame = state.currentFrames[state.currentFrameIndex];
-    const originalFrame = state.originalFrames[state.currentFrameIndex];
+  if (!currentFrame || !originalFrame || currentFrame[pixelIndex + 3] === 0 || originalFrame[pixelIndex + 3] === 0) return;
 
-    if (!currentFrame || !originalFrame) return;
-    if (currentFrame[pixelIndex + 3] === 0 || originalFrame[pixelIndex + 3] === 0) return;
+  const originalHex = rgbToHex(
+    originalFrame[pixelIndex],
+    originalFrame[pixelIndex + 1],
+    originalFrame[pixelIndex + 2]
+  );
 
-    const originalHex = rgbToHex(
-      originalFrame[pixelIndex],
-      originalFrame[pixelIndex + 1],
-      originalFrame[pixelIndex + 2]
-    );
+  setSelectedPaletteHex(originalHex);
 
-    setSelectedPaletteHex(originalHex);
+  // Always trigger the color input (not the text input)
+  const colorInput = colorInputRefs.current[originalHex];
+  if (!colorInput) return;
 
-    const input = colorInputRefs.current[originalHex];
-    if (!input) return;
+  colorInput.scrollIntoView({ behavior: "smooth", block: "center" });
+  colorInput.focus();
 
-    input.scrollIntoView({ behavior: "smooth", block: "center" });
-    input.focus();
+  if (typeof colorInput.showPicker === "function") {
+    colorInput.showPicker();
+  } else {
+    colorInput.click();
+  }
+}, []);
 
-    if (typeof input.showPicker === "function") {
-      input.showPicker();
-      return;
-    }
-
-    input.click();
-  }, []);
 
   const handlePreviewMouseEnter = React.useCallback(async () => {
     if (!state.currentFrames.length || state.currentFrames.length < 2) return;
@@ -1156,19 +1155,36 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
                     className={styles["color-box"]}
                     style={{ backgroundColor: colorMap[hex] || hex }}
                   />
-                  <input
-                    type="color"
-                    value={colorMap[hex] || hex}
-                    onChange={(event) => handleColorChange(hex, event.target.value)}
-                    ref={(node) => {
-                      if (node) {
-                        colorInputRefs.current[hex] = node;
-                      } else {
-                        delete colorInputRefs.current[hex];
-                      }
-                    }}
-                  />
-                  <span>{hex}</span>
+                 {/* Color picker */}
+                <input
+                  type="color"
+                  value={colorMap[hex] || hex}
+                  onChange={(event) => handleColorChange(hex, event.target.value)}
+                  ref={(node) => {
+                    if (node) colorInputRefs.current[hex] = node;
+                    else delete colorInputRefs.current[hex];
+                  }}
+                />
+
+                {/* Hex text input */}
+                <input
+                  type="text"
+                  value={colorMap[hex] || hex}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    if (/^#?[0-9A-Fa-f]{6}$/.test(value)) {
+                      const formatted = value.startsWith("#") ? value : `#${value}`;
+                      handleColorChange(hex, formatted);
+                    } else {
+                      setColorMap((prev) => ({ ...prev, [hex]: value }));
+                    }
+                  }}
+                  style={{ width: 90, marginLeft: 6 }}
+                />
+
+
+                    <span>{hex}</span>
+
                 </div>
               ))}
             </div>
@@ -1268,34 +1284,47 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
                 <h2>{label}</h2>
                 {!sprite && <p className={styles["helper-text"]}>Upload a sprite to edit this palette.</p>}
                 {sprite?.palette?.length > 0 && (
-                  <div className={styles["palette-list"]}>
-                    {sprite.palette.map(({ hex }) => (
+                <div className={styles["palette-list"]}>
+                  {sprite.palette.map(({ hex }) => (
+                    <div
+                      className={styles["palette-color"]}
+                      key={`${key}-${hex}`}
+                      style={selectedPaletteHex === hex ? { outline: "2px solid #fff", borderRadius: 8, padding: 4 } : undefined}
+                    >
                       <div
-                        className={styles["palette-color"]}
-                        key={`${key}-${hex}`}
-                        style={selectedPaletteHex === hex ? { outline: "2px solid #fff", borderRadius: 8, padding: 4 } : undefined}
-                      >
-                        <div
-                          className={styles["color-box"]}
-                          style={{ backgroundColor: modColorMap[hex] || hex }}
-                        />
-                        <input
-                          type="color"
-                          value={modColorMap[hex] || hex}
-                          onChange={(event) => handleModColorChange(hex, event.target.value)}
-                          ref={(node) => {
-                            if (node) {
-                              modColorInputRefs.current[key][hex] = node;
-                            } else {
-                              delete modColorInputRefs.current[key][hex];
-                            }
-                          }}
-                        />
-                        <span>{hex}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                        className={styles["color-box"]}
+                        style={{ backgroundColor: modColorMap[hex] || hex }}
+                      />
+                      <input
+                        type="color"
+                        value={modColorMap[hex] || hex}
+                        onChange={(event) => handleModColorChange(hex, event.target.value)}
+                        ref={(node) => {
+                          if (!modColorInputRefs.current[key]) modColorInputRefs.current[key] = {};
+                          if (node) modColorInputRefs.current[key][hex] = node;
+                          else delete modColorInputRefs.current[key][hex];
+                        }}
+                      />
+                      <input
+                        type="text"
+                        value={modColorMap[hex] || hex}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          if (/^#?[0-9A-Fa-f]{6}$/.test(value)) {
+                            const formatted = value.startsWith("#") ? value : `#${value}`;
+                            handleModColorChange(hex, formatted);
+                          } else {
+                            setModColorMap((prev) => ({ ...prev, [hex]: value }));
+                          }
+                        }}
+                        style={{ width: 90, marginLeft: 6 }}
+                      />
+                      <span>{hex}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               </div>
             ))}
           </div>
