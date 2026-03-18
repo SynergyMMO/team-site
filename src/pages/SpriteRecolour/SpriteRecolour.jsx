@@ -11,7 +11,6 @@ import { rgbToHex } from "./utils.js";
 import { encodeGif } from "./gif-encoder.js";
 import generations from "../../data/generation.json";
 import pokemonSprites from "../../data/pokemmo_data/pokemon-sprites.json";
-import { getLocalPokemonGif } from "../../utils/pokemon.js";
 import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm";
 import sparklesGif from "../../../public/images/sparkle.gif"; // adjust path
 
@@ -391,6 +390,9 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
     };
   }, [sprite]);
 
+
+
+
   const handleClick = React.useCallback((event) => {
     if (!sprite?.originalFrames?.length || !onPickColor || !canvasRef.current) return;
 
@@ -584,7 +586,9 @@ export default function SpriteRecolour() {
   const [selectedModPokemonId, setSelectedModPokemonId] = useState(null);
   const [isBigSprite, setIsBigSprite] = useState(false);
   const [isShiny, setIsShiny] = useState(false);
-  const [sparklesColor, setSparklesColor] = useState("#ffffff"); // default white
+  const [shinyPreview, setIsShinyPreview] = useState(false);
+  const [shinySprite, setShinySprite] = useState(false);
+  const [sparklesColor, setSparklesColor] = useState("#ffffff");
   const [addSparkles, setAddSparkles] = useState(false);
   const previewMaxSize = 350;
   const previewScale = Math.min(
@@ -718,6 +722,40 @@ export default function SpriteRecolour() {
       alert("Failed to generate mod ZIP.");
     }
   }
+  useEffect(() => {
+    reloadCurrentPokemon();
+  }, [shinySprite]); 
+
+  async function reloadCurrentPokemon() {
+    if (!pokemonSearch) return;
+
+    const matchedOption = pokemonOptions.find(
+      (option) =>
+        normalizePokemonSearch(option.label) === normalizePokemonSearch(pokemonSearch)
+    );
+    const pokemonName = matchedOption?.value || pokemonLabelToValue[pokemonSearch];
+    if (!pokemonName) return;
+
+    setLoading(true);
+    try {
+      const animatedSprites =
+        pokemonSprites[pokemonName]?.sprites?.versions?.["generation-v"]?.["black-white"]?.animated;
+      if (!animatedSprites) throw new Error("No sprites available");
+
+      const url = shinySprite ? animatedSprites.front_shiny : animatedSprites.front_default;
+      const res = await fetch(url);
+      const buffer = await res.arrayBuffer();
+      const file = new File([buffer], `${pokemonName}.gif`, { type: "image/gif" });
+
+      await loadFile(file, pokemonSearch);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   useEffect(() => {
     elements.loading = { classList: { add: () => {}, remove: () => {} } };
@@ -827,19 +865,10 @@ export default function SpriteRecolour() {
     }));
   }
 
-function getFallbackPokemonGifUrl(pokemonName) {
-  const animatedSprites =
-    pokemonSprites[pokemonName]?.sprites?.versions?.["generation-v"]?.["black-white"]?.animated;
-  if (!animatedSprites?.front_default) {
-    throw new Error(`No fallback GIF available for ${pokemonName}`);
-  }
-  return animatedSprites.front_default; // Or back_default if needed
-}
 
 async function handlePokemonSelect(selectionLabel) {
   const matchedOption = pokemonOptions.find(
-    (option) =>
-      normalizePokemonSearch(option.label) === normalizePokemonSearch(selectionLabel)
+    (option) => normalizePokemonSearch(option.label) === normalizePokemonSearch(selectionLabel)
   );
   const pokemonName = matchedOption?.value || pokemonLabelToValue[selectionLabel];
 
@@ -849,40 +878,34 @@ async function handlePokemonSelect(selectionLabel) {
   }
 
   setPokemonSearch(matchedOption?.label || selectionLabel);
-
   setLoading(true);
 
-  // Helper to fetch from a source and return a File
-  const fetchGifFile = async (url, name) => {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Unable to fetch GIF from ${url}`);
-    const blob = await res.blob();
-    return new File([blob], `${name}.gif`, { type: blob.type || "image/gif" });
-  };
-
   try {
-    // First attempt: local library
-    const localFile = await fetchGifFile(getLocalPokemonGif(pokemonName), pokemonName);
-    await loadFile(localFile, matchedOption?.label || selectionLabel);
-  } catch (localError) {
-    console.warn("Local GIF load failed, trying fallback GIF grabber:", localError);
+    const animatedSprites =
+      pokemonSprites[pokemonName]?.sprites?.versions?.["generation-v"]?.["black-white"]?.animated;
 
-    try {
-      // Second attempt: fallback source
-      const fallbackUrl = getFallbackPokemonGifUrl(pokemonName); // <-- your other grabber function
-      const fallbackFile = await fetchGifFile(fallbackUrl, pokemonName);
-      await loadFile(fallbackFile, matchedOption?.label || selectionLabel);
-    } catch (fallbackError) {
-      console.error("Both GIF sources failed:", fallbackError);
-      alert(
-        fallbackError.message ||
-          `Failed to load ${selectionLabel} GIF from both sources.`
-      );
+    if (!animatedSprites?.front_default || !animatedSprites?.back_default) {
+      alert("This Pokémon does not have both front and back GIFs available.");
+      return;
     }
+
+    // Pick front GIF according to shiny toggle
+    const gifUrl = shinySprite ? animatedSprites.front_shiny : animatedSprites.front_default;
+
+    const res = await fetch(gifUrl);
+    if (!res.ok) throw new Error("Failed to fetch GIF");
+    const buffer = await res.arrayBuffer();
+    const file = new File([buffer], `${pokemonName}.gif`, { type: "image/gif" });
+
+    await loadFile(file, matchedOption?.label || selectionLabel);
+  } catch (error) {
+    console.error(error);
+    alert("Failed to load Pokémon GIF.");
   } finally {
     setLoading(false);
   }
 }
+
 
 
 const handlePreviewClick = React.useCallback((event) => {
@@ -1051,6 +1074,12 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
 }, [modColorMap]);
 
 
+useEffect(() => {
+  if (selectedModPokemonLabel) {
+    handleModPokemonSelect(selectedModPokemonLabel);
+  }
+}, [shinyPreview]);
+
 // Unified Mod Creator loader for both front and back GIFs
 const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
   const matchedOption = modCreatorPokemonOptions.find(
@@ -1064,8 +1093,11 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
   }
 
   const animatedSprites = pokemonSprites[pokemonName]?.sprites?.versions?.["generation-v"]?.["black-white"]?.animated;
-  const frontUrl = animatedSprites?.front_default;
-  const backUrl = animatedSprites?.back_default;
+  const frontUrl = shinyPreview ? animatedSprites?.front_shiny : animatedSprites?.front_default;
+  const backUrl = shinyPreview ? animatedSprites?.back_shiny : animatedSprites?.back_default;
+
+
+
 
   if (!frontUrl || !backUrl) {
     alert("That Pokemon does not have both front and back GIFs available.");
@@ -1272,6 +1304,15 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
               />
             </div>
           </div>
+          <label style={{ marginTop: 12, display: "block" }}>
+            <input
+              type="checkbox"
+              checked={shinySprite}
+              onChange={(e) => setShinySprite(e.target.checked)}
+              style={{ marginRight: 6 }}
+            />
+            Toggle shiny sprite
+          </label>
 
           {selectedSourceLabel && (
             <div className={styles["selected-source"]}>
@@ -1415,6 +1456,20 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
               Loaded for mod creator: <strong>{selectedModPokemonLabel}</strong>
             </div>
           )}
+
+          <div style={{ marginTop: 12 }}>
+           <label>
+            <input
+              type="checkbox"
+              checked={!shinyPreview}
+              onChange={(e) => setIsShinyPreview(!e.target.checked)}
+              style={{ marginRight: 6 }}
+            />
+            Toggle shiny sprite
+          </label>
+
+          </div>
+
 
           <div className={styles["mod-preview-grid"]}>
             <SpriteCanvasPreview
