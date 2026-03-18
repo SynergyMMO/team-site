@@ -537,11 +537,6 @@ export default function SpriteRecolour() {
   });
 
   useEffect(() => {
-    if (canvasRef.current) {
-      elements.previewCanvas = canvasRef.current;
-      elements.ctx = canvasRef.current.getContext("2d");
-    }
-
     elements.loading = { classList: { add: () => {}, remove: () => {} } };
     elements.mainContent = { classList: { add: () => {}, remove: () => {} } };
     elements.paletteGrid = document.createElement("div");
@@ -560,6 +555,13 @@ export default function SpriteRecolour() {
     elements.projectNameInput = { value: "" };
     elements.exportPngBtn = { disabled: false, textContent: "" };
   }, []);
+
+  useEffect(() => {
+    if (activeTab === "sprite-recolourer" && canvasRef.current) {
+      elements.previewCanvas = canvasRef.current;
+      elements.ctx = canvasRef.current.getContext("2d");
+    }
+  }, [activeTab]);
 
   async function loadFile(file, sourceLabel = "") {
     if (!file) return;
@@ -948,7 +950,7 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement("a");
         anchor.href = url;
-        anchor.download = `${selectedModPokemonId}_${side}_s.gif`;
+        anchor.download = `${selectedModPokemonId}-${side}-s.gif`;
         document.body.appendChild(anchor);
         anchor.click();
         document.body.removeChild(anchor);
