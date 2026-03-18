@@ -620,6 +620,12 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://synergymmo.com/player/SenseiGlax/</loc>
+    <lastmod>2026-03-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://synergymmo.com/player/Shamandarah/</loc>
     <lastmod>2026-03-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -657,12 +663,6 @@
   </url>
   <url>
     <loc>https://synergymmo.com/player/Sliace/</loc>
-    <lastmod>2026-03-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://synergymmo.com/player/Sophiapereira/</loc>
     <lastmod>2026-03-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.4</priority>
@@ -741,12 +741,6 @@
   </url>
   <url>
     <loc>https://synergymmo.com/player/Tired/</loc>
-    <lastmod>2026-03-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://synergymmo.com/player/Torskin/</loc>
     <lastmod>2026-03-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.4</priority>
