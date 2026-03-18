@@ -587,7 +587,7 @@ export default function SpriteRecolour() {
   const [isBigSprite, setIsBigSprite] = useState(false);
   const [isShiny, setIsShiny] = useState(false);
   const [shinyPreview, setIsShinyPreview] = useState(false);
-  const [shinySprite, setShinySprite] = useState(false);
+  const [shinySprite, setShinySprite] = useState(true);
   const [sparklesColor, setSparklesColor] = useState("#ffffff");
   const [addSparkles, setAddSparkles] = useState(false);
   const previewMaxSize = 350;
@@ -724,7 +724,7 @@ export default function SpriteRecolour() {
   }
   useEffect(() => {
     reloadCurrentPokemon();
-  }, [shinySprite]); 
+  }, [shinySprite]);
 
   async function reloadCurrentPokemon() {
     if (!pokemonSearch) return;
@@ -889,7 +889,6 @@ async function handlePokemonSelect(selectionLabel) {
       return;
     }
 
-    // Pick front GIF according to shiny toggle
     const gifUrl = shinySprite ? animatedSprites.front_shiny : animatedSprites.front_default;
 
     const res = await fetch(gifUrl);
@@ -1074,104 +1073,103 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
 }, [modColorMap]);
 
 
-useEffect(() => {
-  if (selectedModPokemonLabel) {
-    handleModPokemonSelect(selectedModPokemonLabel);
-  }
-}, [shinyPreview]);
+  useEffect(() => {
+    if (selectedModPokemonLabel) {
+      handleModPokemonSelect(selectedModPokemonLabel, shinyPreview);
+    }
+  }, [shinyPreview]);
 
-// Unified Mod Creator loader for both front and back GIFs
-const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
-  const matchedOption = modCreatorPokemonOptions.find(
-    (option) => normalizePokemonSearch(option.label) === normalizePokemonSearch(selectionLabel)
-  );
-  const pokemonName = matchedOption?.value || modCreatorPokemonLabelToValue[selectionLabel];
+  const handleModPokemonSelect = React.useCallback(async (selectionLabel, useShiny = shinyPreview) => {
+    const matchedOption = modCreatorPokemonOptions.find(
+      (option) => normalizePokemonSearch(option.label) === normalizePokemonSearch(selectionLabel)
+    );
+    const pokemonName = matchedOption?.value || modCreatorPokemonLabelToValue[selectionLabel];
 
-  if (!pokemonName) {
-    alert("Choose a Pokemon from the autocomplete list, or upload front and back GIFs manually.");
-    return;
-  }
+    if (!pokemonName) {
+      alert("Choose a Pokemon from the autocomplete list, or upload front and back GIFs manually.");
+      return;
+    }
 
-  const animatedSprites = pokemonSprites[pokemonName]?.sprites?.versions?.["generation-v"]?.["black-white"]?.animated;
-  const frontUrl = shinyPreview ? animatedSprites?.front_shiny : animatedSprites?.front_default;
-  const backUrl = shinyPreview ? animatedSprites?.back_shiny : animatedSprites?.back_default;
-
+    const animatedSprites = pokemonSprites[pokemonName]?.sprites?.versions?.["generation-v"]?.["black-white"]?.animated;
+    const frontUrl = useShiny ? animatedSprites?.front_shiny : animatedSprites?.front_default;
+    const backUrl = useShiny ? animatedSprites?.back_shiny : animatedSprites?.back_default;
 
 
 
-  if (!frontUrl || !backUrl) {
-    alert("That Pokemon does not have both front and back GIFs available.");
-    return;
-  }
 
-  const selectedLabel = matchedOption?.label || selectionLabel;
-  const selectedPokemonId = pokemonSprites[pokemonName]?.id ?? null;
+    if (!frontUrl || !backUrl) {
+      alert("That Pokemon does not have both front and back GIFs available.");
+      return;
+    }
 
-  setModPokemonSearch(selectedLabel);
-  setSelectedModPokemonLabel(selectedLabel);
-  setSelectedModPokemonId(selectedPokemonId);
-  setModLoadingKey("pokemon");
+    const selectedLabel = matchedOption?.label || selectionLabel;
+    const selectedPokemonId = pokemonSprites[pokemonName]?.id ?? null;
 
-  try {
-    // Fetch front and back GIFs
-    const [frontResponse, backResponse] = await Promise.all([fetch(frontUrl), fetch(backUrl)]);
-    if (!frontResponse.ok || !backResponse.ok) throw new Error(`Unable to load front/back GIFs for ${selectedLabel}.`);
+    setModPokemonSearch(selectedLabel);
+    setSelectedModPokemonLabel(selectedLabel);
+    setSelectedModPokemonId(selectedPokemonId);
+    setModLoadingKey("pokemon");
 
-    const [frontBuffer, backBuffer] = await Promise.all([frontResponse.arrayBuffer(), backResponse.arrayBuffer()]);
+    try {
+      // Fetch front and back GIFs
+      const [frontResponse, backResponse] = await Promise.all([fetch(frontUrl), fetch(backUrl)]);
+      if (!frontResponse.ok || !backResponse.ok) throw new Error(`Unable to load front/back GIFs for ${selectedLabel}.`);
 
-    // Parse fresh sprites
-    const frontFile = new File([frontBuffer], `${pokemonName}-front.gif`, { type: "image/gif" });
-    const backFile = new File([backBuffer], `${pokemonName}-back.gif`, { type: "image/gif" });
+      const [frontBuffer, backBuffer] = await Promise.all([frontResponse.arrayBuffer(), backResponse.arrayBuffer()]);
 
-    const [frontSprite, backSprite] = await Promise.all([
-      parseSpriteFile(frontFile),
-      parseSpriteFile(backFile)
-    ]);
+      // Parse fresh sprites
+      const frontFile = new File([frontBuffer], `${pokemonName}-front.gif`, { type: "image/gif" });
+      const backFile = new File([backBuffer], `${pokemonName}-back.gif`, { type: "image/gif" });
 
-    // Merge palettes into modColorMap
-    const mergedColorMap = { ...modColorMap };
-    [...frontSprite.palette, ...backSprite.palette].forEach(({ hex }) => {
-      if (!mergedColorMap[hex]) mergedColorMap[hex] = hex;
-    });
-    setModColorMap(mergedColorMap);
+      const [frontSprite, backSprite] = await Promise.all([
+        parseSpriteFile(frontFile),
+        parseSpriteFile(backFile)
+      ]);
 
-    // Apply color maps, deep cloning all frames to prevent glitches
-    const applyDeepColorMap = (sprite, colorMap) => {
-      if (!sprite) return null;
-      const indexedSprite = ensureSpriteColorPixels(sprite);
+      // Merge palettes into modColorMap
+      const mergedColorMap = { ...modColorMap };
+      [...frontSprite.palette, ...backSprite.palette].forEach(({ hex }) => {
+        if (!mergedColorMap[hex]) mergedColorMap[hex] = hex;
+      });
+      setModColorMap(mergedColorMap);
 
-      // Deep clone every frame
-      const clonedFrames = indexedSprite.currentFrames.map(frame => new Uint8ClampedArray(frame));
+      // Apply color maps, deep cloning all frames to prevent glitches
+      const applyDeepColorMap = (sprite, colorMap) => {
+        if (!sprite) return null;
+        const indexedSprite = ensureSpriteColorPixels(sprite);
 
-      for (const { hex, r, g, b } of indexedSprite.palette) {
-        const targetColor = parseHexColor(colorMap[hex] || hex);
-        const frameOffsetsList = indexedSprite.colorPixels[hex] || [];
+        // Deep clone every frame
+        const clonedFrames = indexedSprite.currentFrames.map(frame => new Uint8ClampedArray(frame));
 
-        frameOffsetsList.forEach((offsets, frameIndex) => {
-          const frame = clonedFrames[frameIndex];
-          offsets.forEach(offset => {
-            frame[offset] = targetColor.r;
-            frame[offset + 1] = targetColor.g;
-            frame[offset + 2] = targetColor.b;
+        for (const { hex, r, g, b } of indexedSprite.palette) {
+          const targetColor = parseHexColor(colorMap[hex] || hex);
+          const frameOffsetsList = indexedSprite.colorPixels[hex] || [];
+
+          frameOffsetsList.forEach((offsets, frameIndex) => {
+            const frame = clonedFrames[frameIndex];
+            offsets.forEach(offset => {
+              frame[offset] = targetColor.r;
+              frame[offset + 1] = targetColor.g;
+              frame[offset + 2] = targetColor.b;
+            });
           });
-        });
-      }
+        }
 
-      return { ...indexedSprite, currentFrames: clonedFrames, appliedColorMap: { ...colorMap } };
-    };
+        return { ...indexedSprite, currentFrames: clonedFrames, appliedColorMap: { ...colorMap } };
+      };
 
-    setModCreatorSprites({
-      front: applyDeepColorMap(frontSprite, mergedColorMap),
-      back: applyDeepColorMap(backSprite, mergedColorMap)
-    });
+      setModCreatorSprites({
+        front: applyDeepColorMap(frontSprite, mergedColorMap),
+        back: applyDeepColorMap(backSprite, mergedColorMap)
+      });
 
-  } catch (error) {
-    console.error("Mod Creator GIF load failed:", error);
-    alert(error.message || "Failed to load Pokemon GIFs for the mod creator.");
-  } finally {
-    setModLoadingKey("");
-  }
-}, [modColorMap]);
+    } catch (error) {
+      console.error("Mod Creator GIF load failed:", error);
+      alert(error.message || "Failed to load Pokemon GIFs for the mod creator.");
+    } finally {
+      setModLoadingKey("");
+    }
+  }, [modColorMap]);
 
 
 
@@ -1205,46 +1203,6 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
   }
 
   const [textureName, setTextureName] = useState("MyTexture");
-
-  async function handleDownloadModGifs() {
-    if (!selectedModPokemonId || !modCreatorSprites.front?.currentFrames?.length || !modCreatorSprites.back?.currentFrames?.length) {
-      return;
-    }
-
-    try {
-      const downloads = [
-        {
-          side: "front",
-          sprite: modCreatorSprites.front,
-        },
-        {
-          side: "back",
-          sprite: modCreatorSprites.back,
-        },
-      ];
-
-      for (const { side, sprite } of downloads) {
-        const blob = await encodeGif(
-          sprite.currentFrames,
-          sprite.width,
-          sprite.height,
-          sprite.frameDelays
-        );
-
-        const url = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = `${selectedModPokemonId}-${side}-s.gif`;
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
-        URL.revokeObjectURL(url);
-      }
-    } catch (error) {
-      console.error("Mod GIF generation failed:", error);
-      alert("Failed to generate one or more mod GIFs. See console for details.");
-    }
-  }
 
   const modPaletteSections = [
     { key: "front", label: "Front palette", sprite: modCreatorSprites.front },
@@ -1304,15 +1262,16 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
               />
             </div>
           </div>
-          <label style={{ marginTop: 12, display: "block" }}>
+          <label>
             <input
               type="checkbox"
-              checked={shinySprite}
+              checked={shinySprite}        
               onChange={(e) => setShinySprite(e.target.checked)}
               style={{ marginRight: 6 }}
             />
             Toggle shiny sprite
           </label>
+
 
           {selectedSourceLabel && (
             <div className={styles["selected-source"]}>
@@ -1458,14 +1417,14 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
           )}
 
           <div style={{ marginTop: 12 }}>
-           <label>
+          <label>
             <input
               type="checkbox"
-              checked={!shinyPreview}
-              onChange={(e) => setIsShinyPreview(!e.target.checked)}
+              checked={shinyPreview}       
+              onChange={(e) => setIsShinyPreview(e.target.checked)}
               style={{ marginRight: 6 }}
             />
-            Toggle shiny sprite
+            Toggle shiny sprites
           </label>
 
           </div>
