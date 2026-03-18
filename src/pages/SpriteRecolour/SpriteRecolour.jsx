@@ -136,15 +136,14 @@ async function parseSpriteFile(file) {
         ? tempCtx.getImageData(0, 0, width, height)
         : null;
 
-      tempCtx.putImageData(
-        new ImageData(
-          new Uint8ClampedArray(frame.patch),
-          frame.dims.width,
-          frame.dims.height
-        ),
-        frame.dims.left,
-        frame.dims.top
+      const patchCanvas = document.createElement("canvas");
+      patchCanvas.width = frame.dims.width;
+      patchCanvas.height = frame.dims.height;
+      patchCanvas.getContext("2d", { willReadFrequently: true }).putImageData(
+        new ImageData(new Uint8ClampedArray(frame.patch), frame.dims.width, frame.dims.height),
+        0, 0
       );
+      tempCtx.drawImage(patchCanvas, frame.dims.left, frame.dims.top);
 
       const fullFrameData = tempCtx.getImageData(0, 0, width, height);
       originalFrames.push(new Uint8ClampedArray(fullFrameData.data));
@@ -733,6 +732,28 @@ export default function SpriteRecolour() {
 
     setColorMap((prev) => ({ ...prev, [oldHex]: newHex }));
   }, [originalPalette]);
+
+  const handleModColorChange = React.useCallback((oldHex, newHex) => {
+    const nextColorMap = { ...modColorMap, [oldHex]: newHex };
+    setModColorMap(nextColorMap);
+    setModCreatorSprites((prev) => ({
+      front: prev.front ? applyColorMapToSprite(prev.front, nextColorMap) : null,
+      back: prev.back ? applyColorMapToSprite(prev.back, nextColorMap) : null,
+    }));
+  }, [modColorMap]);
+
+  const handleModPreviewColorPick = React.useCallback((side, hex) => {
+    setSelectedPaletteHex(hex);
+    const input = modColorInputRefs.current[side]?.[hex];
+    if (!input) return;
+    input.scrollIntoView({ behavior: "smooth", block: "center" });
+    input.focus();
+    if (typeof input.showPicker === "function") {
+      input.showPicker();
+      return;
+    }
+    input.click();
+  }, []);
 
 // Unified handleModFileChange for Mod Creator
 const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
