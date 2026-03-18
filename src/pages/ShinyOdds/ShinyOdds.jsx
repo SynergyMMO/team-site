@@ -122,12 +122,6 @@ export default function ShinyOdds() {
         >
           Calculator
         </button>
-        <button
-          className={activeTab === 'simulator' ? styles.activeTab : styles.tab}
-          onClick={() => setActiveTab('simulator')}
-        >
-          Simulator
-        </button>
       </div>
       <p className={styles.copingCenter}>
         <strong>I'm not coping, you're coping!</strong>
