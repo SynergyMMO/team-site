@@ -12,6 +12,8 @@ import { encodeGif } from "./gif-encoder.js";
 import tierPokemon from "../../data/tier_pokemon.json";
 import pokemonSprites from "../../data/pokemmo_data/pokemon-sprites.json";
 import { getLocalPokemonGif } from "../../utils/pokemon.js";
+import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm";
+
 
 function parseHexColor(hex) {
   return {
@@ -20,6 +22,30 @@ function parseHexColor(hex) {
     b: parseInt(hex.slice(5, 7), 16),
   };
 }
+  function createIconFromFirstFrame(sprite) {
+    const canvas = document.createElement("canvas");
+    canvas.width = sprite.width;
+    canvas.height = sprite.height;
+
+    const ctx = canvas.getContext("2d");
+    const imageData = new ImageData(
+      sprite.currentFrames[0],
+      sprite.width,
+      sprite.height
+    );
+
+    ctx.putImageData(imageData, 0, 0);
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob), "image/png");
+    });
+  }
+  
+  function generateInfoXML(textureName) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+  <resource name="${textureName}" version="1.0" description="Animated Custom Pokemon Textures" author="Hyper" weblink="https://synergymmo.com/sprite-recolour/">
+  </resource>`;
+  }
 
 function buildParsedSprite(name, width, height, originalFrames, frameDelays) {
   const colorSet = new Map();
@@ -536,6 +562,67 @@ export default function SpriteRecolour() {
     author: "Team Synergy"
   });
 
+  
+  async function handleDownloadModZip() {
+    if (
+      !modCreatorSprites.front?.currentFrames?.length ||
+      !modCreatorSprites.back?.currentFrames?.length
+    ) {
+      alert("Front or back sprite missing.");
+      return;
+    }
+
+    try {
+      const zip = new JSZip();
+
+      const safeName = textureName.replace(/[^a-z0-9-_]/gi, "_");
+
+      const spritesFolder = zip.folder("sprites");
+      const battleFolder = spritesFolder.folder("battlesprites");
+
+
+      // ✅ FRONT GIF
+      const frontBlob = await encodeGif(
+        modCreatorSprites.front.currentFrames,
+        modCreatorSprites.front.width,
+        modCreatorSprites.front.height,
+        modCreatorSprites.front.frameDelays
+      );
+
+      // ✅ BACK GIF
+      const backBlob = await encodeGif(
+        modCreatorSprites.back.currentFrames,
+        modCreatorSprites.back.width,
+        modCreatorSprites.back.height,
+        modCreatorSprites.back.frameDelays
+      );
+
+      const id = selectedModPokemonId || "pokemon";
+
+      battleFolder.file(`${id}-front-s.gif`, frontBlob);
+      battleFolder.file(`${id}-back-s.gif`, backBlob);
+
+      const iconBlob = await createIconFromFirstFrame(modCreatorSprites.front);
+      zip.file("icon.png", iconBlob);
+
+      zip.file("info.xml", generateInfoXML(safeName));
+
+      // ✅ ZIP download
+      const content = await zip.generateAsync({ type: "blob" });
+
+      const url = URL.createObjectURL(content);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${safeName}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error("ZIP generation failed:", error);
+      alert("Failed to generate mod ZIP.");
+    }
+  }
+
   useEffect(() => {
     elements.loading = { classList: { add: () => {}, remove: () => {} } };
     elements.mainContent = { classList: { add: () => {}, remove: () => {} } };
@@ -922,6 +1009,8 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
     }
   }
 
+  const [textureName, setTextureName] = useState("MyTexture");
+
   async function handleDownloadModGifs() {
     if (!selectedModPokemonId || !modCreatorSprites.front?.currentFrames?.length || !modCreatorSprites.back?.currentFrames?.length) {
       return;
@@ -1110,9 +1199,6 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
                 suggestions={modCreatorPokemonOptions.map((option) => option.label)}
                 onSuggestionSelect={handleModPokemonSelect}
               />
-              <p className={styles["helper-text"]}>
-                Loads the animated Gen V shiny front and back GIFs from <code>pokemon-sprites.json</code>.
-              </p>
             </div>
 
             <div className={styles["upload-panel"]}>
@@ -1157,10 +1243,21 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
             />
           </div>
 
+          
+          <div style={{ marginTop: 12 }}>
+            <label>Texture Name:</label>
+            <input
+              type="text"
+              value={textureName}
+              onChange={(e) => setTextureName(e.target.value)}
+              style={{ marginLeft: 8 }}
+            />
+          </div>
+
           {modLoadingKey && <div>Processing...</div>}
 
           {selectedModPokemonId && modCreatorSprites.front && modCreatorSprites.back && (
-            <button onClick={handleDownloadModGifs} disabled={Boolean(modLoadingKey)}>
+            <button onClick={handleDownloadModZip} disabled={Boolean(modLoadingKey)}>
               Download Front + Back GIFs
             </button>
           )}
