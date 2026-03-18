@@ -827,35 +827,63 @@ export default function SpriteRecolour() {
     }));
   }
 
+function getFallbackPokemonGifUrl(pokemonName) {
+  const animatedSprites =
+    pokemonSprites[pokemonName]?.sprites?.versions?.["generation-v"]?.["black-white"]?.animated;
+  if (!animatedSprites?.front_default) {
+    throw new Error(`No fallback GIF available for ${pokemonName}`);
+  }
+  return animatedSprites.front_default; // Or back_default if needed
+}
 
-  async function handlePokemonSelect(selectionLabel) {
-    const matchedOption = pokemonOptions.find((option) => (
+async function handlePokemonSelect(selectionLabel) {
+  const matchedOption = pokemonOptions.find(
+    (option) =>
       normalizePokemonSearch(option.label) === normalizePokemonSearch(selectionLabel)
-    ));
-    const pokemonName = matchedOption?.value || pokemonLabelToValue[selectionLabel];
-    if (!pokemonName) {
-      alert("Choose a Pokemon from the autocomplete list, or upload your own GIF.");
-      return;
-    }
+  );
+  const pokemonName = matchedOption?.value || pokemonLabelToValue[selectionLabel];
 
-    setPokemonSearch(matchedOption?.label || selectionLabel);
+  if (!pokemonName) {
+    alert("Choose a Pokemon from the autocomplete list, or upload your own GIF.");
+    return;
+  }
+
+  setPokemonSearch(matchedOption?.label || selectionLabel);
+
+  setLoading(true);
+
+  // Helper to fetch from a source and return a File
+  const fetchGifFile = async (url, name) => {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Unable to fetch GIF from ${url}`);
+    const blob = await res.blob();
+    return new File([blob], `${name}.gif`, { type: blob.type || "image/gif" });
+  };
+
+  try {
+    // First attempt: local library
+    const localFile = await fetchGifFile(getLocalPokemonGif(pokemonName), pokemonName);
+    await loadFile(localFile, matchedOption?.label || selectionLabel);
+  } catch (localError) {
+    console.warn("Local GIF load failed, trying fallback GIF grabber:", localError);
 
     try {
-      setLoading(true);
-      const response = await fetch(getLocalPokemonGif(pokemonName));
-      if (!response.ok) {
-        throw new Error(`Unable to load ${selectionLabel} GIF from the Pokemon library.`);
-      }
-
-      const blob = await response.blob();
-      const file = new File([blob], `${pokemonName}.gif`, { type: blob.type || "image/gif" });
-      await loadFile(file, matchedOption?.label || selectionLabel);
-    } catch (error) {
-      console.error("Pokemon GIF load failed:", error);
-      alert(error.message || "Failed to load Pokemon GIF.");
-      setLoading(false);
+      // Second attempt: fallback source
+      const fallbackUrl = getFallbackPokemonGifUrl(pokemonName); // <-- your other grabber function
+      const fallbackFile = await fetchGifFile(fallbackUrl, pokemonName);
+      await loadFile(fallbackFile, matchedOption?.label || selectionLabel);
+    } catch (fallbackError) {
+      console.error("Both GIF sources failed:", fallbackError);
+      alert(
+        fallbackError.message ||
+          `Failed to load ${selectionLabel} GIF from both sources.`
+      );
     }
+  } finally {
+    setLoading(false);
   }
+}
+
 
 const handlePreviewClick = React.useCallback((event) => {
   if (!canvasRef.current || !state.originalFrames.length) return;
