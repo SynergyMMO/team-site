@@ -980,7 +980,7 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
         >
           Sprite Recolourer
         </button>
-        {/* <button
+        <button
           type="button"
           role="tab"
           className={styles["tab-button"]}
@@ -989,7 +989,7 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
           onClick={() => setActiveTab("mod-creator")}
         >
           Mod Creator
-        </button>{*/}
+        </button>
       </div>
 
       {activeTab === "sprite-recolourer" && (
