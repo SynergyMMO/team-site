@@ -1423,7 +1423,7 @@ export default function Pokedex() {
                             }} />
                           )}
                           
-                          {pokemonData.grassTypes && pokemonData.grassTypes.length > 0 && (
+                          {(pokemonData.grassTypes && pokemonData.grassTypes.length > 0 || (showRarityInfo && primaryRarity)) && (
                             <div style={{
                               position: 'absolute',
                               bottom: '-22px',
@@ -1435,7 +1435,16 @@ export default function Pokedex() {
                               textAlign: 'center',
                               width: '75px'
                             }}>
-                              {pokemonData.grassTypes.map((grassType, gIdx) => {
+                              {showRarityInfo && primaryRarity && (
+                                <div style={{
+                                  color: getRarityColor(primaryRarity),
+                                  fontWeight: 'bold',
+                                  fontSize: '0.78rem'
+                                }}>
+                                  {primaryRarity.replace(/\b\w/g, l => l.toUpperCase())}
+                                </div>
+                              )}
+                              {(pokemonData.grassTypes || []).map((grassType, gIdx) => {
                                 let color = '#90EE90' // Default to light green
                                 let fontSize = '0.78rem'
                                 
@@ -1494,7 +1503,8 @@ export default function Pokedex() {
                             (() => {
                               const displayTime = convertTimeString(pokemonData.time)
                               const visibleGrassTypes = (pokemonData.grassTypes || []).length
-                              const grassTypeHeight = visibleGrassTypes > 0 ? visibleGrassTypes * 18 : 0
+                              const rarityLineCount = (showRarityInfo && primaryRarity) ? 1 : 0
+                              const grassTypeHeight = (visibleGrassTypes + rarityLineCount) > 0 ? (visibleGrassTypes + rarityLineCount) * 18 : 0
                               const bottomPosition = -(22 + grassTypeHeight + 8)
                               let backgroundColor = '#FFD700'
                               let textColor = '#000'
@@ -1535,11 +1545,6 @@ export default function Pokedex() {
                             })()
                           )}
                           
-                          {showRarityInfo && primaryRarity && (
-                            <div className={styles.rarityLabel} style={{ background: getRarityColor(primaryRarity) }}>
-                              {primaryRarity.replace(/\b\w/g, l => l.toUpperCase())}
-                            </div>
-                          )}
                           
                           {pokemonData.grassTypes && pokemonData.grassTypes.some(gt => gt.includes('Rod')) && (
                             (() => {
