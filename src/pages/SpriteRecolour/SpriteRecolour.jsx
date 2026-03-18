@@ -512,7 +512,8 @@ export default function SpriteRecolour() {
   const [modPokemonSearch, setModPokemonSearch] = useState("");
   const [selectedModPokemonLabel, setSelectedModPokemonLabel] = useState("");
   const [selectedModPokemonId, setSelectedModPokemonId] = useState(null);
-
+  const [isBigSprite, setIsBigSprite] = useState(false);
+  const [isShiny, setIsShiny] = useState(false);
   const previewMaxSize = 350;
   const previewScale = Math.min(
     previewMaxSize / (state.gifWidth || 256),
@@ -600,8 +601,14 @@ export default function SpriteRecolour() {
 
       const id = selectedModPokemonId || "pokemon";
 
-      battleFolder.file(`${id}-front-s.gif`, frontBlob);
-      battleFolder.file(`${id}-back-s.gif`, backBlob);
+      const suffix = isShiny ? "s" : "n";
+
+      battleFolder.file(`${id}-front-${suffix}.gif`, frontBlob);
+      battleFolder.file(`${id}-back-${suffix}.gif`, backBlob);
+      if (isBigSprite && selectedModPokemonId) {
+        battleFolder.file(`table-front-scale.txt`, `${selectedModPokemonId}=3`);
+      }
+
 
       const iconBlob = await createIconFromFirstFrame(modCreatorSprites.front);
       zip.file("icon.png", iconBlob);
@@ -691,6 +698,47 @@ export default function SpriteRecolour() {
     const file = event.target.files[0];
     await loadFile(file, file?.name || "");
   }
+
+  function getRandomHexColor() {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `#${r.toString(16).padStart(2, "0")}${g
+      .toString(16)
+      .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+  }
+
+
+  function handleRandomizePalette() {
+    originalPalette.forEach(({ hex }) => {
+      const randomHex = getRandomHexColor();
+      handleColorChange(hex, randomHex);
+    });
+  }
+
+  function handleRandomizeModPalette() {
+    const nextColorMap = { ...modColorMap };
+
+    // Loop through front and back palettes
+    ["front", "back"].forEach((side) => {
+      const sprite = modCreatorSprites[side];
+      if (!sprite) return;
+
+      sprite.palette.forEach(({ hex }) => {
+        const randomHex = getRandomHexColor();
+        nextColorMap[hex] = randomHex;
+      });
+    });
+
+    setModColorMap(nextColorMap);
+
+    // Apply to sprites
+    setModCreatorSprites((prev) => ({
+      front: prev.front ? applyColorMapToSprite(prev.front, nextColorMap) : null,
+      back: prev.back ? applyColorMapToSprite(prev.back, nextColorMap) : null,
+    }));
+  }
+
 
   async function handlePokemonSelect(selectionLabel) {
     const matchedOption = pokemonOptions.find((option) => (
@@ -1142,6 +1190,12 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
 
           {loading && <div>Processing...</div>}
 
+
+           {originalPalette.length > 0 && (
+            <div style={{ margin: "1em 0" }}>
+              <button onClick={handleRandomizePalette}>Randomize Palette</button>
+            </div>
+          )}
           {originalPalette.length > 0 && (
             <div className={styles["palette-list"]}>
               <h2>Palette</h2>
@@ -1269,14 +1323,43 @@ const handleModPokemonSelect = React.useCallback(async (selectionLabel) => {
               style={{ marginLeft: 8 }}
             />
           </div>
+          <div style={{ margin: "1em 0" }}>
+            <label>
+              <input
+                type="checkbox"
+                checked={isBigSprite}
+                onChange={(e) => setIsBigSprite(e.target.checked)}
+              />
+              {" "}Big Sprite?
+            </label>
+          </div>
+
+          <div style={{ marginTop: 12 }}>
+            <label>
+              <input
+                type="checkbox"
+                checked={isShiny}
+                onChange={(e) => setIsShiny(e.target.checked)}
+                style={{ marginRight: 6 }}
+              />
+              Shiny?
+            </label>
+          </div>
+
 
           {modLoadingKey && <div>Processing...</div>}
 
           {selectedModPokemonId && modCreatorSprites.front && modCreatorSprites.back && (
             <button onClick={handleDownloadModZip} disabled={Boolean(modLoadingKey)}>
-              Download Front + Back GIFs
+              Download Mod
             </button>
           )}
+
+            {(modCreatorSprites.front || modCreatorSprites.back) && (
+              <div style={{ margin: "1em 0" }}>
+                <button onClick={handleRandomizeModPalette}>Randomize Palette</button>
+              </div>
+            )}
 
           <div className={styles["mod-palette-grid"]}>
             {modPaletteSections.map(({ key, label, sprite }) => (
