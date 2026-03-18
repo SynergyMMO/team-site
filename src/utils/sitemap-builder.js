@@ -27,6 +27,7 @@ const staticRoutes = [
   { path: '/themes/', changefreq: 'weekly', priority: '0.7' },
   { path: '/bounties/', changefreq: 'monthly', priority: '0.7' },
   { path: '/time-display/', changefreq: 'weekly', priority: '0.6' },
+  { path: '/sprite-recolour/', changefreq: 'weekly', priority: '0.7' }
 ];
 
 // Ensure we always publish canonical URLs with a trailing slash
