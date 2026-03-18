@@ -1592,6 +1592,12 @@ async function prerender() {
       ogDescription: 'Participate in Team Synergy monthly and permanent bounties. Complete shiny hunting challenges, earn rewards, and join the community competition. View current and past bounties for all members.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif'
     },
+    '/sprite-recolour': {
+      route: '/sprite-recolour',
+      ogTitle: 'PokeMMO Custom Sprite Retexture Tool | PokeMMO',
+      ogDescription: 'Customize your Pokémon sprites with the custom Sprite Recolour Tool. Change colors, create unique looks then download the ready to use mod to enhance your PokeMMO experience.',
+      ogImage: 'https://synergymmo.com/images/dragonite_sprite.gif'
+    },
   };
 
   // Static routes
