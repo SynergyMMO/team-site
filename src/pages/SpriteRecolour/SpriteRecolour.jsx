@@ -569,7 +569,7 @@ export default function SpriteRecolour() {
   const colorInputRefs = useRef({});
   const modColorInputRefs = useRef({ front: {}, back: {} });
   const resumeAnimationOnLeaveRef = useRef(false);
-  const [activeTab, setActiveTab] = useState("sprite-recolourer");
+  const [activeTab, setActiveTab] = useState("mod-creator");
   const [loading, setLoading] = useState(false);
   const [originalPalette, setOriginalPalette] = useState([]);
   const [colorMap, setColorMap] = useState({});
