@@ -12,7 +12,8 @@ import { encodeGif } from "./gif-encoder.js";
 import generations from "../../data/generation.json";
 import pokemonSprites from "../../data/pokemmo_data/pokemon-sprites.json";
 import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm";
-import sparklesGif from "../../../public/images/sparkle.gif"; // adjust path
+import sparklesGif from "../../../public/images/sparkle.gif"; 
+
 
 async function loadAndResizeSparkles(targetWidth, targetHeight) {
   const response = await fetch(sparklesGif);
@@ -330,29 +331,33 @@ function applyColorMapToSprite(sprite, colorMap) {
   };
 }
 
-function SpriteCanvasPreview({ sprite, title, onPickColor }) {
+function SpriteCanvasPreview({ sprite, title, onPickColor, isPaused, selectedFrame }) {
   const canvasRef = useRef(null);
   const timeoutRef = useRef(null);
   const frameRequestRef = useRef(null);
   const frameIndexRef = useRef(0);
+  const isPausedRef = useRef(isPaused);
   const wasPlayingOnHoverRef = useRef(false);
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  useEffect(() => {
+    isPausedRef.current = isPaused;
+  }, [isPaused]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !sprite?.currentFrames?.length) return undefined;
+    if (!canvas || !sprite?.currentFrames?.length) return;
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return undefined;
-
-    let cancelled = false;
-    let frameIndex = 0;
-    const frameImages = sprite.currentFrames.map(
-      (frame) => new ImageData(frame, sprite.width, sprite.height)
-    );
+    if (!ctx) return;
 
     canvas.width = sprite.width;
     canvas.height = sprite.height;
     ctx.imageSmoothingEnabled = false;
+
+    const frameImages = sprite.currentFrames.map(
+      (frame) => new ImageData(frame, sprite.width, sprite.height)
+    );
 
     const drawFrame = (index) => {
       const frameImage = frameImages[index];
@@ -361,14 +366,33 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
       ctx.putImageData(frameImage, 0, 0);
     };
 
+    // Always respect the selectedFrame first
+    let frameIndex = selectedFrame ?? frameIndexRef.current ?? 0;
+    drawFrame(frameIndex);
+
+    // If paused, stop here (frame picker works)
+    if (isPaused) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      if (frameRequestRef.current) {
+        cancelAnimationFrame(frameRequestRef.current);
+        frameRequestRef.current = null;
+      }
+      return;
+    }
+
+    // Playing logic
+    let cancelled = false;
+
     const tick = () => {
       if (cancelled) return;
 
       drawFrame(frameIndex);
 
-      if (sprite.currentFrames.length < 2) return;
-
       const delay = sprite.frameDelays[frameIndex] || 100;
+
       timeoutRef.current = window.setTimeout(() => {
         frameRequestRef.current = window.requestAnimationFrame(() => {
           frameIndex = (frameIndex + 1) % sprite.currentFrames.length;
@@ -381,14 +405,12 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
 
     return () => {
       cancelled = true;
-      if (timeoutRef.current) {
-        window.clearTimeout(timeoutRef.current);
-      }
-      if (frameRequestRef.current) {
-        window.cancelAnimationFrame(frameRequestRef.current);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (frameRequestRef.current) cancelAnimationFrame(frameRequestRef.current);
     };
-  }, [sprite]);
+  }, [sprite, isPaused, selectedFrame]);
+
+
 
 
 
@@ -422,7 +444,11 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
   const handleMouseEnter = React.useCallback(() => {
     if (!sprite?.currentFrames?.length || sprite.currentFrames.length < 2) return;
 
-    wasPlayingOnHoverRef.current = Boolean(timeoutRef.current || frameRequestRef.current);
+    if (!isPaused) {
+      wasPlayingOnHoverRef.current = Boolean(timeoutRef.current || frameRequestRef.current);
+    } else {
+      wasPlayingOnHoverRef.current = false;
+    }
 
     if (timeoutRef.current) {
       window.clearTimeout(timeoutRef.current);
@@ -433,13 +459,18 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
       window.cancelAnimationFrame(frameRequestRef.current);
       frameRequestRef.current = null;
     }
-  }, [sprite]);
+
+    setIsHovered(true);
+  }, [sprite, isPaused]);
+
 
   const handleMouseLeave = React.useCallback(() => {
-    if (!wasPlayingOnHoverRef.current || !sprite?.currentFrames?.length || sprite.currentFrames.length < 2) {
-      return;
+    if (isPaused){
+      setIsHovered(false);
     }
 
+    if (!wasPlayingOnHoverRef.current) return;
+    setIsHovered(false);
     wasPlayingOnHoverRef.current = false;
 
     const canvas = canvasRef.current;
@@ -450,6 +481,7 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
 
     let cancelled = false;
     let frameIndex = frameIndexRef.current;
+
     const frameImages = sprite.currentFrames.map(
       (frame) => new ImageData(frame, sprite.width, sprite.height)
     );
@@ -467,6 +499,7 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
       drawFrame(frameIndex);
 
       const delay = sprite.frameDelays[frameIndex] || 100;
+
       timeoutRef.current = window.setTimeout(() => {
         frameRequestRef.current = window.requestAnimationFrame(() => {
           frameIndex = (frameIndex + 1) % sprite.currentFrames.length;
@@ -476,11 +509,11 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
     };
 
     tick();
-
     return () => {
       cancelled = true;
     };
-  }, [sprite]);
+  }, [sprite, isPaused]);
+
 
   if (!sprite) {
     return (
@@ -498,25 +531,38 @@ function SpriteCanvasPreview({ sprite, title, onPickColor }) {
   );
   const displayWidth = Math.max(1, Math.round((sprite.width || previewMaxSize) * scale));
   const displayHeight = Math.max(1, Math.round((sprite.height || previewMaxSize) * scale));
-
   return (
     <div className={styles["mod-preview-card"]}>
       <div className={styles["mod-preview-title"]}>{title}</div>
-      <canvas
-        ref={canvasRef}
-        width={sprite.width}
-        height={sprite.height}
-        onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        title={onPickColor ? "Click a colour to open it in the palette editor" : undefined}
-        style={{
-          width: displayWidth,
-          height: displayHeight,
-          imageRendering: "pixelated",
-          cursor: onPickColor ? "crosshair" : "default",
-        }}
-      />
+        <div
+          style={{
+            display: "inline-block",
+            transition: "transform 0.2s ease",
+            transform: isHovered ? "scale(2.5)" : "scale(1)",
+            transformOrigin: "center center",
+            zIndex: isHovered ? 10 : 1,
+            position: "relative",
+          }}
+        >
+          <canvas
+            ref={canvasRef}
+            width={sprite.width}
+            height={sprite.height}
+            onClick={handleClick}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            title={onPickColor ? "Click a colour to open it in the palette editor" : undefined}
+            style={{
+              width: displayWidth,
+              height: displayHeight,
+              imageRendering: "pixelated",
+              cursor: onPickColor ? "crosshair" : "default",
+              display: "block",
+            }}
+          />
+        </div>
+
+
       <div className={styles["mod-preview-name"]}>{sprite.name}</div>
     </div>
   );
@@ -589,6 +635,8 @@ export default function SpriteRecolour() {
   const [shinyPreview, setIsShinyPreview] = useState(false);
   const [shinySprite, setShinySprite] = useState(true);
   const [sparklesColor, setSparklesColor] = useState("#ffffff");
+  const [isPaused, setIsPaused] = useState(false);
+  const [selectedFrame, setSelectedFrame] = useState(0);
   const [addSparkles, setAddSparkles] = useState(false);
   const previewMaxSize = 350;
   const previewScale = Math.min(
@@ -597,7 +645,7 @@ export default function SpriteRecolour() {
   );
   const previewDisplayWidth = Math.max(1, Math.round((state.gifWidth || 256) * previewScale));
   const previewDisplayHeight = Math.max(1, Math.round((state.gifHeight || 256) * previewScale));
-
+  const activeFrameCount = modCreatorSprites.front?.currentFrames?.length || modCreatorSprites.back?.currentFrames?.length ||0;
   const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: "Sprite Recolour Tool", url: "/sprite-recolour/" }
@@ -931,7 +979,6 @@ const handlePreviewClick = React.useCallback((event) => {
 
   setSelectedPaletteHex(originalHex);
 
-  // Always trigger the color input (not the text input)
   const colorInput = colorInputRefs.current[originalHex];
   if (!colorInput) return;
 
@@ -952,14 +999,16 @@ const handlePreviewClick = React.useCallback((event) => {
     const animation = await import("./animation.js");
     resumeAnimationOnLeaveRef.current = state.isPlaying;
 
-    if (state.isPlaying) {
+    if (state.isPlaying && !isPaused) {
       animation.stopAnimation();
       animation.showFrame(state.currentFrameIndex);
     }
+
   }, []);
 
   const handlePreviewMouseLeave = React.useCallback(async () => {
-    if (!resumeAnimationOnLeaveRef.current) return;
+    if (!resumeAnimationOnLeaveRef.current || isPaused) return;
+
 
     const animation = await import("./animation.js");
     animation.startAnimation();
@@ -998,11 +1047,6 @@ const handlePreviewClick = React.useCallback((event) => {
       exportMod.applyEditEntry(edit);
     }
 
-    import("./animation.js").then((mod) => {
-      if (mod.renderCurrentFrame) {
-        mod.renderCurrentFrame();
-      }
-    });
 
     setColorMap((prev) => ({ ...prev, [oldHex]: newHex }));
   }, [originalPalette]);
@@ -1078,6 +1122,20 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
       handleModPokemonSelect(selectedModPokemonLabel, shinyPreview);
     }
   }, [shinyPreview]);
+
+  
+    useEffect(() => {
+      import("./animation.js").then((animation) => {
+        if (isPaused) {
+          animation.stopAnimation();
+          animation.showFrame(selectedFrame);
+        } else {
+          state.currentFrameIndex = selectedFrame;
+          animation.startAnimation();
+        }
+      });
+    }, [isPaused, selectedFrame]);
+
 
   const handleModPokemonSelect = React.useCallback(async (selectionLabel, useShiny = shinyPreview) => {
     const matchedOption = modCreatorPokemonOptions.find(
@@ -1235,7 +1293,6 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
           Mod Creator
         </button>
       </div>
-
       {activeTab === "sprite-recolourer" && (
         <>
           <div className={styles["picker-panel"]}>
@@ -1270,6 +1327,15 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
               style={{ marginRight: 6 }}
             />
             Toggle shiny sprite
+          </label>
+          <label style={{ display: "block", margin: "10px 0" }}>
+            <input
+              type="checkbox"
+              checked={isPaused}
+              onChange={(e) => setIsPaused(e.target.checked)}
+              style={{ marginRight: 6 }}
+            />
+            Pause Animation
           </label>
 
 
@@ -1426,7 +1492,15 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
             />
             Toggle shiny sprites
           </label>
-
+          <label style={{ display: "block", margin: "10px 0" }}>
+            <input
+              type="checkbox"
+              checked={isPaused}
+              onChange={(e) => setIsPaused(e.target.checked)}
+              style={{ marginRight: 6 }}
+            />
+            Pause Animation
+          </label>
           </div>
 
 
@@ -1435,13 +1509,72 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
               sprite={modCreatorSprites.front}
               title="Front"
               onPickColor={(hex) => handleModPreviewColorPick("front", hex)}
+              isPaused={isPaused}
+              selectedFrame={selectedFrame}
             />
+
             <SpriteCanvasPreview
               sprite={modCreatorSprites.back}
               title="Back"
               onPickColor={(hex) => handleModPreviewColorPick("back", hex)}
+              isPaused={isPaused}
+              selectedFrame={selectedFrame}
             />
+
           </div>
+
+
+          {activeFrameCount > 1 && (
+
+            <div style={{ marginTop: 10 }}>
+              <label>
+                Frame: {selectedFrame} / {activeFrameCount - 1}
+              </label>
+
+              <input
+                type="range"
+                min={0}
+                max={activeFrameCount - 1}
+                value={Math.min(selectedFrame, activeFrameCount - 1)}
+
+                onChange={(e) => {
+                  const frame = Number(e.target.value);
+                  setSelectedFrame(frame);
+                  setIsPaused(true); 
+
+                  import("./animation.js").then((animation) => {
+                    animation.stopAnimation();
+                    animation.showFrame(frame);
+                  });
+                }}
+                style={{ width: 300, display: "block" }}
+              />
+
+              <div style={{ marginTop: 6 }}>
+                <button
+                  onClick={() => {
+                    setIsPaused(true);
+                    setSelectedFrame((f) => (f - 1 + activeFrameCount) % activeFrameCount);
+                  }}
+                >
+                  ◀
+                </button>
+
+
+                <button
+                  onClick={() => {
+                    setIsPaused(true);
+                    setSelectedFrame((f) => (f + 1) % activeFrameCount);
+                  }}
+                  style={{ marginLeft: 6 }}
+                >
+                  ▶
+                </button>
+
+              </div>
+            </div>
+          )}
+
 
           
           <div style={{ marginTop: 12 }}>
