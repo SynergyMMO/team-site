@@ -15,12 +15,8 @@ const ROTATION_COLORS = {
   Croagunk: styles.rotationCroagunk,
 }
 
-// --- In-game time calculator ---
-// PokeMMO: 1 in-game day = 6 real hours, so 1 real minute = 4 in-game minutes
-// At UTC 00:00, in-game time = 04:00 (morning start)
-// Morning: 04:00–11:00, Day: 11:00–21:00, Night: 21:00–04:00
 const IN_GAME_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-const DAY_OFFSET = 5 // calibration: maps raw epoch-based day index to correct in-game day
+const DAY_OFFSET = 5
 
 function getInGameState() {
   const now = Date.now()
@@ -57,7 +53,6 @@ function getInGameState() {
   }
 }
 
-// Sinnoh rotation lookup: given in-game day, return which area has which pokemon
 const SINNOH_ROTATION = {
   Wednesday: { 1: 'Carnivine', 2: 'Croagunk', 3: 'Croagunk', 4: 'Skorupi', 5: 'Skorupi', 6: 'Croagunk' },
   Thursday:  { 1: 'Croagunk',  2: 'Carnivine', 3: 'Croagunk', 4: 'Croagunk', 5: 'Skorupi',   6: 'Skorupi' },
@@ -403,6 +398,7 @@ function RegionContent({ region, initialArea }) {
       <div className={styles.infoBox}>
         <p><strong>Encounters:</strong> <span className={styles.encounterDay} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Day</span> = 4:00–21:00, <span className={styles.encounterNight} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Night</span> = 21:00–4:00, <span className={styles.encounterRotation} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Rotation</span> = changes every in-game day (~6 hrs, rotates at 21:59), <span className={styles.encounterWater} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Water</span> = surfing/fishing.</p>
         <p><strong>Shiny Hunting:</strong> Lure boosts encounter rate by 10→15%. Abilities like Illuminate, Swarm, and Arena Trap also increase encounters.</p>
+        <p><strong>Tips:</strong> Pokemon sometimes sleep at night, such as Riolu, sleeping Pokemon have their catch rates doubled.</p>
       </div>
 
       {data.rotationSchedule && <RotationSchedule schedule={data.rotationSchedule} currentDay={getInGameState().day} />}
