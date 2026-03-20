@@ -16,7 +16,22 @@ export default function EditPlayerTab({
   const [confirmDelete, setConfirmDelete] = useState(null)
   const [confirmDeletePlayer, setConfirmDeletePlayer] = useState(false)
 
-  const shinies = selectedPlayer ? getPlayerShinies(selectedPlayer) : {}
+ const shinies = selectedPlayer ? getPlayerShinies(selectedPlayer) : {}
+
+const MONTH_INDEX = {
+  january: 0, february: 1, march: 2, april: 3,
+  may: 4, june: 5, july: 6, august: 7,
+  september: 8, october: 9, november: 10, december: 11
+}
+
+const sortedShinies = Object.fromEntries(
+  Object.entries(shinies).sort(([idA], [idB]) => {
+    return Number(idB) - Number(idA) // higher ID first
+  })
+)
+
+
+
 
   function handleEdit(id, shiny) {
     setEditingId(id)
@@ -121,7 +136,7 @@ export default function EditPlayerTab({
                 </button>
               </div>
               <ShinyTable
-                shinies={shinies}
+                shinies={sortedShinies}
                 onEdit={handleEdit}
                 onDelete={handleDeleteClick}
                 onReorder={handleReorderShinies}

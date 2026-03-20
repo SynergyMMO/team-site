@@ -2,43 +2,13 @@ import { useReducer, useEffect, useMemo } from 'react'
 import Autocomplete from './Autocomplete'
 import pokemonData from '../../../data/pokemmo_data/pokemon-data.json'
 
-// Build lookup map at module level for fast name resolution
-const POKEMON_KEY_MAP = {}
-Object.keys(pokemonData).forEach(key => {
-  POKEMON_KEY_MAP[key] = key                     // exact: "bulbasaur"
-  POKEMON_KEY_MAP[key.replace(/-/g, ' ')] = key  // spaces: "mr mime"
-  POKEMON_KEY_MAP[key.replace(/-/g, '')] = key   // joined: "mrmime"
-})
 
-function lookupEncounters(name) {
-  if (!name) return []
-  const n = name.toLowerCase().trim()
-  const key = POKEMON_KEY_MAP[n]
-    || POKEMON_KEY_MAP[n.replace(/\s+/g, '-')]
-    || POKEMON_KEY_MAP[n.replace(/[^a-z0-9]/g, '')]
-  return key ? (pokemonData[key]?.location_area_encounters || []) : []
-}
 
-const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-]
 
-const YEARS = [
-  '2013', '2014', '2015', '2016', '2017', '2018', '2019',
-  '2020', '2021', '2022', '2023', '2024', '2025', '2026',
-  '2027', '2028', '2029', '2030',
-]
-
-const ENCOUNTER_TYPES = ['5x Horde', '3x Horde', 'Single', 'Fishing', 'Honey Tree', 'Egg', 'Safari', 'Fossil', 'Swarm', 'Gift']
-
-const NATURES = [
-  'Adamant', 'Bashful', 'Bold', 'Brave', 'Calm', 'Careful', 'Docile',
-  'Gentle', 'Hardy', 'Hasty', 'Impish', 'Jolly', 'Lax', 'Lonely',
-  'Mild', 'Modest', 'Naive', 'Naughty', 'Quiet', 'Quirky', 'Rash',
-  'Relaxed', 'Sassy', 'Serious', 'Timid',
-]
-
+const MONTHS = [ 'January','February','March','April','May','June','July','August','September','October','November','December']
+const YEARS = ['2025','2026','2027','2028','2029','2030']
+const ENCOUNTER_TYPES = ['5x Horde','3x Horde','Single','Fishing','Honey Tree','Egg','Safari','Fossil','Swarm','Gift']
+const NATURES = [ 'Adamant','Bashful','Bold','Brave','Calm','Careful','Docile','Gentle','Hardy','Hasty','Impish','Jolly','Lax','Lonely','Mild','Modest','Naive','Naughty','Quiet','Quirky','Rash','Relaxed','Sassy','Serious','Timid']
 const YES_NO_FIELDS = [
   { key: 'Egg', label: 'Egg' },
   { key: 'Favourite', label: 'Favourite' },
@@ -53,16 +23,25 @@ const YES_NO_FIELDS = [
   { key: 'Legendary', label: 'Legendary' },
 ]
 
-const now = new Date()
-const currentMonth = MONTHS[now.getMonth()]
-const currentYear = String(now.getFullYear())
-const todayISO = now.toISOString().split('T')[0]
+const POKEMON_KEY_MAP = {}
+Object.keys(pokemonData).forEach(key => {
+  POKEMON_KEY_MAP[key] = key
+  POKEMON_KEY_MAP[key.replace(/-/g, ' ')] = key
+  POKEMON_KEY_MAP[key.replace(/-/g, '')] = key
+})
+function lookupEncounters(name) {
+  if (!name) return []
+  const n = name.toLowerCase().trim()
+  const key = POKEMON_KEY_MAP[n] || POKEMON_KEY_MAP[n.replace(/\s+/g,'-')] || POKEMON_KEY_MAP[n.replace(/[^a-z0-9]/g,'')]
+  return key ? (pokemonData[key]?.location_area_encounters || []) : []
+}
 
+// Default state
 function getDefaultState() {
   return {
     Pokemon: '',
-    Month: currentMonth,
-    Year: currentYear,
+    Month: '',
+    Year: '',
     'Encounter Type': '',
     Location: '',
     'Encounter Count': '',
@@ -86,205 +65,147 @@ function getDefaultState() {
   }
 }
 
-function getEditState(data) {
-  const base = getDefaultState()
-  base.Month = ''
-  base.Year = ''
-
-  let normalizedDate = null
-
-  if (data?.date_caught) {
-    normalizedDate = data.date_caught.split('T')[0] 
-  }
-
-  return {
-    ...base,
-    ...data,
-    date_caught: normalizedDate
-  }
-}
-
-
 function reducer(state, action) {
-  switch (action.type) {
-    case 'SET_FIELD':
-      return { ...state, [action.field]: action.value }
-    case 'RESET':
-      return getDefaultState()
+  switch(action.type){
+    case 'SET_FIELD': return { ...state, [action.field]: action.value }
+    case 'RESET': return getDefaultState()
     case 'LOAD':
-      return getEditState(action.data)
-    default:
-      return state
+      const normalizedDate = action.data?.date_caught ? action.data.date_caught.split('T')[0] : null
+      return { ...getDefaultState(), ...action.data, date_caught: normalizedDate }
+    default: return state
   }
 }
 
-export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', allPokemonNames = [], isMutating = false, isEditMode = false }) {
+export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', allPokemonNames=[], isMutating=false }) {
   const [form, dispatch] = useReducer(reducer, initialData || getDefaultState())
 
+  useEffect(() => { if(initialData) dispatch({ type:'LOAD', data:initialData }) }, [initialData])
+
   useEffect(() => {
-    if (initialData) dispatch({ type: 'LOAD', data: initialData })
-  }, [initialData])
+    const listener = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        handleSubmit()
+      }
+    }
+    document.addEventListener('keydown', listener)
+    return () => document.removeEventListener('keydown', listener)
+  }, [form])
 
-  // Derive location options from the selected Pokemon's encounter data
   const encounters = useMemo(() => lookupEncounters(form.Pokemon), [form.Pokemon])
-
   const locationOptions = useMemo(() => {
     const seen = new Set()
-    encounters.forEach(e => {
-      if (e.location && e.region_name) seen.add(`${e.location} (${e.region_name})`)
-    })
+    encounters.forEach(e => { if(e.location && e.region_name) seen.add(`${e.location} (${e.region_name})`) })
     return Array.from(seen).sort()
   }, [encounters])
 
-  function handlePokemonChange(val) {
-    dispatch({ type: 'SET_FIELD', field: 'Pokemon', value: val })
-    dispatch({ type: 'SET_FIELD', field: 'Location', value: '' })
+  const handlePokemonChange = val => {
+    dispatch({ type:'SET_FIELD', field:'Pokemon', value:val })
+    dispatch({ type:'SET_FIELD', field:'Location', value:'' })
   }
-
-  function handleLocationChange(val) {
-    dispatch({ type: 'SET_FIELD', field: 'Location', value: val })
-  }
-
-  // Allow any input for IVs, no forced formatting
-  function formatIVs(raw) {
-    return raw
-  }
-
-  function handleDateCaughtChange(val) {
-    dispatch({ type: 'SET_FIELD', field: 'date_caught', value: val })
-    if (val) {
+  const handleLocationChange = val => dispatch({ type:'SET_FIELD', field:'Location', value:val })
+  const handleDateCaughtChange = val => {
+    dispatch({ type:'SET_FIELD', field:'date_caught', value:val })
+    if(val){
       const [year, month] = val.split('-')
-      dispatch({ type: 'SET_FIELD', field: 'Month', value: MONTHS[parseInt(month, 10) - 1] })
-      dispatch({ type: 'SET_FIELD', field: 'Year', value: year })
+      dispatch({ type:'SET_FIELD', field:'Month', value:MONTHS[parseInt(month,10)-1] })
+      dispatch({ type:'SET_FIELD', field:'Year', value:year })
     } else {
-      dispatch({ type: 'SET_FIELD', field: 'Month', value: '' })
-      dispatch({ type: 'SET_FIELD', field: 'Year', value: '' })
+      dispatch({ type:'SET_FIELD', field:'Month', value:'' })
+      dispatch({ type:'SET_FIELD', field:'Year', value:'' })
     }
   }
 
-  function handleSubmit() {
-  if (!form.Pokemon.trim()) return
 
-  let cleaned = { ...form }
-
-  if (!cleaned.date_caught) {
-    cleaned.Month = null
-    cleaned.Year = null
+  const handleSubmit = (e) => {
+    if(e) e.preventDefault()
+    if(!form.Pokemon.trim()) return
+    const cleaned = { ...form, Month: form.Month || null, Year: form.Year || null, date_caught: form.date_caught || null }
+    onSubmit(cleaned)
   }
 
-  onSubmit(cleaned)
-}
-
-
-  function handleReset() {
-    dispatch({ type: 'RESET' })
+  const handleKeyDown = (e) => {
+    if(e.key === 'Enter') {
+      const tag = e.target.tagName.toLowerCase()
+      console.log('KeyDown:', { key: e.key, tag, classList: e.target.classList })
+      if(tag !== 'textarea' && !e.target.classList.contains('autocomplete-input')) {
+        e.preventDefault()
+        handleSubmit()
+      }
+    }
   }
+
+
+
+  const handleReset = () => dispatch({ type:'RESET' })
+
+  const formatIVs = raw => raw
 
   return (
-    <div>
+    <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
       <label>Pokemon Name:</label>
       <Autocomplete
         id="shinyFormPokemon"
         value={form.Pokemon}
+        className="autocomplete-input"
         onChange={handlePokemonChange}
         getOptions={() => allPokemonNames}
         placeholder="mew"
       />
 
-      <label htmlFor="shinyEncounterType">Encounter Type:</label>
-      <select
-        id="shinyEncounterType"
-        value={form['Encounter Type']}
-        onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter Type', value: e.target.value })}
-      >
+      <label>Encounter Type:</label>
+      <select value={form['Encounter Type']} onChange={e=>dispatch({ type:'SET_FIELD', field:'Encounter Type', value:e.target.value })}>
         <option value="">Select a method</option>
         {ENCOUNTER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
       </select>
 
-      <label htmlFor="shinyLocation">Location:</label>
+      <label>Location:</label>
       {locationOptions.length > 0 ? (
-        <select
-          id="shinyLocation"
-          value={form.Location}
-          onChange={e => handleLocationChange(e.target.value)}
-        >
+        <select value={form.Location} onChange={e=>handleLocationChange(e.target.value)}>
           <option value="">Select a location</option>
           {locationOptions.map(loc => <option key={loc} value={loc}>{loc}</option>)}
         </select>
       ) : (
-        <input
-          id="shinyLocation"
-          type="text"
-          value={form.Location}
-          onChange={e => handleLocationChange(e.target.value)}
-          placeholder="Enter location"
-        />
+        <input type="text" value={form.Location} onChange={e=>handleLocationChange(e.target.value)} placeholder="Enter location" />
       )}
 
-      <label htmlFor="shinyEncounterCount">Encounter Count:</label>
-      <input
-        id="shinyEncounterCount"
-        type="number"
-        min="0"
-        value={form['Encounter Count']}
-        onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter Count', value: e.target.value })}
-        placeholder="e.g. 3240"
-      />
+      <label>Encounter Count:</label>
+      <input type="number" min="0" value={form['Encounter Count']} onChange={e=>dispatch({ type:'SET_FIELD', field:'Encounter Count', value:e.target.value })} placeholder="e.g. 3240" />
 
-      <label htmlFor="shinyDateCaught">Date Caught:</label>
-      <input
-        id="shinyDateCaught"
-        type="date"
-        value={form.date_caught || ''}
-        onChange={e => handleDateCaughtChange(e.target.value)}
-      />
+      <label>Month:</label>
+      <select value={form.Month||''} onChange={e=>dispatch({ type:'SET_FIELD', field:'Month', value:e.target.value })}>
+        <option value="">Select month</option>
+        {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+      </select>
 
-      <label htmlFor="shinyNature">Nature:</label>
-      <select
-        id="shinyNature"
-        value={form.nature}
-        onChange={e => dispatch({ type: 'SET_FIELD', field: 'nature', value: e.target.value })}
-      >
+      <label>Year:</label>
+      <select value={form.Year||''} onChange={e=>dispatch({ type:'SET_FIELD', field:'Year', value:e.target.value })}>
+        <option value="">Select year</option>
+        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+      </select>
+
+      <label>Date Caught:</label>
+      <input type="date" value={form.date_caught||''} onChange={e=>handleDateCaughtChange(e.target.value)} />
+
+      <label>Nature:</label>
+      <select value={form.nature} onChange={e=>dispatch({ type:'SET_FIELD', field:'nature', value:e.target.value })}>
         <option value="">Select a nature</option>
         {NATURES.map(n => <option key={n} value={n}>{n}</option>)}
       </select>
 
-      <label htmlFor="shinyIvs">IVs:</label>
-      <input
-        id="shinyIvs"
-        type="text"
-        value={form.ivs}
-        onChange={e => dispatch({ type: 'SET_FIELD', field: 'ivs', value: formatIVs(e.target.value) })}
-        placeholder="31/31/31/31/31/31"
-        maxLength={17}
-      />
+      <label>IVs:</label>
+      <input type="text" value={form.ivs} onChange={e=>dispatch({ type:'SET_FIELD', field:'ivs', value:formatIVs(e.target.value) })} placeholder="31/31/31/31/31/31" maxLength={17} />
 
-      <label htmlFor="shinyNickname">Nickname:</label>
-      <input
-        id="shinyNickname"
-        type="text"
-        value={form.nickname}
-        onChange={e => dispatch({ type: 'SET_FIELD', field: 'nickname', value: e.target.value })}
-        placeholder="Optional nickname"
-      />
+      <label>Nickname:</label>
+      <input type="text" value={form.nickname} onChange={e=>dispatch({ type:'SET_FIELD', field:'nickname', value:e.target.value })} placeholder="Optional nickname" />
 
-      <label htmlFor="shinyVariant">Variant:</label>
-      <input
-        id="shinyVariant"
-        type="text"
-        value={form.variant}
-        onChange={e => dispatch({ type: 'SET_FIELD', field: 'variant', value: e.target.value })}
-        placeholder="Optional variant"
-      />
+      <label>Variant:</label>
+      <input type="text" value={form.variant} onChange={e=>dispatch({ type:'SET_FIELD', field:'variant', value:e.target.value })} placeholder="Optional variant" />
 
-      {YES_NO_FIELDS.map(({ key, label }) => (
+      {YES_NO_FIELDS.map(({key,label})=>(
         <div key={key}>
-          <label htmlFor={`shiny_${key}`}>{label}:</label>
-          <select
-            id={`shiny_${key}`}
-            value={form[key]}
-            onChange={e => dispatch({ type: 'SET_FIELD', field: key, value: e.target.value })}
-          >
+          <label>{label}:</label>
+          <select value={form[key]} onChange={e=>dispatch({ type:'SET_FIELD', field:key, value:e.target.value })}>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
@@ -292,22 +213,13 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
       ))}
 
       <label>Reaction Link:</label>
-      <input
-        type="text"
-        value={form['Reaction Link']}
-        onChange={e => dispatch({ type: 'SET_FIELD', field: 'Reaction Link', value: e.target.value })}
-        placeholder="Optional URL"
-      />
+      <input type="text" value={form['Reaction Link']} onChange={e=>dispatch({ type:'SET_FIELD', field:'Reaction Link', value:e.target.value })} placeholder="Optional URL" />
 
-      <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-        <button onClick={handleSubmit} disabled={isMutating || !form.Pokemon.trim()}>
-          {isMutating ? 'Saving...' : submitLabel}
-        </button>
-        <button onClick={handleReset} type="button" style={{ backgroundColor: '#555' }}>
-          Reset
-        </button>
+      <div style={{ display:'flex', gap:10, marginTop:16 }}>
+        <button type="submit" disabled={isMutating || !form.Pokemon.trim()}>{isMutating ? 'Saving...' : submitLabel}</button>
+        <button type="button" onClick={() => dispatch({ type:'RESET' })} style={{ backgroundColor:'#555' }}>Reset</button>
       </div>
-    </div>
+    </form>
   )
 }
 

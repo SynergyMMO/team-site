@@ -4,7 +4,8 @@ import { onGifError } from '../../../utils/pokemon'
 import styles from '../Admin.module.css'
 
 export default function ShinyTable({ shinies, onEdit, onDelete, onReorder }) {
-  const entries = Object.entries(shinies).sort(([a], [b]) => parseInt(a) - parseInt(b))
+  const entries = Object.entries(shinies).sort(([a], [b]) => parseInt(b) - parseInt(a))
+
   const [draggedId, setDraggedId] = useState(null)
   const [draggedOverId, setDraggedOverId] = useState(null)
 
