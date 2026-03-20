@@ -50,3 +50,5 @@ merged_shiny_data.json
 scripts/messageIds.json
 
 scripts/sendBountiesToDiscord.js
+
+*.md
