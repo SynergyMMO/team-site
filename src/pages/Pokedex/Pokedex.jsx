@@ -1426,14 +1426,17 @@ export default function Pokedex() {
                           {(pokemonData.grassTypes && pokemonData.grassTypes.length > 0 || (showRarityInfo && primaryRarity)) && (
                             <div style={{
                               position: 'absolute',
-                              bottom: '-22px',
+                              top: '100%',
+                              marginTop: '4px',
                               left: '50%',
                               transform: 'translateX(-50%)',
                               whiteSpace: 'nowrap',
                               fontSize: '0.78rem',
                               color: 'rgba(255, 255, 255, 0.8)',
                               textAlign: 'center',
-                              width: '75px'
+                              width: '75px',
+                              paddingLeft: '4px',
+                              paddingRight: '4px'
                             }}>
                               {showRarityInfo && primaryRarity && (
                                 <div style={{
