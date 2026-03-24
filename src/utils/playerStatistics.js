@@ -31,13 +31,18 @@ export const getPokemonTier = (pokemonName) => {
   return tier
 }
 
-// Check if pokemon is a rare (Tier 0, 1, or 2)
 export const isRarePokemon = (pokemonName) => {
+  if (!pokemonName) return false
+
+  if (pokemonName.toLowerCase().includes('alpha')) return true
+
   const tier = getPokemonTier(pokemonName)
   if (!tier) return false
+
   const tierNum = getTierNumber(tier)
   return tierNum <= 2
 }
+
 
 // Extract route from location string
 const getRouteFromLocation = (location) => {
@@ -130,7 +135,6 @@ export const calculatePlayerStatistics = (data) => {
       minEncounterPokemon = minEntry?.Pokemon || null
     }
 
-    // Count rare shinies (Tier 0, 1, 2) and get all rare pokemon
     const rareShinies = shinyEntries.filter(s => isRarePokemon(s.Pokemon))
     const rareCount = rareShinies.length
     const rarePokemons = [...new Set(rareShinies.map(s => s.Pokemon))]

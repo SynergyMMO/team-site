@@ -1,0 +1,111 @@
+.dexContainer {
+  max-width: 1200px; /* limits total width */
+  margin: 0 auto; /* centers container */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px; /* space between categories */
+}
+
+.dexCard {
+  background: rgba(20, 10, 35, 0.85);
+  border: 1px solid rgba(127, 95, 255, 0.4);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
+  max-width: 220px; /* limits individual card width */
+  width: 100%; /* allows responsiveness */
+}
+
+.dexCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+.pokemonGifWrapper {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* needed for icon positioning */
+}
+
+.pokemonGif {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.pokemonInfo {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.pokemonName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 4px 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.pokemonCategory {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 6px;
+}
+
+.pokemonDescription {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.2;
+  word-break: break-word;
+}
+.categorySection {
+  margin-bottom: 40px; /* space between categories */
+}
+
+.categoryTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.categorySub {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 16px;
+}
+
+.categoryCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+  gap: 16px;
+  justify-items: center; 
+}
+.dexButton {
+  background: linear-gradient(90deg, #23243a 0%, #18192b 100%)}
+
+.bountyIcon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.bountyWrapper {
+  position: relative;
+  display: inline-block;
+}

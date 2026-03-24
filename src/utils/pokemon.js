@@ -2,20 +2,17 @@ import tierPokemon from '../data/tier_pokemon.json'
 
 const VERSION = 1
 
-// Strip apostrophes, dots, and other punctuation from pokemon names
-// e.g. "farfetch'd" -> "farfetchd", "mime-jr." -> "mime-jr", "Mr. Mime" -> "mr-mime"
 function sanitize(name) {
   return name
     .trim()
     .toLowerCase()
-    .replace(/[\u2018\u2019']/g, '')  // all apostrophe variants
-    .replace(/\./g, '')               // periods
-    .replace(/\s+/g, '-')             // spaces -> hyphens
+    .replace(/[\u2018\u2019']/g, '')  
+    .replace(/\./g, '')               
+    .replace(/\s+/g, '-')            
     .replace(/[♀]/g, 'f')
     .replace(/[♂]/g, 'm')
 }
 
-// Build tier lookup once at module level (sanitized keys)
 const tierLookup = {}
 Object.entries(tierPokemon).forEach(([tier, names]) => {
   names.forEach(name => {
@@ -23,8 +20,6 @@ Object.entries(tierPokemon).forEach(([tier, names]) => {
   })
 })
 
-// Pokemon with local gifs whose folder doesn't match tier_pokemon.json
-// (baby pokemon, extra evolutions, or duplicates across tiers)
 const GIF_FOLDER_OVERRIDES = {
   'porygon-z': 'tier_0',
   'porygon2': 'tier_0',
@@ -43,7 +38,6 @@ const GIF_FOLDER_OVERRIDES = {
   'wynaut': 'tier_7',
 }
 
-// Legendary and Mythical Pokemon - skip local folder lookup and use remote source
 const LEGENDARY_MYTHICAL = new Set([
   'articuno',
   'zapdos',
@@ -144,7 +138,6 @@ const LEGENDARY_MYTHICAL = new Set([
 export function getLocalPokemonGif(name) {
   const sanitized = sanitize(name)
   
-  // Skip local folder lookup for legendary/mythical pokemon and use remote source directly
   if (LEGENDARY_MYTHICAL.has(sanitized)) {
     return getRemoteFallbackUrl(name)
   }
@@ -192,14 +185,11 @@ export function getPokemonImageUrl(name, shiny = true) {
 export function formatPokemonName(name) {
   return name ? name.charAt(0).toUpperCase() + name.slice(1) : name
 }
-// Extract base Pokemon name, stripping form variants (e.g., "frillish-f" -> "frillish")
-// This is used for navigation to ensure form variants go to the main Pokemon page
 export function getBasePokemonName(name) {
   if (!name || typeof name !== 'string') return name
   
   const lowerName = name.toLowerCase()
   
-  // Known form variant suffixes that should be stripped
   const formVariantSuffixes = [
     'f', 'm', 'h', 'a',
     'alola', 'galar', 'hisui', 'paldea', 'unbound',
@@ -210,26 +200,20 @@ export function getBasePokemonName(name) {
     'sky', 'land', 'therian', 'incarnate', 'resolute', 'active', 'pendant', 'dusk', 'dawn'
   ]
   
-  // Check if name has a hyphen
   if (!lowerName.includes('-')) return name
   
-  // Split on the last hyphen
   const lastHyphenIndex = lowerName.lastIndexOf('-')
   const potentialSuffix = lowerName.substring(lastHyphenIndex + 1)
   const baseName = name.substring(0, lastHyphenIndex)
   
-  // If the suffix is a known form variant AND the base name is a real pokemon, strip it
-  // (e.g. frillish-f → frillish works; nidoran-f → nidoran would not, since 'nidoran' isn't in tierLookup)
   if (formVariantSuffixes.includes(potentialSuffix) && tierLookup[baseName.toLowerCase()]) {
     return baseName
   }
   
-  // Also handle multi-word suffixes like "rapid-strike"
   const potentialMultiSuffix = lowerName.substring(lowerName.indexOf('-') + 1)
   if (potentialMultiSuffix === 'rapid-strike' || potentialMultiSuffix === 'single-strike') {
     return lowerName.substring(0, lowerName.indexOf('-'))
   }
   
-  // Otherwise return the original name (it might be a base Pokemon with hyphens like "tapu-koko")
   return name
 }
