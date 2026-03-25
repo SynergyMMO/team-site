@@ -10,9 +10,9 @@ export default function CounterGenerator() {
 
   useDocumentHead({
     title: 'PokeMMO Counter Theme Generator - Custom Encounter Counters',
-    description: 'PokeMMO encounter counter theme generator tool. Upload custom GIFs, resize for counter display, download ready-to-use counter theme packages for shiny hunting sessions.',
+    description: 'PokeMMO encounter counter theme generator tool.',
     canonicalPath: '/counter-generator/',
-    breadcrumbs: breadcrumbs
+    breadcrumbs
   })
 
   const [status, setStatus] = useState('')
@@ -20,31 +20,41 @@ export default function CounterGenerator() {
   const loadedFileRef = useRef(null)
 
   const handleFileChange = useCallback((e) => {
-    loadedFileRef.current = e.target.files[0]
+    const file = e.target.files[0]
+    if (!file) return
+
+    loadedFileRef.current = file
     setStatus('File loaded. Press Generate to process.')
     setGenerateEnabled(true)
   }, [])
 
   const resizeToBlob = useCallback((fileOrBlob, width, height) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const img = new Image()
       const url = URL.createObjectURL(fileOrBlob)
+
       img.onload = () => {
         const canvas = document.createElement('canvas')
         canvas.width = width
         canvas.height = height
         const ctx = canvas.getContext('2d')
+
+        ctx.clearRect(0, 0, width, height)
         ctx.imageSmoothingEnabled = true
         ctx.imageSmoothingQuality = 'high'
-        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height)
+        ctx.drawImage(img, 0, 0, width, height)
+
         canvas.toBlob((blob) => {
           URL.revokeObjectURL(url)
           resolve(blob)
         }, 'image/png')
       }
+
       img.onerror = () => {
         URL.revokeObjectURL(url)
+        reject(new Error('Image load failed'))
       }
+
       img.src = url
     })
   }, [])
@@ -58,6 +68,7 @@ export default function CounterGenerator() {
 
     const w = Number(document.getElementById('gifWidth').value) || 300
     const h = Number(document.getElementById('gifHeight').value) || 250
+    const userDuration = Number(document.getElementById('frameDuration').value) || 100
 
     setStatus('Processing frames...')
 
@@ -68,44 +79,59 @@ export default function CounterGenerator() {
       let frames = []
 
       if (file.type === 'image/gif') {
-        const arrayBuffer = await file.arrayBuffer()
-        const bytes = new Uint8Array(arrayBuffer)
-        const reader = new GifReader(bytes)
+        const buffer = new Uint8Array(await file.arrayBuffer())
+        const reader = new GifReader(buffer)
 
         const width = reader.width
         const height = reader.height
+
         const canvas = document.createElement('canvas')
         canvas.width = width
         canvas.height = height
         const ctx = canvas.getContext('2d')
-        const fullFrameBuffer = new Uint8ClampedArray(width * height * 4)
+
+        let fullFrame = new Uint8ClampedArray(width * height * 4)
+        let prevFrame = null
 
         for (let i = 0; i < reader.numFrames(); i++) {
-          const dims = reader.frameInfo(i)
-          reader.decodeAndBlitFrameRGBA(i, fullFrameBuffer)
-          const imageData = new ImageData(new Uint8ClampedArray(fullFrameBuffer), width, height)
+          const info = reader.frameInfo(i)
+
+          // Proper disposal handling
+          if (info.disposal === 2) {
+            fullFrame.fill(0)
+            ctx.clearRect(0, 0, width, height)
+          } else if (info.disposal === 3 && prevFrame) {
+            fullFrame.set(prevFrame)
+          }
+
+          prevFrame = new Uint8ClampedArray(fullFrame)
+
+          reader.decodeAndBlitFrameRGBA(i, fullFrame)
+
+          const imageData = new ImageData(fullFrame, width, height)
           ctx.putImageData(imageData, 0, 0)
 
           const resizedCanvas = document.createElement('canvas')
           resizedCanvas.width = w
           resizedCanvas.height = h
           const rctx = resizedCanvas.getContext('2d')
+
+          rctx.clearRect(0, 0, w, h)
           rctx.imageSmoothingEnabled = true
           rctx.imageSmoothingQuality = 'high'
           rctx.drawImage(canvas, 0, 0, width, height, 0, 0, w, h)
 
           const blob = await new Promise(res => resizedCanvas.toBlob(res, 'image/png'))
-          const duration = (dims.delay || 10) * 10
 
           frames.push({
             name: `frame-${String(i + 1).padStart(5, '0')}.png`,
             blob,
-            duration,
+            duration: userDuration
           })
         }
       } else if (file.type.startsWith('image/')) {
         const blob = await resizeToBlob(file, w, h)
-        frames = [{ name: 'frame-00001.png', blob, duration: 100 }]
+        frames = [{ name: 'frame-00001.png', blob, duration: userDuration }]
       } else {
         throw new Error('Unsupported file type. Please upload a GIF or PNG.')
       }
@@ -116,6 +142,7 @@ export default function CounterGenerator() {
         if (!r.ok) throw new Error(`Failed to load ${path}: ${r.status}`)
         return r.text()
       })
+
       const [counterThemeBottom, infoXML] = await Promise.all([
         fetchXml('/xml/counterThemeBottom.xml'),
         fetchXml('/xml/info.xml'),
@@ -147,33 +174,35 @@ export default function CounterGenerator() {
         unexpandedFolder.file('minimised.png', minimisedBlob)
       }
 
-      // Generate counter XML
       let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<themes>\n\n`
+
       frames.forEach((frame, index) => {
         const frameNumber = String(index + 1).padStart(5, '0')
         xml += `<images file="anim/${frame.name}" filter="nearest">\n`
         xml += `    <area name="bg-${frameNumber}" xywh="*"/>\n`
         xml += `</images>\n\n`
       })
+
       xml += `    <images>\n        <animation name="encounter_counter_anim" timeSource="enabled">\n\n`
+
       frames.forEach((frame, index) => {
         const frameNumber = String(index + 1).padStart(5, '0')
         xml += `<frame ref="bg-${frameNumber}" duration="${frame.duration}"/>\n`
       })
+
       xml += `        </animation>\n    </images>\n\n`
       xml += counterThemeBottom
 
       zip.file(`${base}/custom-counter.xml`, xml)
-      // Removed theme.xml from ZIP generation as it is not needed
 
       const zipNameValue = document.getElementById('zipName').value.trim() || 'custom-counter'
       const themeName = zipNameValue.replace(/\.zip$/i, '')
-      // Replace all occurrences of ${themeName} in info.xml
       const infoXMLReplaced = infoXML.replace(/\$\{themeName\}/g, themeName)
       zip.file('info.xml', infoXMLReplaced)
 
       const outputZipName = zipNameValue.endsWith('.zip') ? zipNameValue : zipNameValue + '.zip'
       const content = await zip.generateAsync({ type: 'blob' })
+
       const a = document.createElement('a')
       a.href = URL.createObjectURL(content)
       a.download = outputZipName
