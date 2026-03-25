@@ -96,7 +96,6 @@ export default function CounterGenerator() {
         for (let i = 0; i < reader.numFrames(); i++) {
           const info = reader.frameInfo(i)
 
-          // Proper disposal handling
           if (info.disposal === 2) {
             fullFrame.fill(0)
             ctx.clearRect(0, 0, width, height)
@@ -134,6 +133,16 @@ export default function CounterGenerator() {
         frames = [{ name: 'frame-00001.png', blob, duration: userDuration }]
       } else {
         throw new Error('Unsupported file type. Please upload a GIF or PNG.')
+      }
+
+      // ✅ FIX: smooth looping
+      if (frames.length > 1) {
+        const first = frames[0]
+        frames.push({
+          name: `frame-${String(frames.length + 1).padStart(5, '0')}.png`,
+          blob: first.blob,
+          duration: first.duration
+        })
       }
 
       setStatus(`Extracted ${frames.length} frames. Loading XML templates...`)
