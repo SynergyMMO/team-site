@@ -4,13 +4,71 @@ import { usePokemonSprites } from '../../hooks/usePokemonSprites';
 import { useDocumentHead } from '../../hooks/useDocumentHead';
 import styles from './BountiesPage.module.css';
 
-function getCurrentMonthYear() {
-  const now = new Date();
-  return { month: now.getMonth() + 1, year: now.getFullYear() };
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+function sortMonthCategories(categories) {
+  const unique = Array.from(new Set(categories.filter(Boolean)));
+  return unique.sort((a, b) => {
+    const aIdx = MONTH_NAMES.indexOf(a);
+    const bIdx = MONTH_NAMES.indexOf(b);
+    if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+    if (aIdx !== -1) return -1;
+    if (bIdx !== -1) return 1;
+    return a.localeCompare(b);
+  });
 }
 
-function getMonthName(month) {
-  return new Date(2000, month - 1, 1).toLocaleString('default', { month: 'long' });
+function toCategoryLabel(value) {
+  if (!value) return '';
+  const cleaned = String(value).trim().toLowerCase().replace(/[^a-z]/g, '');
+  if (!cleaned) return '';
+  if (cleaned === 'perm') return 'Perm';
+  const monthMatch = MONTH_NAMES.find(m => m.toLowerCase() === cleaned);
+  if (monthMatch) return monthMatch;
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
+function getIdPrefix(id) {
+  if (!id) return '';
+  const match = String(id).trim().match(/^([a-z]+)/i);
+  return match ? match[1].toLowerCase() : '';
+}
+
+function getCategoryFromBounty(bounty) {
+  const idPrefix = getIdPrefix(bounty?.id);
+  if (idPrefix) {
+    const fromId = toCategoryLabel(idPrefix);
+    if (fromId) return fromId;
+  }
+  if (bounty?.perm) return 'Perm';
+  return toCategoryLabel(bounty?.month) || 'Uncategorized';
+}
+
+function normalizeBountiesPayload(input) {
+  const grouped = {};
+  const allBounties = Array.isArray(input)
+    ? input
+    : Object.values(input || {}).flatMap(list => (Array.isArray(list) ? list : []));
+
+  allBounties.filter(Boolean).forEach((bounty) => {
+    const category = getCategoryFromBounty(bounty);
+    const normalized = { ...bounty };
+    if (category === 'Perm') {
+      normalized.perm = true;
+      normalized.month = '';
+    } else {
+      normalized.perm = false;
+      normalized.month = category;
+    }
+    if (!grouped[category]) grouped[category] = [];
+    grouped[category].push(normalized);
+  });
+
+  if (!grouped.Perm) grouped.Perm = [];
+  return grouped;
 }
 
 // Component to render a pokemon sprite using the custom hook
@@ -45,89 +103,52 @@ function PokemonSprite({ name }) {
 }
 
 export default function BountiesPage() {
-  const [{ month, year }, setMonthYear] = useState(getCurrentMonthYear());
-  // Bounties are now stored as { March: [...], Perm: [...] }
-  const [bounties, setBounties] = useState({ March: [], Perm: [] });
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toLocaleString('default', { month: 'long' }));
+  const [bounties, setBounties] = useState({ Perm: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [view, setView] = useState('monthly'); // "monthly" or "permanent"
-  // Track available months/years
-  const [availableMonths, setAvailableMonths] = useState([]);
 
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch(`${API.bounties}?month=${month}&year=${year}`)
+    fetch(API.bounties)
       .then(res => res.json())
       .then(data => {
-        // If data is not in category format, convert it
-        let formatted = { March: [], Perm: [] };
-        if (data && typeof data === 'object' && (data.March || data.Perm)) {
-          formatted = {
-            March: Array.isArray(data.March) ? data.March : [],
-            Perm: Array.isArray(data.Perm) ? data.Perm : []
-          };
-        } else if (Array.isArray(data)) {
-          formatted.March = data.filter(b => b.month && b.month.toLowerCase() === 'march');
-          formatted.Perm = data.filter(b => b.perm);
-        }
+        const formatted = normalizeBountiesPayload(data);
         setBounties(formatted);
         setLoading(false);
-        // Extract all available months/years from March bounties
-        const months = formatted.March
-          .filter(b => b.month && b.year)
-          .map(b => ({
-            month: new Date(`${b.month} 1, ${b.year}`).getMonth() + 1,
-            year: Number(b.year)
-          }));
-        // Remove duplicates
-        const uniqueMonths = Array.from(
-          new Set(months.map(m => `${m.year}-${m.month}`))
-        ).map(str => {
-          const [y, m] = str.split('-');
-          return { year: Number(y), month: Number(m) };
-        });
-        setAvailableMonths(uniqueMonths);
       })
       .catch(() => {
         setError('Failed to load bounties');
         setLoading(false);
       });
-  }, [month, year]);
+  }, []);
 
-  // Helper to check if a month/year exists in availableMonths
-  const hasMonth = (m, y) => availableMonths.some(am => am.month === m && am.year === y);
+  const monthCategories = useMemo(
+    () => sortMonthCategories(Object.keys(bounties).filter((category) => category !== 'Perm')),
+    [bounties]
+  );
 
-  const handlePrevMonth = () => {
-    let newMonth = month - 1;
-    let newYear = year;
-    if (newMonth < 1) {
-      newMonth = 12;
-      newYear--;
+  useEffect(() => {
+    if (!monthCategories.length) return;
+    if (!monthCategories.includes(selectedMonth)) {
+      const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+      setSelectedMonth(monthCategories.includes(currentMonth) ? currentMonth : monthCategories[0]);
     }
-    if (hasMonth(newMonth, newYear)) {
-      setMonthYear({ month: newMonth, year: newYear });
-    }
-  };
+  }, [monthCategories, selectedMonth]);
 
-  const handleNextMonth = () => {
-    let newMonth = month + 1;
-    let newYear = year;
-    if (newMonth > 12) {
-      newMonth = 1;
-      newYear++;
-    }
-    if (hasMonth(newMonth, newYear)) {
-      setMonthYear({ month: newMonth, year: newYear });
-    }
-  };
+  const selectedMonthIndex = monthCategories.indexOf(selectedMonth);
+  const prevMonth = selectedMonthIndex > 0 ? monthCategories[selectedMonthIndex - 1] : null;
+  const nextMonth = selectedMonthIndex >= 0 && selectedMonthIndex < monthCategories.length - 1
+    ? monthCategories[selectedMonthIndex + 1]
+    : null;
 
-  const currentMonthName = getMonthName(month);
-  const currentMonthBounties = (bounties.March || []);
+  const currentMonthBounties = selectedMonth ? (bounties[selectedMonth] || []) : [];
   const permBounties = (bounties.Perm || []).filter(b => b.perm === true || b.type === 'perm');
 
-  // Use first March bounty for ogImage
-  const firstBountyPokemon = (bounties.March && bounties.March.length > 0 && bounties.March[0].pokemon) ? bounties.March[0].pokemon : null;
+  // Use first monthly bounty for ogImage
+  const firstBountyPokemon = currentMonthBounties.length > 0 ? currentMonthBounties[0].pokemon : null;
   const firstBountySprites = usePokemonSprites(firstBountyPokemon);
   const ogImage = useMemo(() => {
     if (!firstBountyPokemon || !firstBountySprites) return 'https://synergymmo.com/images/openGraph.jpg';
@@ -173,17 +194,19 @@ export default function BountiesPage() {
         </button>
       </div>
 
-      {view === 'monthly' && availableMonths.length > 0 && (
+      {view === 'monthly' && monthCategories.length > 0 && (
         <div className={styles['bounties-header-controls']}>
-          <button
-            onClick={handlePrevMonth}
-            disabled={!hasMonth(month === 1 ? 12 : month - 1, month === 1 ? year - 1 : year)}
-          >&lt; Prev</button>
-          <h2>{getMonthName(month)} {year}</h2>
-          <button
-            onClick={handleNextMonth}
-            disabled={!hasMonth(month === 12 ? 1 : month + 1, month === 12 ? year + 1 : year)}
-          >Next &gt;</button>
+          {prevMonth ? (
+            <button onClick={() => setSelectedMonth(prevMonth)}>&lt; Prev</button>
+          ) : (
+            <span />
+          )}
+          <h2>{selectedMonth}</h2>
+          {nextMonth ? (
+            <button onClick={() => setSelectedMonth(nextMonth)}>Next &gt;</button>
+          ) : (
+            <span />
+          )}
         </div>
       )}
 

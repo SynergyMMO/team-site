@@ -15,6 +15,77 @@ function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+function toCategoryLabel(value) {
+  if (!value) return '';
+  const cleaned = String(value).trim().toLowerCase().replace(/[^a-z]/g, '');
+  if (!cleaned) return '';
+  if (cleaned === 'perm') return 'Perm';
+  const monthMatch = MONTH_NAMES.find(m => m.toLowerCase() === cleaned);
+  if (monthMatch) return monthMatch;
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
+function getIdPrefix(id) {
+  if (!id) return '';
+  const match = String(id).trim().match(/^([a-z]+)/i);
+  return match ? match[1].toLowerCase() : '';
+}
+
+function getBountyCategory(bounty) {
+  const idPrefix = getIdPrefix(bounty?.id);
+  if (idPrefix) {
+    const fromId = toCategoryLabel(idPrefix);
+    if (fromId) return fromId;
+  }
+  if (bounty?.perm) return 'Perm';
+  const fromMonth = toCategoryLabel(bounty?.month);
+  return fromMonth || 'Uncategorized';
+}
+
+function normalizeBountyEntry(bounty) {
+  const category = getBountyCategory(bounty);
+  const normalized = { ...bounty };
+
+  if (category === 'Perm') {
+    normalized.perm = true;
+    normalized.month = '';
+  } else {
+    normalized.perm = false;
+    normalized.month = category;
+  }
+
+  return normalized;
+}
+
+function flattenBounties(input) {
+  if (Array.isArray(input)) return input;
+  if (input && typeof input === 'object') {
+    return Object.values(input).flatMap(list => (Array.isArray(list) ? list : []));
+  }
+  return [];
+}
+
+function normalizeBountiesData(input) {
+  const grouped = {};
+  const allBounties = flattenBounties(input)
+    .filter(Boolean)
+    .map(normalizeBountyEntry);
+
+  allBounties.forEach((bounty) => {
+    const category = getBountyCategory(bounty);
+    if (!grouped[category]) grouped[category] = [];
+    grouped[category].push(bounty);
+  });
+
+  if (!grouped.Perm) grouped.Perm = [];
+  return grouped;
+}
+
 // ---------------- HOOK ----------------
 export default function useAdminDB(auth) {
   // --- Database / Streamers / Events / Log / Bounties ---
@@ -23,8 +94,8 @@ export default function useAdminDB(auth) {
   const [eventDB, setEventDB] = useState([]);
   const [themesDB, setThemesDB] = useState({});
   const [logData, setLogData] = useState([]);
-  // Bounties are now stored as { March: [...], Perm: [...] }
-  const [bounties, setBounties] = useState({ March: [], Perm: [] });
+  // Bounties are stored by dynamic category key (month names + Perm)
+  const [bounties, setBounties] = useState({ Perm: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
@@ -580,18 +651,7 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
       const res = await fetch(API.bounties, { method: 'GET' }); // GET /bounties
       if (!res.ok) throw new Error('Failed to fetch bounties');
       const data = await res.json();
-      // If data is not in category format, convert it
-      let formatted = { March: [], Perm: [] };
-      if (data && typeof data === 'object' && (data.March || data.Perm)) {
-        formatted = {
-          March: Array.isArray(data.March) ? data.March : [],
-          Perm: Array.isArray(data.Perm) ? data.Perm : []
-        };
-      } else if (Array.isArray(data)) {
-        // fallback: split by perm/month
-        formatted.March = data.filter(b => b.month && b.month.toLowerCase() === 'march');
-        formatted.Perm = data.filter(b => b.perm);
-      }
+      const formatted = normalizeBountiesData(data);
       setBounties(formatted);
       return formatted;
     } finally {
@@ -604,14 +664,15 @@ const saveBounties = useCallback(async (newBounties, action = 'Update bounties')
   if (!auth) return { success: false, error: 'Unauthorized' };
   setIsMutating(true);
   try {
+    const normalizedBounties = normalizeBountiesData(newBounties);
     const result = await postData(API.updateBounties, {
       username: auth.name || auth.username,
       password: auth.password,
-      data: newBounties,
+      data: normalizedBounties,
       action,
     });
     if (result.success) {
-      setBounties(() => newBounties); // ensure latest state
+      setBounties(() => normalizedBounties); // ensure latest state
       await logAdminAction(action);
       return { success: true };
     }
@@ -623,31 +684,18 @@ const saveBounties = useCallback(async (newBounties, action = 'Update bounties')
 
 
   const addBounty = useCallback(async (bounty) => {
-    // Determine category
-    let category = bounty.perm ? 'Perm' : 'March';
-    const updated = { ...bounties };
-    updated[category] = [...(bounties[category] || []), bounty];
+    const updated = [...flattenBounties(bounties), bounty];
     return await saveBounties(updated, 'Add bounty');
   }, [bounties, saveBounties]);
 
   const editBounty = useCallback(async (bounty) => {
-    const updated = Object.fromEntries(
-      Object.entries(bounties).map(([category, list]) => [
-        category,
-        list.map(b => (b.id === bounty.id ? bounty : b))
-      ])
-    );
+    const updated = flattenBounties(bounties).map(b => (b.id === bounty.id ? bounty : b));
     return await saveBounties(updated, 'Edit bounty');
   }, [bounties, saveBounties]);
 
 
 const deleteBounty = useCallback(async (id) => {
-  const updated = Object.fromEntries(
-    Object.entries(bounties).map(([category, list]) => [
-      category,
-      list.filter(b => String(b.id) !== String(id))
-    ])
-  );
+  const updated = flattenBounties(bounties).filter(b => String(b.id) !== String(id));
 
   return await saveBounties(updated, 'Delete bounty');
 }, [bounties, saveBounties]);
