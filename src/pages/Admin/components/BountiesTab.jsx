@@ -169,7 +169,9 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
           className={styles.adminInput}
           style={{ width: 140 }}
         >
+          <option value="February">February</option>
           <option value="March">March</option>
+          <option value="April">April</option>
           <option value="Perm">Permanent</option>
           <option value="Claimed">Claimed</option>
         </select>
