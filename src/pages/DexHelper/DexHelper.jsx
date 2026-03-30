@@ -23,6 +23,18 @@ const FILTERED_POKEMON = [
 const FILTERED_POKEMON_SET = new Set(FILTERED_POKEMON.map((name) => normalizePokemonName(String(name))));
 const CATEGORY_ORDER = ['Horde', 'Singles', 'Eggs'];
 
+
+const CATEGORY_OVERRIDE_FILTERS = {
+  Horde: [],
+  Singles: ["carnivine"],
+  Eggs: [],
+};
+const CATEGORY_OVERRIDE_SETS = {
+  Horde: new Set(CATEGORY_OVERRIDE_FILTERS.Horde.map((name) => normalizePokemonName(String(name)))),
+  Singles: new Set(CATEGORY_OVERRIDE_FILTERS.Singles.map((name) => normalizePokemonName(String(name)))),
+  Eggs: new Set(CATEGORY_OVERRIDE_FILTERS.Eggs.map((name) => normalizePokemonName(String(name)))),
+};
+
 function getCurrentMonthYear() {
   const now = new Date();
   return {
@@ -43,6 +55,13 @@ function getCategoryFromShinyTier(shinyTier) {
   return null;
 }
 
+function getCategoryOverride(lineIds) {
+  if (lineIds.some((lineId) => CATEGORY_OVERRIDE_SETS.Horde.has(lineId))) return 'Horde';
+  if (lineIds.some((lineId) => CATEGORY_OVERRIDE_SETS.Singles.has(lineId))) return 'Singles';
+  if (lineIds.some((lineId) => CATEGORY_OVERRIDE_SETS.Eggs.has(lineId))) return 'Eggs';
+  return null;
+}
+
 function formatPokemonDisplayName(name) {
   return String(name)
     .split('-')
@@ -51,34 +70,36 @@ function formatPokemonDisplayName(name) {
 }
 
 function normalizeBounties(rawData, month, year, monthName) {
-  const monthly = [];
-  const permanent = [];
+  const active = [];
 
   const addBounty = (bounty, sourceKey = '') => {
     if (!bounty || !bounty.pokemon) return;
 
+    const bountyType = String(bounty.type || sourceKey || '').toLowerCase();
+    const isPermanent =
+      bounty.perm === true ||
+      bountyType.includes('perm');
     const bountyMonth = String(bounty.month || sourceKey || '').toLowerCase();
     const bountyYear = Number(bounty.year || year);
-    const isPerm = bounty.perm === true || String(bounty.type || '').toLowerCase() === 'perm';
     const isCurrentMonth = bountyMonth === monthName || Number(bounty.month) === month;
     const isCurrentYear = !bounty.year || bountyYear === year;
     const isClaimed = Boolean(bounty.claimed);
 
     if (isClaimed) return;
 
-    if (isPerm) {
-      permanent.push(bounty);
+    if (isPermanent) {
+      active.push({ ...bounty, bountyType: 'permanent' });
       return;
     }
 
     if (isCurrentMonth && isCurrentYear) {
-      monthly.push(bounty);
+      active.push({ ...bounty, bountyType: 'monthly' });
     }
   };
 
   if (Array.isArray(rawData)) {
     rawData.forEach((bounty) => addBounty(bounty));
-    return { monthly, permanent };
+    return { active };
   }
 
   if (rawData && typeof rawData === 'object') {
@@ -88,7 +109,7 @@ function normalizeBounties(rawData, month, year, monthName) {
     });
   }
 
-  return { monthly, permanent };
+  return { active };
 }
 
 export default function DexHelper() {
@@ -165,7 +186,7 @@ export default function DexHelper() {
           }
         }
 
-        const category = getCategoryFromShinyTier(shinyTier);
+        const category = getCategoryOverride(lineIds) || getCategoryFromShinyTier(shinyTier);
         if (!category) return;
 
         let description = descriptionByPokemon.get(baseId) || '';
@@ -211,20 +232,20 @@ export default function DexHelper() {
     return owned;
   }, [database]);
 
-  const { monthly, permanent } = useMemo(
+  const { active } = useMemo(
     () => normalizeBounties(bountyData, month, year, monthName),
     [bountyData, month, monthName, year],
   );
 
   const bountyByPokemon = useMemo(() => {
     const lookup = new Map();
-    [...monthly, ...permanent].forEach((bounty) => {
+    active.forEach((bounty) => {
       const key = normalizePokemonName(bounty.pokemon || '');
       if (!key || lookup.has(key)) return;
       lookup.set(key, bounty);
     });
     return lookup;
-  }, [monthly, permanent]);
+  }, [active]);
 
   const missingPokemon = useMemo(
     () => dexEvolutionBases.filter((pokemon) => !pokemon.lineIds.some((lineId) => ownedPokemonSet.has(lineId))),
@@ -290,7 +311,11 @@ export default function DexHelper() {
                             <span className="bountyIcon" aria-hidden="true">B</span>
                             <div className="bountyTooltip" role="tooltip">
                               <p><strong>Title:</strong> {bounty.title || bounty.pokemon || 'Untitled'}</p>
-                              <p><strong>Description:</strong> {bounty.description || 'No description provided'}</p>
+                              <p>
+                                <strong>Description:</strong>{' '}
+                                {bounty.description || 'No description provided'}
+                              </p>
+                              <p><strong>Type:</strong> {bounty.bountyType === 'monthly' ? 'monthly' : 'perm'}</p>
                               <p><strong>Reward:</strong> {bounty.reward || 'N/A'}</p>
                               <p><strong>Host:</strong> {bounty.host || 'Unknown'}</p>
                             </div>
