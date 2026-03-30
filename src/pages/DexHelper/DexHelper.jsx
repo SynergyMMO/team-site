@@ -25,9 +25,9 @@ const CATEGORY_ORDER = ['Horde', 'Singles', 'Eggs'];
 
 
 const CATEGORY_OVERRIDE_FILTERS = {
-  Horde: [`Hippopotas`, `Tauros`, `Illumise`],
-  Singles: ["carnivine"],
-  Eggs: [],
+  Horde: [`Hippopotas`, `Spoink`,`Miltank`, `Tauros`, `Illumise`],
+  Singles: ["carnivine", "kecleon", "lileep", "castform", "burmy", "skorupi"],
+  Eggs: ["kangaskhan"],
 };
 const CATEGORY_OVERRIDE_SETS = {
   Horde: new Set(CATEGORY_OVERRIDE_FILTERS.Horde.map((name) => normalizePokemonName(String(name)))),

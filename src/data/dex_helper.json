@@ -24,9 +24,120 @@
     "description": "Hoenn Safari (sleep at night, repel trick 37), Honey Trees"
   },
   "Shedinja": {
-    "description": "Repel trick Nincada Route 116 Level 8, Net Ball, level up at Mt. Silver"
+    "description": "Repel trick Nincada Route 116 Level 8, Net Ball 100%, level up at Mt. Silver"
   },
   "Totodile": {
     "description": "Lure at Route 32 or Egg"
+  },
+  "Farfetchd": {
+    "description": "Can be hunted while ditto farming in Johto during the Day/Morning"
+  },
+  "Exeggcute": {
+    "description": "Can be found in Berry Forest while looking for the birds"
+  },
+  "Kangaskhan": {
+    "description": "Can be singled in Wasteland Johto Safari Zone, although the catch rate is awful, as it's female only it is a cheap egg hunt."
+  },
+  "Mime-Jr": {
+    "description": "Mr Mime can be found in Route 210 alongside other rares such as Scyther, Sudowoodo and Breloom, Route 21 in Kanto has both Mr Mime and Mime jr, and can be hunted alongside the bird. "
+  },
+  "Omanyte": {
+    "description": "Helix Fossils"
+  },
+  "Aerodactyl": {
+    "description": "Old Amber Fossils"
+  },
+  "Pineco": {
+    "description": "Can be found in Hoenn Safari Zone where Aipom is found, can also be found while repel tricking, catch rate pretty high, or headbutting... but dont do that"
+  },
+  "Qwilfish": {
+    "description": "Believe the best spot to fish is Five Isle Meadow, may be the worst fishing hunt in the game though, good luck!"
+  },
+  "Shuckle": {
+    "description": "Can be found while rock smashing in Hoenn Safari while hunting Aipom, can also be found in the few rocks near the beaches in Johto, is also a Rotational mon in Johto Safari, which is the most optimal place to find it."
+  },
+  "Heracross": {
+    "description": "Can be repel tricked at Route 12 in Unova (lvl 50), can be found in Pattern Bush while hunting the birds."
+  },
+  "Miltank": {
+    "description": "Can be found in Hoenn Safari where Aipom is found, although catch rate is incredibly low, can also be found while ditto farming in Johto while looking for the dogs"
+  },
+  "Gulpin":{
+    "description": "Single at Route 110 in Hoenn, can also find Minun and Plusle here."
+  },
+  "Anorith": {
+    "description": "Claw Fossils"
+  },
+  "Shieldon": {
+    "description": "Plate Fossils"
+  },
+  "Tirtouga": {
+    "description": "Cover Fossils"
+  },
+  "Archen": {
+    "description": "Plume Fossils"
+  },
+  "Tropius": {
+    "description": "Can be found in route 120 Hoenn in the tall grass, alongside Absol, Kecleon and Marshtomp, can also be found in the Great Marsh, with a pretty high catch rate"
+  },
+  "Carnivine": {
+    "description": "Can be found in the Great Marsh, is also a Johto Safari Rotational mon, which is the preferred way of hunting it"
+  },
+  "Finneon": {
+    "description": "Pretty easy fishing hunt with Chum Buckets, Route 18 or Route 17 Unova"
+  },
+  "Tyrogue": {
+    "description": "Can be singled in Kanto Victory road, getting Hitmontop and Hitmonchan, but the hunt is hard (12 phase avg), egging it is also hard due to it being male only, but it evolves at lvl 20, so chaining isnt toooo bad"
+  },
+  "Squirtle":{
+    "description": "Route 24 Kanto while looking for the bird or egg"
+  },
+  "Porygon":{
+    "description": "Only found inside the game corner for a big amount of coins, swarm or egg only"
+  },
+  "Togepi":{
+    "description": "Single in Five Isle Meadow or Route 24 while looking for dog/bird, lure hunt only, hard to egg due to friendship evolution. Good luck!"
+  },
+  "Torchic":{
+    "description": "Route 112 Hoenn or Route 114 Hoenn singles, bad phases, lure hunt, preferbly egg"
+  },
+  "Lileep":{
+    "description": "Root Fossils"
+  },
+  "Castform":{
+    "description": "Can be singled in the entrance of Hoenn Safari, bad phases but pretty decent catch rate, can be egged fairly cheap too."
+  },
+  "Skorupi":{
+    "description": "Can be hunted all times of the day inside Great Marsh, Rotational mon in Johto Safari, about 45% catch rate, Drapion can be singled Route 228 although Lure mon and constant sandstorm make this hunt very slow. Leave this one to Hyper."
+  },
+  "Kecleon":{
+    "description": "Can be found in Route 120 Hoenn in the tall grass, alongside Absol, Tropius and Marshtomp"
+  },
+  "Burmy":{
+    "description": "Honey Treeeee"
+  },
+  "Chimchar":{
+    "description": "Single Route 211 or Route 221, don't do that though just egg it."
+  },
+  "Piplup":{
+    "description": "Can be singled Route 213, phases aren't too bad there, although egg it anyway"
+  },
+  "Happiny":{
+    "description": "Can be singled route 209 sinnoh, ralts as a phase, also has Scyther and Mr Mime. Or Route 47 while ditto farming/looking for dogs/farfetchd/Miltank"
+  },
+  "Tepig":{
+    "description": "Awful phases, Route 3 unova, just egg it."
+  },
+  "Audino":{
+    "description": "Pheno, Impossible to hunt, Egg only"
+  },
+  "Ducklett":{
+    "description": "Pheno, Impossible to hunt, Egg only"
+  },
+  "Alomomola":{
+    "description": "Pheno, Impossible to hunt, Egg only"
+  },
+  "Larvesta":{
+    "description": "Can be hunted at a 2% chance inside Relic Castle, don't do that though, that was be so silly to even try to single that, very silly indeed. Egg!"
   }
 }
