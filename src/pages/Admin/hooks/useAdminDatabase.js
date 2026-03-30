@@ -319,8 +319,12 @@ export default function useAdminDB(auth) {
       // newOrder is an array of shiny IDs in the new order
       const oldShinies = db[playerName].shinies;
       const reordered = {};
+      // UI is displayed latest -> oldest (highest ID first), so when we
+      // reassign numeric IDs we must map the first dragged row to the highest ID.
+      const total = newOrder.length;
       newOrder.forEach((id, idx) => {
-        reordered[idx + 1] = { ...oldShinies[id] };
+        const newId = total - idx;
+        reordered[newId] = { ...oldShinies[id] };
       });
       db[playerName].shinies = reordered;
       const result = await postData(API.updateDatabase, {
