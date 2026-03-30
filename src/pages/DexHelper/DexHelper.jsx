@@ -25,7 +25,7 @@ const CATEGORY_ORDER = ['Horde', 'Singles', 'Eggs'];
 
 
 const CATEGORY_OVERRIDE_FILTERS = {
-  Horde: [],
+  Horde: [`Hippopotas`, `Tauros`, `Illumise`],
   Singles: ["carnivine"],
   Eggs: [],
 };
