@@ -291,7 +291,15 @@ export default function DexHelper() {
               <h2 className="categoryTitle">{category}</h2>
               <div className="categoryCards">
                 {missingByCategory[category].map((pokemon) => {
-                  const bounty = bountyByPokemon.get(pokemon.id);
+                  let bounty = null;
+                  let bountySourcePokemon = '';
+                  for (const lineId of pokemon.lineIds) {
+                    const lineBounty = bountyByPokemon.get(lineId);
+                    if (!lineBounty) continue;
+                    bounty = lineBounty;
+                    bountySourcePokemon = lineBounty.pokemon || lineId;
+                    break;
+                  }
 
                   return (
                     <article key={pokemon.id} className="dexCard">
@@ -311,6 +319,7 @@ export default function DexHelper() {
                             <span className="bountyIcon" aria-hidden="true">B</span>
                             <div className="bountyTooltip" role="tooltip">
                               <p><strong>Title:</strong> {bounty.title || bounty.pokemon || 'Untitled'}</p>
+                              <p><strong>Bounty For:</strong> <strong>{formatPokemonDisplayName(bountySourcePokemon)}</strong></p>
                               <p>
                                 <strong>Description:</strong>{' '}
                                 {bounty.description || 'No description provided'}
