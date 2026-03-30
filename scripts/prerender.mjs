@@ -21,6 +21,7 @@ const PAGE_KEYWORDS = {
   '/': 'Team Synergy, PokeMMO shiny hunting community, shiny hunters, player shiny collections, PokeMMO Pokédex, roaming legendaries, PokeMMO tools, Trophy Board',
   '/shiny-showcase': 'PokeMMO shiny showcase, Team Synergy shiny collections, player shiny rankings, Pokemon collectors, shiny count leaderboard, Team Synergy members',
   '/pokedex': 'PokeMMO Pokédex, Pokédex tracker, Generation 1-5 Pokemon, PokeMMO shiny tracker, Pokemon database, PokeMMO Shiny Locations, PokeMMO Where to Shiny Hunt, PokeMMO Catch Calculator',
+  '/dex-helper': 'PokeMMO Dex Helper, shiny dex helper, missing shiny tracker, Team Synergy dex targets, shiny hunting checklist, horde singles eggs, bounty tracker',
   '/roaming-legendaries': 'PokeMMO roaming legendaries, roaming legendary calendar, Zapdos, Articuno, Moltres, Entei, Suicune, Raikou, PokeMMO legendary spawns, roaming Pokémon locations, legendary monthly schedule, PokeMMO shiny hunting legendaries',
   '/random-pokemon-generator': 'Pokemon randomizer, shiny hunt randomizer, random Pokemon generator, shiny bingo cards, encounter picker, hunt challenge',
   '/counter-generator': 'PokeMMO counter theme, counter theme generator, encounter counter, PokeMMO tools, theme customizer, counter maker',
@@ -96,6 +97,13 @@ const PAGE_FAQS = {
     { question: 'Where can I find shiny hunting locations?', answer: 'Each Pokémon entry includes encounter locations, rare spawn rates, and shiny hunting tips for PokeMMO.' },
     { question: 'What are Pokémon tiers?', answer: 'Tiers in PokeMMO classify Pokémon by rarity and difficulty to obtain. Higher tiers are rarer and more valuable.' },
     { question: 'How is the catch calculator used?', answer: 'The catch calculator estimates encounter rates and time to catch based on PokeMMO mechanics.' },
+  ],
+  '/dex-helper': [
+    { question: 'What is Dex Helper?', answer: 'Dex Helper tracks missing base evolution shiny targets for Team Synergy by comparing owned Pokémon against the dex list.' },
+    { question: 'How are Pokémon grouped in Dex Helper?', answer: 'Targets are grouped into Horde, Singles, and Eggs using shiny tier values from the Pokémon database.' },
+    { question: 'Does Dex Helper use evolution lines?', answer: 'Yes. It shows the first evolution form and marks the family complete if any member of that line is owned.' },
+    { question: 'Can I see bounty information in Dex Helper?', answer: 'Yes. Active bounties appear on cards with details for title, description, reward, and host.' },
+    { question: 'Does Dex Helper update automatically?', answer: 'Yes. The page refreshes data so additions or removals in the dex update the missing list.' },
   ],
   '/roaming-legendaries': [
     { question: 'How do you obtain the roaming legends?', answer: 'Roaming legendaries in PokeMMO appear in different locations each month based on a rotating schedule. Once you encounter a roaming legendary in the wild, you can catch it just like any other wild Pokémon.' },
@@ -219,6 +227,7 @@ const STATIC_ROUTES = [
   '/shiny-showcase',
   '/shotm',
   '/pokedex',
+  '/dex-helper',
   '/roaming-legendaries',
   '/streamers',
   '/trophy-board',
@@ -1191,6 +1200,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
       '/shiny-showcase': `<h1 class="seo-semantic-hidden">Shiny Showcase - Team Synergy Collections</h1><section class="seo-semantic-hidden"><p>Browse 140+ Team Synergy member shiny collections ranked by count. Discover top hunters, view statistics, and explore the best Pokemon catches in our comprehensive collection database.</p></section>`,
       '/shotm': `<h1 class="seo-semantic-hidden">Shiny of the Month - Team Synergy</h1><section class="seo-semantic-hidden"><p>SHOTM stands for Shiny of the Month - a monthly feature highlighting exceptional shiny catches by Team Synergy members in PokeMMO. The SHOTM recognition program celebrates outstanding shiny hunting achievements and rare Pokemon catches. Each month, Team Synergy members compete for recognition based on the tier value and rarity of their shiny catches. The SHOTM selection system awards points based on Pokemon rarity, nature quality, and hunting difficulty. Winners receive community recognition, featured showcases, and special team acknowledgment. The Shiny of the Month tradition strengthens community engagement and motivates hunters to pursue rare targets. Team Synergy members view SHOTM as a prestigious award recognizing exceptional dedication to shiny hunting. The monthly recognition encourages sharing of hunt stories, strategies, and achievement updates. SHOTM winners become community role models inspiring other hunters to pursue ambitious shiny targets. The program tracks historical winners and maintains achievement records celebrating past accomplishments. Participate in monthly competitions to earn SHOTM recognition and community prestige within Team Synergy.</p></section>`,
       '/pokedex': `<h1 class="seo-semantic-hidden">PokeMMO Pokédex - Shiny Pokemon Database</h1><section class="seo-semantic-hidden"><p>The Team Synergy Pokédex is a comprehensive PokeMMO database featuring all Generation 1-5 Pokemon with detailed shiny variants and hunting information. Our Pokemon guide includes catch locations, rarity tiers, abilities, base stats, and type matchups for every Pokemon in PokeMMO. Use our advanced Pokédex tracker to filter shiny Pokemon by type, tier, generation, and location. Our shiny hunting guides provide exact spawn rates and encounter locations for each Pokemon. The Pokédex displays both normal and shiny forms of every Pokemon, helping hunters identify their targets. Team Synergy's Pokemon database includes rare find indicators and difficulty ratings for shiny hunting. Our guides explain Pokemon evolution, breeding mechanics, and nature-based advantages in PokeMMO. Discover the best shiny Pokemon to hunt based on difficulty and rarity. Use our Pokédex to plan your shiny hunting strategy and track which rare Pokemon you still need. The database includes expert tips for catching hard-to-find Pokemon and maximizing shiny encounter rates. Filter by tier to find beginner-friendly shiny hunts or challenge yourself with legendary tier Pokemon.</p></section>`,
+      '/dex-helper': `<h1 class="seo-semantic-hidden">Dex Helper - Missing Shiny Targets</h1><section class="seo-semantic-hidden"><p>The Team Synergy Dex Helper tracks missing shiny targets by evolution line and groups hunts into Horde, Singles, and Eggs using shiny tier data. It highlights active bounty targets and displays hunting notes to help members prioritize catches and complete the team dex efficiently.</p></section>`,
       '/LnyCatchCalc': `<h1 class="seo-semantic-hidden">LNY Catch Calculator - PokeMMO Lunar New Year Event</h1><section class="seo-semantic-hidden"><p>The Team Synergy LNY Catch Calculator is a specialized tool for estimating shiny odds and catch rates during the PokeMMO Lunar New Year event. Use this calculator to optimize your hunting strategy, understand event-specific mechanics, and maximize your chances of catching rare shiny Pokemon. The tool provides detailed probability calculations, catch rate breakdowns, and tips for efficient event participation. Whether you are a competitive shiny hunter or a casual player, the LNY Catch Calculator helps you plan your hunts, track your progress, and achieve the best results during the limited-time Lunar New Year festivities. Join Team Synergy to access expert guides, event strategies, and community support for all your PokeMMO shiny hunting goals.</p></section>`,
       '/roaming-legendaries': `<h1 class="seo-semantic-hidden">Roaming Legendaries Calendar - PokeMMO Legendary Pokemon</h1><section class="seo-semantic-hidden"><p>The Team Synergy Roaming Legendaries Calendar tracks monthly spawns of rare legendary Pokemon in PokeMMO including Zapdos, Moltres, Articuno, Entei, Suicune, and Raikou. Our guide provides shiny hunting strategies specifically designed for roaming legendary Pokemon. Learn when and where each legendary spawns to plan your shiny hunting expeditions. The calendar shows availability for all roaming legendaries across monthly rotations, helping you schedule hunts efficiently. Our shiny hunting guides explain the unique challenges of catching roaming legends and advanced strategies for success. Team Synergy tracks legendary Pokemon locations and provides tips for efficient encounters. The roaming legendaries calendar is essential for shiny hunters seeking rare legendary shiny Pokemon. Our guides cover catch rates, recommended Pokemon teams, and optimal battle strategies for each legendary. Discover the best months to hunt specific legendary shiny Pokemon based on spawn schedules. Use our Pokédex data combined with the legendary calendar to plan year-round shiny hunting adventures. The roaming legendaries guide includes detailed location maps and encounter frequency data for all legendary Pokemon.</p></section>`,
       '/random-pokemon-generator': `<h1 class="seo-semantic-hidden">Random Pokemon Generator - Shiny Hunt Challenge</h1><section class="seo-semantic-hidden"><p>The Team Synergy Random Pokemon Generator is a shiny hunting tool that generates random Pokemon targets to break monotony and discover new shiny hunts. Our generator helps shiny hunters find exciting new challenges by randomly selecting Pokemon from specific tiers. Use our tool to create shiny bingo boards in 3x3, 4x4, or 5x5 grids for fun group shiny hunting challenges. The random Pokemon generator supports difficulty filtering to match your shiny hunting skill level. Our guide explains how to use randomization to discover lesser-known shiny Pokemon worth hunting. Team Synergy's generator includes nature randomization and IV weighting options for advanced shiny hunters. Create encounter challenges and compete with friends using our random Pokemon bingo system. The generator helps break the routine of planned hunts by introducing exciting randomness to shiny hunting. Use tier filters to challenge yourself or select beginner-friendly shiny hunts. Our tool includes completion tracking for bingo boards and statistics on your shiny hunting progress. The random Pokemon feature helps hunters expand their shiny collections by encouraging exploration of less popular Pokemon.</p></section>`,
@@ -1522,6 +1532,13 @@ async function prerender() {
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/pikachu.gif',
       crawlerLinks: [...roamingLegendariesLinks, ...pokemonLinks],
     },
+    '/dex-helper': {
+      route: '/dex-helper',
+      ogTitle: 'Dex Helper - Missing Shiny Targets | Team Synergy - PokeMMO',
+      ogDescription: 'Use Team Synergy Dex Helper to track missing base evolution shiny targets grouped by Horde, Singles, and Eggs, with bounty tags and hunt notes.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/beldum.gif',
+      crawlerLinks: pokemonLinks,
+    },
     '/roaming-legendaries': {
       route: '/roaming-legendaries',
       ogTitle: 'Roaming Legendaries Calendar - PokeMMO Zapdos, Articuno, Moltres, Entei, Suicune, Raikou Schedule',
@@ -1690,3 +1707,4 @@ prerender().catch(err => {
   console.error('Prerender failed:', err);
   process.exit(1);
 });
+

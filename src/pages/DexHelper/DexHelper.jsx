@@ -7,6 +7,7 @@ import dexHelperData from '../../data/dex_helper.json';
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json';
 import { getLocalPokemonGif, onGifError, normalizePokemonName } from '../../utils/pokemon';
 import { useDatabase } from '../../hooks/useDatabase';
+import { useDocumentHead } from '../../hooks/useDocumentHead';
 import { API } from '../../api/endpoints';
 
 const FILTERED_POKEMON = [
@@ -91,6 +92,18 @@ function normalizeBounties(rawData, month, year, monthName) {
 }
 
 export default function DexHelper() {
+  useDocumentHead({
+    title: 'Dex Helper - Missing Shiny Dex Tracker',
+    description: 'Track missing base evolution Pokemon for Team Synergy\'s shiny dex. View Horde, Singles, and Egg targets, spot active bounties, and use hunt notes from our Dex Helper database.',
+    canonicalPath: '/dex-helper/',
+    robots: 'index, follow, max-image-preview:large',
+    breadcrumbs: [
+      { name: 'Home', url: '/' },
+      { name: 'Dex Helper', url: '/dex-helper/' },
+    ],
+    keywords: 'PokeMMO Dex Helper, shiny dex tracker, missing Pokemon list, Team Synergy, shiny hunt targets, PokeMMO bounties, evolution line tracker, horde singles egg hunts',
+  });
+
   const { month, year, monthName } = getCurrentMonthYear();
   const {
     data: database,
