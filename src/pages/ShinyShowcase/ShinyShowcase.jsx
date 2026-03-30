@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
-import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
@@ -14,6 +13,27 @@ import styles from './ShinyShowcase.module.css'
 
 const INITIAL_COUNT = 5
 const BATCH_SIZE = 5
+const SHINY_FILTERS = [
+  { label: 'Eggs', key: 'Egg' },
+  { label: 'Alphas', key: 'Alpha' },
+  { label: 'Safari', key: 'Safari' },
+  { label: 'Reaction', key: 'Reaction' },
+  { label: 'Mysterious Ball', key: 'MysteriousBall' },
+  { label: 'Honey Tree', key: 'Honey Tree' },
+  { label: 'Secret Shiny', key: 'Secret Shiny' },
+  { label: 'Event', key: 'Event' },
+]
+
+function isTruthyFlag(value) {
+  if (value == null) return false
+  const normalized = String(value).trim().toLowerCase()
+  return normalized === 'yes' || normalized === 'yws' || normalized === 'y' || normalized === 'true' || normalized === '1'
+}
+
+function hasReaction(shiny) {
+  if (!shiny) return false
+  return isTruthyFlag(shiny.Reaction) && Boolean(String(shiny['Reaction Link'] || '').trim())
+}
 
 export default function ShinyShowcase() {
   useDocumentHead({
@@ -24,6 +44,7 @@ export default function ShinyShowcase() {
   })
   const { data, isLoading, error } = useDatabase()
   const [search, setSearch] = useState('')
+  const [activeShinyFilters, setActiveShinyFilters] = useState([])
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT)
   const sentinelRef = useRef(null)
   const { data: streamers } = useQuery({
@@ -66,10 +87,46 @@ export default function ShinyShowcase() {
     return sortedPlayers.filter(([name]) => name.toLowerCase().includes(lower))
   }, [sortedPlayers, search])
 
+  const playersWithFilteredShinies = useMemo(() => {
+    if (!activeShinyFilters.length) return filteredPlayers
+
+    return filteredPlayers.map(([player, playerData]) => {
+      const shinies = Object.entries(playerData?.shinies || {})
+      const filteredShinies = Object.fromEntries(
+        shinies.filter(([, shiny]) => {
+          return activeShinyFilters.some(filterKey => {
+            if (filterKey === 'Reaction') return hasReaction(shiny)
+            return isTruthyFlag(shiny?.[filterKey])
+          })
+        })
+      )
+      const matchingShinyCount = Object.keys(filteredShinies).length
+
+      if (!matchingShinyCount) return null
+
+      return [
+        player,
+        {
+          ...playerData,
+          shinies: filteredShinies,
+          shiny_count: matchingShinyCount,
+        },
+      ]
+    }).filter(Boolean)
+  }, [filteredPlayers, activeShinyFilters])
+
+  const toggleShinyFilter = useCallback((filterKey) => {
+    setActiveShinyFilters((prev) => (
+      prev.includes(filterKey)
+        ? prev.filter((key) => key !== filterKey)
+        : [...prev, filterKey]
+    ))
+  }, [])
+
   // Reset visible count when search changes
   useEffect(() => {
     setVisibleCount(INITIAL_COUNT)
-  }, [search])
+  }, [search, activeShinyFilters])
 
   // Create rank map for O(1) lookup instead of O(n) findIndex on every render
   const rankMap = useMemo(() => {
@@ -86,8 +143,8 @@ export default function ShinyShowcase() {
   }, [data])
 
   const loadMore = useCallback(() => {
-    setVisibleCount(prev => Math.min(prev + BATCH_SIZE, filteredPlayers.length))
-  }, [filteredPlayers.length])
+    setVisibleCount(prev => Math.min(prev + BATCH_SIZE, playersWithFilteredShinies.length))
+  }, [playersWithFilteredShinies.length])
 
   // IntersectionObserver to load more as user scrolls
   useEffect(() => {
@@ -108,8 +165,8 @@ export default function ShinyShowcase() {
   if (isLoading) return <div className="message">Loading...</div>
   if (error) return <div className="message">Error loading data</div>
 
-  const playersToShow = filteredPlayers.slice(0, visibleCount)
-  const hasMore = visibleCount < filteredPlayers.length
+  const playersToShow = playersWithFilteredShinies.slice(0, visibleCount)
+  const hasMore = visibleCount < playersWithFilteredShinies.length
 
   return (
     <div>
@@ -117,7 +174,7 @@ export default function ShinyShowcase() {
         Shiny Showcase - Team Synergy PokeMMO Collections
       </h1>
       <p className="seo-intro">
-        Browse {filteredPlayers.length} Team Synergy member shiny collections. Track completion with our Pokédex, explore shiny hunting locations, and discover our community's best shinies.
+        Browse {playersWithFilteredShinies.length} Team Synergy member shiny collections. Track completion with our Pokédex, explore shiny hunting locations, and discover our community's best shinies.
       </p>
 
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
@@ -142,6 +199,21 @@ export default function ShinyShowcase() {
       </div>
 
       <SearchBar value={search} onChange={setSearch} />
+      <div className={styles.shinyFilters}>
+        {SHINY_FILTERS.map((filter) => {
+          const isActive = activeShinyFilters.includes(filter.key)
+          return (
+            <button
+              key={filter.key}
+              type="button"
+              onClick={() => toggleShinyFilter(filter.key)}
+              className={`${styles.filterChip} ${isActive ? styles.filterChipActive : ''}`}
+            >
+              {filter.label}
+            </button>
+          )
+        })}
+      </div>
 
       <PlayerStatsDropdown winners={winners} data={data} />
 
