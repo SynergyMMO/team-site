@@ -25,7 +25,7 @@ const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
 const TimeDisplay = lazy(() => import('./pages/Home/TimeDisplay'))
-
+const DexHelper = lazy(() => import('./pages/DexHelper/DexHelper'))
 const ThemesPage = lazy(() => import('./pages/Themes/ThemesPage'))
 const ThemeDetail = lazy(() => import('./pages/Themes/ThemeDetail'))
 const ShinyOdds = lazy(() => import('./pages/ShinyOdds/ShinyOdds'))
@@ -110,6 +110,7 @@ export default function App() {
             <Route path="/shiny-odds" element={<ShinyOdds />} />
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />
             <Route path="/safari-zones" element={<SafariZones />} />
+            <Route path="/dex-helper" element={<DexHelper />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/resources/:category" element={<Resources />} />
             <Route path="/resources/:category/:subcategory" element={<Resources />} />
