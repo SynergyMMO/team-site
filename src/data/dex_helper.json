@@ -1,38 +1,32 @@
 {
-  "Horde": {
-    "Tauros": {
-      "description": "Horde at Route 48"
-    },
-    "Nosepass": {
-      "description": "Horde at top of Mt Coronet"
-    },
-    "Illumise": {
-      "description": "Horde at Route 117, night only"
-    },
-    "Volbeat": {
-      "description": "Horde at Route 117, night only"
-    },
-    "Spoink": {
-      "description": "Horde at Jagged Pass"
-    },
-    "Hippopotas": {
-      "description": "Horde at Maniac Tunnel (requires Unown)"
-    },
-    "Sawk": {
-      "description": "Horde at Route 18 (Free Hunt)"
-    }
+  "Tauros": {
+    "description": "Horde at Route 48, split with Gloom at night"
   },
-  "Singles": {
-    "Aipom": {
-      "description": "Hoenn Safari (sleep at night, repel trick 37), Honey Trees"
-    },
-    "Shedinja": {
-      "description": "Repel trick Nincada Route 116 Level 8, Net Ball, level up at Mt. Silver"
-    }
+  "Nosepass": {
+    "description": "Horde at top of Mt Coronet"
   },
-  "Egg": {
-    "Totodile": {
-      "description": "Lure at Route 32 or Egg"
-    }
+  "Illumise": {
+    "description": "Horde at Route 117, night only"
+  },
+  "Volbeat": {
+    "description": "Horde at Route 117, night only"
+  },
+  "Spoink": {
+    "description": "Horde at Jagged Pass"
+  },
+  "Hippopotas": {
+    "description": "Horde at Maniac Tunnel (requires Unown)"
+  },
+  "Sawk": {
+    "description": "Horde at Route 18 (Free Hunt)"
+  },
+  "Aipom": {
+    "description": "Hoenn Safari (sleep at night, repel trick 37), Honey Trees"
+  },
+  "Shedinja": {
+    "description": "Repel trick Nincada Route 116 Level 8, Net Ball, level up at Mt. Silver"
+  },
+  "Totodile": {
+    "description": "Lure at Route 32 or Egg"
   }
 }
