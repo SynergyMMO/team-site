@@ -396,7 +396,7 @@ function RegionContent({ region, initialArea }) {
       </div>
 
       <div className={styles.infoBox}>
-        <p><strong>Encounters:</strong> <span className={styles.encounterDay} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Day</span> = 4:00–21:00, <span className={styles.encounterNight} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Night</span> = 21:00–4:00, <span className={styles.encounterRotation} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Rotation</span> = changes every in-game day (~6 hrs, rotates at 21:59), <span className={styles.encounterWater} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Water</span> = surfing/fishing.</p>
+        <p><strong>Encounters:</strong> <span className={styles.encounterDay} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Day</span> = 4:00–21:00, <span className={styles.encounterNight} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Night</span> = 21:00–4:00, <span className={styles.encounterRotation} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Rotation</span> = changes every in-game day (~6 hrs, rotates at 0:00), <span className={styles.encounterWater} style={{fontSize:'0.8rem',padding:'1px 5px',borderRadius:'4px'}}>Water</span> = surfing/fishing.</p>
         <p><strong>Shiny Hunting:</strong> Lure boosts encounter rate by 10→15%. Abilities like Illuminate, Swarm, and Arena Trap also increase encounters.</p>
         <p><strong>Tips:</strong> Pokemon sometimes sleep at night, such as Riolu, sleeping Pokemon have their catch rates doubled.</p>
       </div>
