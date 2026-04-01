@@ -1,114 +1,57 @@
+/* ===== Page Layout ===== */
 .page {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 28px 16px 40px;
+  padding: 2rem 1rem 3rem;
 }
 
+/* ===== Header ===== */
 .title {
-  margin: 0 0 6px;
+  margin: 0 0 0.5rem;
   text-align: center;
+  font-size: 2.5rem;
+  color: #fff;
+  text-shadow:
+    0 0 5px rgba(255, 255, 255, 0.4),
+    0 0 10px rgba(74, 144, 226, 0.3),
+    0 0 15px rgba(74, 144, 226, 0.2);
 }
 
 .subtitle {
-  margin: 0 0 22px;
+  margin: 0 0 0.4rem;
   text-align: center;
-  color: #c1c8de;
-  font-size: 0.95rem;
+  color: #aaa;
+  font-size: 0.9rem;
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  background: rgba(10, 13, 26, 0.8);
-  border: 1px solid rgba(120, 146, 214, 0.35);
-  border-radius: 12px;
-  overflow: hidden;
-  table-layout: fixed;
-}
-.staffList {
-  margin-top: 8px;
-  font-size: 0.88rem;
-  color: #c7d5f5;
+/* ===== Shiny Filter Toggle ===== */
+.toggleContainer {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;   /* align label and list */
-  justify-content: flex-start; /* force left alignment */
-  text-align: left;      /* ensure text inside stays left */
-}
-
-/* Label spacing */
-.staffList strong {
-  margin-right: 6px;
-  flex-shrink: 0;
-}
-
-/* Staff names container */
-.staffList ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: flex-start; /* left align inside ul */
-}
-
-/* Each staff name as a pill */
-.staffList li {
-  background: rgba(41, 67, 128, 0.5);
-  padding: 2px 8px;
-  border-radius: 8px;
-  font-weight: 600;
-  color: #e9eeff;
-  white-space: nowrap;
-  transition: background 0.2s;
-}
-
-.staffList li:hover {
-  background: rgba(120, 146, 214, 0.7);
-}
-
-.rewardsSection {
-  margin-top: 8px;
-  font-size: 0.88rem;
-  color: #c7d5f5;
-  text-align: left;
-}
-
-.rewardsSection strong {
-  margin-right: 4px;
-}
-
-.rewardsSection ul {
-  margin: 4px 0 0;
-  padding-left: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.rewardsSection li {
-  background: rgba(41, 67, 128, 0.3);
-  padding: 4px 8px;
-  border-radius: 8px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  display: block;          /* ensures each line behaves like a block */
-  white-space: pre-line;   /* preserves line breaks and wraps text */
-}
-/* Container for spacing */
-.checkboxContainer {
-  margin-bottom: 1rem;
-  font-size: 1rem;
   justify-content: center;
-  text-align: center;
+  margin: 1.25rem 0 1.5rem;
 }
 
-/* Hide default checkbox */
+.customCheckboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 0.95rem;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid rgba(155, 89, 182, 0.4);
+  border-radius: 20px;
+  background: rgba(20, 10, 35, 0.75);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.customCheckboxLabel:hover {
+  border-color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+  color: #fff;
+}
+
 .customCheckboxInput {
   position: absolute;
   opacity: 0;
@@ -120,58 +63,124 @@
 .customCheckbox {
   position: relative;
   display: inline-block;
-  width: 20px;
-  height: 20px;
-  background-color: #f0f0f0;
-  border: 2px solid #ccc;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  background: rgba(20, 10, 35, 0.9);
+  border: 2px solid rgba(155, 89, 182, 0.5);
   border-radius: 4px;
-  vertical-align: middle;
-  margin-right: 0.5rem;
   transition: all 0.2s ease;
 }
 
-/* Checkmark */
+.customCheckboxInput:checked + .customCheckbox {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: #9b59b6;
+}
+
 .customCheckbox::after {
   content: "";
   position: absolute;
   display: none;
-  left: 5px;
-  top: 1px;
+  left: 4px;
+  top: 0px;
   width: 5px;
   height: 10px;
-  border: solid #4caf50;
+  border: solid #fff;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
 
-/* Show checkmark when checked */
 .customCheckboxInput:checked + .customCheckbox::after {
   display: block;
 }
 
-/* Hover effect */
 .customCheckboxLabel:hover .customCheckbox {
-  border-color: #999;
-  background-color: #e8e8e8;
+  border-color: #4a90e2;
 }
 
-.shinyLabel {
-  margin-left: 6px;
-  color: #f7df5f;
+/* ===== Table ===== */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(20, 10, 35, 0.75);
+  border: 1px solid rgba(155, 89, 182, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  table-layout: fixed;
+}
+
+.table th,
+.table td {
+  border: 1px solid rgba(155, 89, 182, 0.2);
+  vertical-align: top;
+}
+
+.table th {
+  text-align: center;
+  padding: 14px 12px;
+  color: #fff;
+  background: rgba(155, 89, 182, 0.15);
+  font-size: 0.9rem;
   font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(155, 89, 182, 0.5);
 }
 
+.eventCell {
+  padding: 14px;
+}
+
+.emptyCell {
+  height: 62px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ===== Event Cell Content ===== */
+.eventLink {
+  color: #4a90e2;
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.35;
+  display: inline;
+  transition: color 0.2s ease;
+}
+
+.eventLink:hover {
+  color: #79b8ff;
+  text-decoration: underline;
+}
+
+.tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: #111;
+  background: #ffd700;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+.timeLabel {
+  margin-top: 6px;
+  color: #aaa;
+  font-size: 0.83rem;
+}
+
+/* ===== Details Section ===== */
 .detailsSection {
-  margin-top: 8px;
-  font-size: 0.88rem;
-  color: #c7d5f5;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
+  margin-top: 10px;
+  font-size: 0.86rem;
+  color: #ccc;
 }
 
 .detailsSection strong {
-  margin-bottom: 4px;
+  color: #d2b4de;
+  display: block;
+  margin-bottom: 5px;
 }
 
 .detailsSection ul {
@@ -184,78 +193,148 @@
 }
 
 .detailsSection li {
-  background: rgba(41, 67, 128, 0.3);
-  padding: 2px 8px;
+  background: rgba(155, 89, 182, 0.12);
+  border: 1px solid rgba(155, 89, 182, 0.25);
+  padding: 3px 10px;
   border-radius: 8px;
-  font-weight: 500;
-  color: #e9eeff;
+  color: #e0e0e0;
 }
 
-.table th,
-.table td {
-  border: 1px solid rgba(120, 146, 214, 0.25);
-  vertical-align: top;
-}
-
-.table th {
+/* ===== Staff List ===== */
+.staffList {
+  margin-top: 10px;
+  font-size: 0.86rem;
+  color: #ccc;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
   text-align: left;
-  padding: 12px;
+}
+
+.staffList strong {
+  color: #d2b4de;
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+
+.staffList ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.staffList li {
+  background: rgba(155, 89, 182, 0.18);
+  border: 1px solid rgba(155, 89, 182, 0.35);
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 600;
   color: #e9eeff;
-  background: rgba(41, 67, 128, 0.3);
+  white-space: nowrap;
+  transition: background 0.2s ease;
 }
 
-.eventCell {
-  padding: 12px;
+.staffList li:hover {
+  background: rgba(155, 89, 182, 0.4);
 }
 
-.eventLink {
-  color: #8cc8ff;
-  text-decoration: none;
-  font-weight: 600;
-  line-height: 1.25;
-  display: inline-block;
+/* ===== 1st Place Reward ===== */
+.firstPlaceReward {
+  margin-top: 10px;
+  font-size: 0.86rem;
+  color: #ccc;
+  text-align: left;
 }
 
-.eventLink:hover {
-  text-decoration: underline;
+.firstPlaceReward strong {
+  color: #ffd700;
+  display: block;
+  margin-bottom: 4px;
 }
 
-.tag {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #12151f;
-  background: #f7df5f;
+.firstPlaceReward span {
+  font-size: 0.8rem;
+  color: #d2b4de;
 }
 
-.timeLabel {
-  margin-top: 8px;
-  color: #c7d5f5;
-  font-size: 0.88rem;
+.pokemonGif {
+  display: block;
+  margin-top: 4px;
+  image-rendering: pixelated;
 }
 
-.emptyCell {
-  height: 62px;
-  background: rgba(255, 255, 255, 0.02);
-}
-
+/* ===== Past Events ===== */
 .pastEvents {
-  margin-top: 18px;
+  margin-top: 2rem;
 }
 
-.pastEvents summary {
+.pastEvents > summary {
   cursor: pointer;
-  color: #dbe7ff;
+  color: #d2b4de;
   font-weight: 600;
-  margin-bottom: 12px;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  margin-bottom: 1rem;
+  background: rgba(20, 10, 35, 0.75);
+  border: 1px solid rgba(155, 89, 182, 0.3);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  user-select: none;
 }
 
+.pastEvents > summary::-webkit-details-marker {
+  display: none;
+}
+
+.pastEvents > summary::before {
+  content: "▶";
+  font-size: 0.75rem;
+  color: #9b59b6;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.pastEvents[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.pastEvents > summary:hover {
+  border-color: #4a90e2;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
+}
+
+/* ===== Responsive ===== */
 @media (max-width: 760px) {
+  .title {
+    font-size: 1.9rem;
+  }
+
   .table th,
   .table td {
-    font-size: 0.92rem;
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 1.25rem 0.75rem 2rem;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .eventCell {
+    padding: 10px;
   }
 }
