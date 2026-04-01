@@ -1,0 +1,261 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 16px 40px;
+}
+
+.title {
+  margin: 0 0 6px;
+  text-align: center;
+}
+
+.subtitle {
+  margin: 0 0 22px;
+  text-align: center;
+  color: #c1c8de;
+  font-size: 0.95rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(10, 13, 26, 0.8);
+  border: 1px solid rgba(120, 146, 214, 0.35);
+  border-radius: 12px;
+  overflow: hidden;
+  table-layout: fixed;
+}
+.staffList {
+  margin-top: 8px;
+  font-size: 0.88rem;
+  color: #c7d5f5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;   /* align label and list */
+  justify-content: flex-start; /* force left alignment */
+  text-align: left;      /* ensure text inside stays left */
+}
+
+/* Label spacing */
+.staffList strong {
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+/* Staff names container */
+.staffList ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start; /* left align inside ul */
+}
+
+/* Each staff name as a pill */
+.staffList li {
+  background: rgba(41, 67, 128, 0.5);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #e9eeff;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.staffList li:hover {
+  background: rgba(120, 146, 214, 0.7);
+}
+
+.rewardsSection {
+  margin-top: 8px;
+  font-size: 0.88rem;
+  color: #c7d5f5;
+  text-align: left;
+}
+
+.rewardsSection strong {
+  margin-right: 4px;
+}
+
+.rewardsSection ul {
+  margin: 4px 0 0;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rewardsSection li {
+  background: rgba(41, 67, 128, 0.3);
+  padding: 4px 8px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  display: block;          /* ensures each line behaves like a block */
+  white-space: pre-line;   /* preserves line breaks and wraps text */
+}
+/* Container for spacing */
+.checkboxContainer {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Hide default checkbox */
+.customCheckboxInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.customCheckbox {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+/* Checkmark */
+.customCheckbox::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #4caf50;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Show checkmark when checked */
+.customCheckboxInput:checked + .customCheckbox::after {
+  display: block;
+}
+
+/* Hover effect */
+.customCheckboxLabel:hover .customCheckbox {
+  border-color: #999;
+  background-color: #e8e8e8;
+}
+
+.shinyLabel {
+  margin-left: 6px;
+  color: #f7df5f;
+  font-weight: 700;
+}
+
+.detailsSection {
+  margin-top: 8px;
+  font-size: 0.88rem;
+  color: #c7d5f5;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.detailsSection strong {
+  margin-bottom: 4px;
+}
+
+.detailsSection ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.detailsSection li {
+  background: rgba(41, 67, 128, 0.3);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #e9eeff;
+}
+
+.table th,
+.table td {
+  border: 1px solid rgba(120, 146, 214, 0.25);
+  vertical-align: top;
+}
+
+.table th {
+  text-align: left;
+  padding: 12px;
+  color: #e9eeff;
+  background: rgba(41, 67, 128, 0.3);
+}
+
+.eventCell {
+  padding: 12px;
+}
+
+.eventLink {
+  color: #8cc8ff;
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.25;
+  display: inline-block;
+}
+
+.eventLink:hover {
+  text-decoration: underline;
+}
+
+.tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #12151f;
+  background: #f7df5f;
+}
+
+.timeLabel {
+  margin-top: 8px;
+  color: #c7d5f5;
+  font-size: 0.88rem;
+}
+
+.emptyCell {
+  height: 62px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.pastEvents {
+  margin-top: 18px;
+}
+
+.pastEvents summary {
+  cursor: pointer;
+  color: #dbe7ff;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 760px) {
+  .table th,
+  .table td {
+    font-size: 0.92rem;
+  }
+}

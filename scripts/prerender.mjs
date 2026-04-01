@@ -232,6 +232,7 @@ const STATIC_ROUTES = [
   '/streamers',
   '/trophy-board',
   '/events',
+  '/official-event-calendar',
   '/counter-generator',
   '/sprite-recolour',
   '/random-pokemon-generator',
@@ -1558,6 +1559,12 @@ async function prerender() {
       ogDescription: 'Create custom encounter counter themes for PokeMMO. Upload Pokémon GIFs, resize and customize them, then download ready-to-use counter theme packages to track your shiny hunts in-game.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/charmander.gif',
     },
+    '/official-event-calendar': {
+      route: '/official-event-calendar',
+      ogTitle: 'Official Event Calendar | Team Synergy - PokeMMO',
+      ogDescription: 'View upcoming official PokeMMO PvP and Catch events from the official RSS feed, sorted by date and shown in your local timezone.',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+    },
     '/events': {
       route: '/events',
       ogTitle: 'Team Synergy Events | Team Synergy - PokeMMO',
@@ -1707,4 +1714,5 @@ prerender().catch(err => {
   console.error('Prerender failed:', err);
   process.exit(1);
 });
+
 
