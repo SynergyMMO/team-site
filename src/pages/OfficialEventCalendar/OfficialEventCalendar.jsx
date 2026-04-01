@@ -197,8 +197,6 @@ const allPokemonNames = Object.values(generationData) // get arrays for each gen
   .flat() // flatten the Pokémon arrays into a single list
   .map(name => name.toLowerCase()); // normalize for case-insensitive matching
 
-console.log(allPokemonNames);
-
 function extractFirstPlacePokemon(description) {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = description;
