@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import styles from './OfficialEventCalendar.module.css'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useOfficialEvents } from '../../hooks/useOfficialEvents'
@@ -60,6 +60,56 @@ function extractUtcTime(description) {
 
   return null
 }
+function isEventPast(event, nowMs) {
+  if (!event.utcTime) return false;
+
+  const eventDateTime = new Date(Date.UTC(
+    event.eventDate.getFullYear(),
+    event.eventDate.getMonth(),
+    event.eventDate.getDate(),
+    event.utcTime.hours,
+    event.utcTime.minutes
+  ));
+
+  const elapsedMs = nowMs - eventDateTime;
+
+  return elapsedMs >= 60 * 60 * 1000; // 1 hour
+}
+
+function getCountdownLabel(eventDate, utcTime) {
+  if (!utcTime) return null;
+
+  const eventDateTime = new Date(Date.UTC(
+    eventDate.getFullYear(),
+    eventDate.getMonth(),
+    eventDate.getDate(),
+    utcTime.hours,
+    utcTime.minutes
+  ));
+
+  const now = new Date();
+  const diffMs = eventDateTime - now;
+
+  // Event has started
+  if (diffMs <= 0) {
+    const elapsedMs = now - eventDateTime;
+
+    if (elapsedMs < 60 * 60 * 1000) {
+      return "Ongoing";
+    } else {
+      return "Ended";
+    }
+  }
+
+  // Event not started yet
+  const totalMinutes = Math.floor(diffMs / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  return `${hours}h ${minutes}m`;
+}
+
+
 
 function extractParticipatingStaff(description) {
   const tempDiv = document.createElement('div');
@@ -242,8 +292,11 @@ function buildRows(events) {
   }))
 }
 
-function EventCell({ event }) {
+function EventCell({ event, now }) {
   if (!event) return <td className={styles.emptyCell}></td>;
+  const countdown = (event?.tag === 'Today' || event?.tag === 'Tomorrow')
+  ? getCountdownLabel(event.eventDate, event.utcTime)
+  : null;
 
   return (
     <td className={styles.eventCell}>
@@ -260,6 +313,14 @@ function EventCell({ event }) {
       {event.tag && <span className={styles.tag}>{event.tag}</span>}
 
       <div className={styles.timeLabel}>{event.localStartLabel}</div>
+      {countdown && (
+        <div className={styles.countdown}>
+          {countdown === "Ongoing" || countdown === "Ended"
+            ? countdown
+            : `Starts in: ${countdown}`}
+        </div>
+      )}
+
 
       {/* Details section */}
       {event.details?.length > 0 && (
@@ -311,7 +372,7 @@ function EventCell({ event }) {
 
 
 
-function EventTable({ rows }) {
+function EventTable({ rows, now }) {
   return (
     <table className={styles.table}>
       <thead>
@@ -323,8 +384,8 @@ function EventTable({ rows }) {
       <tbody>
         {rows.length ? rows.map((row, idx) => (
           <tr key={`${row.pvp?.link || 'pvp-empty'}-${row.catch?.link || 'catch-empty'}-${idx}`}>
-            <EventCell event={row.pvp} />
-            <EventCell event={row.catch} />
+            <EventCell event={row.pvp} now={now}/>
+            <EventCell event={row.catch} now={now} />
           </tr>
         )) : (
           <tr>
@@ -341,7 +402,7 @@ export default function OfficialEventCalendar() {
   const todayStart = new Date(); todayStart.setHours(0,0,0,0)
   const tomorrowStart = new Date(todayStart); tomorrowStart.setDate(todayStart.getDate()+1)
   const [showShinyOnly, setShowShinyOnly] = useState(false);
-
+  const [now, setNow] = useState(Date.now());
   const events = useMemo(() => {
     if (!fetchedEvents) return []
 
@@ -371,6 +432,7 @@ export default function OfficialEventCalendar() {
         sortStamp: utcTime ? utcTime.hours*60 + utcTime.minutes : Number.MAX_SAFE_INTEGER,
         participatingStaff, 
         details,
+        utcTime,
         rewards: rewards ? [rewards] : [],
         hasShinyReward,
       }
@@ -380,15 +442,27 @@ export default function OfficialEventCalendar() {
         return delta !== 0 ? delta : a.sortStamp - b.sortStamp
       })
   }, [fetchedEvents, todayStart, tomorrowStart])
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setNow(Date.now());
+  }, 60000); 
 
+  return () => clearInterval(interval);
+}, []);
   // Apply shiny filter
   const filteredEvents = useMemo(() => {
     if (!showShinyOnly) return events
     return events.filter(e => e.hasShinyReward)
   }, [events, showShinyOnly])
 
-  const upcomingRows = useMemo(() => buildRows(filteredEvents.filter(e => e.eventDate >= todayStart)), [filteredEvents, todayStart])
-  const pastRows = useMemo(() => buildRows(filteredEvents.filter(e => e.eventDate < todayStart)), [filteredEvents, todayStart])
+  const upcomingRows = useMemo(() =>
+    buildRows(filteredEvents.filter(e => !isEventPast(e, now))),
+  [filteredEvents, now]);
+
+  const pastRows = useMemo(() =>
+    buildRows(filteredEvents.filter(e => isEventPast(e, now))),
+  [filteredEvents, now]);
+
 
   useDocumentHead({
     title: 'Official Event Calendar - Team Synergy',

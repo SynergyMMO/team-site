@@ -107,6 +107,15 @@
   justify-content: center;
   text-align: center;
 }
+.countdown {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.05);
+}
 
 /* Hide default checkbox */
 .customCheckboxInput {
