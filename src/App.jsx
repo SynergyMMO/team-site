@@ -29,6 +29,7 @@ const DexHelper = lazy(() => import('./pages/DexHelper/DexHelper'))
 const ThemesPage = lazy(() => import('./pages/Themes/ThemesPage'))
 const ThemeDetail = lazy(() => import('./pages/Themes/ThemeDetail'))
 const ShinyOdds = lazy(() => import('./pages/ShinyOdds/ShinyOdds'))
+const OfficialEventCalendar = lazy(() => import('./pages/OfficialEventCalendar/OfficialEventCalendar'))
 
 const BountiesPage = lazy(() => import('./pages/Bounties/BountiesPage'));
 const SpriteRecolour = lazy(() => import('./pages/SpriteRecolour/SpriteRecolour'));
@@ -102,6 +103,7 @@ export default function App() {
             <Route path="/streamers" element={<Streamers />} />
             <Route path="/trophy-board" element={<TrophyBoard />} />
             <Route path="/events" element={<EventsPage />} />
+            <Route path="/official-event-calendar" element={<OfficialEventCalendar />} />
             <Route path="/event/:slug" element={<EventsDetail />} />
             <Route path="/trophy/:trophySlug" element={<TrophyPage />} />
             <Route path="/LnyCatchCalc" element={<LnyCatchCalc />} />
@@ -130,3 +132,4 @@ export default function App() {
     </>
   )
 }
+
