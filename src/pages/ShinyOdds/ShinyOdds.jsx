@@ -42,7 +42,7 @@ export default function ShinyOdds() {
 
 function ShinyProbabilityCalculator() {
   const BASE_DENOMINATOR = 30000;
-  const POPULATION = 100000;
+  const POPULATION = 1000000;
 
   const [donator, setDonator] = useState(false);
   const [charm, setCharm] = useState(false);
@@ -132,7 +132,7 @@ function ShinyProbabilityCalculator() {
 
       <h2>Results</h2>
       <p><strong>Effective shiny rate:</strong> 1 / {Math.round(effectiveDenominator).toLocaleString()}</p>
-      <p><strong>Out of 100,000 players:</strong> {Math.round(percentile).toLocaleString()} people have hit</p>
+      <p><strong>Out of 1.000.000 players:</strong> {Math.round(percentile).toLocaleString()} people have hit</p>
       <p><strong>50% odds:</strong> {Math.round(expected50).toLocaleString()} encounters</p>
       <p><strong>90% odds:</strong> {Math.round(expected90).toLocaleString()} encounters</p>
       <p><strong>99% odds:</strong> {Math.round(expected99).toLocaleString()} encounters</p>
@@ -140,7 +140,7 @@ function ShinyProbabilityCalculator() {
       <hr />
 
       {/* Chart */}
-      <h2>Shiny Distribution (Out of 100,000 People)</h2>
+      <h2>Shiny Distribution (Out of 1.000,000 People)</h2>
       <div style={{ width: "100%", maxWidth: 900, height: 400, margin: "0 auto" }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
