@@ -14,7 +14,6 @@ const NAV_ITEMS = [
       { to: '/trophy-board/', label: 'Trophy Board' },
       { to: '/bounties/', label: 'Bounties' },
       { to: '/events/', label: 'Events' },
-      { to: '/official-event-calendar/', label: 'Official Event Calendar' },
       { to: '/dex-helper/', label: 'Dex Helper' },
       { to: '/shiny-war-2025/', label: 'Shiny Wars 2025' },
     ]
