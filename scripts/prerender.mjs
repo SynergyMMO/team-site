@@ -1537,7 +1537,7 @@ async function prerender() {
       route: '/dex-helper',
       ogTitle: 'Dex Helper - Missing Shiny Targets | Team Synergy - PokeMMO',
       ogDescription: 'Use Team Synergy Dex Helper to track missing base evolution shiny targets grouped by Horde, Singles, and Eggs, with bounty tags and hunt notes.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/beldum.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/ducklett.gif',
       crawlerLinks: pokemonLinks,
     },
     '/roaming-legendaries': {
