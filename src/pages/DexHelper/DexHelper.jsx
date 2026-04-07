@@ -26,7 +26,7 @@ const CATEGORY_ORDER = ['Horde', 'Singles', 'Eggs'];
 
 const CATEGORY_OVERRIDE_FILTERS = {
   Horde: [`Hippopotas`, `Spoink`,`Miltank`, `Tauros`, `Illumise`],
-  Singles: ["carnivine", "kecleon", "lileep", "castform", "burmy", "skorupi"],
+  Singles: ["carnivine", "kecleon", "lileep", "castform", "burmy", "skorupi", "shedinja"],
   Eggs: ["kangaskhan"],
 };
 const CATEGORY_OVERRIDE_SETS = {
