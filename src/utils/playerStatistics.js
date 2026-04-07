@@ -4,7 +4,7 @@ const BLACKLISTED_PLAYERS = new Set([
 ])
 
 export const MINIMUM_STATS_REQUIREMENTS = {
-  totalEncounters: 100000,
+  totalEncounters: 60000,
   dataCompleteness: 40,
   shinyCount: 5,
 }
