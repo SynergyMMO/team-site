@@ -14,6 +14,7 @@ const staticRoutes = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
   { path: '/shiny-showcase/', changefreq: 'daily', priority: '0.95' },
   { path: '/shotm/', changefreq: 'daily', priority: '0.9' },
+  { path: '/team-statistics/', changefreq: 'daily', priority: '0.85' },
   { path: '/pokedex/', changefreq: 'weekly', priority: '0.8' },
   { path: '/dex-helper/', changefreq: 'weekly', priority: '0.7' },
   { path: '/roaming-legendaries/', changefreq: 'weekly', priority: '0.8' },

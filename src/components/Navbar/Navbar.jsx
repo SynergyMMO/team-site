@@ -10,6 +10,7 @@ const NAV_ITEMS = [
     submenu: [
       { to: '/shiny-showcase/', label: 'Shiny Showcase' },
       { to: '/shotm/', label: 'SHOTM' },
+      { to: '/team-statistics/', label: 'Team Statistics' },
       { to: '/streamers/', label: 'Streamers' },
       { to: '/trophy-board/', label: 'Trophy Board' },
       { to: '/bounties/', label: 'Bounties' },

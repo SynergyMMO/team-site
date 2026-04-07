@@ -5,9 +5,7 @@ import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useStreamers } from '../../hooks/useStreamers'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
 import SearchBar from '../../components/SearchBar/SearchBar'
-import PlayerStatsDropdown from '../../components/PlayerStatsDropdown/PlayerStatsDropdown'
 import { getAssetUrl } from '../../utils/assets'
-import { getStatisticsWinners } from '../../utils/playerStatistics'
 import { API } from '../../api/endpoints'
 import styles from './ShinyShowcase.module.css'
 
@@ -137,11 +135,6 @@ export default function ShinyShowcase() {
     return map
   }, [sortedPlayers])
 
-  // Calculate statistics winners
-  const winners = useMemo(() => {
-    return getStatisticsWinners(data)
-  }, [data])
-
   const loadMore = useCallback(() => {
     setVisibleCount(prev => Math.min(prev + BATCH_SIZE, playersWithFilteredShinies.length))
   }, [playersWithFilteredShinies.length])
@@ -214,8 +207,6 @@ export default function ShinyShowcase() {
           )
         })}
       </div>
-
-      <PlayerStatsDropdown winners={winners} data={data} />
 
       <div className={styles.showcase}>
         {playersToShow.map(([player, playerData]) => (

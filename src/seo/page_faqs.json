@@ -33,6 +33,12 @@
       { "question": "How is SHOTM chosen?", "answer": "The SHOTM is based on the amount of points each players get, based on the tiers of their shinies, the better the shiny, the more points!" },
       { "question": "What are the benefits of winning SHOTM?", "answer": "SHOTM winners receive a free art commission, community appreciation, and bragging rights within Team Synergy." }
     ],
+    "/team-statistics": [
+      { "question": "What is Team Statistics?", "answer": "Team Statistics is a Team Synergy page that combines player leaderboard categories, all-time SHOTM points standings, and common shiny Pokemon trends." },
+      { "question": "How are player leaderboard categories ranked?", "answer": "Each category is ranked using Team Synergy shiny data, and the page shows the top 3 players for each category." },
+      { "question": "What does the all-time leaderboard show?", "answer": "The all-time leaderboard shows total SHOTM points per player using tier-based shiny scoring across all recorded catches." },
+      { "question": "What does most common Pokemon mean?", "answer": "Most common Pokemon lists the top 5 shiny species with the highest total catch count across the full Team Synergy dataset." }
+    ],
     "/pokedex": [
       { "question": "What is the Team Synergy Pokédex?", "answer": "An interactive database tracking Gen 1-5 Pokémon with detailed stats, shiny forms, catch locations, and PokeMMO-specific information." },
       { "question": "Can I filter by Pokémon type?", "answer": "Yes, the Pokédex supports filtering by type, tier, generation, and location for easy searching." },

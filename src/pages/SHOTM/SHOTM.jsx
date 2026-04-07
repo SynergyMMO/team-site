@@ -45,10 +45,8 @@ export default function SHOTM() {
     now.toLocaleString('default', { month: 'long' }).toLowerCase()
   )
   const [currentYear, setCurrentYear] = useState(now.getFullYear())
-  const [showAllTime, setShowAllTime] = useState(false)
   const [showPoints, setShowPoints] = useState(false)
   const [showTiers, setShowTiers] = useState(false)
-  const [closingAllTime, setClosingAllTime] = useState(false)
   const [closingPoints, setClosingPoints] = useState(false)
   const [closingTiers, setClosingTiers] = useState(false)
 
@@ -81,21 +79,6 @@ export default function SHOTM() {
     () => Object.entries(shotmData).sort((a, b) => b[1].points - a[1].points),
     [shotmData]
   )
-
-  const allTimeLeaderboard = useMemo(() => {
-    if (!data) return []
-    const allTime = {}
-    Object.entries(data).forEach(([player, playerData]) => {
-      allTime[player] = Object.values(playerData.shinies).reduce(
-        (acc, s) => acc + calculateShinyPoints(s, tierPoints, tierLookup),
-        0
-      )
-    })
-    return Object.entries(allTime)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 20)
-      .map(([player, points], i) => ({ rank: i + 1, player, points }))
-  }, [data, tierPoints, tierLookup])
 
   const tieredHighlights = useTieredShinies(shotmData, tierLookup, {
   onlyCurrentMonth: true, 
@@ -154,31 +137,6 @@ export default function SHOTM() {
 
       {/* Collapsible sections */}
       <div className={styles.alltimeContainer}>
-        {/* All-Time Leaderboard */}
-        <button className={styles.toggleBtn} onClick={() => {
-          if (showAllTime) { setClosingAllTime(true); setTimeout(() => { setShowAllTime(false); setClosingAllTime(false) }, 300) }
-          else { setShowAllTime(true) }
-        }}>
-          All-Time Leaderboard {showAllTime ? '\u25B2' : '\u25BC'}
-        </button>
-        {(showAllTime || closingAllTime) && (
-          <div className={`${styles.alltimeList} ${closingAllTime ? styles.slideUp : ''}`}>
-            {allTimeLeaderboard.map(e => {
-              const medal = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][e.rank - 1] || '';
-              // Find the canonical casing from the data
-              const canonical = Object.keys(data || {}).find(k => k.toLowerCase() === e.player.toLowerCase()) || e.player;
-              return (
-                <Link key={canonical} to={`/player/${canonical}/`} className={styles.allTimeItem} data-player={canonical}>
-                  {medal && <span className={styles.medal}>{medal}</span>}
-                  <span>#{e.rank}</span>
-                  <span>{canonical}</span>
-                  <span>({e.points} pts)</span>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-
         {/* Points Info */}
         <button className={styles.toggleBtn} onClick={() => {
           if (showPoints) { setClosingPoints(true); setTimeout(() => { setShowPoints(false); setClosingPoints(false) }, 300) }
