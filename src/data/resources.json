@@ -268,5 +268,19 @@
         }
       ]
     }
+  },
+  "General": {
+    "_meta": {
+      "title": "General PokeMMO Resources | Team Synergy",
+      "description": "A collection of general resources for PokeMMO players, including tools, databases, and community links."
+    },
+    "_items": [
+      {
+        "name": "Complete Move Index",
+        "description": "A comprehensive index of all moves in PokeMMO, including their effects",
+        "link": "https://forums.pokemmo.com/index.php?/topic/188325-pokemon-move-index-for-pokemmo/",
+        "credits": "Bestfriends"
+      }
+    ]
   }
 }
