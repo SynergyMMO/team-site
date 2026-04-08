@@ -111,11 +111,21 @@ const getPlayerTeamDexLineSet = (playerData) => {
 
 const getTeamDexUniqueEntryCounts = (data) => {
   const playerLineSets = {}
+  const playerLineToPokemon = {}
   const lineOwners = new Map()
 
   Object.entries(data || {}).forEach(([playerName, playerData]) => {
     const playerLines = getPlayerTeamDexLineSet(playerData)
     playerLineSets[playerName] = playerLines
+
+    const lineToPokemon = new Map()
+    Object.values(playerData?.shinies || {}).forEach((shiny) => {
+      const lineKey = getPokemonLineKey(shiny?.Pokemon)
+      if (lineKey && !lineToPokemon.has(lineKey)) {
+        lineToPokemon.set(lineKey, shiny.Pokemon)
+      }
+    })
+    playerLineToPokemon[playerName] = lineToPokemon
 
     playerLines.forEach((lineKey) => {
       if (!lineOwners.has(lineKey)) {
@@ -126,20 +136,25 @@ const getTeamDexUniqueEntryCounts = (data) => {
   })
 
   const counts = {}
+  const pokemonLists = {}
   Object.entries(playerLineSets).forEach(([playerName, playerLines]) => {
     let uniqueCount = 0
+    const uniquePokemon = []
 
     playerLines.forEach((lineKey) => {
       const owners = lineOwners.get(lineKey)
       if (owners && owners.size === 1 && owners.has(playerName)) {
         uniqueCount++
+        const pokemonName = playerLineToPokemon[playerName]?.get(lineKey)
+        if (pokemonName) uniquePokemon.push(pokemonName)
       }
     })
 
     counts[playerName] = uniqueCount
+    pokemonLists[playerName] = uniquePokemon
   })
 
-  return counts
+  return { counts, pokemonLists }
 }
 
 const getSpeciesDisplayName = (shiny) => {
@@ -702,11 +717,12 @@ export const getStatisticsLeaderboards = (data, limit = 3, externalData = {}) =>
   if (!allEligiblePlayers.length) return null
 
   const qualifiedPlayers = allEligiblePlayers.filter((player) => meetsMinimumRequirements(player))
-  const teamDexUniqueCounts = getTeamDexUniqueEntryCounts(data)
+  const teamDexData = getTeamDexUniqueEntryCounts(data)
   const allPlayersWithTeamDex = Object.entries(data || {}).map(([name]) => {
     return {
       ...(stats[name] || { name }),
-      teamDexEntryCount: teamDexUniqueCounts[name] || 0,
+      teamDexEntryCount: teamDexData.counts[name] || 0,
+      teamDexPokemon: teamDexData.pokemonLists[name] || [],
     }
   })
 

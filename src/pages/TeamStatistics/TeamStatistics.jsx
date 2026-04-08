@@ -133,6 +133,9 @@ const PLAYER_LEADERBOARD_SECTIONS = [
     title: 'Most Team Dex Entrys',
     subtitle: 'Most species-line entries only that player owns',
     value: (entry) => `${entry.teamDexEntryCount} dex entries`,
+    extra: (entry) => entry.teamDexPokemon?.length
+      ? `Pokemon: ${entry.teamDexPokemon.map(formatPokemonName).join(', ')}`
+      : null,
   },
   {
     key: 'newLivingDexEntry',
