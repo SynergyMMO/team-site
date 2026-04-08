@@ -156,14 +156,17 @@ const getNewLivingDexStats = (data) => {
     const speciesMap = new Map()
 
     Object.values(playerData?.shinies || {}).forEach((shiny) => {
-      const key = normalizePokemonForDex(shiny?.Pokemon)
-      const displayName = getSpeciesDisplayName(shiny)
-      if (!key || !displayName) return
+    if (isTruthyFlag(shiny?.Sold)) return  
 
-      if (!speciesMap.has(key)) {
-        speciesMap.set(key, displayName)
-      }
-    })
+    const key = normalizePokemonForDex(shiny?.Pokemon)
+    const displayName = getSpeciesDisplayName(shiny)
+    if (!key || !displayName) return
+
+    if (!speciesMap.has(key)) {
+      speciesMap.set(key, displayName)
+    }
+  })
+
 
     playerSpeciesMaps[playerName] = speciesMap
 
