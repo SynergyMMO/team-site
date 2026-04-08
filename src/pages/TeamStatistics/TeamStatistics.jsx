@@ -131,7 +131,7 @@ const PLAYER_LEADERBOARD_SECTIONS = [
   {
     key: 'mostTeamDexEntrys',
     title: 'Most Team Dex Entrys',
-    subtitle: 'Most species-line entries only that player owns (ignores blacklist settings).',
+    subtitle: 'Most species-line entries only that player owns',
     value: (entry) => `${entry.teamDexEntryCount} dex entries`,
   },
   {
