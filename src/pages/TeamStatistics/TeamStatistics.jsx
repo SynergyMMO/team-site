@@ -128,6 +128,30 @@ const PLAYER_LEADERBOARD_SECTIONS = [
     subtitle: 'Most events + bounties hosted, does not include Flash events or events/bounties not listed on the website.',
     value: (entry) => `${entry.contributorCount} hosted`,
   },
+  {
+    key: 'mostTeamDexEntrys',
+    title: 'Most Team Dex Entrys',
+    subtitle: 'Most species-line entries only that player owns (ignores blacklist settings).',
+    value: (entry) => `${entry.teamDexEntryCount} dex entries`,
+  },
+  {
+    key: 'newLivingDexEntry',
+    title: 'New Living Dex Entry',
+    subtitle: 'Most unique shiny species owned by only one player.',
+    value: (entry) => `${entry.newLivingDexEntryCount} entries`,
+    extra: (entry) => entry.newLivingDexEntries?.length
+      ? `Pokemon: ${entry.newLivingDexEntries.map(formatPokemonName).join(', ')}`
+      : null,
+  },
+  {
+    key: 'highestWildIvShiny',
+    title: 'Highest Wild IV Shiny',
+    subtitle: 'Highest total IV shiny from wild encounters (egg method excluded).',
+    value: (entry) => `IVs: ${entry.highestWildIvTotal}`,
+    extra: (entry) => entry.highestWildIvPokemon
+      ? `Pokemon: ${formatPokemonName(entry.highestWildIvPokemon)}${entry.highestWildIvSpread ? ` (${entry.highestWildIvSpread})` : ''}`
+      : null,
+  },
 ]
 
 const ALL_TIME_TAB = {
@@ -383,7 +407,4 @@ export default function TeamStatistics() {
     </div>
   )
 }
-
-
-
 
