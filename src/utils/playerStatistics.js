@@ -494,6 +494,201 @@ const getMostInWeek = (shinyEntries) => {
   return { count: maxInWeek, pokemons: maxWeekPokemons }
 }
 
+export const getPlayerRanks = (data, playerName, externalData = {}) => {
+  const stats = calculatePlayerStatistics(data)
+  if (!stats || !playerName) return null
+
+  const normalizedTarget = normalizePersonKey(playerName)
+
+  const {
+    bountyClaimsByName,
+    contributorByName,
+  } = buildExternalStatsCounters(externalData)
+
+  const newLivingDexStats = getNewLivingDexStats(data)
+  const highestWildIvStats = getHighestWildIvStats(data)
+  const teamDexData = getTeamDexUniqueEntryCounts(data)
+
+  // ---------- NORMALIZE ALL PLAYERS ----------
+  const allPlayers = Object.values(stats).map((player) => {
+    const name = player.name
+
+    const normalized = normalizePersonKey(name)
+
+    return {
+      ...player,
+
+      // ensure numeric safety everywhere
+      averageEncounter: Number(player.averageEncounter) || 0,
+      totalEncounters: Number(player.totalEncounters) || 0,
+      maxEncounter: Number(player.maxEncounter) || 0,
+      minEncounter: Number(player.minEncounter) || Infinity,
+
+      rareCount: Number(player.rareCount) || 0,
+      phasesCount: Number(player.phasesCount) || 0,
+      mostInWeekCount: Number(player.mostInWeekCount) || 0,
+      singleEncounterCount: Number(player.singleEncounterCount) || 0,
+      horde5xCount: Number(player.horde5xCount) || 0,
+      fishingCount: Number(player.fishingCount) || 0,
+      safariCatchCount: Number(player.safariCatchCount) || 0,
+      safariFleeCount: Number(player.safariFleeCount) || 0,
+
+      // external stats (FIXED mapping)
+      bountyClaimCount: bountyClaimsByName[normalized] || 0,
+      contributorCount: contributorByName[normalized] || 0,
+
+      newLivingDexEntryCount:
+        newLivingDexStats[name]?.newLivingDexEntryCount || 0,
+
+      highestWildIvTotal:
+        highestWildIvStats[name]?.highestWildIvTotal || 0,
+
+      teamDexEntryCount:
+        teamDexData.counts[name] || 0,
+    }
+  })
+
+  const isValid = (p, key) => {
+    const v = p[key]
+    return typeof v === "number" && !isNaN(v) && v > 0
+  }
+
+  const getRank = (players, sortFn, eligibilityFn = null) => {
+    const filtered = eligibilityFn
+      ? players.filter(eligibilityFn)
+      : players
+
+    const sorted = [...filtered].sort(sortFn)
+
+    const index = sorted.findIndex(
+      (p) => normalizePersonKey(p.name) === normalizedTarget
+    )
+
+    return index === -1 ? null : index + 1
+  }
+
+  // ---------- QUALIFIED GROUPS ----------
+  const qualifiedEncounter = allPlayers.filter((p) =>
+    isValid(p, "totalEncounters")
+  )
+
+  const qualifiedPhases = allPlayers.filter((p) =>
+    isValid(p, "phasesCount")
+  )
+
+  const qualifiedFishing = allPlayers.filter((p) =>
+    isValid(p, "fishingCount")
+  )
+
+  const qualifiedAll = allPlayers // for stats that should include everyone
+
+  // ---------- RANKS ----------
+  return {
+    luckiest: getRank(
+      qualifiedEncounter,
+      (a, b) => a.averageEncounter - b.averageEncounter
+    ),
+
+    unluckiest: getRank(
+      qualifiedEncounter,
+      (a, b) => b.averageEncounter - a.averageEncounter
+    ),
+
+    mostEncounters: getRank(
+      qualifiedEncounter,
+      (a, b) => b.totalEncounters - a.totalEncounters
+    ),
+
+    highestDryStreak: getRank(
+      qualifiedEncounter,
+      (a, b) => b.maxEncounter - a.maxEncounter
+    ),
+
+    lowestEncounter: getRank(
+      qualifiedEncounter,
+      (a, b) => a.minEncounter - b.minEncounter
+    ),
+
+    mostRares: getRank(
+      qualifiedAll,
+      (a, b) => b.rareCount - a.rareCount,
+      (p) => p.rareCount > 0
+    ),
+
+    mostPhases: getRank(
+      qualifiedPhases,
+      (a, b) => b.phasesCount - a.phasesCount
+    ),
+
+    mostInWeek: getRank(
+      qualifiedAll,
+      (a, b) => b.mostInWeekCount - a.mostInWeekCount,
+      (p) => p.mostInWeekCount > 0
+    ),
+
+    mostSingleEncounters: getRank(
+      qualifiedAll,
+      (a, b) => b.singleEncounterCount - a.singleEncounterCount,
+      (p) => p.singleEncounterCount > 0
+    ),
+
+    most5xHordes: getRank(
+      qualifiedAll,
+      (a, b) => b.horde5xCount - a.horde5xCount,
+      (p) => p.horde5xCount > 0
+    ),
+
+    mostFishing: getRank(
+      qualifiedFishing,
+      (a, b) => b.fishingCount - a.fishingCount
+    ),
+
+    mostSafariCatches: getRank(
+      qualifiedAll,
+      (a, b) => b.safariCatchCount - a.safariCatchCount,
+      (p) => p.safariCatchCount > 0
+    ),
+
+    mostSafariFlees: getRank(
+      qualifiedAll,
+      (a, b) => b.safariFleeCount - a.safariFleeCount,
+      (p) => p.safariFleeCount > 0
+    ),
+
+    mostBountiesClaimed: getRank(
+      qualifiedAll,
+      (a, b) => b.bountyClaimCount - a.bountyClaimCount,
+      (p) => p.bountyClaimCount > 0
+    ),
+
+    contributors: getRank(
+      qualifiedAll,
+      (a, b) => b.contributorCount - a.contributorCount,
+      (p) => p.contributorCount > 0
+    ),
+
+    mostTeamDexEntries: getRank(
+      qualifiedAll,
+      (a, b) => b.teamDexEntryCount - a.teamDexEntryCount,
+      (p) => p.teamDexEntryCount > 0
+    ),
+
+    newLivingDexEntries: getRank(
+      qualifiedAll,
+      (a, b) => b.newLivingDexEntryCount - a.newLivingDexEntryCount,
+      (p) => p.newLivingDexEntryCount > 0
+    ),
+
+    highestWildIvShiny: getRank(
+      qualifiedAll,
+      (a, b) => b.highestWildIvTotal - a.highestWildIvTotal,
+      (p) => p.highestWildIvTotal > 0
+    ),
+  }
+}
+
+
+
 export const calculatePlayerStatistics = (data) => {
   if (!data) return null
 

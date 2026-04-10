@@ -10,6 +10,8 @@ import StatisticsSection from '../../components/StatisticsSection/StatisticsSect
 import BackButton from '../../components/BackButton/BackButton'
 import styles from './PlayerPage.module.css'
 import { getLocalPokemonGif } from '../../utils/pokemon'
+import { getPlayerRanks } from '../../utils/playerStatistics'
+
 
 export default function PlayerPage() {
     // Redirect to correct case-sensitive URL if needed
@@ -59,6 +61,10 @@ export default function PlayerPage() {
   const safeNormalShinies = safeShinies.filter(
     ([, s]) => s.Favourite?.toLowerCase() !== 'yes'
   )
+  const playerRanks = useMemo(() => {
+    if (!data || !safeRealKey) return null
+    return getPlayerRanks(data, safeRealKey)
+  }, [data, safeRealKey])
 
   const firstFavouriteShiny = safeFavourites[0]?.[1]
   const firstNormalShiny = safeShinies[0]?.[1]
@@ -261,9 +267,58 @@ export default function PlayerPage() {
         </div>
       )}
 
+      {playerRanks && (
+        <div className={styles.rankSection}>
+          <h2>📊 Rankings</h2>
+
+          <ul>
+            {[
+              { key: 'luckiest', label: 'Luckiest' },
+              { key: 'unluckiest', label: 'Unluckiest' },
+              { key: 'mostEncounters', label: 'Most Encounters' },
+              { key: 'highestDryStreak', label: 'Highest Dry Streak' },
+              { key: 'lowestEncounter', label: 'Lowest Encounter Shinies' },
+              { key: 'mostRares', label: 'Most Rare Shinies' },
+              { key: 'mostPhases', label: 'Most Phases' },
+              { key: 'mostInWeek', label: 'Most Shinies in a Week' },
+              { key: 'mostSingleEncounters', label: 'Most Single Encounters' },
+              { key: 'most5xHordes', label: 'Most 5x Hordes' },
+              { key: 'mostFishing', label: 'Most Fishing Shinies' },
+              { key: 'mostSafariCatches', label: 'Most Safari Catches' },
+              { key: 'mostSafariFlees', label: 'Most Safari Flees' },
+              { key: 'mostBountiesClaimed', label: 'Most Bounties Claimed' },
+              { key: 'contributors', label: 'Contributors' },
+              { key: 'mostTeamDexEntries', label: 'Most Team Dex Entries' },
+              { key: 'newLivingDexEntries', label: 'New Living Dex Entries' },
+              { key: 'highestWildIvShiny', label: 'Highest Wild IV Shiny' },
+            ].map(({ key, label }) => {
+              const rank = playerRanks[key]
+              if (!rank) return null
+
+              let rankClass = styles.rankItem
+
+              if (rank === 1) rankClass = `${styles.rankItem} ${styles.rank1}`
+              else if (rank === 2) rankClass = `${styles.rankItem} ${styles.rank2}`
+              else if (rank === 3) rankClass = `${styles.rankItem} ${styles.rank3}`
+
+              return (
+                <li key={key} className={rankClass}>
+                  <span className={styles.rankLabel}>{label}</span>
+                  <span className={styles.rankValue}>#{rank}</span>
+                </li>
+              )
+            })}
+
+
+          </ul>
+        </div>
+      )}
       {showStatisticsSection && <StatisticsSection playerData={playerData} playerName={safeRealKey} sectionFlags={sectionFlags} />}
       
       {renderTwitchSection()}
+      
+
+
 
       {trophiesData && (
         <TrophyShelf
