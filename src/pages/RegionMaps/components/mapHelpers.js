@@ -1,4 +1,13 @@
-export const RARITY_ORDER = ['common', 'uncommon', 'rare', 'very rare']
+export const RARITY_ORDER = [
+  'very common',
+  'common',
+  'uncommon',
+  'rare',
+  'very rare',
+  'special',
+  'lure',
+  'horde',
+]
 
 export function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max)
@@ -16,16 +25,30 @@ export function getSpawnTypes(areas) {
 
 export function getSpawnRarities(areas) {
   const seen = new Set(
-    areas.flatMap((area) => (area.spawns || []).map((spawn) => spawn.rarity || 'common'))
+    areas.flatMap((area) =>
+      (area.spawns || []).flatMap((spawn) =>
+        getSpawnRarityValues(spawn)
+      )
+    )
   )
   return Array.from(seen).sort((a, b) => {
-    const ai = RARITY_ORDER.indexOf(a)
-    const bi = RARITY_ORDER.indexOf(b)
+    const ai = RARITY_ORDER.indexOf(a.toLowerCase())
+    const bi = RARITY_ORDER.indexOf(b.toLowerCase())
     if (ai === -1 && bi === -1) return a.localeCompare(b)
     if (ai === -1) return 1
     if (bi === -1) return -1
     return ai - bi
   })
+}
+
+export function getSpawnRarityValues(spawn) {
+  if (Array.isArray(spawn.rarities) && spawn.rarities.length > 0) {
+    return spawn.rarities
+  }
+  if (Array.isArray(spawn.encounters) && spawn.encounters.length > 0) {
+    return Array.from(new Set(spawn.encounters.map((encounter) => encounter.rarity || 'Common')))
+  }
+  return [spawn.rarity || 'Common']
 }
 
 export function areaMatchesFilters(area, filters) {
@@ -41,7 +64,7 @@ export function areaMatchesFilters(area, filters) {
     const typeMatch = filters.types.size === 0
       || (spawn.types || []).some((type) => filters.types.has(type))
     const rarityMatch = filters.rarities.size === 0
-      || filters.rarities.has(spawn.rarity || 'common')
+      || getSpawnRarityValues(spawn).some((rarity) => filters.rarities.has(rarity))
     return nameMatch && typeMatch && rarityMatch
   })
 }
@@ -57,7 +80,7 @@ export function getAreaSpawnSummary(area, filters) {
     const typeMatch = filters.types.size === 0
       || (spawn.types || []).some((type) => filters.types.has(type))
     const rarityMatch = filters.rarities.size === 0
-      || filters.rarities.has(spawn.rarity || 'common')
+      || getSpawnRarityValues(spawn).some((rarity) => filters.rarities.has(rarity))
     return nameMatch && typeMatch && rarityMatch
   })
 }

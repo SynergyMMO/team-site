@@ -1,11 +1,31 @@
 import styles from '../RegionMaps.module.css'
+import { getSpawnRarityValues } from './mapHelpers'
+
+function formatEncounterSummary(spawn) {
+  if (!Array.isArray(spawn.encounters) || spawn.encounters.length === 0) {
+    return getSpawnRarityValues(spawn).join(', ')
+  }
+
+  const methods = Array.from(new Set(spawn.encounters.map((encounter) => encounter.method).filter(Boolean)))
+  const levels = spawn.encounters
+    .filter((encounter) => Number.isFinite(encounter.minLevel) && Number.isFinite(encounter.maxLevel))
+    .map((encounter) => encounter.minLevel === encounter.maxLevel
+      ? `${encounter.minLevel}`
+      : `${encounter.minLevel}-${encounter.maxLevel}`)
+
+  const levelSummary = levels.length > 0 ? `Lv. ${Array.from(new Set(levels)).join(', ')}` : null
+  const methodSummary = methods.length > 0 ? methods.join(', ') : null
+  const raritySummary = getSpawnRarityValues(spawn).join(', ')
+
+  return [methodSummary, levelSummary, raritySummary].filter(Boolean).join(' - ')
+}
 
 function SpawnRow({ spawn }) {
   return (
     <li className={styles.spawnRow}>
       <span className={styles.spawnName}>{spawn.name}</span>
       <span className={styles.spawnMeta}>
-        {(spawn.types || []).join(' / ')} - {spawn.rarity}
+        {(spawn.types || []).join(' / ')} - {formatEncounterSummary(spawn)}
       </span>
     </li>
   )

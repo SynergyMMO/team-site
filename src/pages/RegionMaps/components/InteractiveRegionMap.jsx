@@ -7,6 +7,15 @@ const ZOOM_STEP = 1.12
 const PAN_THRESHOLD_PX = 5
 const DEBUG_POINT_THRESHOLD = 4
 
+function stopMapEvent(event) {
+  event.preventDefault()
+  event.stopPropagation()
+}
+
+function containMapEvent(event) {
+  event.stopPropagation()
+}
+
 function computeFitTransform(containerRect, mapConfig, scaleOverride = null) {
   const fitScale = Math.min(
     containerRect.width / mapConfig.map.width,
@@ -186,12 +195,16 @@ export default function InteractiveRegionMap({
       if (debugTextRef.current) {
         debugTextRef.current.focus()
         debugTextRef.current.select()
+        const copied = document.execCommand?.('copy')
+        setCopyStatus(copied
+          ? `${label} copied to clipboard.`
+          : `Clipboard unavailable. ${label} shown below for manual copy.`)
       }
-      setCopyStatus(`Clipboard unavailable. ${label} shown below for manual copy.`)
     } catch {
       if (debugTextRef.current) {
         debugTextRef.current.focus()
         debugTextRef.current.select()
+        document.execCommand?.('copy')
       }
       setCopyStatus(`Clipboard blocked. ${label} shown below for manual copy.`)
     }
@@ -275,7 +288,11 @@ export default function InteractiveRegionMap({
     if (event.button !== 0 && event.pointerType !== 'touch') return
 
     const target = event.target
-    if (!debugMode && target instanceof Element && target.closest('polygon[data-area-id],button,input,select,textarea,a')) {
+    if (target instanceof Element && target.closest('[data-map-control],[data-debug-overlay],button,input,select,textarea,a')) {
+      return
+    }
+
+    if (!debugMode && target instanceof Element && target.closest('polygon[data-area-id]')) {
       return
     }
 
@@ -489,18 +506,6 @@ export default function InteractiveRegionMap({
               />
             ))}
 
-            {(mapConfig.switchTriggers || []).map((trigger) => (
-              <polygon
-                key={trigger.id}
-                points={trigger.points.map((point) => point.join(',')).join(' ')}
-                className={`${styles.switchPolygon} ${debugMode ? styles.nonInteractiveOverlay : ''}`}
-                onClick={(event) => {
-                  event.stopPropagation()
-                  onChangeMap(trigger.targetMapId)
-                }}
-              />
-            ))}
-
             {visibleAreas.map((area) => (
               <polygon
                 key={area.id}
@@ -527,6 +532,23 @@ export default function InteractiveRegionMap({
               />
             ))}
 
+            {(mapConfig.switchTriggers || []).map((trigger) => (
+              <polygon
+                key={trigger.id}
+                data-map-control="switch-trigger"
+                points={trigger.points.map((point) => point.join(',')).join(' ')}
+                className={`${styles.switchPolygon} ${debugMode ? styles.nonInteractiveOverlay : ''}`}
+                onPointerDown={stopMapEvent}
+                onPointerUp={(event) => {
+                  stopMapEvent(event)
+                  onChangeMap(trigger.targetMapId)
+                }}
+                onClick={(event) => {
+                  stopMapEvent(event)
+                }}
+              />
+            ))}
+
             {showMarkers && markerLayouts.map((marker) => (
               <g key={marker.id} className={styles.poiGroup}>
                 <circle cx={marker.x} cy={marker.y} r={marker.radius} className={styles.poiDot} />
@@ -544,20 +566,28 @@ export default function InteractiveRegionMap({
 
             {debugPoint && debugMode && (
               <circle
+                data-debug-overlay="point"
                 cx={debugPoint.x}
                 cy={debugPoint.y}
                 r={Math.max(3, Math.round(mapConfig.map.width / 320))}
                 className={styles.debugPoint}
+                onPointerDown={stopMapEvent}
+                onPointerUp={stopMapEvent}
+                onClick={stopMapEvent}
               />
             )}
 
             {currentDebugBox && debugMode && (
               <rect
+                data-debug-overlay="box"
                 x={currentDebugBox.topLeft.x}
                 y={currentDebugBox.topLeft.y}
                 width={currentDebugBox.width}
                 height={currentDebugBox.height}
                 className={styles.debugRect}
+                onPointerDown={stopMapEvent}
+                onPointerUp={stopMapEvent}
+                onClick={stopMapEvent}
               />
             )}
           </svg>
@@ -571,7 +601,13 @@ export default function InteractiveRegionMap({
         )}
 
         {debugMode && (
-          <div className={styles.debugPanel}>
+          <div
+            className={styles.debugPanel}
+            data-debug-overlay="panel"
+            onPointerDown={containMapEvent}
+            onPointerUp={containMapEvent}
+            onClick={containMapEvent}
+          >
             <strong>Debug Coordinates</strong>
             <span>Click for point capture, drag for area box capture.</span>
 

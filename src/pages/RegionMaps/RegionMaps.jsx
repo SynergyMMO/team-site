@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
-import regionMapsData from '../../data/region_maps.json'
+import regionMapsData from '../../data/region_maps'
 import styles from './RegionMaps.module.css'
 import MapFilters from './components/MapFilters'
 import RouteDetailsPanel from './components/RouteDetailsPanel'
@@ -117,7 +117,10 @@ export default function RegionMaps() {
   }
 
   const handleMapChange = (nextMapId) => {
-    setActiveMapId(nextMapId)
+    const nextMap = maps.find((mapEntry) => mapEntry.id === nextMapId)
+    if (!nextMap) return
+
+    setActiveMapId(nextMap.id)
     setSelectedAreaId(null)
   }
 
