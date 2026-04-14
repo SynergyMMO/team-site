@@ -1,0 +1,547 @@
+.pageWrap {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.pageWrapFullscreen {
+  max-width: 100%;
+  padding: 0;
+}
+
+.heroDescription {
+  margin: 0 auto 1.5rem;
+  max-width: 80ch;
+  color: #d9e7ff;
+  text-align: center;
+  line-height: 1.45;
+}
+
+.regionSelector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.regionButton {
+  background: linear-gradient(145deg, rgba(11, 31, 58, 0.85), rgba(14, 52, 89, 0.75));
+  border: 1px solid rgba(74, 135, 192, 0.45);
+  border-radius: 12px;
+  color: #dbeeff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+}
+
+.regionButton small {
+  color: #aac4de;
+}
+
+.regionButton:hover {
+  transform: translateY(-2px);
+  border-color: rgba(121, 186, 248, 0.85);
+  box-shadow: 0 8px 20px rgba(0, 25, 50, 0.35);
+}
+
+.regionButtonActive {
+  border-color: #89d0ff;
+  background: linear-gradient(145deg, rgba(8, 49, 82, 0.92), rgba(17, 78, 122, 0.88));
+  box-shadow: 0 0 0 1px rgba(137, 208, 255, 0.5);
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.layoutGridFullscreen {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.sidebar {
+  display: grid;
+  gap: 1rem;
+  position: sticky;
+  top: 90px;
+}
+
+.sidebarFullscreenHidden {
+  display: none;
+}
+
+.mapColumn {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.mapColumnFullscreen {
+  gap: 0;
+}
+
+.hiddenInFullscreen {
+  display: none;
+}
+
+.panelCard {
+  background: rgba(7, 24, 46, 0.75);
+  border: 1px solid rgba(82, 138, 190, 0.35);
+  border-radius: 14px;
+  padding: 0.9rem;
+}
+
+.panelTitle {
+  margin: 0;
+  color: #e6f4ff;
+  font-size: 1.05rem;
+}
+
+.panelSubtle {
+  color: #abc7df;
+  margin: 0.45rem 0 0;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.toggleRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #d5ebff;
+  margin-top: 0.7rem;
+}
+
+.toggleRow input {
+  accent-color: #6bbfff;
+}
+
+.controlBlock {
+  margin-top: 0.8rem;
+}
+
+.controlLabel {
+  font-size: 0.85rem;
+  color: #9ec5e7;
+  margin: 0 0 0.35rem;
+}
+
+.textInput {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(116, 169, 214, 0.5);
+  background: rgba(8, 28, 53, 0.8);
+  color: #eaf6ff;
+  padding: 0.45rem 0.6rem;
+  outline: none;
+  font-family: inherit;
+}
+
+.textInput:focus {
+  border-color: #89d0ff;
+}
+
+.chipGrid {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid rgba(112, 168, 212, 0.45);
+  background: rgba(14, 43, 74, 0.85);
+  color: #c8e6ff;
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.78rem;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+  font-family: inherit;
+}
+
+.chip:hover {
+  border-color: #8fd1ff;
+}
+
+.chipActive {
+  background: linear-gradient(145deg, rgba(39, 113, 172, 0.85), rgba(27, 82, 133, 0.85));
+  border-color: #9ad6ff;
+  color: #fff;
+}
+
+.mapShell {
+  background: rgba(6, 22, 42, 0.75);
+  border: 1px solid rgba(81, 133, 181, 0.38);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.mapShellFullscreen {
+  border-radius: 0;
+  border: 0;
+}
+
+.mapTopBar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid rgba(76, 130, 176, 0.35);
+  background: rgba(9, 33, 59, 0.75);
+}
+
+.mapActionGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mapSwitchGroup {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.mapSwitchButton {
+  border: 1px solid rgba(123, 185, 234, 0.62);
+  border-radius: 8px;
+  background: rgba(14, 45, 73, 0.88);
+  color: #d5eeff;
+  padding: 0.33rem 0.65rem;
+  font-family: inherit;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.mapSwitchButtonActive {
+  border-color: #8ad6ff;
+  background: rgba(25, 85, 132, 0.92);
+  color: #fff;
+}
+
+.mapTitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #ecf8ff;
+}
+
+.mapMeta {
+  margin: 0.15rem 0 0;
+  color: #a9c7e2;
+  font-size: 0.82rem;
+}
+
+.resetButton {
+  border: 1px solid rgba(123, 185, 234, 0.62);
+  border-radius: 8px;
+  background: rgba(21, 68, 106, 0.88);
+  color: #dcf3ff;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.mapViewport {
+  position: relative;
+  height: min(72vh, 830px);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  background: radial-gradient(circle at 50% 35%, rgba(34, 92, 140, 0.35), rgba(3, 13, 26, 0.95));
+}
+
+.mapShellFullscreen .mapViewport {
+  height: calc(100vh - 68px);
+}
+
+.mapCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+.baseMap {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+.overlaySvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+.areaPolygon {
+  fill: rgba(56, 173, 255, 0.2);
+  stroke: rgba(132, 216, 255, 0.95);
+  stroke-width: 3px;
+  cursor: pointer;
+  transition: fill 0.18s ease, stroke 0.18s ease;
+}
+
+.areaPolygon:hover {
+  fill: rgba(117, 209, 255, 0.38);
+}
+
+.areaPolygonSelected {
+  fill: rgba(255, 208, 117, 0.3);
+  stroke: rgba(255, 222, 163, 0.95);
+}
+
+.pathLine {
+  fill: none;
+  stroke: rgba(255, 149, 88, 0.92);
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16 9;
+  pointer-events: none;
+}
+
+.switchPolygon {
+  fill: rgba(255, 190, 84, 0.16);
+  stroke: rgba(255, 205, 120, 0.95);
+  stroke-width: 3px;
+  cursor: pointer;
+}
+
+.switchPolygon:hover {
+  fill: rgba(255, 190, 84, 0.28);
+}
+
+.nonInteractiveOverlay {
+  pointer-events: none;
+}
+
+.poiGroup {
+  pointer-events: none;
+}
+
+.poiDot {
+  fill: rgba(76, 225, 166, 0.9);
+  stroke: #dffef3;
+  stroke-width: 2px;
+}
+
+.poiText {
+  fill: #eafff7;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.65);
+  text-rendering: geometricPrecision;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.debugPoint {
+  fill: rgba(255, 245, 179, 0.92);
+  stroke: rgba(255, 199, 79, 0.95);
+  stroke-width: 2px;
+}
+
+.debugRect {
+  fill: rgba(255, 220, 120, 0.2);
+  stroke: rgba(255, 235, 180, 0.95);
+  stroke-width: 3px;
+  stroke-dasharray: 12 7;
+}
+
+.mapTooltip {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  background: rgba(8, 25, 46, 0.92);
+  color: #f1f8ff;
+  border: 1px solid rgba(121, 183, 233, 0.6);
+  border-radius: 10px;
+  padding: 0.4rem 0.55rem;
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.78rem;
+}
+
+.mapTooltip strong {
+  font-size: 0.84rem;
+}
+
+.mapLegend {
+  margin: 0;
+  color: #a8c7e0;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.legendSwatch {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  border: 1px solid rgba(132, 216, 255, 0.95);
+  background: rgba(56, 173, 255, 0.2);
+}
+
+.areaKind {
+  display: inline-block;
+  margin: 0.4rem 0 0;
+  color: #d8efff;
+  text-transform: capitalize;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(117, 179, 229, 0.55);
+}
+
+.sectionHeading {
+  margin: 0.85rem 0 0.3rem;
+  font-size: 0.9rem;
+  color: #e7f6ff;
+}
+
+.spawnList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.spawnRow {
+  background: rgba(10, 34, 63, 0.8);
+  border: 1px solid rgba(84, 139, 190, 0.45);
+  border-radius: 8px;
+  padding: 0.35rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.spawnName {
+  color: #eff8ff;
+  font-size: 0.85rem;
+}
+
+.spawnMeta {
+  color: #a6c8e6;
+  font-size: 0.78rem;
+  text-transform: capitalize;
+  text-align: right;
+}
+
+.debugPanel {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 6;
+  background: rgba(7, 24, 46, 0.95);
+  border: 1px solid rgba(121, 183, 233, 0.6);
+  border-radius: 10px;
+  color: #eaf7ff;
+  padding: 0.5rem 0.65rem;
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  max-width: min(380px, calc(100% - 24px));
+}
+
+.debugButtonRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+
+.debugOutput {
+  width: 100%;
+  min-height: 74px;
+  max-height: 130px;
+  background: rgba(4, 14, 28, 0.95);
+  border: 1px solid rgba(121, 183, 233, 0.45);
+  border-radius: 8px;
+  color: #e6f7ff;
+  padding: 0.4rem;
+  font-size: 0.73rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  resize: vertical;
+}
+
+.debugStatus {
+  color: #97e4ff;
+}
+
+@media (max-width: 1120px) {
+  .layoutGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .mapViewport {
+    height: min(66vh, 660px);
+  }
+
+  .mapShellFullscreen .mapViewport {
+    height: calc(100vh - 92px);
+  }
+}
+
+@media (max-width: 768px) {
+  .pageWrap {
+    padding: 0 0.45rem 1.2rem;
+  }
+
+  .regionSelector {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mapViewport {
+    height: min(56vh, 560px);
+  }
+
+  .mapTopBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mapActionGroup {
+    width: 100%;
+  }
+
+  .mapSwitchGroup {
+    width: 100%;
+  }
+
+  .mapSwitchButton,
+  .resetButton {
+    flex: 1;
+    text-align: center;
+  }
+}
