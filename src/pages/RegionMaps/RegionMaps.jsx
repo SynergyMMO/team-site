@@ -24,9 +24,55 @@ const defaultFilters = {
   rarities: new Set(),
 }
 
+function imageSlug(value) {
+  return value
+    .toLowerCase()
+    .replace(/pok(?:\u00e9|\u00c3\u00a9)mon/g, 'pokemon')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '')
+}
+
+function normalizeMapImage(region, mapEntry, mainImage) {
+  const configuredImage = mapEntry.map?.image
+  const shouldUseInteriorImage = mapEntry.id !== `${region.id}-main` && configuredImage === mainImage
+
+  if (!shouldUseInteriorImage) return mapEntry.map
+
+  return {
+    ...mapEntry.map,
+    image: `images/maps/${region.id}/${imageSlug(mapEntry.name)}.png`,
+  }
+}
+
+function routeAreasToMaps(mapEntries) {
+  const mapIds = new Set(mapEntries.map((mapEntry) => mapEntry.id))
+  const areasByMapId = new Map(mapEntries.map((mapEntry) => [mapEntry.id, []]))
+
+  mapEntries.forEach((mapEntry) => {
+    const areas = mapEntry.areas || []
+    areas.forEach((area) => {
+      const targetMapId = mapIds.has(area.mapId) ? area.mapId : mapEntry.id
+      areasByMapId.get(targetMapId).push(area)
+    })
+  })
+
+  return mapEntries.map((mapEntry) => ({
+    ...mapEntry,
+    areas: areasByMapId.get(mapEntry.id) || [],
+  }))
+}
+
 function normalizeRegionMaps(region) {
   if (Array.isArray(region.maps) && region.maps.length > 0) {
-    return region.maps
+    const mainImage = region.maps[0].map?.image
+    const normalizedMaps = region.maps.map((mapEntry) => ({
+      ...mapEntry,
+      map: normalizeMapImage(region, mapEntry, mainImage),
+      paths: mapEntry.paths || mapEntry.suggestedPaths || [],
+      switchTriggers: mapEntry.switchTriggers || [],
+    }))
+
+    return routeAreasToMaps(normalizedMaps)
   }
 
   return [
@@ -36,7 +82,7 @@ function normalizeRegionMaps(region) {
       map: region.map,
       areas: region.areas || [],
       markers: region.markers || [],
-      paths: region.paths || [],
+      paths: region.paths || region.suggestedPaths || [],
       switchTriggers: [],
     },
   ]

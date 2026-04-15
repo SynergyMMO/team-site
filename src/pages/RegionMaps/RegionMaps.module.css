@@ -286,6 +286,37 @@
   pointer-events: none;
 }
 
+.mapImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  gap: 0.35rem;
+  text-align: center;
+  color: #eaf7ff;
+  background:
+    linear-gradient(45deg, rgba(40, 77, 96, 0.42) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(40, 77, 96, 0.42) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(40, 77, 96, 0.42) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(40, 77, 96, 0.42) 75%),
+    #132b35;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.mapImagePlaceholder strong {
+  font-size: 2rem;
+}
+
+.mapImagePlaceholder span {
+  font-size: 1.1rem;
+}
+
+.mapImagePlaceholder small {
+  color: #b9d8e8;
+}
+
 .overlaySvg {
   position: absolute;
   inset: 0;
@@ -332,6 +363,15 @@
 
 .switchPolygon:hover {
   fill: rgba(255, 190, 84, 0.28);
+}
+
+.switchText {
+  fill: #fff8dd;
+  font-weight: 800;
+  paint-order: stroke;
+  pointer-events: none;
+  stroke: rgba(38, 24, 4, 0.76);
+  user-select: none;
 }
 
 .nonInteractiveOverlay {

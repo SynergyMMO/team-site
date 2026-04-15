@@ -56,6 +56,12 @@ function getMarkerVisualScale(mapWidth) {
   return { fontSize: 15, radius: 7, offset: 12 }
 }
 
+function getSwitchLabelVisualScale(mapWidth) {
+  if (mapWidth <= 900) return { fontSize: 12, strokeWidth: 2.4 }
+  if (mapWidth <= 1400) return { fontSize: 17, strokeWidth: 3.2 }
+  return { fontSize: 36, strokeWidth: 6 }
+}
+
 function layoutMarkers(markers, mapWidth, mapHeight) {
   const placed = []
   const { fontSize, radius, offset } = getMarkerVisualScale(mapWidth)
@@ -141,6 +147,7 @@ export default function InteractiveRegionMap({
   const [debugPoint, setDebugPoint] = useState(null)
   const [debugOutput, setDebugOutput] = useState('')
   const [copyStatus, setCopyStatus] = useState('')
+  const [imageFailed, setImageFailed] = useState(false)
 
   const visibleAreas = useMemo(
     () => (mapConfig.areas || []).filter((area) => visibleAreaIds.has(area.id)),
@@ -151,6 +158,15 @@ export default function InteractiveRegionMap({
     () => layoutMarkers(mapConfig.markers || [], mapConfig.map.width, mapConfig.map.height),
     [mapConfig.markers, mapConfig.map.height, mapConfig.map.width]
   )
+
+  const switchLabelVisualScale = useMemo(
+    () => getSwitchLabelVisualScale(mapConfig.map.width),
+    [mapConfig.map.width]
+  )
+
+  useEffect(() => {
+    setImageFailed(false)
+  }, [mapConfig.map.image])
 
   const clampTransform = useCallback((next, containerRect) => {
     const scaledWidth = mapConfig.map.width * next.scale
@@ -182,8 +198,7 @@ export default function InteractiveRegionMap({
     }
   }, [mapConfig.map.height, mapConfig.map.width, transform])
 
-  const copyPayload = async (payload, label) => {
-    const text = JSON.stringify(payload)
+  const copyText = async (text, label) => {
     setDebugOutput(text)
     setCopyStatus('')
     try {
@@ -210,6 +225,10 @@ export default function InteractiveRegionMap({
     }
   }
 
+  const copyPayload = async (payload, label) => {
+    await copyText(JSON.stringify(payload), label)
+  }
+
   const copyPointCoordinates = async () => {
     if (!debugPoint) return
     await copyPayload({ point: [debugPoint.x, debugPoint.y] }, 'Point coordinates')
@@ -217,13 +236,7 @@ export default function InteractiveRegionMap({
 
   const copyBoxCoordinates = async () => {
     if (!debugBox) return
-    await copyPayload({
-      topLeft: [debugBox.topLeft.x, debugBox.topLeft.y],
-      bottomRight: [debugBox.bottomRight.x, debugBox.bottomRight.y],
-      points: debugBox.points,
-      width: debugBox.width,
-      height: debugBox.height,
-    }, 'Box coordinates')
+    await copyText(`"points": ${JSON.stringify(debugBox.points)}`, 'Box points')
   }
 
   const handleWheelZoom = useCallback((event) => {
@@ -485,13 +498,22 @@ export default function InteractiveRegionMap({
             transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
           }}
         >
-          <img
-            src={getAssetUrl(mapConfig.map.image)}
-            alt={`${region.name} map`}
-            className={styles.baseMap}
-            draggable={false}
-            loading="lazy"
-          />
+          {imageFailed ? (
+            <div className={styles.mapImagePlaceholder}>
+              <strong>{mapConfig.name}</strong>
+              <span>Map image not found</span>
+              <small>{mapConfig.map.image}</small>
+            </div>
+          ) : (
+            <img
+              src={getAssetUrl(mapConfig.map.image)}
+              alt={`${region.name} map`}
+              className={styles.baseMap}
+              draggable={false}
+              loading="lazy"
+              onError={() => setImageFailed(true)}
+            />
+          )}
 
           <svg
             viewBox={`0 0 ${mapConfig.map.width} ${mapConfig.map.height}`}
@@ -533,20 +555,37 @@ export default function InteractiveRegionMap({
             ))}
 
             {(mapConfig.switchTriggers || []).map((trigger) => (
-              <polygon
+              <g
                 key={trigger.id}
                 data-map-control="switch-trigger"
-                points={trigger.points.map((point) => point.join(',')).join(' ')}
-                className={`${styles.switchPolygon} ${debugMode ? styles.nonInteractiveOverlay : ''}`}
+                className={debugMode ? styles.nonInteractiveOverlay : ''}
                 onPointerDown={stopMapEvent}
                 onPointerUp={(event) => {
                   stopMapEvent(event)
                   onChangeMap(trigger.targetMapId)
                 }}
-                onClick={(event) => {
-                  stopMapEvent(event)
-                }}
-              />
+                onClick={stopMapEvent}
+              >
+                <polygon
+                  points={trigger.points.map((point) => point.join(',')).join(' ')}
+                  className={styles.switchPolygon}
+                />
+                {trigger.label && (
+                  <text
+                    x={trigger.points.reduce((sum, point) => sum + point[0], 0) / trigger.points.length}
+                    y={trigger.points.reduce((sum, point) => sum + point[1], 0) / trigger.points.length}
+                    className={styles.switchText}
+                    style={{
+                      fontSize: `${switchLabelVisualScale.fontSize}px`,
+                      strokeWidth: `${switchLabelVisualScale.strokeWidth}px`,
+                    }}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    {trigger.label}
+                  </text>
+                )}
+              </g>
             ))}
 
             {showMarkers && markerLayouts.map((marker) => (
