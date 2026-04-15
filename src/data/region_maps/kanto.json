@@ -4502,22 +4502,23 @@
           ],
           "points": [
             [
-              442,
-              32
+              1330,
+              387
             ],
             [
-              506,
-              32
+              1440,
+              392
             ],
             [
-              506,
-              96
+              1440,
+              473
             ],
             [
-              442,
-              96
+              1336,
+              480
             ]
-          ]
+          ],
+          "mapId": "cerulean-cave"
         },
         {
           "id": "kanto-cerulean-city",
@@ -36043,6 +36044,29 @@
               1570
             ]
           ]
+        },
+        {
+          "id": "kanto-main-switch-mnzgs0lq",
+          "label": "Cerulean Cave",
+          "targetMapId": "cerulean-cave",
+          "points": [
+            [
+              1332,
+              390
+            ],
+            [
+              1435,
+              393
+            ],
+            [
+              1441,
+              474
+            ],
+            [
+              1332,
+              482
+            ]
+          ]
         }
       ],
       "returnMapId": null
@@ -36159,6 +36183,20 @@
           ]
         }
       ],
+      "returnMapId": "kanto-main"
+    },
+    {
+      "id": "cerulean-cave",
+      "name": "Cerulean Cave",
+      "map": {
+        "image": "images/maps/kanto/mistralton_cave.png",
+        "width": 2308,
+        "height": 1732
+      },
+      "areas": [],
+      "markers": [],
+      "paths": [],
+      "switchTriggers": [],
       "returnMapId": "kanto-main"
     }
   ]

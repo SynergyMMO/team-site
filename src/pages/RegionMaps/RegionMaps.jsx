@@ -162,12 +162,16 @@ export default function RegionMaps() {
     }))
   }
 
-  const handleMapChange = (nextMapId) => {
+  const handleMapChange = (nextMapId, nextAreaId = null) => {
     const nextMap = maps.find((mapEntry) => mapEntry.id === nextMapId)
     if (!nextMap) return
 
     setActiveMapId(nextMap.id)
-    setSelectedAreaId(null)
+    setSelectedAreaId(
+      nextAreaId && nextMap.areas.some((area) => area.id === nextAreaId)
+        ? nextAreaId
+        : null
+    )
   }
 
   const handleFiltersChange = (change) => {

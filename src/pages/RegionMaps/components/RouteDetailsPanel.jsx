@@ -1,4 +1,5 @@
 import styles from '../RegionMaps.module.css'
+import { getLocalPokemonGif, onGifError } from '../../../utils/pokemon'
 import { getSpawnRarityValues } from './mapHelpers'
 
 function formatEncounterSummary(spawn) {
@@ -23,7 +24,15 @@ function formatEncounterSummary(spawn) {
 function SpawnRow({ spawn }) {
   return (
     <li className={styles.spawnRow}>
-      <span className={styles.spawnName}>{spawn.name}</span>
+      <span className={styles.spawnSpriteWrap} title={spawn.name}>
+        <img
+          className={styles.spawnSprite}
+          src={getLocalPokemonGif(spawn.name)}
+          alt={spawn.name}
+          loading="lazy"
+          onError={onGifError(spawn.name)}
+        />
+      </span>
       <span className={styles.spawnMeta}>
         {(spawn.types || []).join(' / ')} - {formatEncounterSummary(spawn)}
       </span>

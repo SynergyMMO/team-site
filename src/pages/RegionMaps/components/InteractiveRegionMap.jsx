@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getAssetUrl } from '../../../utils/assets'
+import { getLocalPokemonGif, onGifError } from '../../../utils/pokemon'
 import styles from '../RegionMaps.module.css'
 import { clamp } from './mapHelpers'
 
@@ -62,8 +63,94 @@ function getSwitchLabelVisualScale(mapWidth) {
   return { fontSize: 36, strokeWidth: 6 }
 }
 
-function layoutMarkers(markers, mapWidth, mapHeight) {
-  const placed = []
+function getSwitchSpriteVisualScale(mapWidth) {
+  if (mapWidth <= 900) return { size: 34 }
+  if (mapWidth <= 1400) return { size: 48 }
+  return { size: 84 }
+}
+
+function normalizePokemonLabel(label) {
+  return label.trim().toLowerCase()
+}
+
+function getRouteLabelVisualScale(mapWidth) {
+  if (mapWidth <= 900) return { fontSize: 10, strokeWidth: 2.2 }
+  if (mapWidth <= 1400) return { fontSize: 13, strokeWidth: 2.8 }
+  return { fontSize: 22, strokeWidth: 4.5 }
+}
+
+function getTextBox(label, x, y, fontSize, anchor = 'middle') {
+  const width = Math.max(fontSize * 2.4, String(label || '').length * fontSize * 0.62)
+  const height = fontSize + 7
+  return {
+    x: anchor === 'middle' ? x - width / 2 : x,
+    y: y - height / 2,
+    width,
+    height,
+  }
+}
+
+function placeTextBox(baseBox, placed, mapWidth, mapHeight) {
+  const step = Math.max(6, baseBox.height * 0.92)
+  const offsets = [0]
+  for (let index = 1; index <= 18; index += 1) offsets.push(-step * index)
+  for (let index = 1; index <= 8; index += 1) offsets.push(step * index)
+
+  for (const offset of offsets) {
+    const box = {
+      ...baseBox,
+      x: clamp(baseBox.x, 2, Math.max(2, mapWidth - baseBox.width - 2)),
+      y: clamp(baseBox.y + offset, 2, Math.max(2, mapHeight - baseBox.height - 2)),
+    }
+    if (!placed.some((existing) => intersects(existing, box))) return box
+  }
+
+  return {
+    ...baseBox,
+    x: clamp(baseBox.x, 2, Math.max(2, mapWidth - baseBox.width - 2)),
+    y: clamp(baseBox.y - step * 18, 2, Math.max(2, mapHeight - baseBox.height - 2)),
+  }
+}
+
+function centerOfPoints(points = []) {
+  if (!points.length) return { x: 0, y: 0 }
+  return {
+    x: points.reduce((sum, point) => sum + point[0], 0) / points.length,
+    y: points.reduce((sum, point) => sum + point[1], 0) / points.length,
+  }
+}
+
+function midpointOfPath(points = []) {
+  if (points.length === 0) return { x: 0, y: 0 }
+  if (points.length === 1) return { x: points[0][0], y: points[0][1] }
+
+  const segments = points.slice(1).map((point, index) => {
+    const previous = points[index]
+    return {
+      from: previous,
+      to: point,
+      length: Math.hypot(point[0] - previous[0], point[1] - previous[1]),
+    }
+  })
+  const totalLength = segments.reduce((sum, segment) => sum + segment.length, 0)
+  let remaining = totalLength / 2
+
+  for (const segment of segments) {
+    if (remaining <= segment.length) {
+      const ratio = segment.length === 0 ? 0 : remaining / segment.length
+      return {
+        x: segment.from[0] + (segment.to[0] - segment.from[0]) * ratio,
+        y: segment.from[1] + (segment.to[1] - segment.from[1]) * ratio,
+      }
+    }
+    remaining -= segment.length
+  }
+
+  const last = points[points.length - 1]
+  return { x: last[0], y: last[1] }
+}
+
+function layoutMarkers(markers, mapWidth, mapHeight, placed = []) {
   const { fontSize, radius, offset } = getMarkerVisualScale(mapWidth)
   const lineHeight = fontSize + 3
   const charWidth = fontSize * 0.54
@@ -119,6 +206,68 @@ function layoutMarkers(markers, mapWidth, mapHeight) {
   return result
 }
 
+function layoutMapAnnotations({ areas, paths, markers, showPaths, showMarkers, mapWidth, mapHeight }) {
+  const placed = []
+  const routeScale = getRouteLabelVisualScale(mapWidth)
+  const markerLayouts = []
+  const areaLabels = []
+  const pathLabels = []
+
+  areas.forEach((area) => {
+    const label = area.name || area.id
+    if (!label) return
+    const center = centerOfPoints(area.points)
+    const box = placeTextBox(
+      getTextBox(label, center.x, center.y, routeScale.fontSize),
+      placed,
+      mapWidth,
+      mapHeight
+    )
+    placed.push(box)
+    areaLabels.push({
+      id: area.id,
+      label,
+      x: box.x + box.width / 2,
+      y: box.y + box.height / 2,
+      fontSize: routeScale.fontSize,
+      strokeWidth: routeScale.strokeWidth,
+    })
+  })
+
+  if (showPaths) {
+    paths.forEach((path) => {
+      const label = path.label || path.id
+      if (!label) return
+      const center = midpointOfPath(path.points)
+      const box = placeTextBox(
+        getTextBox(label, center.x, center.y, routeScale.fontSize),
+        placed,
+        mapWidth,
+        mapHeight
+      )
+      placed.push(box)
+      pathLabels.push({
+        id: path.id,
+        label,
+        x: box.x + box.width / 2,
+        y: box.y + box.height / 2,
+        fontSize: routeScale.fontSize,
+        strokeWidth: routeScale.strokeWidth,
+      })
+    })
+  }
+
+  if (showMarkers) {
+    markerLayouts.push(...layoutMarkers(markers, mapWidth, mapHeight, placed))
+  }
+
+  return {
+    areaLabels: new Map(areaLabels.map((label) => [label.id, label])),
+    pathLabels: new Map(pathLabels.map((label) => [label.id, label])),
+    markerLayouts,
+  }
+}
+
 export default function InteractiveRegionMap({
   region,
   mapConfig,
@@ -154,15 +303,44 @@ export default function InteractiveRegionMap({
     [mapConfig.areas, visibleAreaIds]
   )
 
-  const markerLayouts = useMemo(
-    () => layoutMarkers(mapConfig.markers || [], mapConfig.map.width, mapConfig.map.height),
-    [mapConfig.markers, mapConfig.map.height, mapConfig.map.width]
-  )
-
   const switchLabelVisualScale = useMemo(
     () => getSwitchLabelVisualScale(mapConfig.map.width),
     [mapConfig.map.width]
   )
+
+  const switchSpriteVisualScale = useMemo(
+    () => getSwitchSpriteVisualScale(mapConfig.map.width),
+    [mapConfig.map.width]
+  )
+
+  const annotationLayouts = useMemo(
+    () => layoutMapAnnotations({
+      areas: visibleAreas,
+      paths: mapConfig.paths || [],
+      markers: mapConfig.markers || [],
+      showPaths,
+      showMarkers,
+      mapWidth: mapConfig.map.width,
+      mapHeight: mapConfig.map.height,
+    }),
+    [
+      mapConfig.markers,
+      mapConfig.map.height,
+      mapConfig.map.width,
+      mapConfig.paths,
+      showMarkers,
+      showPaths,
+      visibleAreas,
+    ]
+  )
+
+  const knownPokemonNames = useMemo(() => new Set(
+    mapConfigs.flatMap((mapEntry) =>
+      (mapEntry.areas || []).flatMap((area) =>
+        (area.spawns || []).map((spawn) => normalizePokemonLabel(spawn.name))
+      )
+    )
+  ), [mapConfigs])
 
   useEffect(() => {
     setImageFailed(false)
@@ -521,37 +699,69 @@ export default function InteractiveRegionMap({
             role="presentation"
           >
             {showPaths && (mapConfig.paths || []).map((path) => (
-              <polyline
-                key={path.id}
-                points={path.points.map((point) => point.join(',')).join(' ')}
-                className={styles.pathLine}
-              />
+              <g key={path.id} className={styles.routeLabelGroup}>
+                <polyline
+                  points={path.points.map((point) => point.join(',')).join(' ')}
+                  className={styles.pathLine}
+                />
+                {annotationLayouts.pathLabels.has(path.id) && (
+                  <text
+                    x={annotationLayouts.pathLabels.get(path.id).x}
+                    y={annotationLayouts.pathLabels.get(path.id).y}
+                    className={styles.pathText}
+                    style={{
+                      fontSize: `${annotationLayouts.pathLabels.get(path.id).fontSize}px`,
+                      strokeWidth: `${annotationLayouts.pathLabels.get(path.id).strokeWidth}px`,
+                    }}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    {annotationLayouts.pathLabels.get(path.id).label}
+                  </text>
+                )}
+              </g>
             ))}
 
             {visibleAreas.map((area) => (
-              <polygon
-                key={area.id}
-                data-area-id={area.id}
-                points={area.points.map((point) => point.join(',')).join(' ')}
-                className={`${styles.areaPolygon} ${selectedAreaId === area.id ? styles.areaPolygonSelected : ''} ${debugMode ? styles.nonInteractiveOverlay : ''}`}
-                onPointerDown={(event) => event.stopPropagation()}
-                onPointerUp={(event) => {
-                  event.stopPropagation()
-                  onSelectArea(area.id)
-                }}
-                onMouseEnter={(event) => {
-                  const rect = containerRef.current?.getBoundingClientRect()
-                  if (!rect) return
-                  setHoveredArea(area)
-                  setHoverPosition({ x: event.clientX - rect.left, y: event.clientY - rect.top })
-                }}
-                onMouseMove={(event) => {
-                  const rect = containerRef.current?.getBoundingClientRect()
-                  if (!rect) return
-                  setHoverPosition({ x: event.clientX - rect.left, y: event.clientY - rect.top })
-                }}
-                onMouseLeave={() => setHoveredArea(null)}
-              />
+              <g key={area.id}>
+                <polygon
+                  data-area-id={area.id}
+                  points={area.points.map((point) => point.join(',')).join(' ')}
+                  className={`${styles.areaPolygon} ${selectedAreaId === area.id ? styles.areaPolygonSelected : ''} ${debugMode ? styles.nonInteractiveOverlay : ''}`}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onPointerUp={(event) => {
+                    event.stopPropagation()
+                    onSelectArea(area.id)
+                  }}
+                  onMouseEnter={(event) => {
+                    const rect = containerRef.current?.getBoundingClientRect()
+                    if (!rect) return
+                    setHoveredArea(area)
+                    setHoverPosition({ x: event.clientX - rect.left, y: event.clientY - rect.top })
+                  }}
+                  onMouseMove={(event) => {
+                    const rect = containerRef.current?.getBoundingClientRect()
+                    if (!rect) return
+                    setHoverPosition({ x: event.clientX - rect.left, y: event.clientY - rect.top })
+                  }}
+                  onMouseLeave={() => setHoveredArea(null)}
+                />
+                {annotationLayouts.areaLabels.has(area.id) && (
+                  <text
+                    x={annotationLayouts.areaLabels.get(area.id).x}
+                    y={annotationLayouts.areaLabels.get(area.id).y}
+                    className={styles.areaText}
+                    style={{
+                      fontSize: `${annotationLayouts.areaLabels.get(area.id).fontSize}px`,
+                      strokeWidth: `${annotationLayouts.areaLabels.get(area.id).strokeWidth}px`,
+                    }}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    {annotationLayouts.areaLabels.get(area.id).label}
+                  </text>
+                )}
+              </g>
             ))}
 
             {(mapConfig.switchTriggers || []).map((trigger) => (
@@ -562,7 +772,7 @@ export default function InteractiveRegionMap({
                 onPointerDown={stopMapEvent}
                 onPointerUp={(event) => {
                   stopMapEvent(event)
-                  onChangeMap(trigger.targetMapId)
+                  onChangeMap(trigger.targetMapId, trigger.targetAreaId)
                 }}
                 onClick={stopMapEvent}
               >
@@ -570,10 +780,27 @@ export default function InteractiveRegionMap({
                   points={trigger.points.map((point) => point.join(',')).join(' ')}
                   className={styles.switchPolygon}
                 />
-                {trigger.label && (
+                {trigger.label && knownPokemonNames.has(normalizePokemonLabel(trigger.label)) ? (
+                  <foreignObject
+                    x={centerOfPoints(trigger.points).x - switchSpriteVisualScale.size / 2}
+                    y={centerOfPoints(trigger.points).y - switchSpriteVisualScale.size / 2}
+                    width={switchSpriteVisualScale.size}
+                    height={switchSpriteVisualScale.size}
+                    className={styles.switchSpriteObject}
+                  >
+                    <img
+                      className={styles.switchSprite}
+                      src={getLocalPokemonGif(trigger.label)}
+                      alt={trigger.label}
+                      title={trigger.label}
+                      draggable={false}
+                      onError={onGifError(trigger.label)}
+                    />
+                  </foreignObject>
+                ) : trigger.label && (
                   <text
-                    x={trigger.points.reduce((sum, point) => sum + point[0], 0) / trigger.points.length}
-                    y={trigger.points.reduce((sum, point) => sum + point[1], 0) / trigger.points.length}
+                    x={centerOfPoints(trigger.points).x}
+                    y={centerOfPoints(trigger.points).y}
                     className={styles.switchText}
                     style={{
                       fontSize: `${switchLabelVisualScale.fontSize}px`,
@@ -588,7 +815,7 @@ export default function InteractiveRegionMap({
               </g>
             ))}
 
-            {showMarkers && markerLayouts.map((marker) => (
+            {showMarkers && annotationLayouts.markerLayouts.map((marker) => (
               <g key={marker.id} className={styles.poiGroup}>
                 <circle cx={marker.x} cy={marker.y} r={marker.radius} className={styles.poiDot} />
                 <text

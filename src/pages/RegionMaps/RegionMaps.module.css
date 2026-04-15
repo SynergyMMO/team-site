@@ -354,6 +354,29 @@
   pointer-events: none;
 }
 
+.routeLabelGroup {
+  pointer-events: none;
+}
+
+.areaText,
+.pathText {
+  font-weight: 800;
+  paint-order: stroke;
+  pointer-events: none;
+  stroke: rgba(6, 13, 18, 0.88);
+  text-rendering: geometricPrecision;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.areaText {
+  fill: #e6fbff;
+}
+
+.pathText {
+  fill: #ffd66b;
+}
+
 .switchPolygon {
   fill: rgba(255, 190, 84, 0.16);
   stroke: rgba(255, 205, 120, 0.95);
@@ -374,6 +397,17 @@
   user-select: none;
 }
 
+.switchSpriteObject {
+  pointer-events: none;
+}
+
+.switchSprite {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 .nonInteractiveOverlay {
   pointer-events: none;
 }
@@ -383,16 +417,16 @@
 }
 
 .poiDot {
-  fill: rgba(76, 225, 166, 0.9);
-  stroke: #dffef3;
+  fill: rgba(248, 92, 176, 0.92);
+  stroke: #ffe6f4;
   stroke-width: 2px;
 }
 
 .poiText {
-  fill: #eafff7;
+  fill: #b8ff7a;
   font-weight: 700;
   paint-order: stroke;
-  stroke: rgba(0, 0, 0, 0.65);
+  stroke: rgba(4, 10, 4, 0.82);
   text-rendering: geometricPrecision;
   pointer-events: none;
   user-select: none;
@@ -478,13 +512,25 @@
   border-radius: 8px;
   padding: 0.35rem 0.5rem;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 0.4rem;
+  min-height: 52px;
 }
 
-.spawnName {
-  color: #eff8ff;
-  font-size: 0.85rem;
+.spawnSpriteWrap {
+  width: 44px;
+  height: 40px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+}
+
+.spawnSprite {
+  max-width: 44px;
+  max-height: 40px;
+  object-fit: contain;
+  image-rendering: auto;
 }
 
 .spawnMeta {
