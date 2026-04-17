@@ -13,7 +13,8 @@ import {
   toggleValue,
 } from './components/mapHelpers'
 
-const regionList = regionMapsData.regions
+const defaultRegionList = regionMapsData.regions
+const allRegionList = regionMapsData.allRegions || regionMapsData.regions
 
 const defaultFilters = {
   showSpawns: true,
@@ -89,7 +90,9 @@ function normalizeRegionMaps(region) {
 }
 
 export default function RegionMaps() {
-  const [activeRegionId, setActiveRegionId] = useState(regionList[0].id)
+  const [showAllRegions, setShowAllRegions] = useState(false)
+  const regionList = showAllRegions ? allRegionList : defaultRegionList
+  const [activeRegionId, setActiveRegionId] = useState(defaultRegionList[0].id)
   const [filters, setFilters] = useState(defaultFilters)
   const [selectedAreaId, setSelectedAreaId] = useState(null)
   const [debugMode, setDebugMode] = useState(false)
@@ -97,7 +100,7 @@ export default function RegionMaps() {
 
   useDocumentHead({
     title: 'Interactive Region Maps - Pokemon Routes, Spawns, and POIs',
-    description: 'Explore interactive Pokemon region maps for Kanto, Johto, Hoenn, Sinnoh, and Unova with pan/zoom overlays, spawn filters, and route details.',
+    description: 'Explore interactive Pokemon region maps with pan/zoom overlays, spawn filters, and route details.',
     canonicalPath: '/region-maps/',
     breadcrumbs: [
       { name: 'Home', url: '/' },
@@ -107,7 +110,7 @@ export default function RegionMaps() {
 
   const activeRegion = useMemo(
     () => regionList.find((region) => region.id === activeRegionId) || regionList[0],
-    [activeRegionId]
+    [activeRegionId, regionList]
   )
 
   const maps = useMemo(() => normalizeRegionMaps(activeRegion), [activeRegion])
@@ -188,9 +191,20 @@ export default function RegionMaps() {
 
   return (
     <div className={`${styles.pageWrap} ${isFullscreen ? styles.pageWrapFullscreen : ''}`}>
+      <div className={styles.workInProgress}>
+        <button
+          type="button"
+          className={styles.hiddenWorkButton}
+          onClick={() => setShowAllRegions(true)}
+          aria-label="Reveal work in progress regions"
+        >
+          WORK
+        </button>
+        <span> IN PROGRESS</span>
+      </div>
       <h1 className="page-title">Interactive Region Maps</h1>
       <p className={styles.heroDescription}>
-        Pan, zoom, and inspect area overlays for Kanto, Johto, Hoenn, Sinnoh, and Unova.
+        Pan, zoom, and inspect area overlays while this section is being built.
         Use filters to surface specific spawn pools and toggle annotation layers.
       </p>
 

@@ -51,10 +51,14 @@ function intersects(a, b) {
   return !(a.x + a.width < b.x || b.x + b.width < a.x || a.y + a.height < b.y || b.y + b.height < a.y)
 }
 
-function getMarkerVisualScale(mapWidth) {
-  if (mapWidth <= 900) return { fontSize: 11, radius: 5, offset: 8 }
-  if (mapWidth <= 1400) return { fontSize: 13, radius: 6, offset: 10 }
-  return { fontSize: 15, radius: 7, offset: 12 }
+function getMarkerVisualScale(mapWidth, viewScale = 1) {
+  const targetScreenFontSize = mapWidth <= 900 ? 11 : mapWidth <= 1400 ? 12 : 14
+  const fontSize = clamp(targetScreenFontSize / Math.max(viewScale, 0.1), targetScreenFontSize, 34)
+  return {
+    fontSize,
+    radius: clamp(fontSize * 0.48, 5, 14),
+    offset: clamp(fontSize * 0.82, 9, 24),
+  }
 }
 
 function getSwitchLabelVisualScale(mapWidth) {
@@ -73,15 +77,19 @@ function normalizePokemonLabel(label) {
   return label.trim().toLowerCase()
 }
 
-function getRouteLabelVisualScale(mapWidth) {
-  if (mapWidth <= 900) return { fontSize: 10, strokeWidth: 2.2 }
-  if (mapWidth <= 1400) return { fontSize: 13, strokeWidth: 2.8 }
-  return { fontSize: 22, strokeWidth: 4.5 }
+function getRouteLabelVisualScale(mapWidth, viewScale = 1) {
+  const targetScreenFontSize = mapWidth <= 900 ? 11 : mapWidth <= 1400 ? 12 : 14
+  const minScreenFontSize = mapWidth <= 900 ? 9 : mapWidth <= 1400 ? 10 : 12
+  return {
+    fontSize: clamp(targetScreenFontSize / Math.max(viewScale, 0.1), targetScreenFontSize, 34),
+    minFontSize: clamp(minScreenFontSize / Math.max(viewScale, 0.1), minScreenFontSize, 28),
+  }
 }
 
-function getTextBox(label, x, y, fontSize, anchor = 'middle') {
-  const width = Math.max(fontSize * 2.4, String(label || '').length * fontSize * 0.62)
-  const height = fontSize + 7
+function getTextBox(label, x, y, fontSize, anchor = 'middle', paddingX = fontSize * 0.55, paddingY = fontSize * 0.28) {
+  const textWidth = Math.max(fontSize * 2.4, String(label || '').length * fontSize * 0.64)
+  const width = textWidth + paddingX * 2
+  const height = fontSize + paddingY * 2
   return {
     x: anchor === 'middle' ? x - width / 2 : x,
     y: y - height / 2,
@@ -90,26 +98,31 @@ function getTextBox(label, x, y, fontSize, anchor = 'middle') {
   }
 }
 
-function placeTextBox(baseBox, placed, mapWidth, mapHeight) {
-  const step = Math.max(6, baseBox.height * 0.92)
-  const offsets = [0]
-  for (let index = 1; index <= 18; index += 1) offsets.push(-step * index)
-  for (let index = 1; index <= 8; index += 1) offsets.push(step * index)
+function getLabelLayout(label, x, y, scale, placed, mapWidth, mapHeight) {
+  const minFontSize = Math.min(scale.fontSize, scale.minFontSize)
+  const steps = 8
 
-  for (const offset of offsets) {
-    const box = {
-      ...baseBox,
-      x: clamp(baseBox.x, 2, Math.max(2, mapWidth - baseBox.width - 2)),
-      y: clamp(baseBox.y + offset, 2, Math.max(2, mapHeight - baseBox.height - 2)),
+  for (let step = 0; step <= steps; step += 1) {
+    const progress = step / steps
+    const fontSize = scale.fontSize - (scale.fontSize - minFontSize) * progress
+    const box = getTextBox(label, x, y, fontSize)
+    const isInsideMap = box.x >= 3
+      && box.y >= 3
+      && box.x + box.width <= mapWidth - 3
+      && box.y + box.height <= mapHeight - 3
+
+    if (isInsideMap && !placed.some((existing) => intersects(existing, box))) {
+      return {
+        x,
+        y,
+        box,
+        fontSize,
+        strokeWidth: Math.max(1.1, fontSize * 0.11),
+      }
     }
-    if (!placed.some((existing) => intersects(existing, box))) return box
   }
 
-  return {
-    ...baseBox,
-    x: clamp(baseBox.x, 2, Math.max(2, mapWidth - baseBox.width - 2)),
-    y: clamp(baseBox.y - step * 18, 2, Math.max(2, mapHeight - baseBox.height - 2)),
-  }
+  return null
 }
 
 function centerOfPoints(points = []) {
@@ -150,18 +163,18 @@ function midpointOfPath(points = []) {
   return { x: last[0], y: last[1] }
 }
 
-function layoutMarkers(markers, mapWidth, mapHeight, placed = []) {
-  const { fontSize, radius, offset } = getMarkerVisualScale(mapWidth)
-  const lineHeight = fontSize + 3
-  const charWidth = fontSize * 0.54
-  const labelGap = Math.max(6, Math.round(fontSize * 0.45))
+function layoutMarkers(markers, mapWidth, mapHeight, placed = [], viewScale = 1) {
+  const { fontSize, radius, offset } = getMarkerVisualScale(mapWidth, viewScale)
+  const labelGap = Math.max(7, Math.round(fontSize * 0.48))
 
   const result = markers.map((marker) => {
-    const width = Math.max(30, Math.round(marker.label.length * charWidth))
-    const height = lineHeight
+    const labelBox = getTextBox(marker.label, 0, 0, fontSize, 'start', fontSize * 0.25, fontSize * 0.18)
+    const { width, height } = labelBox
     const candidates = [
       { x: marker.x + offset, y: marker.y - height / 2 },
       { x: marker.x - offset - width, y: marker.y - height / 2 },
+      { x: marker.x - width / 2, y: marker.y - radius - height - labelGap },
+      { x: marker.x - width / 2, y: marker.y + radius + labelGap },
       { x: marker.x + offset, y: marker.y - height - labelGap },
       { x: marker.x - offset - width, y: marker.y - height - labelGap },
       { x: marker.x + offset, y: marker.y + labelGap },
@@ -183,83 +196,78 @@ function layoutMarkers(markers, mapWidth, mapHeight, placed = []) {
     }
 
     if (!chosen) {
-      const fallback = candidates[0]
-      chosen = {
-        x: clamp(fallback.x, 1, mapWidth - width - 1),
-        y: clamp(fallback.y, 1, mapHeight - height - 1),
-        width,
-        height,
+      return {
+        ...marker,
+        labelVisible: false,
+        fontSize,
+        radius,
+        strokeWidth: Math.max(1.8, fontSize * 0.14),
       }
     }
 
     placed.push(chosen)
     return {
       ...marker,
+      labelVisible: true,
       labelX: chosen.x,
-      labelY: chosen.y,
+      labelY: chosen.y + chosen.height / 2,
       fontSize,
       radius,
-      strokeWidth: Math.max(2.2, fontSize * 0.2),
+      strokeWidth: Math.max(1.8, fontSize * 0.14),
     }
   })
 
   return result
 }
 
-function layoutMapAnnotations({ areas, paths, markers, showPaths, showMarkers, mapWidth, mapHeight }) {
+function layoutMapAnnotations({ areas, paths, markers, showPaths, showMarkers, mapWidth, mapHeight, viewScale }) {
   const placed = []
-  const routeScale = getRouteLabelVisualScale(mapWidth)
+  const routeScale = getRouteLabelVisualScale(mapWidth, viewScale)
   const markerLayouts = []
   const areaLabels = []
   const pathLabels = []
 
-  areas.forEach((area) => {
-    const label = area.name || area.id
-    if (!label) return
-    const center = centerOfPoints(area.points)
-    const box = placeTextBox(
-      getTextBox(label, center.x, center.y, routeScale.fontSize),
-      placed,
-      mapWidth,
-      mapHeight
-    )
-    placed.push(box)
-    areaLabels.push({
-      id: area.id,
-      label,
-      x: box.x + box.width / 2,
-      y: box.y + box.height / 2,
-      fontSize: routeScale.fontSize,
-      strokeWidth: routeScale.strokeWidth,
-    })
-  })
+  if (showMarkers) {
+    markerLayouts.push(...layoutMarkers(markers, mapWidth, mapHeight, placed, viewScale))
+  }
 
   if (showPaths) {
     paths.forEach((path) => {
       const label = path.label || path.id
       if (!label) return
       const center = midpointOfPath(path.points)
-      const box = placeTextBox(
-        getTextBox(label, center.x, center.y, routeScale.fontSize),
-        placed,
-        mapWidth,
-        mapHeight
-      )
-      placed.push(box)
+      const layout = getLabelLayout(label, center.x, center.y, routeScale, placed, mapWidth, mapHeight)
+      if (!layout) return
+      placed.push(layout.box)
       pathLabels.push({
         id: path.id,
         label,
-        x: box.x + box.width / 2,
-        y: box.y + box.height / 2,
-        fontSize: routeScale.fontSize,
-        strokeWidth: routeScale.strokeWidth,
+        x: layout.x,
+        y: layout.y,
+        box: layout.box,
+        fontSize: layout.fontSize,
+        strokeWidth: layout.strokeWidth,
       })
     })
   }
 
-  if (showMarkers) {
-    markerLayouts.push(...layoutMarkers(markers, mapWidth, mapHeight, placed))
-  }
+  areas.forEach((area) => {
+    const label = area.name || area.id
+    if (!label) return
+    const center = centerOfPoints(area.points)
+    const layout = getLabelLayout(label, center.x, center.y, routeScale, placed, mapWidth, mapHeight)
+    if (!layout) return
+    placed.push(layout.box)
+    areaLabels.push({
+      id: area.id,
+      label,
+      x: layout.x,
+      y: layout.y,
+      box: layout.box,
+      fontSize: layout.fontSize,
+      strokeWidth: layout.strokeWidth,
+    })
+  })
 
   return {
     areaLabels: new Map(areaLabels.map((label) => [label.id, label])),
@@ -322,6 +330,7 @@ export default function InteractiveRegionMap({
       showMarkers,
       mapWidth: mapConfig.map.width,
       mapHeight: mapConfig.map.height,
+      viewScale: transform?.scale ?? 1,
     }),
     [
       mapConfig.markers,
@@ -330,6 +339,7 @@ export default function InteractiveRegionMap({
       mapConfig.paths,
       showMarkers,
       showPaths,
+      transform?.scale,
       visibleAreas,
     ]
   )
@@ -705,19 +715,29 @@ export default function InteractiveRegionMap({
                   className={styles.pathLine}
                 />
                 {annotationLayouts.pathLabels.has(path.id) && (
-                  <text
-                    x={annotationLayouts.pathLabels.get(path.id).x}
-                    y={annotationLayouts.pathLabels.get(path.id).y}
-                    className={styles.pathText}
-                    style={{
-                      fontSize: `${annotationLayouts.pathLabels.get(path.id).fontSize}px`,
-                      strokeWidth: `${annotationLayouts.pathLabels.get(path.id).strokeWidth}px`,
-                    }}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                  >
-                    {annotationLayouts.pathLabels.get(path.id).label}
-                  </text>
+                  <>
+                    <rect
+                      x={annotationLayouts.pathLabels.get(path.id).box.x}
+                      y={annotationLayouts.pathLabels.get(path.id).box.y}
+                      width={annotationLayouts.pathLabels.get(path.id).box.width}
+                      height={annotationLayouts.pathLabels.get(path.id).box.height}
+                      rx={Math.max(4, annotationLayouts.pathLabels.get(path.id).fontSize * 0.35)}
+                      className={`${styles.labelBackdrop} ${styles.pathLabelBackdrop}`}
+                    />
+                    <text
+                      x={annotationLayouts.pathLabels.get(path.id).x}
+                      y={annotationLayouts.pathLabels.get(path.id).y}
+                      className={styles.pathText}
+                      style={{
+                        fontSize: `${annotationLayouts.pathLabels.get(path.id).fontSize}px`,
+                        strokeWidth: `${annotationLayouts.pathLabels.get(path.id).strokeWidth}px`,
+                      }}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      {annotationLayouts.pathLabels.get(path.id).label}
+                    </text>
+                  </>
                 )}
               </g>
             ))}
@@ -747,19 +767,29 @@ export default function InteractiveRegionMap({
                   onMouseLeave={() => setHoveredArea(null)}
                 />
                 {annotationLayouts.areaLabels.has(area.id) && (
-                  <text
-                    x={annotationLayouts.areaLabels.get(area.id).x}
-                    y={annotationLayouts.areaLabels.get(area.id).y}
-                    className={styles.areaText}
-                    style={{
-                      fontSize: `${annotationLayouts.areaLabels.get(area.id).fontSize}px`,
-                      strokeWidth: `${annotationLayouts.areaLabels.get(area.id).strokeWidth}px`,
-                    }}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                  >
-                    {annotationLayouts.areaLabels.get(area.id).label}
-                  </text>
+                  <>
+                    <rect
+                      x={annotationLayouts.areaLabels.get(area.id).box.x}
+                      y={annotationLayouts.areaLabels.get(area.id).box.y}
+                      width={annotationLayouts.areaLabels.get(area.id).box.width}
+                      height={annotationLayouts.areaLabels.get(area.id).box.height}
+                      rx={Math.max(4, annotationLayouts.areaLabels.get(area.id).fontSize * 0.35)}
+                      className={`${styles.labelBackdrop} ${styles.areaLabelBackdrop}`}
+                    />
+                    <text
+                      x={annotationLayouts.areaLabels.get(area.id).x}
+                      y={annotationLayouts.areaLabels.get(area.id).y}
+                      className={styles.areaText}
+                      style={{
+                        fontSize: `${annotationLayouts.areaLabels.get(area.id).fontSize}px`,
+                        strokeWidth: `${annotationLayouts.areaLabels.get(area.id).strokeWidth}px`,
+                      }}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      {annotationLayouts.areaLabels.get(area.id).label}
+                    </text>
+                  </>
                 )}
               </g>
             ))}
@@ -818,15 +848,17 @@ export default function InteractiveRegionMap({
             {showMarkers && annotationLayouts.markerLayouts.map((marker) => (
               <g key={marker.id} className={styles.poiGroup}>
                 <circle cx={marker.x} cy={marker.y} r={marker.radius} className={styles.poiDot} />
-                <text
-                  x={marker.labelX}
-                  y={marker.labelY}
-                  className={styles.poiText}
-                  style={{ fontSize: `${marker.fontSize}px`, strokeWidth: `${marker.strokeWidth}px` }}
-                  dominantBaseline="hanging"
-                >
-                  {marker.label}
-                </text>
+                {marker.labelVisible && (
+                  <text
+                    x={marker.labelX}
+                    y={marker.labelY}
+                    className={styles.poiText}
+                    style={{ fontSize: `${marker.fontSize}px`, strokeWidth: `${marker.strokeWidth}px` }}
+                    dominantBaseline="middle"
+                  >
+                    {marker.label}
+                  </text>
+                )}
               </g>
             ))}
 

@@ -4,6 +4,8 @@ import hoenn from './hoenn.json'
 import sinnoh from './sinnoh.json'
 import unova from './unova.json'
 
-export const regions = [kanto, johto, hoenn, sinnoh, unova]
+export const hiddenRegions = [kanto, johto, hoenn, sinnoh]
+export const regions = [unova]
+export const allRegions = [...hiddenRegions, ...regions]
 
-export default { regions }
+export default { regions, hiddenRegions, allRegions }
