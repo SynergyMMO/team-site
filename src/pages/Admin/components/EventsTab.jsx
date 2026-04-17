@@ -1,7 +1,136 @@
 // EventsTab.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import styles from "../Admin.module.css";
 import ConfirmDialog from "./ConfirmDialog";
+
+const COMMON_TIME_ZONES = [
+  { value: "America/New_York", label: "EST / EDT - Eastern Time" },
+  { value: "America/Chicago", label: "CST / CDT - Central Time" },
+  { value: "America/Denver", label: "MST / MDT - Mountain Time" },
+  { value: "America/Los_Angeles", label: "PST / PDT - Pacific Time" },
+  { value: "Europe/London", label: "GMT / BST - UK Time" },
+  { value: "UTC", label: "UTC" },
+];
+
+function getUserTimeZone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+}
+
+function getTimeZoneShortName(timeZone) {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      timeZoneName: "short",
+    }).formatToParts(new Date());
+
+    return parts.find((part) => part.type === "timeZoneName")?.value || timeZone;
+  } catch {
+    return timeZone;
+  }
+}
+
+function getTimeZoneLabel(timeZone) {
+  const shortName = getTimeZoneShortName(timeZone);
+  const readableName = timeZone.replaceAll("_", " ");
+  return `${shortName} - ${readableName}`;
+}
+
+function buildTimeZoneOptions(userTimeZone) {
+  const allTimeZones = typeof Intl.supportedValuesOf === "function"
+    ? Intl.supportedValuesOf("timeZone")
+    : [];
+
+  const options = [];
+  const seen = new Set();
+
+  const addOption = (option) => {
+    if (!option?.value || seen.has(option.value)) return;
+    seen.add(option.value);
+    options.push(option);
+  };
+
+  addOption({ value: userTimeZone, label: `${getTimeZoneLabel(userTimeZone)} (your timezone)` });
+  COMMON_TIME_ZONES.forEach(addOption);
+  allTimeZones.forEach((timeZone) => addOption({ value: timeZone, label: getTimeZoneLabel(timeZone) }));
+
+  return options;
+}
+
+function getZonedDateParts(date, timeZone) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+
+  return Object.fromEntries(parts.map((part) => [part.type, part.value]));
+}
+
+function toZonedDateTimeInput(isoString, timeZone) {
+  if (!isoString) return "";
+
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const parts = getZonedDateParts(date, timeZone);
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+}
+
+function parseDateTimeInput(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value || "");
+  if (!match) return null;
+
+  const [, year, month, day, hour, minute] = match;
+  return {
+    year: Number(year),
+    month: Number(month),
+    day: Number(day),
+    hour: Number(hour),
+    minute: Number(minute),
+  };
+}
+
+function getTimeZoneOffsetMs(date, timeZone) {
+  const parts = getZonedDateParts(date, timeZone);
+  const zonedTimeAsUtc = Date.UTC(
+    Number(parts.year),
+    Number(parts.month) - 1,
+    Number(parts.day),
+    Number(parts.hour),
+    Number(parts.minute),
+    Number(parts.second),
+  );
+
+  return zonedTimeAsUtc - date.getTime();
+}
+
+function zonedDateTimeInputToIso(value, timeZone) {
+  const parts = parseDateTimeInput(value);
+  if (!parts) return "";
+
+  const localTimeAsUtc = Date.UTC(
+    parts.year,
+    parts.month - 1,
+    parts.day,
+    parts.hour,
+    parts.minute,
+  );
+
+  let utcTime = localTimeAsUtc;
+  for (let i = 0; i < 4; i += 1) {
+    const offset = getTimeZoneOffsetMs(new Date(utcTime), timeZone);
+    const nextUtcTime = localTimeAsUtc - offset;
+    if (nextUtcTime === utcTime) break;
+    utcTime = nextUtcTime;
+  }
+
+  return new Date(utcTime).toISOString();
+}
 
 export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutating }) {
   const emptyEvent = {
@@ -35,6 +164,8 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
   const [editingId, setEditingId] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [localEvents, setLocalEvents] = useState([]);
+  const [selectedTimeZone, setSelectedTimeZone] = useState(getUserTimeZone);
+  const timeZoneOptions = useMemo(() => buildTimeZoneOptions(getUserTimeZone()), []);
   const [categorizedEvents, setCategorizedEvents] = useState({
     ongoing: [],
     upcoming: [],
@@ -50,14 +181,6 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     setLocalEvents(eventsWithIds);
     categorizeEvents(eventsWithIds);
   }, [eventDB]);
-
-  const toLocalDateTime = (isoString) => {
-    if (!isoString) return "";
-    const date = new Date(isoString);
-    const tzOffset = date.getTimezoneOffset();
-    const localDate = new Date(date.getTime() - tzOffset * 60000);
-    return localDate.toISOString().slice(0, 16);
-  };
 
   const categorizeEvents = (events) => {
     const now = new Date();
@@ -82,8 +205,8 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
 
     const payload = {
       ...eventData,
-      startDate: new Date(eventData.startDate).toISOString(),
-      endDate: eventData.endDate ? new Date(eventData.endDate).toISOString() : null,
+      startDate: zonedDateTimeInputToIso(eventData.startDate, selectedTimeZone),
+      endDate: eventData.endDate ? zonedDateTimeInputToIso(eventData.endDate, selectedTimeZone) : null,
     };
 
     let updatedEvents;
@@ -100,15 +223,18 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     categorizeEvents(updatedEvents);
     setEventData(emptyEvent);
     setEditingId(null);
+    setSelectedTimeZone(getUserTimeZone());
   };
 
   const handleEdit = (event) => {
+    const userTimeZone = getUserTimeZone();
     setEditingId(event.id);
+    setSelectedTimeZone(userTimeZone);
     setEventData({
       ...emptyEvent,
       ...event,
-      startDate: toLocalDateTime(event.startDate),
-      endDate: toLocalDateTime(event.endDate),
+      startDate: toZonedDateTimeInput(event.startDate, userTimeZone),
+      endDate: toZonedDateTimeInput(event.endDate, userTimeZone),
       natureBonus: event.natureBonus || [],
       validPokemon: event.validPokemon || [],
       targetPokemon: event.targetPokemon || [],
@@ -228,6 +354,26 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
     setEventData(prev => ({ ...prev, hideAndSeekRounds: updated }));
   };
 
+  const renderTimeZoneSelector = () => (
+    <>
+      <label>Timezone:</label>
+      <select
+        className={styles.adminInput}
+        value={selectedTimeZone}
+        onChange={(e) => setSelectedTimeZone(e.target.value)}
+      >
+        {timeZoneOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <p className={styles.hintText}>
+        Pick the timezone first, then enter the event time in that timezone. It will be saved as UTC automatically.
+      </p>
+    </>
+  );
+
   return (
     <div>
       <h3>{editingId ? "Edit Event" : "Create Event"}</h3>
@@ -302,6 +448,7 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
             />
 
             <label>Date/Time:</label>
+            {renderTimeZoneSelector()}
             <input
               type="datetime-local"
               className={styles.adminInput}
@@ -378,6 +525,8 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
 
         {eventData.eventType !== "hideandseek" && (
           <>
+            {renderTimeZoneSelector()}
+
             <label>Start Date & Time:</label>
             <input
               type="datetime-local"

@@ -45,6 +45,8 @@ const isTruthyFlag = (value) => {
   return normalized === 'yes' || normalized === 'yws' || normalized === 'y' || normalized === 'true' || normalized === '1'
 }
 
+const isSoldPokemon = (shiny) => isTruthyFlag(shiny?.Sold)
+
 const normalizePokemonForDex = (value) => {
   return String(value || '')
     .normalize('NFKC')
@@ -102,6 +104,8 @@ const getPlayerTeamDexLineSet = (playerData) => {
   const shinies = Object.values(playerData?.shinies || {})
 
   shinies.forEach((shiny) => {
+    if (isSoldPokemon(shiny)) return
+
     const lineKey = getPokemonLineKey(shiny?.Pokemon)
     if (lineKey) uniqueLines.add(lineKey)
   })
@@ -120,6 +124,8 @@ const getTeamDexUniqueEntryCounts = (data) => {
 
     const lineToPokemon = new Map()
     Object.values(playerData?.shinies || {}).forEach((shiny) => {
+      if (isSoldPokemon(shiny)) return
+
       const lineKey = getPokemonLineKey(shiny?.Pokemon)
       if (lineKey && !lineToPokemon.has(lineKey)) {
         lineToPokemon.set(lineKey, shiny.Pokemon)
@@ -171,16 +177,16 @@ const getNewLivingDexStats = (data) => {
     const speciesMap = new Map()
 
     Object.values(playerData?.shinies || {}).forEach((shiny) => {
-    if (isTruthyFlag(shiny?.Sold)) return  
+      if (isSoldPokemon(shiny)) return
 
-    const key = normalizePokemonForDex(shiny?.Pokemon)
-    const displayName = getSpeciesDisplayName(shiny)
-    if (!key || !displayName) return
+      const key = normalizePokemonForDex(shiny?.Pokemon)
+      const displayName = getSpeciesDisplayName(shiny)
+      if (!key || !displayName) return
 
-    if (!speciesMap.has(key)) {
-      speciesMap.set(key, displayName)
-    }
-  })
+      if (!speciesMap.has(key)) {
+        speciesMap.set(key, displayName)
+      }
+    })
 
 
     playerSpeciesMaps[playerName] = speciesMap
@@ -733,7 +739,9 @@ export const calculatePlayerStatistics = (data) => {
       minEncounterPokemon = minEntry?.Pokemon || null
     }
 
-    const rareShinies = shinyEntries.filter((s) => isRarePokemon(s.Pokemon))
+    const ownedShinyEntries = shinyEntries.filter((s) => !isSoldPokemon(s))
+
+    const rareShinies = ownedShinyEntries.filter((s) => isRarePokemon(s.Pokemon))
     const rareCount = rareShinies.length
     const rarePokemons = [...new Set(rareShinies.map((s) => s.Pokemon))]
 
@@ -760,9 +768,9 @@ export const calculatePlayerStatistics = (data) => {
 
     const weekData = getMostInWeek(shinyEntries)
 
-    const singleEncounterCount = shinyEntries.filter((s) => getEncounterMethod(s) === 'single').length
+    const singleEncounterCount = ownedShinyEntries.filter((s) => getEncounterMethod(s) === 'single').length
     const horde5xCount = shinyEntries.filter((s) => getEncounterMethod(s) === '5x horde').length
-    const fishingCount = shinyEntries.filter((s) => getEncounterMethod(s) === 'fishing').length
+    const fishingCount = ownedShinyEntries.filter((s) => getEncounterMethod(s) === 'fishing').length
 
     const safariFleeCount = shinyEntries.filter((s) => isTruthyFlag(s.Safari) && isTruthyFlag(s.Sold)).length
     const safariCatchCount = shinyEntries.filter((s) => isTruthyFlag(s.Safari) && !isTruthyFlag(s.Sold)).length

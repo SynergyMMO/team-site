@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   },
   { to: '/pokedex/', label: 'PokeDex' },
   { to: '/safari-zones/', label: 'Safari Zones' },
+  { to: '/region-maps/', label: 'Region Maps' },
   { to: '/official-event-calendar/', label: 'Official Event Calendar' },
   {
     label: 'Tools',

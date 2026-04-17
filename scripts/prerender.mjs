@@ -36,7 +36,8 @@ const PAGE_KEYWORDS = {
   '/shiny-odds': 'Shiny Odds Calculator, advanced shiny odds, PokeMMO shiny odds, shiny probability, shiny boosts, shiny hunt tracker, shiny odds graph, Team Synergy shiny odds',
   '/bounties': `<h1 class="seo-semantic-hidden">Team Synergy Bounties - Shiny Hunting Challenges</h1><section class="seo-semantic-hidden"><p>The Team Synergy Bounties page features monthly and permanent shiny hunting challenges for all members. Complete bounties by catching the target Pokémon and earn recognition, trophies, or other rewards. Stay up to date with the latest monthly bounties and test your skills with ongoing permanent bounties. The Bounties system encourages friendly competition, community engagement, and helps hunters discover new targets. Join Team Synergy bounties to participate in unique shiny hunting events and showcase your achievements!</p></section>`,
   '/themes': "PokeMMO themes, encounter counter themes, Pokemon retexture, PokeMMO mods, custom UI, visual mods, Team Synergy themes, PokeMMO overlays, download themes, shiny hunting tools, game customization, PokeMMO resources",
-  '/time-display': 'PokeMMO time display, in-game clock, real-time events, Team Synergy time tool, PokeMMO time zones, event timing, shiny hunting time, day/night cycle, PokeMMO utilities, Team Synergy tools'
+  '/time-display': 'PokeMMO time display, in-game clock, real-time events, Team Synergy time tool, PokeMMO time zones, event timing, shiny hunting time, day/night cycle, PokeMMO utilities, Team Synergy tools',
+  '/region-maps': 'PokeMMO interactive map, Kanto map, Johto map, Hoenn map, Sinnoh map, Unova map, Pokemon spawn map, route overlays, Pokemon route planner, Team Synergy tools'
 };
 
 const DYNAMIC_KEYWORDS = {
@@ -241,6 +242,7 @@ const STATIC_ROUTES = [
   '/trophy-board',
   '/events',
   '/official-event-calendar',
+  '/region-maps',
   '/counter-generator',
   '/sprite-recolour',
   '/random-pokemon-generator',
@@ -1579,6 +1581,12 @@ async function prerender() {
       route: '/official-event-calendar',
       ogTitle: 'Official Event Calendar | Team Synergy - PokeMMO',
       ogDescription: 'View upcoming official PokeMMO PvP and Catch events from the official RSS feed, sorted by date and shown in your local timezone.',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+    },
+    '/region-maps': {
+      route: '/region-maps',
+      ogTitle: 'Interactive Region Maps | Team Synergy - PokeMMO',
+      ogDescription: 'Explore interactive region maps for Kanto, Johto, Hoenn, Sinnoh, and Unova with pan and zoom, area overlays, spawn filters, and route planning annotations.',
       ogImage: 'https://synergymmo.com/images/openGraph.jpg',
     },
     '/events': {

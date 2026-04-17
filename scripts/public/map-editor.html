@@ -1,0 +1,1206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Region Map Editor</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0e1720;
+      --panel: #142332;
+      --panel-2: #182b3b;
+      --line: #34536b;
+      --text: #edf7ff;
+      --muted: #a9c6d8;
+      --accent: #62c6ff;
+      --danger: #ff7878;
+      --ok: #71e3a1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #101c28;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    h1 { margin: 0; font-size: 20px; }
+    h2 { margin: 0 0 12px; font-size: 18px; }
+    h3 { margin: 12px 0 8px; font-size: 14px; color: var(--muted); }
+    button, select, input, textarea {
+      font: inherit;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: #0f1b26;
+    }
+    button {
+      cursor: pointer;
+      padding: 8px 11px;
+      background: #17324a;
+    }
+    button:hover { border-color: var(--accent); }
+    button.primary { background: #1d5a83; border-color: #57bff5; }
+    button.danger { background: #4a1d27; border-color: #93505b; color: #ffd9df; }
+    button.active { background: #23658f; border-color: #76d2ff; }
+    select, input {
+      min-height: 36px;
+      padding: 7px 9px;
+      width: 100%;
+    }
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      resize: vertical;
+      padding: 10px;
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .topControls {
+      display: grid;
+      grid-template-columns: 180px 230px 1fr;
+      gap: 10px;
+      align-items: end;
+      min-width: min(860px, 100%);
+    }
+    .status {
+      color: var(--muted);
+      font-size: 13px;
+      min-width: 220px;
+      text-align: right;
+    }
+    .status.ok { color: var(--ok); }
+    .status.error { color: var(--danger); }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 14px 20px 0;
+      flex-wrap: wrap;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 16px;
+      padding: 16px 20px 24px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      min-width: 0;
+    }
+    .list {
+      display: grid;
+      gap: 7px;
+      max-height: calc(100vh - 240px);
+      overflow: auto;
+      padding-right: 3px;
+    }
+    .list button {
+      text-align: left;
+      background: var(--panel-2);
+      display: grid;
+      gap: 3px;
+    }
+    .list small {
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .full { grid-column: 1 / -1; }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .editorWrap { display: grid; gap: 14px; }
+    .mapPreview {
+      position: relative;
+      height: 420px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0a121a;
+      overscroll-behavior: contain;
+      cursor: grab;
+      user-select: none;
+    }
+    .mapPreview.dragging {
+      cursor: grabbing;
+    }
+    .mapStage {
+      position: relative;
+      transform-origin: 0 0;
+    }
+    .mapStage img {
+      display: block;
+      max-width: none;
+      user-select: none;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .layerControls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .layerControls label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+    }
+    .layerControls input {
+      width: auto;
+      min-height: 0;
+    }
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.55fr);
+      gap: 14px;
+    }
+    .mono { font-family: "Cascadia Code", Consolas, monospace; }
+    @media (max-width: 1000px) {
+      header { display: grid; }
+      .topControls, .layout, .split { grid-template-columns: 1fr; }
+      .status { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Region Map Editor</h1>
+      <p class="hint">Edits <span class="mono">src/data/region_maps/*.json</span> directly. JSON fields must be valid before saving.</p>
+    </div>
+    <div class="topControls">
+      <label>Region<select id="regionSelect"></select></label>
+      <label>Current Map<select id="mapSelect"></select></label>
+      <div class="status" id="status">Loading...</div>
+    </div>
+  </header>
+  <nav class="tabs">
+    <button type="button" data-tab="routes" class="active">Routes / Areas</button>
+    <button type="button" data-tab="markers">Markers</button>
+    <button type="button" data-tab="paths">Paths</button>
+    <button type="button" data-tab="switchTriggers">Switch Triggers</button>
+    <button type="button" data-tab="maps">Maps & Images</button>
+  </nav>
+  <main class="layout">
+    <aside class="panel">
+      <div class="actions" style="margin-top:0">
+        <button type="button" id="newItemBtn" class="primary">New</button>
+        <button type="button" id="reloadBtn">Reload</button>
+      </div>
+      <label style="margin-top:12px">Search current tab
+        <input id="itemSearch" placeholder="Search routes, markers, paths...">
+      </label>
+      <h3 id="listTitle">Routes / Areas</h3>
+      <div class="list" id="itemList"></div>
+    </aside>
+    <section class="editorWrap">
+      <div class="panel">
+        <div class="split">
+          <div>
+            <h2 id="editorTitle">Select an item</h2>
+            <div id="editor"></div>
+          </div>
+          <div>
+            <h2>Point Editor</h2>
+            <p class="hint">Click the preview to append a point to the active points JSON. Use Reset Points to start a new polygon/polyline.</p>
+            <div class="actions">
+              <button type="button" id="resetPointsBtn">Reset Points</button>
+              <button type="button" id="boxModeBtn">Box Drag: Off</button>
+              <button type="button" id="diagonalModeBtn">Diagonal Drag: Off</button>
+              <label style="min-width:120px">Diagonal Width
+                <input id="diagonalWidth" type="number" min="8" step="4" value="72">
+              </label>
+              <label style="min-width:120px">Preview Scale
+                <select id="previewScale">
+                  <option value="0.25">25%</option>
+                  <option value="0.33" selected>33%</option>
+                  <option value="0.5">50%</option>
+                  <option value="0.75">75%</option>
+                  <option value="1">100%</option>
+                </select>
+              </label>
+            </div>
+            <div class="layerControls">
+              <label><input type="checkbox" id="showAreas" checked> Areas</label>
+              <label><input type="checkbox" id="showMarkers" checked> Markers</label>
+              <label><input type="checkbox" id="showPaths" checked> Paths</label>
+              <label><input type="checkbox" id="showTriggers" checked> Switches</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="mapPreview" id="mapPreview">
+          <div class="mapStage" id="mapStage">
+            <img id="mapImage" alt="">
+            <svg class="overlay" id="overlay"></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const state = {
+      regions: [],
+      region: null,
+      images: [],
+      mapId: '',
+      tab: 'routes',
+      selectedId: '',
+      selectedItem: null,
+      search: '',
+      boxMode: false,
+      diagonalMode: false,
+      dragStart: null,
+      panStart: null,
+      suppressClick: false,
+    }
+
+    const els = {
+      regionSelect: document.querySelector('#regionSelect'),
+      mapSelect: document.querySelector('#mapSelect'),
+      status: document.querySelector('#status'),
+      tabs: document.querySelectorAll('[data-tab]'),
+      itemList: document.querySelector('#itemList'),
+      listTitle: document.querySelector('#listTitle'),
+      editorTitle: document.querySelector('#editorTitle'),
+      editor: document.querySelector('#editor'),
+      itemSearch: document.querySelector('#itemSearch'),
+      newItemBtn: document.querySelector('#newItemBtn'),
+      reloadBtn: document.querySelector('#reloadBtn'),
+      mapPreview: document.querySelector('#mapPreview'),
+      mapImage: document.querySelector('#mapImage'),
+      mapStage: document.querySelector('#mapStage'),
+      overlay: document.querySelector('#overlay'),
+      resetPointsBtn: document.querySelector('#resetPointsBtn'),
+      boxModeBtn: document.querySelector('#boxModeBtn'),
+      diagonalModeBtn: document.querySelector('#diagonalModeBtn'),
+      diagonalWidth: document.querySelector('#diagonalWidth'),
+      previewScale: document.querySelector('#previewScale'),
+      showAreas: document.querySelector('#showAreas'),
+      showMarkers: document.querySelector('#showMarkers'),
+      showPaths: document.querySelector('#showPaths'),
+      showTriggers: document.querySelector('#showTriggers'),
+    }
+
+    function setStatus(message, type = '') {
+      els.status.textContent = message
+      els.status.className = `status ${type}`
+    }
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        headers: { 'Content-Type': 'application/json' },
+        ...options,
+      })
+      const data = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(data.error || response.statusText)
+      return data
+    }
+
+    function currentMap() {
+      return state.region?.maps?.find((map) => map.id === state.mapId) || state.region?.maps?.[0]
+    }
+
+    function allAreas() {
+      return (state.region?.maps || []).flatMap((map) => (map.areas || []).map((area) => ({ ...area, _sourceMapId: map.id })))
+    }
+
+    function routedAreas(mapId = state.mapId) {
+      return allAreas().filter((area) => (area.mapId || area._sourceMapId) === mapId)
+    }
+
+    function routedCollection(collection, mapId = state.mapId) {
+      const map = state.region?.maps?.find((entry) => entry.id === mapId)
+      return map?.[collection] || []
+    }
+
+    function collectionItems() {
+      const map = currentMap()
+      if (!map) return []
+      if (state.tab === 'routes') return routedAreas()
+      if (state.tab === 'maps') return state.region.maps || []
+      return map[state.tab] || []
+    }
+
+    function itemLabel(item) {
+      if (!item) return ''
+      if (state.tab === 'markers') return item.label || item.id
+      if (state.tab === 'maps') return item.name || item.id
+      return item.name || item.label || item.id
+    }
+
+    function itemSubLabel(item) {
+      if (state.tab === 'routes') return `${item.kind || 'area'} | ${(item.spawns || []).length} spawns | ${item.mapId || item._sourceMapId}`
+      if (state.tab === 'markers') return `${item.kind || 'marker'} | ${item.x}, ${item.y}`
+      if (state.tab === 'paths') return `${(item.points || []).length} points`
+      if (state.tab === 'switchTriggers') return `to ${item.targetMapId || 'unset'}${item.targetAreaId ? ` | route ${item.targetAreaId}` : ''} | ${(item.points || []).length} points`
+      return item.map?.image || item.id
+    }
+
+    function searchableText(item) {
+      return [
+        item.id,
+        item.name,
+        item.label,
+        item.kind,
+        item.mapId,
+        item._sourceMapId,
+        item.targetMapId,
+        item.map?.image,
+      ].filter(Boolean).join(' ').toLowerCase()
+    }
+
+    function filteredItems(items) {
+      const query = state.search.trim().toLowerCase()
+      if (!query) return items
+      return items.filter((item) => searchableText(item).includes(query))
+    }
+
+    function json(value) {
+      return JSON.stringify(value ?? null, null, 2)
+    }
+
+    function readJson(id, fallback) {
+      const raw = document.querySelector(`#${id}`)?.value.trim()
+      if (!raw) return fallback
+      return JSON.parse(raw)
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+    }
+
+    function imageOptions(selected = '') {
+      return state.images.map((image) => `<option value="${escapeHtml(image)}" ${image === selected ? 'selected' : ''}>${escapeHtml(image)}</option>`).join('')
+    }
+
+    function mapOptions(selected = '') {
+      return (state.region.maps || []).map((map) => `<option value="${escapeHtml(map.id)}" ${map.id === selected ? 'selected' : ''}>${escapeHtml(map.name)} (${escapeHtml(map.id)})</option>`).join('')
+    }
+
+    function areaOptions(selected = '', mapId = '') {
+      const areas = allAreas()
+      const filtered = mapId ? areas.filter((area) => (area.mapId || area._sourceMapId) === mapId) : areas
+      const options = filtered.length ? filtered : areas
+      return options.map((area) => {
+        const currentMapId = area.mapId || area._sourceMapId
+        return `<option value="${escapeHtml(area.id)}" ${area.id === selected ? 'selected' : ''}>${escapeHtml(area.name || area.id)} (${escapeHtml(currentMapId)})</option>`
+      }).join('')
+    }
+
+    function renderTargetAreaOptions() {
+      const targetAreaSelect = document.querySelector('#targetAreaId')
+      const targetMapSelect = document.querySelector('#targetMapId')
+      if (!targetAreaSelect || !targetMapSelect) return
+      const selected = targetAreaSelect.value
+      targetAreaSelect.innerHTML = `<option value="">Do not auto-select route</option>${areaOptions(selected, targetMapSelect.value)}`
+    }
+
+    function renderSelectors() {
+      els.regionSelect.innerHTML = state.regions.map((region) => `<option value="${region.id}" ${region.id === state.region?.id ? 'selected' : ''}>${region.name}</option>`).join('')
+      els.mapSelect.innerHTML = (state.region?.maps || []).map((map) => `<option value="${map.id}" ${map.id === state.mapId ? 'selected' : ''}>${map.name}</option>`).join('')
+    }
+
+    function renderList() {
+      const title = {
+        routes: 'Routes / Areas',
+        markers: 'Markers',
+        paths: 'Paths',
+        switchTriggers: 'Switch Triggers',
+        maps: 'Maps & Images',
+      }[state.tab]
+      els.listTitle.textContent = title
+      els.newItemBtn.textContent = state.tab === 'routes' ? 'New Area' : state.tab === 'switchTriggers' ? 'New Switch' : state.tab === 'maps' ? 'New Map' : `New ${title.slice(0, -1)}`
+      els.itemSearch.value = state.search
+      const items = filteredItems(collectionItems())
+      els.itemList.innerHTML = items.map((item) => `
+        <button type="button" data-id="${escapeHtml(item.id)}" class="${item.id === state.selectedId ? 'active' : ''}">
+          <span>${escapeHtml(itemLabel(item))}</span>
+          <small>${escapeHtml(itemSubLabel(item))}</small>
+        </button>
+      `).join('')
+      els.itemList.querySelectorAll('button').forEach((button) => {
+        button.addEventListener('click', () => selectItem(button.dataset.id))
+      })
+    }
+
+    function selectItem(id) {
+      state.selectedId = id
+      state.selectedItem = collectionItems().find((item) => item.id === id) || null
+      renderList()
+      renderEditor()
+      renderPreview()
+    }
+
+    function renderEditor() {
+      const item = state.selectedItem
+      if (!item) {
+        els.editorTitle.textContent = 'Select an item'
+        els.editor.innerHTML = '<p class="hint">Pick something from the list, or create a new item.</p>'
+        return
+      }
+      els.editorTitle.textContent = itemLabel(item)
+      if (state.tab === 'routes') renderAreaEditor(item)
+      if (state.tab === 'markers') renderMarkerEditor(item)
+      if (state.tab === 'paths') renderPathEditor(item)
+      if (state.tab === 'switchTriggers') renderSwitchEditor(item)
+      if (state.tab === 'maps') renderMapEditor(item)
+    }
+
+    function renderAreaEditor(area) {
+      els.editor.innerHTML = `
+        <div class="grid">
+          <label>ID<input id="areaId" value="${escapeHtml(area.id)}"></label>
+          <label>Name<input id="areaName" value="${escapeHtml(area.name)}"></label>
+          <label>Kind<input id="areaKind" value="${escapeHtml(area.kind || '')}"></label>
+          <label>Render On Map<select id="areaMapId">${mapOptions(area.mapId || area._sourceMapId)}</select></label>
+          <label class="full">Points JSON<textarea id="pointsEditor">${escapeHtml(json(area.points || []))}</textarea></label>
+          <label class="full">Spawns JSON<textarea id="spawnsEditor" style="min-height:240px">${escapeHtml(json(area.spawns || []))}</textarea></label>
+          <label class="full">Full Area JSON<textarea id="fullEditor" style="min-height:260px">${escapeHtml(json(area))}</textarea></label>
+        </div>
+        <div class="actions">
+          <button type="button" class="primary" id="saveAreaBtn">Save Area</button>
+          <button type="button" id="syncFullBtn">Sync Full JSON From Fields</button>
+          <button type="button" class="danger" id="deleteAreaBtn">Delete Area</button>
+        </div>
+      `
+      document.querySelector('#saveAreaBtn').addEventListener('click', saveArea)
+      document.querySelector('#syncFullBtn').addEventListener('click', syncAreaFullJson)
+      document.querySelector('#deleteAreaBtn').addEventListener('click', deleteSelected)
+      wireLivePreview()
+    }
+
+    function syncAreaFullJson() {
+      const full = {
+        ...state.selectedItem,
+        id: document.querySelector('#areaId').value.trim(),
+        name: document.querySelector('#areaName').value.trim(),
+        kind: document.querySelector('#areaKind').value.trim(),
+        mapId: document.querySelector('#areaMapId').value,
+        points: readJson('pointsEditor', []),
+        spawns: readJson('spawnsEditor', []),
+      }
+      delete full._sourceMapId
+      document.querySelector('#fullEditor').value = json(full)
+      renderPreview()
+    }
+
+    async function saveArea() {
+      try {
+        syncAreaFullJson()
+        const area = readJson('fullEditor', {})
+        if (!area.id) throw new Error('Area ID is required')
+        const oldId = state.selectedId
+        await api(`/api/regions/${state.region.id}/areas/${encodeURIComponent(oldId)}`, {
+          method: 'PUT',
+          body: JSON.stringify(area),
+        })
+        setStatus('Area saved', 'ok')
+        await loadRegion(state.region.id, area.mapId || state.mapId, 'routes', area.id)
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    function renderMarkerEditor(marker) {
+      els.editor.innerHTML = `
+        <div class="grid">
+          <label>ID<input id="markerId" value="${escapeHtml(marker.id)}"></label>
+          <label>Label<input id="markerLabel" value="${escapeHtml(marker.label || '')}"></label>
+          <label>Kind<input id="markerKind" value="${escapeHtml(marker.kind || '')}"></label>
+          <label>X<input id="markerX" type="number" value="${marker.x || 0}"></label>
+          <label>Y<input id="markerY" type="number" value="${marker.y || 0}"></label>
+          <label class="full">Full Marker JSON<textarea id="fullEditor">${escapeHtml(json(marker))}</textarea></label>
+        </div>
+        <div class="actions">
+          <button type="button" class="primary" id="saveItemBtn">Save Marker</button>
+          <button type="button" id="syncFullBtn">Sync Full JSON From Fields</button>
+          <button type="button" class="danger" id="deleteItemBtn">Delete Marker</button>
+        </div>
+      `
+      document.querySelector('#syncFullBtn').addEventListener('click', () => {
+        document.querySelector('#fullEditor').value = json({
+          ...marker,
+          id: document.querySelector('#markerId').value.trim(),
+          label: document.querySelector('#markerLabel').value.trim(),
+          kind: document.querySelector('#markerKind').value.trim(),
+          x: Number(document.querySelector('#markerX').value),
+          y: Number(document.querySelector('#markerY').value),
+        })
+        renderPreview()
+      })
+      document.querySelector('#saveItemBtn').addEventListener('click', saveCollectionItem)
+      document.querySelector('#deleteItemBtn').addEventListener('click', deleteSelected)
+      wireLivePreview()
+    }
+
+    function renderPathEditor(path) {
+      els.editor.innerHTML = `
+        <div class="grid">
+          <label>ID<input id="itemId" value="${escapeHtml(path.id)}"></label>
+          <label>Label<input id="itemLabel" value="${escapeHtml(path.label || '')}"></label>
+          <label class="full">Points JSON<textarea id="pointsEditor">${escapeHtml(json(path.points || []))}</textarea></label>
+          <label class="full">Full Path JSON<textarea id="fullEditor">${escapeHtml(json(path))}</textarea></label>
+        </div>
+        <div class="actions">
+          <button type="button" class="primary" id="saveItemBtn">Save Path</button>
+          <button type="button" id="syncFullBtn">Sync Full JSON From Fields</button>
+          <button type="button" class="danger" id="deleteItemBtn">Delete Path</button>
+        </div>
+      `
+      document.querySelector('#syncFullBtn').addEventListener('click', () => {
+        document.querySelector('#fullEditor').value = json({
+          ...path,
+          id: document.querySelector('#itemId').value.trim(),
+          label: document.querySelector('#itemLabel').value.trim(),
+          points: readJson('pointsEditor', []),
+        })
+        renderPreview()
+      })
+      document.querySelector('#saveItemBtn').addEventListener('click', saveCollectionItem)
+      document.querySelector('#deleteItemBtn').addEventListener('click', deleteSelected)
+      wireLivePreview()
+    }
+
+    function renderSwitchEditor(trigger) {
+      els.editor.innerHTML = `
+        <div class="grid">
+          <label>ID<input id="itemId" value="${escapeHtml(trigger.id)}"></label>
+          <label>Label<input id="itemLabel" value="${escapeHtml(trigger.label || '')}"></label>
+          <label>Target Map<select id="targetMapId"><option value="">Choose target</option>${mapOptions(trigger.targetMapId)}</select></label>
+          <label>Route Shown After Switch<select id="targetAreaId"><option value="">Do not auto-select route</option>${areaOptions(trigger.targetAreaId, trigger.targetMapId)}</select></label>
+          <label>Target PNG<select id="targetImage"><option value="">Do not change image</option>${imageOptions('')}</select></label>
+          <label>New Target Map ID<input id="newTargetMapId" placeholder="Optional: create map id"></label>
+          <label>New Target Map Name<input id="newTargetMapName" placeholder="Optional: create map name"></label>
+          <label class="full">Points JSON<textarea id="pointsEditor">${escapeHtml(json(trigger.points || []))}</textarea></label>
+          <label class="full">Move Routes Into Target Map<select id="moveRoutes" multiple size="8">${allAreas().map((area) => `<option value="${escapeHtml(area.id)}">${escapeHtml(area.name)} (${escapeHtml(area.mapId || area._sourceMapId)})</option>`).join('')}</select></label>
+          <label class="full">Full Switch JSON<textarea id="fullEditor">${escapeHtml(json(trigger))}</textarea></label>
+        </div>
+        <div class="actions">
+          <button type="button" class="primary" id="saveItemBtn">Save Switch Trigger</button>
+          <button type="button" id="syncFullBtn">Sync Full JSON From Fields</button>
+          <button type="button" id="moveRoutesBtn">Move Selected Routes</button>
+          <button type="button" class="danger" id="deleteItemBtn">Delete Switch Trigger</button>
+        </div>
+      `
+      document.querySelector('#targetMapId').addEventListener('change', renderTargetAreaOptions)
+      document.querySelector('#syncFullBtn').addEventListener('click', syncSwitchFullJson)
+      document.querySelector('#saveItemBtn').addEventListener('click', saveSwitchTrigger)
+      document.querySelector('#moveRoutesBtn').addEventListener('click', moveSelectedRoutes)
+      document.querySelector('#deleteItemBtn').addEventListener('click', deleteSelected)
+      wireLivePreview()
+    }
+
+    function syncSwitchFullJson() {
+      const newTargetId = document.querySelector('#newTargetMapId').value.trim()
+      const selectedTargetId = document.querySelector('#targetMapId').value
+      const trigger = {
+        ...state.selectedItem,
+        id: document.querySelector('#itemId').value.trim(),
+        label: document.querySelector('#itemLabel').value.trim(),
+        targetMapId: newTargetId || selectedTargetId,
+        targetAreaId: document.querySelector('#targetAreaId').value || undefined,
+        points: readJson('pointsEditor', []),
+      }
+      document.querySelector('#fullEditor').value = json(trigger)
+      renderPreview()
+    }
+
+    async function saveSwitchTrigger() {
+      try {
+        syncSwitchFullJson()
+        const trigger = readJson('fullEditor', {})
+        const targetImage = document.querySelector('#targetImage').value
+        const newTargetMapId = document.querySelector('#newTargetMapId').value.trim()
+        const newTargetMapName = document.querySelector('#newTargetMapName').value.trim()
+        if (newTargetMapId && targetImage) {
+          trigger.createTargetMap = true
+          trigger.targetMap = {
+            id: newTargetMapId,
+            name: newTargetMapName || newTargetMapId,
+            image: targetImage,
+            width: currentMap().map?.width || 768,
+            height: currentMap().map?.height || 504,
+            returnMapId: state.mapId,
+          }
+        }
+        await saveCollectionPayload(trigger)
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    async function moveSelectedRoutes() {
+      try {
+        const targetMapId = readJson('fullEditor', {}).targetMapId || document.querySelector('#targetMapId').value
+        if (!targetMapId) throw new Error('Pick or create a target map first')
+        const ids = Array.from(document.querySelector('#moveRoutes').selectedOptions).map((option) => option.value)
+        for (const id of ids) {
+          const area = allAreas().find((candidate) => candidate.id === id)
+          if (!area) continue
+          const next = { ...area, mapId: targetMapId }
+          delete next._sourceMapId
+          await api(`/api/regions/${state.region.id}/areas/${encodeURIComponent(id)}`, {
+            method: 'PUT',
+            body: JSON.stringify(next),
+          })
+        }
+        setStatus(`${ids.length} route(s) moved`, 'ok')
+        await loadRegion(state.region.id, state.mapId, state.tab, state.selectedId)
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    function renderMapEditor(map) {
+      els.editor.innerHTML = `
+        <div class="grid">
+          <label>ID<input id="mapIdField" value="${escapeHtml(map.id)}"></label>
+          <label>Name<input id="mapName" value="${escapeHtml(map.name || '')}"></label>
+          <label>Image<select id="mapImageSelect"><option value="${escapeHtml(map.map?.image || '')}">${escapeHtml(map.map?.image || 'Current image')}</option>${imageOptions(map.map?.image)}</select></label>
+          <label>Return Map<select id="returnMapId"><option value="">None</option>${mapOptions(map.returnMapId || '')}</select></label>
+          <label>Width<input id="mapWidth" type="number" value="${map.map?.width || 768}"></label>
+          <label>Height<input id="mapHeight" type="number" value="${map.map?.height || 504}"></label>
+        </div>
+        <div class="actions">
+          <button type="button" class="primary" id="saveMapBtn">Save Map</button>
+          <button type="button" class="danger" id="deleteMapBtn">Delete Map</button>
+        </div>
+      `
+      document.querySelector('#saveMapBtn').addEventListener('click', saveMap)
+      document.querySelector('#deleteMapBtn').addEventListener('click', deleteSelected)
+    }
+
+    async function saveMap() {
+      try {
+        const payload = {
+          id: document.querySelector('#mapIdField').value.trim(),
+          name: document.querySelector('#mapName').value.trim(),
+          image: document.querySelector('#mapImageSelect').value,
+          returnMapId: document.querySelector('#returnMapId').value || null,
+          width: Number(document.querySelector('#mapWidth').value),
+          height: Number(document.querySelector('#mapHeight').value),
+        }
+        await api(`/api/regions/${state.region.id}/maps/${encodeURIComponent(state.selectedId)}`, {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        })
+        setStatus('Map saved', 'ok')
+        await loadRegion(state.region.id, payload.id, 'maps', payload.id)
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    async function saveCollectionItem() {
+      try {
+        document.querySelector('#syncFullBtn')?.click()
+        const payload = readJson('fullEditor', {})
+        await saveCollectionPayload(payload)
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    async function saveCollectionPayload(payload) {
+      if (!payload.id) throw new Error('ID is required')
+      await api(`/api/regions/${state.region.id}/${state.tab}/${encodeURIComponent(state.selectedId)}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      })
+      setStatus('Saved', 'ok')
+      await loadRegion(state.region.id, state.mapId, state.tab, payload.id)
+    }
+
+    async function deleteSelected() {
+      if (!state.selectedId || !confirm(`Delete ${state.selectedId}?`)) return
+      try {
+        const path = state.tab === 'routes'
+          ? `/api/regions/${state.region.id}/areas/${encodeURIComponent(state.selectedId)}`
+          : state.tab === 'maps'
+            ? `/api/regions/${state.region.id}/maps/${encodeURIComponent(state.selectedId)}`
+            : `/api/regions/${state.region.id}/${state.tab}/${encodeURIComponent(state.selectedId)}`
+        await api(path, { method: 'DELETE' })
+        setStatus('Deleted', 'ok')
+        await loadRegion(state.region.id, state.tab === 'maps' && state.mapId === state.selectedId ? null : state.mapId, state.tab)
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    async function createNewItem() {
+      try {
+        const map = currentMap()
+        if (!map && state.tab !== 'maps') throw new Error('Select a map first')
+        let result
+        if (state.tab === 'routes') {
+          const name = prompt('Area name?', 'New Area') || 'New Area'
+          result = await api(`/api/regions/${state.region.id}/maps/${map.id}/areas`, {
+            method: 'POST',
+            body: JSON.stringify({ name, mapId: map.id }),
+          })
+          await loadRegion(state.region.id, map.id, 'routes', result.area.id)
+          return
+        }
+        if (state.tab === 'maps') {
+          const name = prompt('Map name?', 'New Map') || 'New Map'
+          result = await api(`/api/regions/${state.region.id}/maps`, {
+            method: 'POST',
+            body: JSON.stringify({ name }),
+          })
+          await loadRegion(state.region.id, result.map.id, 'maps', result.map.id)
+          return
+        }
+        result = await api(`/api/regions/${state.region.id}/maps/${map.id}/${state.tab}`, {
+          method: 'POST',
+          body: JSON.stringify({}),
+        })
+        await loadRegion(state.region.id, map.id, state.tab, result.item.id)
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    function wireLivePreview() {
+      document.querySelectorAll('#pointsEditor, #fullEditor').forEach((input) => {
+        input.addEventListener('input', renderPreview)
+      })
+    }
+
+    function activePoints() {
+      try {
+        if (document.querySelector('#pointsEditor')) return readJson('pointsEditor', [])
+        const full = readJson('fullEditor', {})
+        return full.points ? full.points : null
+      } catch {
+        return null
+      }
+    }
+
+    function setActivePoints(points) {
+      const pointsEditor = document.querySelector('#pointsEditor')
+      if (pointsEditor) pointsEditor.value = json(points)
+      renderPreview()
+    }
+
+    function setActiveMarkerPoint(point) {
+      const markerX = document.querySelector('#markerX')
+      const markerY = document.querySelector('#markerY')
+      if (!markerX || !markerY) return
+      markerX.value = point[0]
+      markerY.value = point[1]
+      document.querySelector('#syncFullBtn')?.click()
+      renderPreview()
+    }
+
+    function previewScaleValue() {
+      return Number(els.previewScale.value)
+    }
+
+    function setPreviewScale(nextScale, anchorEvent = null) {
+      const previousScale = previewScaleValue()
+      const clamped = Math.min(2.5, Math.max(0.1, nextScale))
+      const rounded = Math.round(clamped * 100) / 100
+      const previewRect = els.mapPreview.getBoundingClientRect()
+      const anchorX = anchorEvent ? anchorEvent.clientX - previewRect.left : els.mapPreview.clientWidth / 2
+      const anchorY = anchorEvent ? anchorEvent.clientY - previewRect.top : els.mapPreview.clientHeight / 2
+      const mapX = (els.mapPreview.scrollLeft + anchorX) / previousScale
+      const mapY = (els.mapPreview.scrollTop + anchorY) / previousScale
+
+      let option = Array.from(els.previewScale.options).find((entry) => Number(entry.value) === rounded)
+      if (!option) {
+        option = new Option(`${Math.round(rounded * 100)}%`, String(rounded))
+        els.previewScale.add(option)
+        Array.from(els.previewScale.options)
+          .sort((a, b) => Number(a.value) - Number(b.value))
+          .forEach((entry) => els.previewScale.add(entry))
+      }
+
+      els.previewScale.value = String(rounded)
+      renderPreview()
+      els.mapPreview.scrollLeft = mapX * rounded - anchorX
+      els.mapPreview.scrollTop = mapY * rounded - anchorY
+    }
+
+    function boxPoints(start, end) {
+      const minX = Math.min(start[0], end[0])
+      const minY = Math.min(start[1], end[1])
+      const maxX = Math.max(start[0], end[0])
+      const maxY = Math.max(start[1], end[1])
+      return [[minX, minY], [maxX, minY], [maxX, maxY], [minX, maxY]]
+    }
+
+    function diagonalRoutePoints(start, end) {
+      const width = Math.max(8, Number(els.diagonalWidth.value) || 72)
+      const dx = end[0] - start[0]
+      const dy = end[1] - start[1]
+      const length = Math.hypot(dx, dy)
+      if (length < 1) return boxPoints(start, [start[0] + width, start[1] + width])
+
+      const halfWidth = width / 2
+      const offsetX = Math.round((-dy / length) * halfWidth)
+      const offsetY = Math.round((dx / length) * halfWidth)
+
+      return [
+        [start[0] + offsetX, start[1] + offsetY],
+        [end[0] + offsetX, end[1] + offsetY],
+        [end[0] - offsetX, end[1] - offsetY],
+        [start[0] - offsetX, start[1] - offsetY],
+      ]
+    }
+
+    function eventMapPoint(event) {
+      const rect = els.mapImage.getBoundingClientRect()
+      const scale = previewScaleValue()
+      return [
+        Math.round((event.clientX - rect.left) / scale),
+        Math.round((event.clientY - rect.top) / scale),
+      ]
+    }
+
+    function canUseBoxMode() {
+      return state.tab === 'routes' || state.tab === 'switchTriggers'
+    }
+
+    function canUseDiagonalMode() {
+      return state.tab === 'routes'
+    }
+
+    function syncBoxButton() {
+      els.boxModeBtn.textContent = `Box Drag: ${state.boxMode ? 'On' : 'Off'}`
+      els.boxModeBtn.classList.toggle('active', state.boxMode)
+      els.boxModeBtn.disabled = !canUseBoxMode()
+      els.diagonalModeBtn.textContent = `Diagonal Drag: ${state.diagonalMode ? 'On' : 'Off'}`
+      els.diagonalModeBtn.classList.toggle('active', state.diagonalMode)
+      els.diagonalModeBtn.disabled = !canUseDiagonalMode()
+      els.diagonalWidth.disabled = !canUseDiagonalMode()
+    }
+
+    function renderPreview() {
+      const map = currentMap()
+      if (!map) return
+      const scale = previewScaleValue()
+      const image = map.map?.image || ''
+      els.mapImage.src = image ? `/${image}` : ''
+      els.mapImage.width = (map.map?.width || 768) * scale
+      els.mapImage.height = (map.map?.height || 504) * scale
+      els.mapStage.style.width = `${(map.map?.width || 768) * scale}px`
+      els.mapStage.style.height = `${(map.map?.height || 504) * scale}px`
+      els.overlay.setAttribute('viewBox', `0 0 ${map.map?.width || 768} ${map.map?.height || 504}`)
+      els.overlay.style.width = `${(map.map?.width || 768) * scale}px`
+      els.overlay.style.height = `${(map.map?.height || 504) * scale}px`
+
+      const selectedPoints = activePoints()
+      let shape = ''
+      const selectedId = state.selectedId
+
+      function pointString(points) {
+        return (points || []).map((point) => point.join(',')).join(' ')
+      }
+
+      function safeText(value) {
+        return escapeHtml(value).replaceAll("'", '&#39;')
+      }
+
+      function labelSize() {
+        return map.map?.width <= 900 ? 13 : 28
+      }
+
+      if (els.showAreas.checked) {
+        shape += routedAreas().map((area) => {
+          const selected = state.tab === 'routes' && area.id === selectedId
+          const center = centerOfPoints(area.points)
+          const label = safeText(area.name || area.id)
+          return `<polygon points="${pointString(area.points)}" fill="${selected ? 'rgba(255,221,118,.34)' : 'rgba(98,198,255,.16)'}" stroke="${selected ? '#ffe08a' : '#72cdfa'}" stroke-width="${selected ? 7 : 3}"><title>${label}</title></polygon><text x="${center.x}" y="${center.y}" text-anchor="middle" dominant-baseline="middle" fill="#fff8dd" stroke="#160f04" stroke-width="4" paint-order="stroke" font-size="${labelSize()}" font-weight="800">${label}</text>`
+        }).join('')
+      }
+
+      if (els.showPaths.checked) {
+        shape += routedCollection('paths').map((path) => {
+          const selected = state.tab === 'paths' && path.id === selectedId
+          const center = midpointOfPath(path.points)
+          const label = safeText(path.label || path.id)
+          return `<polyline points="${pointString(path.points)}" fill="none" stroke="${selected ? '#ffe08a' : '#ff995e'}" stroke-width="${selected ? 9 : 5}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${selected ? '' : '16 9'}"><title>${label}</title></polyline><text x="${center.x}" y="${center.y}" text-anchor="middle" dominant-baseline="middle" fill="#ffe7c5" stroke="#160f04" stroke-width="4" paint-order="stroke" font-size="${labelSize()}" font-weight="800">${label}</text>`
+        }).join('')
+      }
+
+      if (els.showTriggers.checked) {
+        shape += routedCollection('switchTriggers').map((trigger) => {
+          const selected = state.tab === 'switchTriggers' && trigger.id === selectedId
+          const center = centerOfPoints(trigger.points)
+          return `<polygon points="${pointString(trigger.points)}" fill="${selected ? 'rgba(255,221,118,.34)' : 'rgba(255,190,84,.2)'}" stroke="${selected ? '#ffe08a' : '#ffcd78'}" stroke-width="${selected ? 7 : 4}"><title>${safeText(trigger.label || trigger.id)}</title></polygon><text x="${center.x}" y="${center.y}" text-anchor="middle" dominant-baseline="middle" fill="#fff6d8" stroke="#201403" stroke-width="4" paint-order="stroke" font-size="${map.map?.width <= 900 ? 13 : 34}" font-weight="800">${safeText(trigger.label || 'Switch')}</text>`
+        }).join('')
+      }
+
+      if (els.showMarkers.checked) {
+        shape += routedCollection('markers').map((marker) => {
+          const selected = state.tab === 'markers' && marker.id === selectedId
+          return `<circle cx="${marker.x || 0}" cy="${marker.y || 0}" r="${selected ? 14 : 9}" fill="${selected ? '#ffe08a' : '#71e3a1'}" stroke="#082016" stroke-width="4"><title>${safeText(marker.label || marker.id)}</title></circle><text x="${(marker.x || 0) + 14}" y="${(marker.y || 0) - 12}" fill="#ecfff8" stroke="#000" stroke-width="4" paint-order="stroke" font-size="${map.map?.width <= 900 ? 12 : 28}" font-weight="800">${safeText(marker.label || marker.id)}</text>`
+        }).join('')
+      }
+
+      if (state.tab === 'markers' && state.selectedItem) {
+        shape += `<circle cx="${state.selectedItem.x || 0}" cy="${state.selectedItem.y || 0}" r="18" fill="none" stroke="#fff" stroke-width="5"></circle>`
+      }
+
+      const points = selectedPoints
+      if (Array.isArray(points) && points.length) {
+        const joined = points.map((point) => point.join(',')).join(' ')
+        if (state.tab === 'paths') {
+          shape += `<polyline points="${joined}" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>`
+        } else if (state.tab !== 'markers') {
+          shape += `<polygon points="${joined}" fill="rgba(255,255,255,.12)" stroke="#ffffff" stroke-width="4"></polygon>`
+        }
+        shape += points.map((point, index) => `<circle cx="${point[0]}" cy="${point[1]}" r="9" fill="#fff3a1" stroke="#483100" stroke-width="3"></circle><text x="${point[0] + 12}" y="${point[1] - 12}" fill="#fff" stroke="#000" stroke-width="3" paint-order="stroke">${index + 1}</text>`).join('')
+      }
+      els.overlay.innerHTML = shape
+    }
+
+    function centerOfPoints(points = []) {
+      if (!points.length) return { x: 0, y: 0 }
+      return {
+        x: points.reduce((sum, point) => sum + point[0], 0) / points.length,
+        y: points.reduce((sum, point) => sum + point[1], 0) / points.length,
+      }
+    }
+
+    function midpointOfPath(points = []) {
+      if (!points.length) return { x: 0, y: 0 }
+      if (points.length === 1) return { x: points[0][0], y: points[0][1] }
+
+      const segments = points.slice(1).map((point, index) => {
+        const previous = points[index]
+        return {
+          from: previous,
+          to: point,
+          length: Math.hypot(point[0] - previous[0], point[1] - previous[1]),
+        }
+      })
+      const totalLength = segments.reduce((sum, segment) => sum + segment.length, 0)
+      let remaining = totalLength / 2
+
+      for (const segment of segments) {
+        if (remaining <= segment.length) {
+          const ratio = segment.length === 0 ? 0 : remaining / segment.length
+          return {
+            x: segment.from[0] + (segment.to[0] - segment.from[0]) * ratio,
+            y: segment.from[1] + (segment.to[1] - segment.from[1]) * ratio,
+          }
+        }
+        remaining -= segment.length
+      }
+
+      const last = points[points.length - 1]
+      return { x: last[0], y: last[1] }
+    }
+
+    els.mapPreview.addEventListener('click', (event) => {
+      if (!currentMap() || !state.selectedItem) return
+      if (state.suppressClick) {
+        state.suppressClick = false
+        return
+      }
+      if ((state.boxMode && canUseBoxMode()) || (state.diagonalMode && canUseDiagonalMode())) return
+      const [x, y] = eventMapPoint(event)
+      if (x < 0 || y < 0) return
+      if (state.tab === 'markers') {
+        setActiveMarkerPoint([x, y])
+        return
+      }
+      const points = activePoints()
+      if (!Array.isArray(points)) return
+      setActivePoints([...points, [x, y]])
+    })
+
+    els.mapPreview.addEventListener('pointerdown', (event) => {
+      const canDragBox = state.boxMode && canUseBoxMode()
+      const canDragDiagonal = state.diagonalMode && canUseDiagonalMode()
+      if ((!canDragBox && !canDragDiagonal) || !state.selectedItem) {
+        state.panStart = {
+          pointerX: event.clientX,
+          pointerY: event.clientY,
+          scrollLeft: els.mapPreview.scrollLeft,
+          scrollTop: els.mapPreview.scrollTop,
+          moved: false,
+        }
+        els.mapPreview.classList.add('dragging')
+        els.mapPreview.setPointerCapture?.(event.pointerId)
+        return
+      }
+      event.preventDefault()
+      state.dragStart = eventMapPoint(event)
+    })
+
+    els.mapPreview.addEventListener('pointermove', (event) => {
+      if (!state.panStart) return
+      const dx = event.clientX - state.panStart.pointerX
+      const dy = event.clientY - state.panStart.pointerY
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) state.panStart.moved = true
+      els.mapPreview.scrollLeft = state.panStart.scrollLeft - dx
+      els.mapPreview.scrollTop = state.panStart.scrollTop - dy
+    })
+
+    els.mapPreview.addEventListener('pointerup', (event) => {
+      const canDragBox = state.boxMode && canUseBoxMode()
+      const canDragDiagonal = state.diagonalMode && canUseDiagonalMode()
+      if (state.panStart) {
+        state.suppressClick = state.panStart.moved
+        state.panStart = null
+        els.mapPreview.classList.remove('dragging')
+        els.mapPreview.releasePointerCapture?.(event.pointerId)
+        return
+      }
+      if ((!canDragBox && !canDragDiagonal) || !state.dragStart) return
+      event.preventDefault()
+      const end = eventMapPoint(event)
+      setActivePoints(canDragDiagonal ? diagonalRoutePoints(state.dragStart, end) : boxPoints(state.dragStart, end))
+      state.dragStart = null
+    })
+
+    els.mapPreview.addEventListener('pointercancel', (event) => {
+      state.panStart = null
+      state.dragStart = null
+      els.mapPreview.classList.remove('dragging')
+      els.mapPreview.releasePointerCapture?.(event.pointerId)
+    })
+
+    els.mapPreview.addEventListener('wheel', (event) => {
+      event.preventDefault()
+      const direction = event.deltaY < 0 ? 1.15 : 1 / 1.15
+      setPreviewScale(previewScaleValue() * direction, event)
+    }, { passive: false })
+
+    els.resetPointsBtn.addEventListener('click', () => setActivePoints([]))
+    els.boxModeBtn.addEventListener('click', () => {
+      state.boxMode = !state.boxMode
+      if (state.boxMode) state.diagonalMode = false
+      syncBoxButton()
+    })
+    els.diagonalModeBtn.addEventListener('click', () => {
+      state.diagonalMode = !state.diagonalMode
+      if (state.diagonalMode) state.boxMode = false
+      syncBoxButton()
+    })
+    els.diagonalWidth.addEventListener('input', renderPreview)
+    els.previewScale.addEventListener('change', () => setPreviewScale(previewScaleValue()))
+    els.itemSearch.addEventListener('input', () => {
+      state.search = els.itemSearch.value
+      renderList()
+    })
+    ;[els.showAreas, els.showMarkers, els.showPaths, els.showTriggers].forEach((checkbox) => {
+      checkbox.addEventListener('change', renderPreview)
+    })
+    els.newItemBtn.addEventListener('click', createNewItem)
+    els.reloadBtn.addEventListener('click', () => loadRegion(state.region.id, state.mapId, state.tab, state.selectedId))
+    els.regionSelect.addEventListener('change', () => loadRegion(els.regionSelect.value))
+    els.mapSelect.addEventListener('change', () => {
+      state.mapId = els.mapSelect.value
+      state.selectedId = ''
+      state.selectedItem = null
+      state.search = ''
+      renderSelectors()
+      renderList()
+      renderEditor()
+      renderPreview()
+    })
+    els.tabs.forEach((button) => {
+      button.addEventListener('click', () => {
+        state.tab = button.dataset.tab
+        state.selectedId = ''
+        state.selectedItem = null
+        state.search = ''
+        if (!canUseBoxMode()) state.boxMode = false
+        if (!canUseDiagonalMode()) state.diagonalMode = false
+        els.tabs.forEach((tab) => tab.classList.toggle('active', tab === button))
+        syncBoxButton()
+        renderList()
+        renderEditor()
+        renderPreview()
+      })
+    })
+
+    async function loadRegion(regionId, mapId, tab = state.tab, selectedId = '') {
+      try {
+        const [region, images] = await Promise.all([
+          api(`/api/regions/${regionId}`),
+          api(`/api/regions/${regionId}/images`),
+        ])
+        state.region = region
+        state.images = images
+        state.mapId = mapId || region.maps?.[0]?.id || ''
+        state.tab = tab
+        if (!selectedId) state.search = ''
+        state.selectedId = selectedId
+        state.selectedItem = selectedId ? collectionItems().find((item) => item.id === selectedId) : null
+        renderSelectors()
+        renderList()
+        if (selectedId) selectItem(selectedId)
+        else renderEditor()
+        syncBoxButton()
+        renderPreview()
+        setStatus(`${region.name} loaded`, 'ok')
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    async function init() {
+      try {
+        state.regions = await api('/api/regions')
+        await loadRegion(state.regions[0].id)
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    init()
+  </script>
+</body>
+</html>
