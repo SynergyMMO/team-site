@@ -2,6 +2,64 @@ import styles from '../RegionMaps.module.css'
 import { getLocalPokemonGif, onGifError } from '../../../utils/pokemon'
 import { getSpawnRarityValues } from './mapHelpers'
 
+const SPAWN_CATEGORIES = [
+  {
+    key: 'hordes',
+    label: 'Hordes',
+    matches: ({ encounterTypes }) => encounterTypes.has('horde'),
+  },
+  {
+    key: 'lure',
+    label: 'Lure',
+    matches: ({ encounterTypes }) => encounterTypes.has('lure'),
+  },
+  {
+    key: 'single',
+    label: 'Single',
+    matches: ({ encounterTypes, methods }) =>
+      ['very common', 'common', 'uncommon', 'rare', 'very rare'].some((type) => encounterTypes.has(type))
+        && !['fishing', 'old rod', 'good rod', 'super rod'].some((method) => methods.has(method)),
+  },
+  {
+    key: 'fishing',
+    label: 'Fishing',
+    matches: ({ encounterTypes, methods }) =>
+      encounterTypes.has('fishing')
+        || ['fishing', 'old rod', 'good rod', 'super rod'].some((method) => methods.has(method)),
+  },
+  {
+    key: 'special',
+    label: 'Special',
+    matches: ({ encounterTypes }) => encounterTypes.has('special'),
+  },
+]
+
+function normalizeEncounterValue(value) {
+  return String(value || '').trim().toLowerCase()
+}
+
+function getSpawnCategory(spawn) {
+  const encounterTypes = new Set(getSpawnRarityValues(spawn).map(normalizeEncounterValue))
+  const methods = new Set((spawn.encounters || []).map((encounter) => normalizeEncounterValue(encounter.method)))
+  const matchContext = { encounterTypes, methods }
+
+  return SPAWN_CATEGORIES.find((category) => category.matches(matchContext))?.key || 'other'
+}
+
+function groupSpawnsByCategory(spawns) {
+  const groups = new Map(SPAWN_CATEGORIES.map((category) => [category.key, []]))
+  groups.set('other', [])
+
+  spawns.forEach((spawn) => {
+    groups.get(getSpawnCategory(spawn)).push(spawn)
+  })
+
+  return [
+    ...SPAWN_CATEGORIES.map((category) => ({ ...category, spawns: groups.get(category.key) })),
+    { key: 'other', label: 'Other', spawns: groups.get('other') },
+  ].filter((category) => category.spawns.length > 0)
+}
+
 function formatEncounterSummary(spawn) {
   if (!Array.isArray(spawn.encounters) || spawn.encounters.length === 0) {
     return getSpawnRarityValues(spawn).join(', ')
@@ -50,6 +108,8 @@ export default function RouteDetailsPanel({ selectedArea, filteredSpawns }) {
     )
   }
 
+  const spawnCategories = groupSpawnsByCategory(filteredSpawns)
+
   return (
     <section className={styles.panelCard}>
       <h2 className={styles.panelTitle}>{selectedArea.name}</h2>
@@ -58,22 +118,21 @@ export default function RouteDetailsPanel({ selectedArea, filteredSpawns }) {
 
       <h3 className={styles.sectionHeading}>Pokemon Spawns</h3>
       {filteredSpawns.length > 0 ? (
-        <ul className={styles.spawnList}>
-          {filteredSpawns.map((spawn) => <SpawnRow key={`${selectedArea.id}-${spawn.name}`} spawn={spawn} />)}
-        </ul>
+        <div className={styles.spawnCategoryList}>
+          {spawnCategories.map((category) => (
+            <section key={category.key} className={styles.spawnCategory}>
+              <h4 className={styles.spawnCategoryTitle}>{category.label}</h4>
+              <ul className={styles.spawnList}>
+                {category.spawns.map((spawn) => (
+                  <SpawnRow key={`${selectedArea.id}-${category.key}-${spawn.name}`} spawn={spawn} />
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
       ) : (
         <p className={styles.panelSubtle}>No spawns match the current filters.</p>
       )}
-
-      <h3 className={styles.sectionHeading}>Items</h3>
-      <p className={styles.panelSubtle}>
-        {(selectedArea.items || []).length > 0 ? selectedArea.items.join(', ') : 'No item data yet.'}
-      </p>
-
-      <h3 className={styles.sectionHeading}>Trainers</h3>
-      <p className={styles.panelSubtle}>
-        {(selectedArea.trainers || []).length > 0 ? selectedArea.trainers.join(', ') : 'No trainer data yet.'}
-      </p>
     </section>
   )
 }

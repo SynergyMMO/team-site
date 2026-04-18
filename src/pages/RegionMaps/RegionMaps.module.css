@@ -556,6 +556,24 @@
   gap: 0.35rem;
 }
 
+.spawnCategoryList {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.spawnCategory {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.spawnCategoryTitle {
+  margin: 0;
+  color: #dff2ff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
 .spawnRow {
   background: rgba(10, 34, 63, 0.8);
   border: 1px solid rgba(84, 139, 190, 0.45);
