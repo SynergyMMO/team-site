@@ -62,11 +62,24 @@ function getVariationEntries(routeData) {
   return [routeData]
 }
 
+function getDisplayName(routeName, variationData) {
+  const baseRouteName = String(variationData?.route || routeName || '').trim()
+  const variation = String(variationData?.variation || '').trim()
+
+  if (!variation) return baseRouteName
+
+  const variationSuffix = ` - ${variation}`
+  if (baseRouteName.endsWith(variationSuffix)) return baseRouteName
+
+  return `${baseRouteName}${variationSuffix}`
+}
+
 function flattenRoutes() {
   return Object.entries(encounterPercents).flatMap(([region, routes]) =>
     Object.entries(routes || {}).flatMap(([routeName, routeData]) => getVariationEntries(routeData).map((variationData, variationIndex) => {
-      const variation = variationData?.variation || ''
-      const displayName = variation ? `${routeName} - ${variation}` : routeName
+      const variation = String(variationData?.variation || '').trim()
+      const baseRouteName = String(variationData?.route || routeName || '').trim()
+      const displayName = getDisplayName(routeName, variationData)
       const total = Number(variationData?.total) || 0
       const pokemon = (variationData?.data || [])
         .map(entry => {
@@ -85,7 +98,7 @@ function flattenRoutes() {
       return {
         id: `${region}-${routeName}-${variation || variationIndex}`,
         region,
-        routeName,
+        routeName: baseRouteName,
         displayName,
         variation,
         credit: variationData?.credit || '',
