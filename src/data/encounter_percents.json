@@ -293,6 +293,50 @@
           "encounters": 40
         }
       ]
+    },
+    "Petalburg Woods - All": {
+      "route": "Petalburg Woods",
+      "credit": "Pinguh",
+      "variation": "All",
+      "total": 349160,
+      "data": [
+        {
+          "pokemon": "Treecko",
+          "encounters": 13616
+        },
+        {
+          "pokemon": "Shroomish",
+          "encounters": 32425
+        },
+        {
+          "pokemon": "Slakoth",
+          "encounters": 16290
+        },
+        {
+          "pokemon": "Wurmple",
+          "encounters": 38314
+        },
+        {
+          "pokemon": "Cascoon",
+          "encounters": 38314
+        },
+        {
+          "pokemon": "Poochyena",
+          "encounters": 85349
+        },
+        {
+          "pokemon": "Zigzagoon",
+          "encounters": 84680
+        },
+        {
+          "pokemon": "Silcoon",
+          "encounters": 28351
+        },
+        {
+          "pokemon": "Taillow",
+          "encounters": 11821
+        }
+      ]
     }
   },
   "Sinnoh": {},
