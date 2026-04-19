@@ -271,6 +271,82 @@
           "encounters": 2918
         }
       ]
+    },
+    "Victory Road (2nd floor)": {
+      "route": "Victory Road (2nd floor)",
+      "credit": "chip",
+      "variation": "",
+      "total": 957,
+      "data": [
+        {
+          "pokemon": "Golbat",
+          "encounters": 28
+        },
+        {
+          "pokemon": "Rhyhorn",
+          "encounters": 84
+        },
+        {
+          "pokemon": "Sandslash",
+          "encounters": 48
+        },
+        {
+          "pokemon": "Ursaring",
+          "encounters": 32
+        },
+        {
+          "pokemon": "Venomoth",
+          "encounters": 39
+        },
+        {
+          "pokemon": "Arbok",
+          "encounters": 56
+        },
+        {
+          "pokemon": "Donphan",
+          "encounters": 162
+        },
+        {
+          "pokemon": "Onix",
+          "encounters": 114
+        },
+        {
+          "pokemon": "Rhydon",
+          "encounters": 70
+        },
+        {
+          "pokemon": "Hitmonchan",
+          "encounters": 45
+        },
+        {
+          "pokemon": "Machop",
+          "encounters": 48
+        },
+        {
+          "pokemon": "Geodude",
+          "encounters": 31
+        },
+        {
+          "pokemon": "Graveler",
+          "encounters": 42
+        },
+        {
+          "pokemon": "Hitmontop",
+          "encounters": 32
+        },
+        {
+          "pokemon": "Marowak",
+          "encounters": 44
+        },
+        {
+          "pokemon": "Machoke",
+          "encounters": 38
+        },
+        {
+          "pokemon": "Zubat",
+          "encounters": 44
+        }
+      ]
     }
   },
   "Johto": {},
