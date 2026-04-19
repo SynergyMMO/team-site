@@ -512097,9 +512097,9 @@
         "location_area_encounters": [
             {
                 "type": "Water",
-                "region_id": 4,
-                "region_name": "Johto",
-                "location": "New Bark Town",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Route 1",
                 "min_level": 28,
                 "max_level": 28,
                 "rarity": "Lure",
