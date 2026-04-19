@@ -368,23 +368,23 @@
       "data": [
         {
           "pokemon": "Combee",
-          "encounters": 110
+          "encounters": 123
         },
         {
           "pokemon": "Wurmple",
-          "encounters": 73
+          "encounters": 79
         },
         {
           "pokemon": "Burmy",
-          "encounters": 67
+          "encounters": 77
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 46
+          "encounters": 47
         },
         {
           "pokemon": "Aipom",
-          "encounters": 48
+          "encounters": 54
         },
         {
           "pokemon": "Silcoon",
@@ -392,15 +392,15 @@
         },
         {
           "pokemon": "Munchlax",
-          "encounters": 28
+          "encounters": 30
         },
         {
           "pokemon": "Heracross",
-          "encounters": 21
+          "encounters": 23
         },
         {
           "pokemon": "Cascoon",
-          "encounters": 15
+          "encounters": 23
         }
       ]
     }
@@ -457,19 +457,19 @@
       "data": [
         {
           "pokemon": "Patrat",
-          "encounters": 46
+          "encounters": 72
         },
         {
           "pokemon": "Purrloin",
-          "encounters": 57
+          "encounters": 92
         },
         {
           "pokemon": "Munna",
-          "encounters": 40
+          "encounters": 65
         },
         {
           "pokemon": "Musharna",
-          "encounters": 8
+          "encounters": 13
         }
       ]
     },
