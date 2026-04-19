@@ -272,10 +272,10 @@
         }
       ]
     },
-    "Victory Road (2nd floor)": {
+    "Victory Road (2nd floor) - Lures": {
       "route": "Victory Road (2nd floor)",
       "credit": "chip",
-      "variation": "",
+      "variation": "Lures",
       "total": 957,
       "data": [
         {
@@ -349,7 +349,64 @@
       ]
     }
   },
-  "Johto": {},
+  "Johto": {
+    "Route 35": {
+      "route": "Route 35",
+      "credit": "ZackTheAce",
+      "variation": "",
+      "total": 1066,
+      "data": [
+        {
+          "pokemon": "Yanma",
+          "encounters": 51
+        },
+        {
+          "pokemon": "Abra",
+          "encounters": 104
+        },
+        {
+          "pokemon": "Nidoran F",
+          "encounters": 222
+        },
+        {
+          "pokemon": "Snubbull",
+          "encounters": 81
+        },
+        {
+          "pokemon": "Growlithe",
+          "encounters": 130
+        },
+        {
+          "pokemon": "Drowzee",
+          "encounters": 96
+        },
+        {
+          "pokemon": "Pidgey",
+          "encounters": 34
+        },
+        {
+          "pokemon": "Jigglypuff",
+          "encounters": 57
+        },
+        {
+          "pokemon": "Ditto",
+          "encounters": 42
+        },
+        {
+          "pokemon": "Hoothoot",
+          "encounters": 18
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 13
+        },
+        {
+          "pokemon": "Nidoran M",
+          "encounters": 218
+        }
+      ]
+    }
+  },
   "Hoenn": {
     "Route 116": {
       "credit": "pupsil",
@@ -440,39 +497,39 @@
       "route": "Honey Trees",
       "credit": "Hyper, KaiDono, Mysto",
       "variation": "",
-      "total": 571,
+      "total": 709,
       "data": [
         {
           "pokemon": "Combee",
-          "encounters": 145
+          "encounters": 196
         },
         {
           "pokemon": "Wurmple",
-          "encounters": 94
+          "encounters": 113
         },
         {
           "pokemon": "Burmy",
-          "encounters": 92
+          "encounters": 110
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 58
+          "encounters": 75
         },
         {
           "pokemon": "Aipom",
-          "encounters": 62
+          "encounters": 74
         },
         {
           "pokemon": "Silcoon",
-          "encounters": 39
+          "encounters": 50
         },
         {
           "pokemon": "Munchlax",
-          "encounters": 31
+          "encounters": 35
         },
         {
           "pokemon": "Heracross",
-          "encounters": 24
+          "encounters": 30
         },
         {
           "pokemon": "Cascoon",
@@ -484,19 +541,19 @@
       "route": "Iron Island",
       "credit": "Mysto",
       "variation": "No Lure",
-      "total": 788,
+      "total": 1053,
       "data": [
         {
           "pokemon": "Qwilfish",
-          "encounters": 23
+          "encounters": 31
         },
         {
           "pokemon": "Gyarados",
-          "encounters": 421
+          "encounters": 580
         },
         {
           "pokemon": "Lumineon",
-          "encounters": 344
+          "encounters": 442
         }
       ]
     }
