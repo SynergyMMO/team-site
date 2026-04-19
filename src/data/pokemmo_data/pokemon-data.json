@@ -511376,7 +511376,168 @@
         },
         "alpha": "no",
         "obtainable": true,
-        "location_area_encounters": [],
+        "location_area_encounters": [
+            {
+                "type": "Fishing",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Route 1",
+                "min_level": 25,
+                "max_level": 35,
+                "rarity": "Very Common",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Route 1",
+                "min_level": 35,
+                "max_level": 55,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Fishing",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Route 3",
+                "min_level": 35,
+                "max_level": 55,
+                "rarity": "Very Common",
+                "time": "ALL"
+            },
+            {
+                "type": "Fishing",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Route 6",
+                "min_level": 35,
+                "max_level": 55,
+                "rarity": "Very Common",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Route 11",
+                "min_level": 35,
+                "max_level": 55,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Route 14",
+                "min_level": 35,
+                "max_level": 55,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Straiton City",
+                "min_level": 25,
+                "max_level": 35,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Victory Road",
+                "min_level": 35,
+                "max_level": 55,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Village Bridge",
+                "min_level": 35,
+                "max_level": 55,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Wellspring Cave",
+                "min_level": 35,
+                "max_level": 55,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Abudant Shrine",
+                "min_level": 35,
+                "max_level": 55,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Challenger's Cave",
+                "min_level": 25,
+                "max_level": 35,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Dragonspire Tower",
+                "min_level": 25,
+                "max_level": 35,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Giant Chasm",
+                "min_level": 25,
+                "max_level": 35,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Lostlorn Forest",
+                "min_level": 25,
+                "max_level": 35,
+                "rarity": "Horde",
+                "time": "ALL"
+            },
+            {
+                "type": "Water",
+                "region_id": 2,
+                "region_name": "Unova",
+                "location": "Pinwheel Forest",
+                "min_level": 25,
+                "max_level": 35,
+                "rarity": "Horde",
+                "time": "ALL"
+            }
+        ],
         "moves": [
             {
                 "id": 33,
@@ -511933,7 +512094,18 @@
         },
         "alpha": "no",
         "obtainable": true,
-        "location_area_encounters": [],
+        "location_area_encounters": [
+            {
+                "type": "Water",
+                "region_id": 4,
+                "region_name": "Johto",
+                "location": "New Bark Town",
+                "min_level": 28,
+                "max_level": 28,
+                "rarity": "Lure",
+                "time": "ALL"
+            }
+        ],
         "moves": [
             {
                 "id": 33,
