@@ -403,6 +403,26 @@
           "encounters": 23
         }
       ]
+    },
+    "Iron Island - No Lure": {
+      "route": "Iron Island",
+      "credit": "Mysto",
+      "variation": "No Lure",
+      "total": 788,
+      "data": [
+        {
+          "pokemon": "Qwilfish",
+          "encounters": 23
+        },
+        {
+          "pokemon": "Gyarados",
+          "encounters": 421
+        },
+        {
+          "pokemon": "Lumineon",
+          "encounters": 344
+        }
+      ]
     }
   },
   "Unova": {
