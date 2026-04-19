@@ -1,0 +1,288 @@
+.page {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto 56px;
+  color: #f7fbff;
+}
+
+.infoDropdown {
+  margin: 0 auto 20px;
+  border: 1px solid rgba(115, 214, 196, 0.35);
+  border-radius: 8px;
+  background: rgba(6, 18, 26, 0.86);
+  overflow: hidden;
+}
+
+.infoDropdown summary {
+  padding: 14px 18px;
+  color: #bdeee4;
+  cursor: pointer;
+  font-weight: 800;
+  list-style-position: inside;
+}
+
+.infoDropdown p {
+  margin: 0;
+  padding: 0 18px 16px;
+  color: #e4f7fb;
+  line-height: 1.6;
+}
+
+.searchPanel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+  padding: 18px;
+  border: 1px solid rgba(115, 214, 196, 0.35);
+  border-radius: 8px;
+  background: rgba(6, 18, 26, 0.86);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+.searchPanel label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  font-weight: 700;
+  color: #bdeee4;
+}
+
+.searchPanel input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font: inherit;
+}
+
+.searchPanel input:focus {
+  outline: 2px solid rgba(115, 214, 196, 0.6);
+  outline-offset: 2px;
+}
+
+.activeTarget {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(13, 89, 74, 0.82);
+  border: 1px solid rgba(119, 255, 210, 0.42);
+  color: #eafff8;
+}
+
+.activeTarget span {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a8f5df;
+}
+
+.activeTarget strong {
+  font-size: 1.15rem;
+}
+
+.resultCount {
+  margin: 0 0 18px;
+  text-align: center;
+  color: #cfe5ef;
+}
+
+.emptyState {
+  max-width: 760px;
+  margin: 32px auto;
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 205, 120, 0.38);
+  background: rgba(55, 36, 8, 0.82);
+  text-align: center;
+  line-height: 1.6;
+  color: #ffe6b8;
+}
+
+.routeList {
+  display: grid;
+  gap: 18px;
+}
+
+.routeCard {
+  border: 1px solid rgba(151, 205, 223, 0.28);
+  border-radius: 8px;
+  background: rgba(8, 20, 30, 0.88);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+}
+
+.routeHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(10, 96, 88, 0.5), rgba(19, 57, 88, 0.45));
+  border-bottom: 1px solid rgba(151, 205, 223, 0.24);
+}
+
+.routeHeader h2 {
+  margin: 4px 0 0;
+  color: #fff;
+  font-size: 1.55rem;
+}
+
+.regionLabel {
+  margin: 0;
+  color: #83e8d4;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.routeMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: flex-start;
+  gap: 8px;
+  color: #dff8ff;
+}
+
+.routeMeta span {
+  padding: 5px 9px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  font-size: 0.82rem;
+}
+
+.monSection {
+  padding: 18px;
+}
+
+.monSection + .monSection {
+  padding-top: 0;
+}
+
+.monSection h3 {
+  margin: 0 0 12px;
+  color: #e9fbff;
+  font-size: 1.05rem;
+}
+
+.monGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+}
+
+.monPill {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  grid-template-areas:
+    "sprite name percent"
+    "sprite encounters tier";
+  gap: 3px 10px;
+  align-items: center;
+  min-height: 70px;
+  padding: 9px;
+  border-radius: 8px;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.monPill:hover {
+  transform: translateY(-2px);
+}
+
+.targetPill {
+  border: 1px solid rgba(255, 232, 112, 0.55);
+  background: rgba(98, 86, 20, 0.52);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.targetPill:hover {
+  border-color: rgba(255, 239, 148, 0.9);
+  background: rgba(116, 101, 24, 0.66);
+}
+
+.phasePill {
+  border: 1px solid rgba(132, 190, 210, 0.24);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.phasePill:hover {
+  border-color: rgba(132, 210, 190, 0.56);
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.monSprite {
+  grid-area: sprite;
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+.monName {
+  grid-area: name;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 800;
+}
+
+.monPercent {
+  grid-area: percent;
+  justify-self: end;
+  font-weight: 900;
+  color: #9cf4de;
+  font-variant-numeric: tabular-nums;
+}
+
+.monEncounters {
+  grid-area: encounters;
+  color: #b8ced8;
+  font-size: 0.82rem;
+}
+
+.tierBadge {
+  grid-area: tier;
+  justify-self: end;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffe984;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .page {
+    width: min(100% - 20px, 1200px);
+  }
+
+  .searchPanel {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .routeHeader {
+    flex-direction: column;
+  }
+
+  .routeMeta {
+    justify-content: flex-start;
+  }
+
+  .monGrid {
+    grid-template-columns: 1fr;
+  }
+}

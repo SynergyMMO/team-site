@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Encounter Percent Editor</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #22262a;
+      --muted: #68727d;
+      --line: #d9dee3;
+      --paper: #f7f9fb;
+      --panel: #ffffff;
+      --accent: #0b766e;
+      --accent-strong: #075d57;
+      --warn: #b52d38;
+      --gold: #f0b429;
+      --green-soft: #e6f4ef;
+      --red-soft: #fbe9eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.4;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.58rem 0.82rem;
+      color: var(--ink);
+      background: #fff;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      color: #fff;
+      background: var(--accent);
+    }
+
+    button.primary:hover {
+      background: var(--accent-strong);
+    }
+
+    button.danger {
+      color: var(--warn);
+      border-color: #edb4bb;
+      background: var(--red-soft);
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.62rem 0.72rem;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      outline: 3px solid rgba(11, 118, 110, 0.14);
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+    }
+
+    .status {
+      min-width: 160px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.62rem 0.8rem;
+      color: var(--muted);
+      background: #fff;
+      text-align: center;
+    }
+
+    .status.saving {
+      color: #815d00;
+      border-color: #edcf7d;
+      background: #fff8e1;
+    }
+
+    .status.saved {
+      color: #0a6a38;
+      border-color: #9fd8b8;
+      background: var(--green-soft);
+    }
+
+    .status.error {
+      color: var(--warn);
+      border-color: #edb4bb;
+      background: var(--red-soft);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    .tab {
+      border-color: transparent;
+      background: transparent;
+      font-weight: 700;
+    }
+
+    .tab.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--green-soft);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(230px, 300px) 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .panelHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 14px;
+    }
+
+    .panelBody {
+      padding: 14px;
+    }
+
+    .routeList {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .routeGroup {
+      display: grid;
+      gap: 6px;
+    }
+
+    .routeGroupTitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .routeButton {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .routeButton.active {
+      border-color: var(--accent);
+      background: var(--green-soft);
+    }
+
+    .badge {
+      white-space: nowrap;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .formGrid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 0.8fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .routeForm {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .summaryItem {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfd;
+    }
+
+    .summaryItem strong {
+      display: block;
+      font-size: 1.35rem;
+    }
+
+    .summaryItem span {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin: 14px 0;
+    }
+
+    .importTools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .fileButton input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    .importResult {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .pokemonRows {
+      display: grid;
+      gap: 10px;
+    }
+
+    .pokemonRow {
+      display: grid;
+      grid-template-columns: minmax(150px, 1fr) minmax(110px, 160px) minmax(110px, 160px) auto auto;
+      gap: 10px;
+      align-items: end;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfcfd;
+    }
+
+    .empty {
+      border: 1px dashed #b8c1ca;
+      border-radius: 8px;
+      padding: 22px;
+      color: var(--muted);
+      text-align: center;
+      background: #fff;
+    }
+
+    .rename {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 820px) {
+      header {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .layout,
+      .formGrid,
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .pokemonRow {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1>Encounter Percent Editor</h1>
+        <p class="subtitle">Add routes, Pokémon, encounter counts, credit, and totals directly into encounter_percents.json.</p>
+      </div>
+      <div id="status" class="status">Loading</div>
+    </header>
+
+    <nav id="tabs" class="tabs" aria-label="Regions"></nav>
+
+    <section class="layout">
+      <aside class="panel">
+        <div class="panelHead">
+          <h2>Routes</h2>
+          <span id="routeCount" class="badge">0 routes</span>
+        </div>
+        <div class="panelBody">
+          <form id="addRouteForm" class="routeForm">
+            <div class="field">
+              <label for="newRouteName">Route</label>
+              <input id="newRouteName" name="name" placeholder="Route 1" autocomplete="off" required>
+            </div>
+            <div class="field">
+              <label for="newRouteCredit">Credit</label>
+              <input id="newRouteCredit" name="credit" placeholder="Trainer">
+            </div>
+            <div class="field">
+              <label for="newRouteVariation">Variation</label>
+              <input id="newRouteVariation" name="variation" placeholder="Morning, Horde, Surfing">
+            </div>
+            <div class="field">
+              <label for="newRouteTotal">Total</label>
+              <input id="newRouteTotal" name="total" type="number" min="0" step="1" value="0" readonly>
+          </div>
+            <button class="primary" type="submit">Add</button>
+          </form>
+          <div id="routeList" class="routeList"></div>
+        </div>
+      </aside>
+
+      <section class="panel">
+        <div class="panelHead">
+          <h2 id="editorTitle">Select a route</h2>
+          <button id="deleteRoute" class="danger" type="button" hidden>Delete Route</button>
+        </div>
+        <div id="editor" class="panelBody">
+          <div class="empty">Pick a route or add a new one to start editing.</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <datalist id="pokemonNames"></datalist>
+
+  <script>
+    const state = {
+      regions: [],
+      data: {},
+      pokemonNames: [],
+      region: 'Kanto',
+      route: null,
+      saveTimer: null,
+    }
+
+    const els = {
+      tabs: document.getElementById('tabs'),
+      status: document.getElementById('status'),
+      routeCount: document.getElementById('routeCount'),
+      routeList: document.getElementById('routeList'),
+      addRouteForm: document.getElementById('addRouteForm'),
+      editorTitle: document.getElementById('editorTitle'),
+      editor: document.getElementById('editor'),
+      deleteRoute: document.getElementById('deleteRoute'),
+      pokemonNames: document.getElementById('pokemonNames'),
+    }
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+        ...options,
+      })
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(payload.error || `Request failed: ${response.status}`)
+      return payload
+    }
+
+    function setStatus(text, mode = '') {
+      els.status.textContent = text
+      els.status.className = `status ${mode}`.trim()
+    }
+
+    function getRoutes() {
+      const regionData = state.data[state.region] || {}
+      return Object.keys(regionData).sort((a, b) => {
+        const baseCompare = getRouteBase(a).localeCompare(getRouteBase(b), undefined, { numeric: true })
+        if (baseCompare !== 0) return baseCompare
+        return getRouteVariation(a).localeCompare(getRouteVariation(b), undefined, { numeric: true })
+      })
+    }
+
+    function getCurrentRoute() {
+      return state.route ? state.data[state.region]?.[state.route] : null
+    }
+
+    function getRouteBase(routeKey) {
+      const route = state.data[state.region]?.[routeKey]
+      return String(route?.route || routeKey || '').trim()
+    }
+
+    function getRouteVariation(routeKey) {
+      const route = state.data[state.region]?.[routeKey]
+      return String(route?.variation || '').trim()
+    }
+
+    function getRouteLabel(routeKey) {
+      const variation = getRouteVariation(routeKey)
+      return variation || 'No variation'
+    }
+
+    function routeSum(route) {
+      return (route?.data || []).reduce((sum, entry) => sum + (Number(entry.encounters) || 0), 0)
+    }
+
+    function renderTabs() {
+      els.tabs.innerHTML = ''
+      state.regions.forEach((region) => {
+        const button = document.createElement('button')
+        button.type = 'button'
+        button.className = region === state.region ? 'tab active' : 'tab'
+        button.textContent = region
+        button.addEventListener('click', () => {
+          state.region = region
+          state.route = getRoutes()[0] || null
+          render()
+        })
+        els.tabs.appendChild(button)
+      })
+    }
+
+    function renderRoutes() {
+      const routes = getRoutes()
+      els.routeCount.textContent = `${routes.length} route${routes.length === 1 ? '' : 's'}`
+      els.routeList.innerHTML = ''
+
+      if (routes.length === 0) {
+        els.routeList.innerHTML = '<div class="empty">No routes in this region yet.</div>'
+        return
+      }
+
+      let currentGroup = ''
+      routes.forEach((routeName) => {
+        const route = state.data[state.region][routeName]
+        const groupName = getRouteBase(routeName)
+        if (groupName !== currentGroup) {
+          currentGroup = groupName
+          const groupTitle = document.createElement('div')
+          groupTitle.className = 'routeGroupTitle'
+          groupTitle.textContent = groupName
+          els.routeList.appendChild(groupTitle)
+        }
+
+        const button = document.createElement('button')
+        button.type = 'button'
+        button.className = routeName === state.route ? 'routeButton active' : 'routeButton'
+        button.innerHTML = `<span>${escapeHtml(getRouteLabel(routeName))}</span><span class="badge">${(route.data || []).length} mons</span>`
+        button.addEventListener('click', () => {
+          state.route = routeName
+          render()
+        })
+        els.routeList.appendChild(button)
+      })
+    }
+
+    function renderEditor() {
+      const route = getCurrentRoute()
+      els.deleteRoute.hidden = !route
+
+      if (!route) {
+        els.editorTitle.textContent = 'Select a route'
+        els.editor.innerHTML = '<div class="empty">Pick a route or add a new one to start editing.</div>'
+        return
+      }
+
+      route.total = routeSum(route)
+      const sum = route.total
+      els.editorTitle.textContent = getRouteVariation(state.route)
+        ? `${getRouteBase(state.route)} - ${getRouteVariation(state.route)}`
+        : getRouteBase(state.route)
+      els.editor.innerHTML = `
+        <div class="rename">
+          <input id="routeName" value="${escapeAttr(getRouteBase(state.route))}" aria-label="Route name">
+          <button id="renameRoute" type="button">Save Route</button>
+        </div>
+
+        <div class="formGrid">
+          <div class="field">
+            <label for="credit">Credit</label>
+            <input id="credit" value="${escapeAttr(route.credit || '')}" placeholder="Trainer">
+          </div>
+          <div class="field">
+            <label for="variation">Variation</label>
+            <input id="variation" value="${escapeAttr(route.variation || '')}" placeholder="Morning, Horde, Surfing">
+          </div>
+          <div class="field">
+            <label for="total">Total</label>
+            <input id="total" type="number" min="0" step="1" value="${sum}" readonly>
+          </div>
+          <button id="addPokemon" class="primary" type="button">Add Pokémon</button>
+        </div>
+
+        <div class="summary">
+          <div class="summaryItem"><strong>${route.data.length}</strong><span>Pokémon</span></div>
+          <div class="summaryItem"><strong>${sum}</strong><span>Encounter sum</span></div>
+          <div class="summaryItem"><strong>${Number(route.total) || 0}</strong><span>Saved total</span></div>
+        </div>
+
+        <div class="importTools">
+          <label class="fileButton buttonLike">
+            <button id="importScreenshotButton" type="button">Upload Screenshot</button>
+            <input id="screenshotUpload" type="file" accept="image/*">
+          </label>
+          <span id="importResult" class="importResult">Scans the Pokémon and Species Encounter columns.</span>
+        </div>
+
+        <div class="toolbar">
+          <p class="subtitle">Changes autosave after you type.</p>
+          <button id="sortRows" type="button">Sort by Encounters</button>
+        </div>
+
+        <div id="pokemonRows" class="pokemonRows">
+          ${route.data.length ? route.data.map(renderPokemonRow).join('') : '<div class="empty">No Pokémon added yet.</div>'}
+        </div>
+      `
+
+      document.getElementById('credit').addEventListener('input', (event) => {
+        route.credit = event.target.value
+        scheduleSave()
+      })
+
+      document.getElementById('variation').addEventListener('input', (event) => {
+        setStatus('Route label changed', 'saving')
+      })
+
+      document.getElementById('addPokemon').addEventListener('click', () => {
+        route.data.push({ pokemon: '', encounters: 0 })
+        route.total = routeSum(route)
+        render()
+        const lastInput = els.editor.querySelector('.pokemonRow:last-child input')
+        lastInput?.focus()
+        scheduleSave()
+      })
+
+      document.getElementById('sortRows').addEventListener('click', () => {
+        route.data.sort((a, b) => (Number(b.encounters) || 0) - (Number(a.encounters) || 0) || a.pokemon.localeCompare(b.pokemon))
+        saveNow()
+        render()
+      })
+
+      document.getElementById('renameRoute').addEventListener('click', renameRoute)
+      document.getElementById('routeName').addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') renameRoute()
+      })
+      document.getElementById('routeName').addEventListener('input', () => {
+        setStatus('Route label changed', 'saving')
+      })
+
+      document.getElementById('importScreenshotButton').addEventListener('click', () => {
+        document.getElementById('screenshotUpload').click()
+      })
+
+      document.getElementById('screenshotUpload').addEventListener('change', (event) => {
+        const file = event.target.files?.[0]
+        if (!file) return
+        importScreenshot(file)
+        event.target.value = ''
+      })
+
+      els.editor.querySelectorAll('.pokemonRow').forEach((row) => {
+        const index = Number(row.dataset.index)
+        row.querySelector('[data-field="pokemon"]').addEventListener('input', (event) => {
+          route.data[index].pokemon = event.target.value
+          scheduleSave()
+        })
+        row.querySelector('[data-field="encounters"]').addEventListener('input', (event) => {
+          route.data[index].encounters = Math.max(0, Math.trunc(Number(event.target.value) || 0))
+          route.total = routeSum(route)
+          updateTotalDisplay(route.total)
+          scheduleSave()
+        })
+        row.querySelector('[data-action="addEncounters"]').addEventListener('click', () => {
+          const addInput = row.querySelector('[data-field="addEncounters"]')
+          const addAmount = Math.max(0, Math.trunc(Number(addInput.value) || 0))
+          if (!addAmount) return
+
+          route.data[index].encounters = Math.max(0, Math.trunc(Number(route.data[index].encounters) || 0)) + addAmount
+          addInput.value = ''
+          route.total = routeSum(route)
+          saveNow()
+          render()
+        })
+        row.querySelector('[data-action="delete"]').addEventListener('click', () => {
+          route.data.splice(index, 1)
+          route.total = routeSum(route)
+          saveNow()
+          render()
+        })
+      })
+    }
+
+    function renderPokemonRow(entry, index) {
+      return `
+        <div class="pokemonRow" data-index="${index}">
+          <div class="field">
+            <label>Pokémon</label>
+            <input data-field="pokemon" list="pokemonNames" value="${escapeAttr(entry.pokemon || '')}" placeholder="Raticate">
+          </div>
+          <div class="field">
+            <label>Encounter Number</label>
+            <input data-field="encounters" type="number" min="0" step="1" value="${Number(entry.encounters) || 0}">
+          </div>
+          <div class="field">
+            <label>Add Encounter</label>
+            <input data-field="addEncounters" type="number" min="0" step="1" value="" placeholder="0">
+          </div>
+          <button data-action="addEncounters" type="button">Add</button>
+          <button data-action="delete" class="danger" type="button">Delete</button>
+        </div>
+      `
+    }
+
+    function renderPokemonNames() {
+      els.pokemonNames.innerHTML = state.pokemonNames
+        .map((name) => `<option value="${escapeAttr(name)}"></option>`)
+        .join('')
+    }
+
+    function render() {
+      renderTabs()
+      renderRoutes()
+      renderEditor()
+    }
+
+    async function saveNow() {
+      const route = getCurrentRoute()
+      if (!route) return
+      route.total = routeSum(route)
+      const draftData = route.data
+      window.clearTimeout(state.saveTimer)
+      setStatus('Saving', 'saving')
+
+      try {
+        const payload = await api(`/api/regions/${encodeURIComponent(state.region)}/routes/${encodeURIComponent(state.route)}`, {
+          method: 'PUT',
+          body: JSON.stringify(route),
+        })
+        state.data[state.region][state.route] = {
+          ...payload.entry,
+          data: draftData,
+          total: routeSum({ data: draftData }),
+        }
+        setStatus('Saved', 'saved')
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    function scheduleSave() {
+      setStatus('Saving soon', 'saving')
+      window.clearTimeout(state.saveTimer)
+      state.saveTimer = window.setTimeout(async () => {
+        await saveNow()
+        renderRoutes()
+      }, 450)
+    }
+
+    function updateTotalDisplay(total) {
+      const totalInput = document.getElementById('total')
+      const summaryItems = els.editor.querySelectorAll('.summaryItem strong')
+      if (totalInput) totalInput.value = total
+      if (summaryItems[1]) summaryItems[1].textContent = total
+      if (summaryItems[2]) summaryItems[2].textContent = total
+    }
+
+    async function importScreenshot(file) {
+      const route = getCurrentRoute()
+      if (!route) return
+
+      const result = document.getElementById('importResult')
+      result.textContent = 'Scanning screenshot...'
+      setStatus('Scanning screenshot', 'saving')
+
+      try {
+        const imageData = await readFileAsDataUrl(file)
+        const payload = await api('/api/import-encounter-screenshot', {
+          method: 'POST',
+          body: JSON.stringify({ imageData }),
+        })
+
+        if (!payload.rows.length) {
+          result.textContent = 'No Pokémon rows found. Try cropping the screenshot to the table area.'
+          setStatus('No rows found', 'error')
+          return
+        }
+
+        let added = 0
+        let updated = 0
+        for (const row of payload.rows) {
+          const existing = route.data.find((entry) => entry.pokemon.toLowerCase() === row.pokemon.toLowerCase())
+          if (existing) {
+            existing.encounters = row.encounters
+            updated += 1
+          } else {
+            route.data.push(row)
+            added += 1
+          }
+        }
+
+        route.total = routeSum(route)
+        await saveNow()
+        render()
+        result.textContent = `Imported ${payload.rows.length} row${payload.rows.length === 1 ? '' : 's'} (${added} added, ${updated} updated).`
+        setStatus('Saved', 'saved')
+      } catch (error) {
+        const message = error.message.includes('404')
+          ? 'Screenshot import endpoint is not running. Restart the encounter editor, then refresh this page.'
+          : error.message
+        result.textContent = message
+        setStatus(message, 'error')
+      }
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.addEventListener('load', () => resolve(reader.result))
+        reader.addEventListener('error', () => reject(new Error('Could not read image file')))
+        reader.readAsDataURL(file)
+      })
+    }
+
+    async function renameRoute() {
+      const nextName = document.getElementById('routeName').value.trim()
+      const nextVariation = document.getElementById('variation').value.trim()
+      if (!nextName) return
+      if (nextName === getRouteBase(state.route) && nextVariation === getRouteVariation(state.route)) return
+      setStatus('Renaming', 'saving')
+
+      try {
+        const oldName = state.route
+        const payload = await api(`/api/regions/${encodeURIComponent(state.region)}/routes/${encodeURIComponent(oldName)}/rename`, {
+          method: 'PUT',
+          body: JSON.stringify({ name: nextName, variation: nextVariation }),
+        })
+        delete state.data[state.region][oldName]
+        state.data[state.region][payload.route] = payload.entry
+        state.route = payload.route
+        setStatus('Saved', 'saved')
+        render()
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    els.addRouteForm.addEventListener('submit', async (event) => {
+      event.preventDefault()
+      const formElement = event.currentTarget
+      const form = new FormData(formElement)
+      const name = String(form.get('name') || '').trim()
+      if (!name) return
+
+      setStatus('Adding route', 'saving')
+      try {
+        const payload = await api(`/api/regions/${encodeURIComponent(state.region)}/routes`, {
+          method: 'POST',
+          body: JSON.stringify({
+            name,
+            credit: form.get('credit') || '',
+            variation: form.get('variation') || '',
+            total: form.get('total') || 0,
+            data: [],
+          }),
+        })
+        state.data[state.region][payload.route] = payload.entry
+        state.route = payload.route
+        formElement.reset()
+        document.getElementById('newRouteTotal').value = '0'
+        setStatus('Saved', 'saved')
+        render()
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    })
+
+    els.deleteRoute.addEventListener('click', async () => {
+      if (!state.route) return
+      const routeName = state.route
+      const confirmed = window.confirm(`Delete ${routeName} from ${state.region}?`)
+      if (!confirmed) return
+
+      setStatus('Deleting', 'saving')
+      try {
+        await api(`/api/regions/${encodeURIComponent(state.region)}/routes/${encodeURIComponent(routeName)}`, {
+          method: 'DELETE',
+        })
+        delete state.data[state.region][routeName]
+        state.route = getRoutes()[0] || null
+        setStatus('Saved', 'saved')
+        render()
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    })
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;')
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value)
+    }
+
+    async function init() {
+      try {
+        const [encounters, pokemonNames] = await Promise.all([
+          api('/api/encounter-percents'),
+          api('/api/pokemon-names'),
+        ])
+
+        state.regions = encounters.regions
+        state.data = encounters.data
+        state.pokemonNames = pokemonNames
+        state.region = state.regions[0] || 'Kanto'
+        state.route = getRoutes()[0] || null
+        renderPokemonNames()
+        render()
+        setStatus('Ready', 'saved')
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    init()
+  </script>
+</body>
+</html>

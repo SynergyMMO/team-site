@@ -1,0 +1,344 @@
+{
+  "Kanto": {
+    "Route 17": {
+      "credit": "pupsil",
+      "variation": "All",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Raticate",
+          "encounters": 205
+        },
+        {
+          "pokemon": "Grimer",
+          "encounters": 200
+        },
+        {
+          "pokemon": "Fearow",
+          "encounters": 122
+        },
+        {
+          "pokemon": "Doduo",
+          "encounters": 94
+        },
+        {
+          "pokemon": "Ponyta",
+          "encounters": 84
+        },
+        {
+          "pokemon": "Slugma",
+          "encounters": 68
+        },
+        {
+          "pokemon": "Eevee",
+          "encounters": 51
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 54
+        },
+        {
+          "pokemon": "Spearow",
+          "encounters": 48
+        },
+        {
+          "pokemon": "Golduck",
+          "encounters": 37
+        },
+        {
+          "pokemon": "Rattata",
+          "encounters": 37
+        }
+      ]
+    },
+    "Viridian Forest": {
+      "credit": "pupsil",
+      "variation": "Morning",
+      "total": 979,
+      "data": [
+        {
+          "pokemon": "Caterpie",
+          "encounters": 176
+        },
+        {
+          "pokemon": "Weedle",
+          "encounters": 173
+        },
+        {
+          "pokemon": "Pidgey",
+          "encounters": 144
+        },
+        {
+          "pokemon": "Ledyba",
+          "encounters": 99
+        },
+        {
+          "pokemon": "Metapod",
+          "encounters": 97
+        },
+        {
+          "pokemon": "Kakuna",
+          "encounters": 96
+        },
+        {
+          "pokemon": "Pikachu",
+          "encounters": 58
+        },
+        {
+          "pokemon": "Bellsprout",
+          "encounters": 54
+        },
+        {
+          "pokemon": "Oddish",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Bulbasaur",
+          "encounters": 33
+        }
+      ]
+    },
+    "Mt Pyre (Outside)": {
+      "route": "Mt Pyre (Outside)",
+      "credit": "pupsil",
+      "variation": "All",
+      "total": 1015,
+      "data": [
+        {
+          "pokemon": "Meditite",
+          "encounters": 470
+        },
+        {
+          "pokemon": "Shuppet",
+          "encounters": 224
+        },
+        {
+          "pokemon": "Duskull",
+          "encounters": 120
+        },
+        {
+          "pokemon": "Vulpix",
+          "encounters": 119
+        },
+        {
+          "pokemon": "Chingling",
+          "encounters": 41
+        },
+        {
+          "pokemon": "Chimecho",
+          "encounters": 41
+        }
+      ]
+    },
+    "Ruin Valley": {
+      "credit": "Hyper",
+      "variation": "All",
+      "total": 1001,
+      "data": [
+        {
+          "pokemon": "Yanma",
+          "encounters": 79
+        },
+        {
+          "pokemon": "Slowpoke",
+          "encounters": 33
+        },
+        {
+          "pokemon": "Fearow",
+          "encounters": 324
+        },
+        {
+          "pokemon": "Natu",
+          "encounters": 59
+        },
+        {
+          "pokemon": "Jolteon",
+          "encounters": 42
+        },
+        {
+          "pokemon": "Spearow",
+          "encounters": 66
+        },
+        {
+          "pokemon": "Marill",
+          "encounters": 82
+        },
+        {
+          "pokemon": "Wooper",
+          "encounters": 61
+        },
+        {
+          "pokemon": "Meowth",
+          "encounters": 48
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 40
+        },
+        {
+          "pokemon": "Wobbuffet",
+          "encounters": 48
+        },
+        {
+          "pokemon": "Xatu",
+          "encounters": 36
+        },
+        {
+          "pokemon": "Persian",
+          "encounters": 53
+        },
+        {
+          "pokemon": "Quagsire",
+          "encounters": 30
+        }
+      ]
+    },
+    "Route 24": {
+      "credit": "pupsil",
+      "variation": "All",
+      "total": 1044,
+      "data": [
+        {
+          "pokemon": "Pidgey",
+          "encounters": 203
+        },
+        {
+          "pokemon": "Bellsprout",
+          "encounters": 127
+        },
+        {
+          "pokemon": "Abra",
+          "encounters": 115
+        },
+        {
+          "pokemon": "Caterpie",
+          "encounters": 99
+        },
+        {
+          "pokemon": "Weedle",
+          "encounters": 97
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 91
+        },
+        {
+          "pokemon": "Oddish",
+          "encounters": 60
+        },
+        {
+          "pokemon": "Squirtle",
+          "encounters": 50
+        },
+        {
+          "pokemon": "Kakuna",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Metapod",
+          "encounters": 45
+        },
+        {
+          "pokemon": "Meowth",
+          "encounters": 39
+        },
+        {
+          "pokemon": "Sunkern",
+          "encounters": 38
+        },
+        {
+          "pokemon": "Venonat",
+          "encounters": 31
+        }
+      ]
+    }
+  },
+  "Johto": {},
+  "Hoenn": {
+    "Route 116": {
+      "credit": "pupsil",
+      "variation": "All",
+      "total": 1001,
+      "data": [
+        {
+          "pokemon": "Whismur",
+          "encounters": 237
+        },
+        {
+          "pokemon": "Nincada",
+          "encounters": 179
+        },
+        {
+          "pokemon": "Zigzagoon",
+          "encounters": 161
+        },
+        {
+          "pokemon": "Poochyena",
+          "encounters": 153
+        },
+        {
+          "pokemon": "Taillow",
+          "encounters": 124
+        },
+        {
+          "pokemon": "Abra",
+          "encounters": 61
+        },
+        {
+          "pokemon": "Skitty",
+          "encounters": 46
+        },
+        {
+          "pokemon": "Delcatty",
+          "encounters": 40
+        }
+      ]
+    }
+  },
+  "Sinnoh": {},
+  "Unova": {
+    "Lostlorn Forest": {
+      "credit": "pupsil",
+      "variation": "All",
+      "total": 1005,
+      "data": [
+        {
+          "pokemon": "Venipede",
+          "encounters": 298
+        },
+        {
+          "pokemon": "Swadloon",
+          "encounters": 196
+        },
+        {
+          "pokemon": "Cottonee",
+          "encounters": 118
+        },
+        {
+          "pokemon": "Petilil",
+          "encounters": 118
+        },
+        {
+          "pokemon": "Tranquill",
+          "encounters": 94
+        },
+        {
+          "pokemon": "Pansage",
+          "encounters": 46
+        },
+        {
+          "pokemon": "Panpour",
+          "encounters": 44
+        },
+        {
+          "pokemon": "Pansear",
+          "encounters": 47
+        },
+        {
+          "pokemon": "Servine",
+          "encounters": 44
+        }
+      ]
+    }
+  }
+}

@@ -32,6 +32,7 @@ const ShinyOdds = lazy(() => import('./pages/ShinyOdds/ShinyOdds'))
 const OfficialEventCalendar = lazy(() => import('./pages/OfficialEventCalendar/OfficialEventCalendar'))
 const TeamStatistics = lazy(() => import('./pages/TeamStatistics/TeamStatistics'))
 const RegionMaps = lazy(() => import('./pages/RegionMaps/RegionMaps'))
+const RouteFinder = lazy(() => import('./pages/RouteFinder/RouteFinder'))
 
 const BountiesPage = lazy(() => import('./pages/Bounties/BountiesPage'));
 const SpriteRecolour = lazy(() => import('./pages/SpriteRecolour/SpriteRecolour'));
@@ -107,6 +108,7 @@ export default function App() {
             <Route path="/events" element={<EventsPage />} />
             <Route path="/official-event-calendar" element={<OfficialEventCalendar />} />
             <Route path="/region-maps" element={<RegionMaps />} />
+            <Route path="/route-finder" element={<RouteFinder />} />
             <Route path="/team-statistics" element={<TeamStatistics />} />
             <Route path="/event/:slug" element={<EventsDetail />} />
             <Route path="/trophy/:trophySlug" element={<TrophyPage />} />

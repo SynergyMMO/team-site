@@ -28,6 +28,7 @@
     "MergeUserData": "node scripts/mergeShinyData.js --user=%npm_config_user%",
     "resourceeditor": "node scripts/resourcesEditorServer.mjs",
     "mapeditor": "node scripts/mapEditorServer.mjs",
+    "encountereditor": "node scripts/encounterPercentsEditorServer.mjs",
     "sendBountiesToDiscord": "node scripts/sendBountiesToDiscord.js"
   },
   "dependencies": {
@@ -44,7 +45,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.28.0",
-    "recharts": "^3.7.0"
+    "recharts": "^3.7.0",
+    "tesseract.js": "^5.1.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.0",
