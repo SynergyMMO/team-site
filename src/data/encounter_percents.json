@@ -484,6 +484,26 @@
           "encounters": 95
         }
       ]
+    },
+    "Relic Castle (Larvesta Room) - Lure": {
+      "route": "Relic Castle (Larvesta Room)",
+      "credit": "",
+      "variation": "Lure",
+      "total": 1003,
+      "data": [
+        {
+          "pokemon": "Claydol",
+          "encounters": 922
+        },
+        {
+          "pokemon": "Larvesta",
+          "encounters": 51
+        },
+        {
+          "pokemon": "Steelix",
+          "encounters": 30
+        }
+      ]
     }
   }
 }
