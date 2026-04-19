@@ -452,6 +452,38 @@
           "encounters": 8
         }
       ]
+    },
+    "Route 3 - Lure": {
+      "route": "Route 3",
+      "credit": "KaiDono",
+      "variation": "Lure",
+      "total": 1009,
+      "data": [
+        {
+          "pokemon": "Tepig",
+          "encounters": 33
+        },
+        {
+          "pokemon": "Pidove",
+          "encounters": 308
+        },
+        {
+          "pokemon": "Patrat",
+          "encounters": 194
+        },
+        {
+          "pokemon": "Blitzle",
+          "encounters": 182
+        },
+        {
+          "pokemon": "Purrloin",
+          "encounters": 197
+        },
+        {
+          "pokemon": "Lillipup",
+          "encounters": 95
+        }
+      ]
     }
   }
 }
