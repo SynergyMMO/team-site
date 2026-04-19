@@ -251,6 +251,26 @@
           "encounters": 31
         }
       ]
+    },
+    "Lost Cave - Night / Horde": {
+      "route": "Lost Cave",
+      "credit": "Dellwina",
+      "variation": "Night / Horde",
+      "total": 10760,
+      "data": [
+        {
+          "pokemon": "Misdreavus",
+          "encounters": 2808
+        },
+        {
+          "pokemon": "Golbat",
+          "encounters": 5034
+        },
+        {
+          "pokemon": "Murkrow",
+          "encounters": 2918
+        }
+      ]
     }
   },
   "Johto": {},
@@ -298,7 +318,7 @@
       "route": "Petalburg Woods",
       "credit": "Pinguh",
       "variation": "Lures",
-      "total": 349160,
+      "total": 339160,
       "data": [
         {
           "pokemon": "Treecko",
@@ -318,7 +338,7 @@
         },
         {
           "pokemon": "Cascoon",
-          "encounters": 38314
+          "encounters": 28314
         },
         {
           "pokemon": "Poochyena",
@@ -344,39 +364,39 @@
       "route": "Honey Trees",
       "credit": "Hyper, KaiDono, Mysto",
       "variation": "",
-      "total": 366,
+      "total": 405,
       "data": [
         {
           "pokemon": "Munchlax",
-          "encounters": 21
+          "encounters": 26
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 41
+          "encounters": 42
         },
         {
           "pokemon": "Combee",
-          "encounters": 93
+          "encounters": 101
         },
         {
           "pokemon": "Heracross",
-          "encounters": 18
+          "encounters": 20
         },
         {
           "pokemon": "Aipom",
-          "encounters": 38
+          "encounters": 41
         },
         {
           "pokemon": "Burmy",
-          "encounters": 53
+          "encounters": 60
         },
         {
           "pokemon": "Silcoon",
-          "encounters": 32
+          "encounters": 34
         },
         {
           "pokemon": "Wurmple",
-          "encounters": 59
+          "encounters": 70
         },
         {
           "pokemon": "Cascoon",
