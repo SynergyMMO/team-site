@@ -215,6 +215,7 @@ export default function RouteFinder() {
       if (targetDiff !== 0) return targetDiff
       return a.displayName.localeCompare(b.displayName)
     })
+  const filteredTotalEncounters = filteredRoutes.reduce((sum, route) => sum + route.total, 0)
 
   let emptyText = ''
   if (pokemonNeedle && !pokemonHasData) {
@@ -282,6 +283,7 @@ export default function RouteFinder() {
 
       <p className={styles.resultCount}>
         {filteredRoutes.length.toLocaleString()} tracked {filteredRoutes.length === 1 ? 'route' : 'routes'}
+        <span>{filteredTotalEncounters.toLocaleString()} Total Encounters</span>
       </p>
 
       {emptyText ? (

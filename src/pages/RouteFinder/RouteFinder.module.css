@@ -90,9 +90,17 @@
 }
 
 .resultCount {
+  display: grid;
+  gap: 4px;
   margin: 0 0 18px;
   text-align: center;
   color: #cfe5ef;
+}
+
+.resultCount span {
+  color: #9cf4de;
+  font-size: 0.95rem;
+  font-weight: 800;
 }
 
 .emptyState {

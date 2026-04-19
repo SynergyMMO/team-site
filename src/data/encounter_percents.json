@@ -2,7 +2,7 @@
   "Kanto": {
     "Route 17": {
       "credit": "pupsil",
-      "variation": "All",
+      "variation": "Lures",
       "total": 1000,
       "data": [
         {
@@ -101,7 +101,7 @@
     "Mt Pyre (Outside)": {
       "route": "Mt Pyre (Outside)",
       "credit": "pupsil",
-      "variation": "All",
+      "variation": "Lures",
       "total": 1015,
       "data": [
         {
@@ -130,9 +130,9 @@
         }
       ]
     },
-    "Ruin Valley": {
+    "Ruin VLuresey": {
       "credit": "Hyper",
-      "variation": "All",
+      "variation": "Lures",
       "total": 1001,
       "data": [
         {
@@ -195,7 +195,7 @@
     },
     "Route 24": {
       "credit": "pupsil",
-      "variation": "All",
+      "variation": "Lures",
       "total": 1044,
       "data": [
         {
@@ -257,7 +257,7 @@
   "Hoenn": {
     "Route 116": {
       "credit": "pupsil",
-      "variation": "All",
+      "variation": "Lures",
       "total": 1001,
       "data": [
         {
@@ -294,10 +294,10 @@
         }
       ]
     },
-    "Petalburg Woods - All": {
+    "Petalburg Woods - Lures": {
       "route": "Petalburg Woods",
       "credit": "Pinguh",
-      "variation": "All",
+      "variation": "Lures",
       "total": 349160,
       "data": [
         {
@@ -343,7 +343,7 @@
   "Unova": {
     "Lostlorn Forest": {
       "credit": "pupsil",
-      "variation": "All",
+      "variation": "Lures",
       "total": 1005,
       "data": [
         {
