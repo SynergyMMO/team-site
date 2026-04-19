@@ -64,6 +64,11 @@ export default function Home() {
 
       <section className={styles.featuresSection}>
         <h2>Welcome to Team Synergy</h2>
+        <img
+          src={getAssetUrl('images/teamsyn.gif')}
+          alt="Team Synergy"
+          className={styles.teamSynGif}
+        />
         <p>
           Team Synergy is a PokeMMO community dedicated to shiny hunting. Our members hunt together, create fun events and share our excitement for PokeMMO!
         </p>
@@ -155,6 +160,13 @@ export default function Home() {
       <section className={styles.changelogSection}>
         <h2>Changelog</h2>
         <div className={styles.changelog}>
+          <div className={styles.changelogEntry}>
+            <h3>April 20, 2026</h3>
+            <ul>
+              <li><strong>Route Finder</strong> - Added a new tool for finding PokeMMO routes and location details</li>
+              <li><strong>Region Maps</strong> - Added interactive region maps for browsing routes, spawns, and points of interest</li>
+            </ul>
+          </div>
           <div className={styles.changelogEntry}>
             <h3>February 23, 2026</h3>
             <ul>
@@ -280,7 +292,7 @@ export default function Home() {
           </div>
         </div>
         <div className={styles.metadata}>
-          <p><strong>Last Updated:</strong> February 14, 2026</p>
+          <p><strong>Last Updated:</strong> April 20, 2026</p>
           <p><strong>Contact:</strong> oHypers on Discord</p>
         </div>
       </section>
