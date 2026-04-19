@@ -339,7 +339,52 @@
       ]
     }
   },
-  "Sinnoh": {},
+  "Sinnoh": {
+    "Honey Trees": {
+      "route": "Honey Trees",
+      "credit": "Hyper, KaiDono, Mysto",
+      "variation": "",
+      "total": 225,
+      "data": [
+        {
+          "pokemon": "Munchlax",
+          "encounters": 15
+        },
+        {
+          "pokemon": "Cherubi",
+          "encounters": 30
+        },
+        {
+          "pokemon": "Combee",
+          "encounters": 59
+        },
+        {
+          "pokemon": "Heracross",
+          "encounters": 10
+        },
+        {
+          "pokemon": "Aipom",
+          "encounters": 24
+        },
+        {
+          "pokemon": "Burmy",
+          "encounters": 30
+        },
+        {
+          "pokemon": "Silcoon",
+          "encounters": 13
+        },
+        {
+          "pokemon": "Wurmple",
+          "encounters": 33
+        },
+        {
+          "pokemon": "Cascoon",
+          "encounters": 11
+        }
+      ]
+    }
+  },
   "Unova": {
     "Lostlorn Forest": {
       "credit": "pupsil",
