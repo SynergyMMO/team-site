@@ -110,6 +110,53 @@ function flattenRoutes() {
   )
 }
 
+function getTopContributors(routes) {
+  const contributors = new Map()
+
+  routes.forEach((route) => {
+    const names = String(route.credit || '')
+      .split(',')
+      .map((name) => name.trim())
+      .filter(Boolean)
+
+    names.forEach((name) => {
+      const previous = contributors.get(name) || { name, routes: 0, encounters: 0 }
+      contributors.set(name, {
+        ...previous,
+        routes: previous.routes + 1,
+        encounters: previous.encounters + route.total,
+      })
+    })
+  })
+
+  return Array.from(contributors.values())
+    .sort((a, b) => b.routes - a.routes || b.encounters - a.encounters || a.name.localeCompare(b.name))
+}
+
+function TopContributorsDropdown({ contributors }) {
+  const totalRoutes = contributors.reduce((sum, contributor) => sum + contributor.routes, 0)
+
+  return (
+    <details className={styles.topContributors}>
+      <summary className={styles.topContributorsSummary}>
+        <span>Top Contributors</span>
+        <small>{totalRoutes.toLocaleString()} route credits</small>
+      </summary>
+      <ol className={styles.topContributorsList}>
+        {contributors.map((contributor, index) => (
+          <li key={contributor.name} className={styles.topContributorRow}>
+            <span className={styles.contributorRank}>#{index + 1}</span>
+            <span className={styles.contributorName}>{contributor.name}</span>
+            <span className={styles.contributorStats}>
+              {contributor.routes.toLocaleString()} {contributor.routes === 1 ? 'route' : 'routes'}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </details>
+  )
+}
+
 function PokemonPill({ mon, role }) {
   const tierLabel = mon.tier !== null ? `Tier ${mon.tier}` : null
 
@@ -186,6 +233,7 @@ export default function RouteFinder() {
   })
 
   const routes = useMemo(() => flattenRoutes(), [])
+  const topContributors = useMemo(() => getTopContributors(routes), [routes])
   const pokemonOptions = useMemo(() => {
     const names = new Set()
     routes.forEach(route => route.pokemon.forEach(mon => names.add(mon.name)))
@@ -231,6 +279,9 @@ export default function RouteFinder() {
       <h1 className="page-title">Route Finder</h1>
       <img src={getAssetUrl('images/pagebreak.png')} alt="" className="pagebreak" />
 
+      <div className={styles.topControls}>
+        <TopContributorsDropdown contributors={topContributors} />
+      </div>
 
       <details className={styles.infoDropdown} open>
         <summary>Page Information / Learn More!</summary>
