@@ -344,39 +344,39 @@
       "route": "Honey Trees",
       "credit": "Hyper, KaiDono, Mysto",
       "variation": "",
-      "total": 321,
+      "total": 366,
       "data": [
         {
           "pokemon": "Munchlax",
-          "encounters": 17
+          "encounters": 21
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 35
+          "encounters": 41
         },
         {
           "pokemon": "Combee",
-          "encounters": 83
+          "encounters": 93
         },
         {
           "pokemon": "Heracross",
-          "encounters": 15
+          "encounters": 18
         },
         {
           "pokemon": "Aipom",
-          "encounters": 36
+          "encounters": 38
         },
         {
           "pokemon": "Burmy",
-          "encounters": 48
+          "encounters": 53
         },
         {
           "pokemon": "Silcoon",
-          "encounters": 25
+          "encounters": 32
         },
         {
           "pokemon": "Wurmple",
-          "encounters": 51
+          "encounters": 59
         },
         {
           "pokemon": "Cascoon",
