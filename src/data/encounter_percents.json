@@ -339,6 +339,30 @@
           "encounters": 44
         }
       ]
+    },
+    "Dreamyard - Night - Lure": {
+      "route": "Dreamyard",
+      "credit": "Hyper",
+      "variation": "Night - Lure",
+      "total": 151,
+      "data": [
+        {
+          "pokemon": "Patrat",
+          "encounters": 46
+        },
+        {
+          "pokemon": "Purrloin",
+          "encounters": 57
+        },
+        {
+          "pokemon": "Munna",
+          "encounters": 40
+        },
+        {
+          "pokemon": "Musharna",
+          "encounters": 8
+        }
+      ]
     }
   }
 }

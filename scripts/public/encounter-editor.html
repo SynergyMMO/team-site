@@ -594,9 +594,7 @@
         scheduleSave()
       })
 
-      document.getElementById('variation').addEventListener('input', (event) => {
-        setStatus('Route label changed', 'saving')
-      })
+      document.getElementById('variation').addEventListener('input', scheduleRouteLabelSave)
 
       document.getElementById('addPokemon').addEventListener('click', () => {
         route.data.push({ pokemon: '', encounters: 0 })
@@ -617,9 +615,7 @@
       document.getElementById('routeName').addEventListener('keydown', (event) => {
         if (event.key === 'Enter') renameRoute()
       })
-      document.getElementById('routeName').addEventListener('input', () => {
-        setStatus('Route label changed', 'saving')
-      })
+      document.getElementById('routeName').addEventListener('input', scheduleRouteLabelSave)
 
       document.getElementById('importScreenshotButton').addEventListener('click', () => {
         document.getElementById('screenshotUpload').click()
@@ -730,6 +726,12 @@
       }, 450)
     }
 
+    function scheduleRouteLabelSave() {
+      setStatus('Saving route label', 'saving')
+      window.clearTimeout(state.saveTimer)
+      state.saveTimer = window.setTimeout(renameRoute, 650)
+    }
+
     function updateTotalDisplay(total) {
       const totalInput = document.getElementById('total')
       const summaryItems = els.editor.querySelectorAll('.summaryItem strong')
@@ -796,6 +798,7 @@
     }
 
     async function renameRoute() {
+      window.clearTimeout(state.saveTimer)
       const nextName = document.getElementById('routeName').value.trim()
       const nextVariation = document.getElementById('variation').value.trim()
       if (!nextName) return
