@@ -14,6 +14,11 @@ const SPAWN_CATEGORIES = [
     matches: ({ encounterTypes }) => encounterTypes.has('lure'),
   },
   {
+    key: 'headbutt',
+    label: 'Headbutt',
+    matches: ({ methods }) => methods.has('headbutt'),
+  },
+  {
     key: 'single',
     label: 'Single',
     matches: ({ encounterTypes, methods }) =>
@@ -98,12 +103,49 @@ function SpawnRow({ spawn }) {
   )
 }
 
-export default function RouteDetailsPanel({ selectedArea, filteredSpawns }) {
+function MatchingRouteList({ matchingAreas, selectedAreaId, onSelectArea }) {
+  const routeLabel = matchingAreas.length === 1 ? 'route' : 'routes'
+
+  return (
+    <section className={styles.matchingRoutesSection}>
+      <h3 className={styles.sectionHeading}>Total routes selected</h3>
+      <p className={styles.panelSubtle}>{matchingAreas.length} {routeLabel} match the current filters.</p>
+      {matchingAreas.length > 0 ? (
+        <div className={styles.routeChipGrid}>
+          {matchingAreas.map((area) => (
+            <button
+              key={area.id}
+              type="button"
+              className={`${styles.routeChip} ${selectedAreaId === area.id ? styles.routeChipActive : ''}`}
+              onClick={() => onSelectArea(area.id)}
+            >
+              {area.name}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <p className={styles.panelSubtle}>No routes match the current filters.</p>
+      )}
+    </section>
+  )
+}
+
+export default function RouteDetailsPanel({
+  selectedArea,
+  filteredSpawns,
+  matchingAreas = [],
+  onSelectArea,
+}) {
   if (!selectedArea) {
     return (
       <section className={styles.panelCard}>
         <h2 className={styles.panelTitle}>Route Details</h2>
         <p className={styles.panelSubtle}>Select an area on the map to inspect encounters, notes, and metadata.</p>
+        <MatchingRouteList
+          matchingAreas={matchingAreas}
+          selectedAreaId={selectedArea?.id}
+          onSelectArea={onSelectArea}
+        />
       </section>
     )
   }
@@ -133,6 +175,12 @@ export default function RouteDetailsPanel({ selectedArea, filteredSpawns }) {
       ) : (
         <p className={styles.panelSubtle}>No spawns match the current filters.</p>
       )}
+
+      <MatchingRouteList
+        matchingAreas={matchingAreas}
+        selectedAreaId={selectedArea.id}
+        onSelectArea={onSelectArea}
+      />
     </section>
   )
 }

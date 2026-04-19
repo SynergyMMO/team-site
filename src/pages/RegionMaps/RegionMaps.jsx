@@ -8,6 +8,7 @@ import InteractiveRegionMap from './components/InteractiveRegionMap'
 import {
   areaMatchesFilters,
   getAreaSpawnSummary,
+  SHINY_TIER_OPTIONS,
   getSpawnRarities,
   getSpawnTypes,
   toggleValue,
@@ -23,6 +24,7 @@ const defaultFilters = {
   pokemonSearch: '',
   types: new Set(),
   rarities: new Set(),
+  shinyTiers: new Set(),
 }
 
 function imageSlug(value) {
@@ -162,6 +164,7 @@ export default function RegionMaps() {
       pokemonSearch: '',
       types: new Set(),
       rarities: new Set(),
+      shinyTiers: new Set(),
     }))
   }
 
@@ -184,6 +187,9 @@ export default function RegionMaps() {
       }
       if (change.rarityToggle) {
         return { ...previous, rarities: toggleValue(previous.rarities, change.rarityToggle) }
+      }
+      if (Number.isFinite(change.shinyTierToggle)) {
+        return { ...previous, shinyTiers: toggleValue(previous.shinyTiers, change.shinyTierToggle) }
       }
       return { ...previous, ...change }
     })
@@ -229,11 +235,17 @@ export default function RegionMaps() {
             onChangeFilters={handleFiltersChange}
             availableTypes={availableTypes}
             availableRarities={availableRarities}
+            shinyTierOptions={SHINY_TIER_OPTIONS}
             regionName={activeRegion.name}
             debugMode={debugMode}
             onChangeDebugMode={setDebugMode}
           />
-          <RouteDetailsPanel selectedArea={selectedArea} filteredSpawns={selectedAreaFilteredSpawns} />
+          <RouteDetailsPanel
+            selectedArea={selectedArea}
+            filteredSpawns={selectedAreaFilteredSpawns}
+            matchingAreas={visibleAreas}
+            onSelectArea={setSelectedAreaId}
+          />
         </aside>
 
         <div className={`${styles.mapColumn} ${isFullscreen ? styles.mapColumnFullscreen : ''}`}>

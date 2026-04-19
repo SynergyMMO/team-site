@@ -5,6 +5,7 @@ export default function MapFilters({
   onChangeFilters,
   availableTypes,
   availableRarities,
+  shinyTierOptions,
   regionName,
   debugMode,
   onChangeDebugMode,
@@ -88,6 +89,22 @@ export default function MapFilters({
               onClick={() => onChangeFilters({ rarityToggle: rarity })}
             >
               {rarity}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.controlBlock}>
+        <p className={styles.controlLabel}>Shiny Tier</p>
+        <div className={styles.chipGrid}>
+          {shinyTierOptions.map((tier) => (
+            <button
+              key={tier}
+              type="button"
+              className={`${styles.chip} ${filters.shinyTiers.has(tier) ? styles.chipActive : ''}`}
+              onClick={() => onChangeFilters({ shinyTierToggle: tier })}
+            >
+              Tier {tier}
             </button>
           ))}
         </div>

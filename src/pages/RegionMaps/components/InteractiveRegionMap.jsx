@@ -633,10 +633,6 @@ export default function InteractiveRegionMap({
 
   const currentDebugBox = debugDrag ? getBoxFromPoints(debugDrag.start, debugDrag.current) : debugBox
 
-  if (!transform) {
-    return <div className={styles.mapShell} ref={containerRef} />
-  }
-
   return (
     <section className={`${styles.mapShell} ${isFullscreen ? styles.mapShellFullscreen : ''}`}>
       <header className={styles.mapTopBar}>
@@ -678,14 +674,15 @@ export default function InteractiveRegionMap({
         onPointerCancel={handlePointerEnd}
         onPointerLeave={handlePointerEnd}
       >
-        <div
-          className={styles.mapCanvas}
-          style={{
-            width: `${mapConfig.map.width}px`,
-            height: `${mapConfig.map.height}px`,
-            transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
-          }}
-        >
+        {transform ? (
+          <div
+            className={styles.mapCanvas}
+            style={{
+              width: `${mapConfig.map.width}px`,
+              height: `${mapConfig.map.height}px`,
+              transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
+            }}
+          >
           {imageFailed ? (
             <div className={styles.mapImagePlaceholder}>
               <strong>{mapConfig.name}</strong>
@@ -888,8 +885,11 @@ export default function InteractiveRegionMap({
                 onClick={stopMapEvent}
               />
             )}
-          </svg>
-        </div>
+            </svg>
+          </div>
+        ) : (
+          <div className={styles.mapLoading}>Loading map...</div>
+        )}
 
         {hoveredArea && !debugMode && (
           <div className={styles.mapTooltip} style={{ left: hoverPosition.x + 12, top: hoverPosition.y + 12 }}>

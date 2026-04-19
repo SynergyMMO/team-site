@@ -1,3 +1,5 @@
+import pokemonData from '../../../data/pokemmo_data/pokemon-data.json'
+
 export const RARITY_ORDER = [
   'very common',
   'common',
@@ -6,8 +8,18 @@ export const RARITY_ORDER = [
   'very rare',
   'special',
   'lure',
+  'headbutt',
   'horde',
 ]
+
+export const SHINY_TIER_OPTIONS = [6, 5, 4, 3, 2, 1, 0]
+
+const pokemonDataById = Object.values(pokemonData).reduce((lookup, pokemon) => {
+  if (Number.isFinite(pokemon?.id)) {
+    lookup.set(pokemon.id, pokemon)
+  }
+  return lookup
+}, new Map())
 
 export function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max)
@@ -42,13 +54,44 @@ export function getSpawnRarities(areas) {
 }
 
 export function getSpawnRarityValues(spawn) {
+  if (Array.isArray(spawn.encounters) && spawn.encounters.length > 0) {
+    return Array.from(new Set(
+      spawn.encounters.map((encounter) =>
+        String(encounter.method || '').trim().toLowerCase() === 'headbutt'
+          ? 'Headbutt'
+          : encounter.rarity || 'Common'
+      )
+    ))
+  }
   if (Array.isArray(spawn.rarities) && spawn.rarities.length > 0) {
     return spawn.rarities
   }
-  if (Array.isArray(spawn.encounters) && spawn.encounters.length > 0) {
-    return Array.from(new Set(spawn.encounters.map((encounter) => encounter.rarity || 'Common')))
-  }
   return [spawn.rarity || 'Common']
+}
+
+export function getSpawnShinyTier(spawn) {
+  const directTier = Number(spawn.shiny_tier ?? spawn.shinyTier)
+  if (SHINY_TIER_OPTIONS.includes(directTier)) {
+    return directTier
+  }
+
+  const pokemon = pokemonDataById.get(Number(spawn.id))
+  const dataTier = Number(pokemon?.shiny_tier)
+  return SHINY_TIER_OPTIONS.includes(dataTier) ? dataTier : null
+}
+
+function spawnMatchesFilters(spawn, filters) {
+  const nameMatch = !filters.pokemonSearch
+    || spawn.name.toLowerCase().includes(filters.pokemonSearch.toLowerCase())
+  const typeMatch = filters.types.size === 0
+    || (spawn.types || []).some((type) => filters.types.has(type))
+  const rarityMatch = filters.rarities.size === 0
+    || getSpawnRarityValues(spawn).some((rarity) => filters.rarities.has(rarity))
+  const shinyTier = getSpawnShinyTier(spawn)
+  const shinyTierMatch = filters.shinyTiers.size === 0
+    || filters.shinyTiers.has(shinyTier)
+
+  return nameMatch && typeMatch && rarityMatch && shinyTierMatch
 }
 
 export function areaMatchesFilters(area, filters) {
@@ -58,15 +101,7 @@ export function areaMatchesFilters(area, filters) {
     return true
   }
 
-  return spawns.some((spawn) => {
-    const nameMatch = !filters.pokemonSearch
-      || spawn.name.toLowerCase().includes(filters.pokemonSearch.toLowerCase())
-    const typeMatch = filters.types.size === 0
-      || (spawn.types || []).some((type) => filters.types.has(type))
-    const rarityMatch = filters.rarities.size === 0
-      || getSpawnRarityValues(spawn).some((rarity) => filters.rarities.has(rarity))
-    return nameMatch && typeMatch && rarityMatch
-  })
+  return spawns.some((spawn) => spawnMatchesFilters(spawn, filters))
 }
 
 export function getAreaSpawnSummary(area, filters) {
@@ -74,15 +109,7 @@ export function getAreaSpawnSummary(area, filters) {
     return area.spawns || []
   }
 
-  return (area.spawns || []).filter((spawn) => {
-    const nameMatch = !filters.pokemonSearch
-      || spawn.name.toLowerCase().includes(filters.pokemonSearch.toLowerCase())
-    const typeMatch = filters.types.size === 0
-      || (spawn.types || []).some((type) => filters.types.has(type))
-    const rarityMatch = filters.rarities.size === 0
-      || getSpawnRarityValues(spawn).some((rarity) => filters.rarities.has(rarity))
-    return nameMatch && typeMatch && rarityMatch
-  })
+  return (area.spawns || []).filter((spawn) => spawnMatchesFilters(spawn, filters))
 }
 
 export function toggleValue(currentSet, value) {

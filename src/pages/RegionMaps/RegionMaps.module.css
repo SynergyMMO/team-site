@@ -346,6 +346,15 @@
   color: #b9d8e8;
 }
 
+.mapLoading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #eaf7ff;
+  font-weight: 700;
+}
+
 .overlaySvg {
   position: absolute;
   inset: 0;
@@ -606,6 +615,41 @@
   font-size: 0.78rem;
   text-transform: capitalize;
   text-align: right;
+}
+
+.matchingRoutesSection {
+  margin-top: 0.95rem;
+  border-top: 1px solid rgba(84, 139, 190, 0.35);
+  padding-top: 0.1rem;
+}
+
+.routeChipGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.routeChip {
+  border: 1px solid rgba(112, 168, 212, 0.45);
+  background: rgba(10, 34, 63, 0.8);
+  color: #c8e6ff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 0.24rem 0.5rem;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.routeChip:hover {
+  border-color: #8fd1ff;
+}
+
+.routeChipActive {
+  background: rgba(25, 85, 132, 0.92);
+  border-color: #9ad6ff;
+  color: #fff;
 }
 
 .debugPanel {
