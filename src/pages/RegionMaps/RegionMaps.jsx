@@ -241,6 +241,7 @@ export default function RegionMaps() {
             onChangeDebugMode={setDebugMode}
           />
           <RouteDetailsPanel
+            regionName={activeRegion.name}
             selectedArea={selectedArea}
             filteredSpawns={selectedAreaFilteredSpawns}
             matchingAreas={visibleAreas}

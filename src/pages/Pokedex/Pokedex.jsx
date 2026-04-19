@@ -9,6 +9,7 @@ import { normalizePokemonName, onGifError, getBasePokemonName } from '../../util
 import { API } from '../../api/endpoints'
 import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
+import { getPokemonEncounterPercentLabel, getRouteEncounterPercentData, shouldShowPokemonEncounterPercent } from '../../utils/routeEncounterPercents'
 import styles from './Pokedex.module.css'
 
 export default function Pokedex() {
@@ -95,16 +96,6 @@ export default function Pokedex() {
       return locationText.includes(normalizedSearch)
     })
 
-    const hasFishingEncounter = matchingEncounters.some(encounter => {
-      const type = (encounter.type || '').toLowerCase()
-      return type.includes('rod') || type.includes('fishing')
-    })
-
-    const hasHeadbuttEncounter = matchingEncounters.some(encounter => {
-      const type = (encounter.type || '').toLowerCase()
-      return type === 'headbutt'
-    })
-
     const encounterTypes = new Set()
     matchingEncounters.forEach(encounter => {
       const type = (encounter.type || '').toLowerCase()
@@ -116,7 +107,7 @@ export default function Pokedex() {
       if (rarity === 'lure' || type === 'lure') {
         encounterTypes.add('Lure Encounters')
       }
-      if (['very common', 'common', 'uncommon', 'rare', 'very rare'].includes(rarity) && !hasFishingEncounter && !hasHeadbuttEncounter) {
+      if (['very common', 'common', 'uncommon', 'rare', 'very rare'].includes(rarity) && !type.includes('rod') && !type.includes('fishing') && type !== 'headbutt') {
         encounterTypes.add('Singles')
       }
       if (type.includes('rod') || type.includes('fishing')) {
@@ -179,7 +170,11 @@ export default function Pokedex() {
     } else if (encounterType === 'Singles') {
       matchingEncounters = matchingEncounters.filter(e => {
         const rarity = (e.rarity || '').toLowerCase()
+        const type = (e.type || '').toLowerCase()
         return ['very common', 'common', 'uncommon', 'rare', 'very rare'].includes(rarity)
+          && !type.includes('rod')
+          && !type.includes('fishing')
+          && type !== 'headbutt'
       })
     } else if (encounterType === 'Fishing Encounters') {
       matchingEncounters = matchingEncounters.filter(e => {
@@ -1346,6 +1341,7 @@ export default function Pokedex() {
 
             const routeName = locationSearch.split(' - ')[0]
             const regionName = locationSearch.split(' - ')[1]
+            const routePercentData = getRouteEncounterPercentData(regionName, { name: routeName })
 
             return [
               <div key="route-header" style={{ marginBottom: '20px', paddingBottom: '12px', borderBottom: '2px solid rgba(102, 126, 234, 0.5)' }}>
@@ -1356,6 +1352,7 @@ export default function Pokedex() {
                 .filter(type => encounterTypeMap[type] && encounterTypeMap[type].length > 0)
                 .map(type => {
                   let pokemonList = encounterTypeMap[type]
+                  const showPercentForType = shouldShowPokemonEncounterPercent(routePercentData, type)
                 if (type === 'Singles' || type === 'Rares') {
                   const rarityOrder = ['very common', 'common', 'uncommon', 'rare', 'very rare']
                   pokemonList = [...pokemonList].sort((a, b) => {
@@ -1381,6 +1378,9 @@ export default function Pokedex() {
                       const normalized = normalizePokemonName(pokemon)
                       const lowerName = pokemon.toLowerCase()
                       const isComplete = globalShinies.has(lowerName)
+                      const percentLabel = showPercentForType
+                        ? getPokemonEncounterPercentLabel(routePercentData, pokemon)
+                        : ''
                       
                       const showRarityInfo = type === 'Singles' || type === 'Rares'
                       const primaryRarity = pokemonData.rarities && pokemonData.rarities[0]
@@ -1410,6 +1410,10 @@ export default function Pokedex() {
 
                       return (
                         <div key={`${type}-${pokemon}-${idx}`} className={styles.locationPokemonItem} style={{ position: 'relative', display: 'inline-block', ...getTimeBasedStyle() }}>
+                          {percentLabel && (
+                            <span className={styles.locationPercentBadge}>{percentLabel}</span>
+                          )}
+
                           {hasMultipleGrassTypes && (
                             <div style={{
                               position: 'absolute',

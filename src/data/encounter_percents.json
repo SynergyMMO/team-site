@@ -364,43 +364,43 @@
       "route": "Honey Trees",
       "credit": "Hyper, KaiDono, Mysto",
       "variation": "",
-      "total": 442,
+      "total": 571,
       "data": [
         {
           "pokemon": "Combee",
-          "encounters": 123
+          "encounters": 145
         },
         {
           "pokemon": "Wurmple",
-          "encounters": 79
+          "encounters": 94
         },
         {
           "pokemon": "Burmy",
-          "encounters": 77
+          "encounters": 92
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 47
+          "encounters": 58
         },
         {
           "pokemon": "Aipom",
-          "encounters": 54
+          "encounters": 62
         },
         {
           "pokemon": "Silcoon",
-          "encounters": 34
+          "encounters": 39
         },
         {
           "pokemon": "Munchlax",
-          "encounters": 30
+          "encounters": 31
         },
         {
           "pokemon": "Heracross",
-          "encounters": 23
+          "encounters": 24
         },
         {
           "pokemon": "Cascoon",
-          "encounters": 23
+          "encounters": 26
         }
       ]
     },
@@ -493,7 +493,7 @@
         }
       ]
     },
-    "Route 3 - Lure": {
+    "Route 3": {
       "route": "Route 3",
       "credit": "KaiDono",
       "variation": "Lure",
@@ -525,7 +525,7 @@
         }
       ]
     },
-    "Relic Castle (Larvesta Room) - Lure": {
+    "Relic Castle (Larvesta Room)": {
       "route": "Relic Castle (Larvesta Room)",
       "credit": "Dammers",
       "variation": "Lure",

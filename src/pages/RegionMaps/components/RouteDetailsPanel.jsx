@@ -1,5 +1,6 @@
 import styles from '../RegionMaps.module.css'
 import { getLocalPokemonGif, onGifError } from '../../../utils/pokemon'
+import { getPokemonEncounterPercentLabel, getRouteEncounterPercentData } from '../../../utils/routeEncounterPercents'
 import { getSpawnRarityValues } from './mapHelpers'
 
 const SPAWN_CATEGORIES = [
@@ -84,7 +85,9 @@ function formatEncounterSummary(spawn) {
   return [methodSummary, levelSummary, raritySummary].filter(Boolean).join(' - ')
 }
 
-function SpawnRow({ spawn }) {
+function SpawnRow({ spawn, routePercentData }) {
+  const percentLabel = getPokemonEncounterPercentLabel(routePercentData, spawn.name)
+
   return (
     <li className={styles.spawnRow}>
       <span className={styles.spawnSpriteWrap} title={spawn.name}>
@@ -95,6 +98,10 @@ function SpawnRow({ spawn }) {
           loading="lazy"
           onError={onGifError(spawn.name)}
         />
+      </span>
+      <span className={styles.spawnName}>
+        {spawn.name}
+        {percentLabel && <span className={styles.spawnPercent}>{percentLabel}</span>}
       </span>
       <span className={styles.spawnMeta}>
         {(spawn.types || []).join(' / ')} - {formatEncounterSummary(spawn)}
@@ -131,6 +138,7 @@ function MatchingRouteList({ matchingAreas, selectedAreaId, onSelectArea }) {
 }
 
 export default function RouteDetailsPanel({
+  regionName,
   selectedArea,
   filteredSpawns,
   matchingAreas = [],
@@ -151,6 +159,7 @@ export default function RouteDetailsPanel({
   }
 
   const spawnCategories = groupSpawnsByCategory(filteredSpawns)
+  const routePercentData = getRouteEncounterPercentData(regionName, selectedArea)
 
   return (
     <section className={styles.panelCard}>
@@ -166,7 +175,11 @@ export default function RouteDetailsPanel({
               <h4 className={styles.spawnCategoryTitle}>{category.label}</h4>
               <ul className={styles.spawnList}>
                 {category.spawns.map((spawn) => (
-                  <SpawnRow key={`${selectedArea.id}-${category.key}-${spawn.name}`} spawn={spawn} />
+                  <SpawnRow
+                    key={`${selectedArea.id}-${category.key}-${spawn.name}`}
+                    spawn={spawn}
+                    routePercentData={routePercentData}
+                  />
                 ))}
               </ul>
             </section>
