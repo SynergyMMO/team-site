@@ -12,6 +12,21 @@ import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import { getPokemonEncounterPercentLabel, getRouteEncounterPercentData, shouldShowPokemonEncounterPercent } from '../../utils/routeEncounterPercents'
 import styles from './Pokedex.module.css'
 
+function parseLocationSearch(value) {
+  const text = String(value || '')
+  const separator = ' - '
+  const separatorIndex = text.lastIndexOf(separator)
+
+  if (separatorIndex === -1) {
+    return { routeName: text, regionName: '' }
+  }
+
+  return {
+    routeName: text.slice(0, separatorIndex),
+    regionName: text.slice(separatorIndex + separator.length),
+  }
+}
+
 export default function Pokedex() {
   const breadcrumbs = [
     { name: 'Home', url: '/' },
@@ -1339,8 +1354,7 @@ export default function Pokedex() {
               })
             })
 
-            const routeName = locationSearch.split(' - ')[0]
-            const regionName = locationSearch.split(' - ')[1]
+            const { routeName, regionName } = parseLocationSearch(locationSearch)
             const routePercentData = getRouteEncounterPercentData(regionName, { name: routeName })
 
             return [

@@ -437,6 +437,30 @@
           "encounters": 25
         }
       ]
+    },
+    "Union Cave / 3rd Floor / Fishing - Lures": {
+      "route": "Union Cave / 3rd Floor / Fishing",
+      "credit": "Stinky",
+      "variation": "Lures",
+      "total": 33869,
+      "data": [
+        {
+          "pokemon": "Kingler",
+          "encounters": 4487
+        },
+        {
+          "pokemon": "Corsola",
+          "encounters": 13680
+        },
+        {
+          "pokemon": "Krabby",
+          "encounters": 15219
+        },
+        {
+          "pokemon": "Lapras",
+          "encounters": 483
+        }
+      ]
     }
   },
   "Hoenn": {
@@ -486,26 +510,6 @@
       "total": 339160,
       "data": [
         {
-          "pokemon": "Treecko",
-          "encounters": 13616
-        },
-        {
-          "pokemon": "Shroomish",
-          "encounters": 32425
-        },
-        {
-          "pokemon": "Slakoth",
-          "encounters": 16290
-        },
-        {
-          "pokemon": "Wurmple",
-          "encounters": 38314
-        },
-        {
-          "pokemon": "Cascoon",
-          "encounters": 28314
-        },
-        {
           "pokemon": "Poochyena",
           "encounters": 85349
         },
@@ -514,8 +518,28 @@
           "encounters": 84680
         },
         {
+          "pokemon": "Wurmple",
+          "encounters": 38314
+        },
+        {
+          "pokemon": "Shroomish",
+          "encounters": 32425
+        },
+        {
           "pokemon": "Silcoon",
           "encounters": 28351
+        },
+        {
+          "pokemon": "Cascoon",
+          "encounters": 28314
+        },
+        {
+          "pokemon": "Slakoth",
+          "encounters": 16290
+        },
+        {
+          "pokemon": "Treecko",
+          "encounters": 13616
         },
         {
           "pokemon": "Taillow",
@@ -561,43 +585,43 @@
       "route": "Honey Trees",
       "credit": "Hyper, KaiDono, Mysto",
       "variation": "",
-      "total": 757,
+      "total": 1150,
       "data": [
         {
           "pokemon": "Combee",
-          "encounters": 210
-        },
-        {
-          "pokemon": "Wurmple",
-          "encounters": 117
+          "encounters": 328
         },
         {
           "pokemon": "Burmy",
-          "encounters": 122
+          "encounters": 195
+        },
+        {
+          "pokemon": "Wurmple",
+          "encounters": 168
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 78
+          "encounters": 123
         },
         {
           "pokemon": "Aipom",
-          "encounters": 82
+          "encounters": 111
         },
         {
           "pokemon": "Silcoon",
-          "encounters": 53
+          "encounters": 76
         },
         {
           "pokemon": "Munchlax",
-          "encounters": 36
-        },
-        {
-          "pokemon": "Heracross",
-          "encounters": 30
+          "encounters": 56
         },
         {
           "pokemon": "Cascoon",
-          "encounters": 29
+          "encounters": 47
+        },
+        {
+          "pokemon": "Heracross",
+          "encounters": 46
         }
       ]
     },
@@ -831,6 +855,26 @@
         {
           "pokemon": "Metagross",
           "encounters": 30
+        }
+      ]
+    },
+    "Challenger's Cave - Floor 2 - Horde": {
+      "route": "Challenger's Cave - Floor 2",
+      "credit": "Mysto",
+      "variation": "Horde",
+      "total": 3120,
+      "data": [
+        {
+          "pokemon": "Sableye",
+          "encounters": 875
+        },
+        {
+          "pokemon": "Graveler",
+          "encounters": 1450
+        },
+        {
+          "pokemon": "Mawile",
+          "encounters": 795
         }
       ]
     }

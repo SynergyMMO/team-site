@@ -129,6 +129,10 @@ export function shouldShowPokemonEncounterPercent(routePercentData, encounterTyp
   const variation = routePercentData.variationKey || ''
   const isNoLure = variation.includes('no lure')
 
+  if (isNoLure) {
+    return encounterType !== 'Lure Encounters' && encounterType !== 'Horde'
+  }
+
   if (encounterType === 'Fishing Encounters') {
     return variation.includes('fishing') || variation.includes('rod')
   }
