@@ -399,6 +399,106 @@
           "encounters": 28
         }
       ]
+    },
+    "Pattern Bush / Day - Lures": {
+      "route": "Pattern Bush / Day",
+      "credit": "SheepieNei, KaiDono",
+      "variation": "Lures",
+      "total": 320,
+      "data": [
+        {
+          "pokemon": "Heracross",
+          "encounters": 42
+        },
+        {
+          "pokemon": "Weedle",
+          "encounters": 44
+        },
+        {
+          "pokemon": "Ledyba",
+          "encounters": 20
+        },
+        {
+          "pokemon": "Caterpie",
+          "encounters": 32
+        },
+        {
+          "pokemon": "Kakuna",
+          "encounters": 45
+        },
+        {
+          "pokemon": "Beedrill",
+          "encounters": 5
+        },
+        {
+          "pokemon": "Metapod",
+          "encounters": 78
+        },
+        {
+          "pokemon": "Butterfree",
+          "encounters": 13
+        },
+        {
+          "pokemon": "Spinarak",
+          "encounters": 14
+        },
+        {
+          "pokemon": "Pinsir",
+          "encounters": 12
+        },
+        {
+          "pokemon": "Beedrill",
+          "encounters": 15
+        }
+      ]
+    },
+    "Five Isle Meadow - Fishing": {
+      "route": "Five Isle Meadow",
+      "credit": "Mysto",
+      "variation": "Fishing",
+      "total": 174,
+      "data": [
+        {
+          "pokemon": "Qwilfish",
+          "encounters": 21
+        },
+        {
+          "pokemon": "Corsola",
+          "encounters": 13
+        },
+        {
+          "pokemon": "Remoraid",
+          "encounters": 20
+        },
+        {
+          "pokemon": "Krabby",
+          "encounters": 39
+        },
+        {
+          "pokemon": "Seadra",
+          "encounters": 7
+        },
+        {
+          "pokemon": "Horsea",
+          "encounters": 32
+        },
+        {
+          "pokemon": "Gyarados",
+          "encounters": 16
+        },
+        {
+          "pokemon": "Kingler",
+          "encounters": 6
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 9
+        },
+        {
+          "pokemon": "Slowpoke",
+          "encounters": 11
+        }
+      ]
     }
   },
   "Johto": {
