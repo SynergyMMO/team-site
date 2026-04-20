@@ -877,6 +877,22 @@
           "encounters": 795
         }
       ]
+    },
+    "Relic Castle (Larvesta Room) - No Lure": {
+      "route": "Relic Castle (Larvesta Room)",
+      "credit": "Dammers",
+      "variation": "No Lure",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Claydol",
+          "encounters": 969
+        },
+        {
+          "pokemon": "Larvesta",
+          "encounters": 31
+        }
+      ]
     }
   }
 }
