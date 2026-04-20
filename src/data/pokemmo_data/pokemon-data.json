@@ -442206,7 +442206,18 @@
         },
         "alpha": "no",
         "obtainable": true,
-        "location_area_encounters": [],
+        "location_area_encounters": [
+            {
+                "type": "Inside",
+                "region_id": 3,
+                "region_name": "Sinnoh",
+                "location": "Old Chateau",
+                "min_level": 20,
+                "max_level": 20,
+                "rarity": "Lure",
+                "time": "ALL"
+            }
+        ],
         "moves": [
             {
                 "id": 84,
