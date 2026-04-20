@@ -405,6 +405,38 @@
           "encounters": 218
         }
       ]
+    },
+    "Johto Safari / Forest / Beldum - Night": {
+      "route": "Johto Safari / Forest / Beldum",
+      "credit": "Mysto",
+      "variation": "Night",
+      "total": 213,
+      "data": [
+        {
+          "pokemon": "Misdreavus",
+          "encounters": 52
+        },
+        {
+          "pokemon": "Bellsprout",
+          "encounters": 24
+        },
+        {
+          "pokemon": "Gastly",
+          "encounters": 41
+        },
+        {
+          "pokemon": "Haunter",
+          "encounters": 37
+        },
+        {
+          "pokemon": "Mr Mime",
+          "encounters": 34
+        },
+        {
+          "pokemon": "Beldum",
+          "encounters": 25
+        }
+      ]
     }
   },
   "Hoenn": {
@@ -606,23 +638,23 @@
       "route": "Dreamyard",
       "credit": "Hyper",
       "variation": "Night / Lure",
-      "total": 151,
+      "total": 1242,
       "data": [
         {
           "pokemon": "Patrat",
-          "encounters": 72
+          "encounters": 460
         },
         {
           "pokemon": "Purrloin",
-          "encounters": 92
+          "encounters": 419
         },
         {
           "pokemon": "Munna",
-          "encounters": 65
+          "encounters": 315
         },
         {
           "pokemon": "Musharna",
-          "encounters": 13
+          "encounters": 48
         }
       ]
     },
@@ -674,6 +706,46 @@
         },
         {
           "pokemon": "Steelix",
+          "encounters": 30
+        }
+      ]
+    },
+    "Giant Chasm - Lure": {
+      "route": "Giant Chasm",
+      "credit": "qDoll",
+      "variation": "Lure",
+      "total": 1032,
+      "data": [
+        {
+          "pokemon": "Golbat",
+          "encounters": 251
+        },
+        {
+          "pokemon": "Absol",
+          "encounters": 57
+        },
+        {
+          "pokemon": "Tangela",
+          "encounters": 371
+        },
+        {
+          "pokemon": "Drifblim",
+          "encounters": 105
+        },
+        {
+          "pokemon": "Solrock",
+          "encounters": 85
+        },
+        {
+          "pokemon": "Swellow",
+          "encounters": 62
+        },
+        {
+          "pokemon": "Lunatone",
+          "encounters": 71
+        },
+        {
+          "pokemon": "Metagross",
           "encounters": 30
         }
       ]
