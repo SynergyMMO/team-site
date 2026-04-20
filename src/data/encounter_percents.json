@@ -347,6 +347,58 @@
           "encounters": 44
         }
       ]
+    },
+    "Five Isle Meadow - Lures": {
+      "route": "Five Isle Meadow",
+      "credit": "SheepieNei",
+      "variation": "Lures",
+      "total": 1011,
+      "data": [
+        {
+          "pokemon": "Furret",
+          "encounters": 84
+        },
+        {
+          "pokemon": "Sentret",
+          "encounters": 110
+        },
+        {
+          "pokemon": "Togetic",
+          "encounters": 33
+        },
+        {
+          "pokemon": "Pidgeotto",
+          "encounters": 221
+        },
+        {
+          "pokemon": "Meowth",
+          "encounters": 112
+        },
+        {
+          "pokemon": "Pidgey",
+          "encounters": 70
+        },
+        {
+          "pokemon": "Slowpoke",
+          "encounters": 98
+        },
+        {
+          "pokemon": "Persian",
+          "encounters": 99
+        },
+        {
+          "pokemon": "Hoppip",
+          "encounters": 48
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 108
+        },
+        {
+          "pokemon": "Skiploom",
+          "encounters": 28
+        }
+      ]
     }
   },
   "Johto": {
@@ -459,6 +511,30 @@
         {
           "pokemon": "Lapras",
           "encounters": 483
+        }
+      ]
+    },
+    "Johto Safari / Rocky Beach - No Lure": {
+      "route": "Johto Safari / Rocky Beach",
+      "credit": "",
+      "variation": "No Lure",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Lapras",
+          "encounters": 216
+        },
+        {
+          "pokemon": "Poliwhirl",
+          "encounters": 217
+        },
+        {
+          "pokemon": "Magikarp",
+          "encounters": 300
+        },
+        {
+          "pokemon": "Poliwag",
+          "encounters": 267
         }
       ]
     }
@@ -891,6 +967,22 @@
         {
           "pokemon": "Larvesta",
           "encounters": 31
+        }
+      ]
+    },
+    "Dragonspiral Tower (Outside) - Horde": {
+      "route": "Dragonspiral Tower (Outside)",
+      "credit": "SharkBoy",
+      "variation": "Horde",
+      "total": 1500,
+      "data": [
+        {
+          "pokemon": "Deerling",
+          "encounters": 790
+        },
+        {
+          "pokemon": "Vanillite",
+          "encounters": 710
         }
       ]
     }
