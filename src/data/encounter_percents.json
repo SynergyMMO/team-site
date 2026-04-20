@@ -872,6 +872,114 @@
           "encounters": 14
         }
       ]
+    },
+    "Great Marsh - Skorupi - Area 5/6": {
+      "route": "Great Marsh",
+      "credit": "Pinguh",
+      "variation": "Skorupi - Area 5/6",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Skorupi",
+          "encounters": 101
+        },
+        {
+          "pokemon": "Yanma",
+          "encounters": 186
+        },
+        {
+          "pokemon": "Marill",
+          "encounters": 59
+        },
+        {
+          "pokemon": "Bibarel",
+          "encounters": 173
+        },
+        {
+          "pokemon": "Budew",
+          "encounters": 107
+        },
+        {
+          "pokemon": "Quagsire",
+          "encounters": 103
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 43
+        },
+        {
+          "pokemon": "Wooper",
+          "encounters": 73
+        },
+        {
+          "pokemon": "Starly",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Tangela",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Bidoof",
+          "encounters": 57
+        }
+      ]
+    },
+    "Great Marsh - Skorupi - Area 1/2": {
+      "route": "Great Marsh",
+      "credit": "Pinguh",
+      "variation": "Skorupi - Area 1/2",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Skorupi",
+          "encounters": 116
+        },
+        {
+          "pokemon": "Yanma",
+          "encounters": 44
+        },
+        {
+          "pokemon": "Tropius",
+          "encounters": 202
+        },
+        {
+          "pokemon": "Marill",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Bibarel",
+          "encounters": 169
+        },
+        {
+          "pokemon": "Budew",
+          "encounters": 108
+        },
+        {
+          "pokemon": "Quagsire",
+          "encounters": 81
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 57
+        },
+        {
+          "pokemon": "Wooper",
+          "encounters": 33
+        },
+        {
+          "pokemon": "Starly",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Tangela",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Bidoof",
+          "encounters": 43
+        }
+      ]
     }
   },
   "Unova": {
