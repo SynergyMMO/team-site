@@ -522,6 +522,38 @@
           "encounters": 11821
         }
       ]
+    },
+    "Meteor Falls - Lures": {
+      "route": "Meteor Falls",
+      "credit": "Faia",
+      "variation": "Lures",
+      "total": 1013,
+      "data": [
+        {
+          "pokemon": "Golbat",
+          "encounters": 259
+        },
+        {
+          "pokemon": "Lunatone",
+          "encounters": 204
+        },
+        {
+          "pokemon": "Solrock",
+          "encounters": 312
+        },
+        {
+          "pokemon": "Shelgon",
+          "encounters": 34
+        },
+        {
+          "pokemon": "Bagon",
+          "encounters": 171
+        },
+        {
+          "pokemon": "Beldum",
+          "encounters": 33
+        }
+      ]
     }
   },
   "Sinnoh": {
@@ -529,35 +561,35 @@
       "route": "Honey Trees",
       "credit": "Hyper, KaiDono, Mysto",
       "variation": "",
-      "total": 709,
+      "total": 757,
       "data": [
         {
           "pokemon": "Combee",
-          "encounters": 196
+          "encounters": 210
         },
         {
           "pokemon": "Wurmple",
-          "encounters": 113
+          "encounters": 117
         },
         {
           "pokemon": "Burmy",
-          "encounters": 110
+          "encounters": 122
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 75
+          "encounters": 78
         },
         {
           "pokemon": "Aipom",
-          "encounters": 74
+          "encounters": 82
         },
         {
           "pokemon": "Silcoon",
-          "encounters": 50
+          "encounters": 53
         },
         {
           "pokemon": "Munchlax",
-          "encounters": 35
+          "encounters": 36
         },
         {
           "pokemon": "Heracross",
@@ -565,7 +597,7 @@
         },
         {
           "pokemon": "Cascoon",
-          "encounters": 26
+          "encounters": 29
         }
       ]
     },
@@ -586,6 +618,58 @@
         {
           "pokemon": "Lumineon",
           "encounters": 442
+        }
+      ]
+    },
+    "Route 210 - Lures": {
+      "route": "Route 210",
+      "credit": "Mitchell",
+      "variation": "Lures",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Ponyta",
+          "encounters": 235
+        },
+        {
+          "pokemon": "Geodude",
+          "encounters": 213
+        },
+        {
+          "pokemon": "Kricketot",
+          "encounters": 153
+        },
+        {
+          "pokemon": "Staravia",
+          "encounters": 119
+        },
+        {
+          "pokemon": "Roselia",
+          "encounters": 61
+        },
+        {
+          "pokemon": "Mr Mime",
+          "encounters": 56
+        },
+        {
+          "pokemon": "Sudowoodo",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Scyther",
+          "encounters": 42
+        },
+        {
+          "pokemon": "Breloom",
+          "encounters": 32
+        },
+        {
+          "pokemon": "Hoothoot",
+          "encounters": 26
+        },
+        {
+          "pokemon": "Noctowl",
+          "encounters": 14
         }
       ]
     }
