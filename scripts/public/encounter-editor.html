@@ -417,6 +417,8 @@
       region: 'Kanto',
       route: null,
       saveTimer: null,
+      pendingSave: null,
+      saveChain: Promise.resolve(),
     }
 
     const els = {
@@ -478,6 +480,19 @@
       return (route?.data || []).reduce((sum, entry) => sum + (Number(entry.encounters) || 0), 0)
     }
 
+    function clearPendingSave() {
+      window.clearTimeout(state.saveTimer)
+      state.saveTimer = null
+      state.pendingSave = null
+    }
+
+    async function flushPendingSave() {
+      if (!state.pendingSave) return true
+      const pending = state.pendingSave
+      clearPendingSave()
+      return saveRoute(pending.region, pending.routeKey)
+    }
+
     function renderTabs() {
       els.tabs.innerHTML = ''
       state.regions.forEach((region) => {
@@ -485,7 +500,9 @@
         button.type = 'button'
         button.className = region === state.region ? 'tab active' : 'tab'
         button.textContent = region
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
+          const saved = await flushPendingSave()
+          if (!saved) return
           state.region = region
           state.route = getRoutes()[0] || null
           render()
@@ -520,7 +537,9 @@
         button.type = 'button'
         button.className = routeName === state.route ? 'routeButton active' : 'routeButton'
         button.innerHTML = `<span>${escapeHtml(getRouteLabel(routeName))}</span><span class="badge">${(route.data || []).length} mons</span>`
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
+          const saved = await flushPendingSave()
+          if (!saved) return
           state.route = routeName
           render()
         })
@@ -693,36 +712,61 @@
       renderEditor()
     }
 
-    async function saveNow() {
-      const route = getCurrentRoute()
-      if (!route) return
-      route.total = routeSum(route)
-      const draftData = route.data
-      window.clearTimeout(state.saveTimer)
-      setStatus('Saving', 'saving')
+    async function saveRoute(region, routeKey) {
+      const runSave = async () => {
+        const route = state.data[region]?.[routeKey]
+        if (!route) return true
 
-      try {
-        const payload = await api(`/api/regions/${encodeURIComponent(state.region)}/routes/${encodeURIComponent(state.route)}`, {
-          method: 'PUT',
-          body: JSON.stringify(route),
-        })
-        state.data[state.region][state.route] = {
-          ...payload.entry,
-          data: draftData,
-          total: routeSum({ data: draftData }),
+        route.total = routeSum(route)
+        const payloadRoute = {
+          ...route,
+          data: (route.data || []).map((entry) => ({
+            pokemon: entry.pokemon,
+            encounters: entry.encounters,
+          })),
         }
-        setStatus('Saved', 'saved')
-      } catch (error) {
-        setStatus(error.message, 'error')
+
+        clearPendingSave()
+        setStatus('Saving', 'saving')
+
+        try {
+          await api(`/api/regions/${encodeURIComponent(region)}/routes/${encodeURIComponent(routeKey)}`, {
+            method: 'PUT',
+            body: JSON.stringify(payloadRoute),
+          })
+
+          // Keep the current local draft as source of truth so an older response
+          // cannot overwrite newer edits that happened while the request was in flight.
+          if (state.data[region]?.[routeKey]) {
+            state.data[region][routeKey].total = routeSum(state.data[region][routeKey])
+          }
+
+          setStatus('Saved', 'saved')
+          return true
+        } catch (error) {
+          setStatus(error.message, 'error')
+          return false
+        }
       }
+
+      const nextSave = state.saveChain.then(runSave, runSave)
+      state.saveChain = nextSave.catch(() => {})
+      return nextSave
+    }
+
+    async function saveNow() {
+      return saveRoute(state.region, state.route)
     }
 
     function scheduleSave() {
       setStatus('Saving soon', 'saving')
+      const routeKey = state.route
+      const region = state.region
       window.clearTimeout(state.saveTimer)
+      state.pendingSave = routeKey ? { region, routeKey } : null
       state.saveTimer = window.setTimeout(async () => {
-        await saveNow()
-        renderRoutes()
+        const saved = await flushPendingSave()
+        if (saved && region === state.region) renderRoutes()
       }, 450)
     }
 
@@ -798,6 +842,8 @@
     }
 
     async function renameRoute() {
+      const saved = await flushPendingSave()
+      if (!saved) return
       window.clearTimeout(state.saveTimer)
       const nextName = document.getElementById('routeName').value.trim()
       const nextVariation = document.getElementById('variation').value.trim()
@@ -853,6 +899,8 @@
 
     els.deleteRoute.addEventListener('click', async () => {
       if (!state.route) return
+      const saved = await flushPendingSave()
+      if (!saved) return
       const routeName = state.route
       const confirmed = window.confirm(`Delete ${routeName} from ${state.region}?`)
       if (!confirmed) return
@@ -869,6 +917,12 @@
       } catch (error) {
         setStatus(error.message, 'error')
       }
+    })
+
+    window.addEventListener('beforeunload', (event) => {
+      if (!state.pendingSave) return
+      event.preventDefault()
+      event.returnValue = ''
     })
 
     function escapeHtml(value) {

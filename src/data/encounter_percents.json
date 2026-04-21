@@ -402,7 +402,7 @@
     },
     "Pattern Bush / Day - Lures": {
       "route": "Pattern Bush / Day",
-      "credit": "SheepieNei, KaiDono",
+      "credit": "SheepieNei, KaiDono, Shamandarah",
       "variation": "Lures",
       "total": 476,
       "data": [
@@ -558,8 +558,84 @@
         }
       ]
     },
-    "Johto Safari / Forest / Beldum - Night": {
-      "route": "Johto Safari / Forest / Beldum",
+    "Union Cave / 3rd Floor / Fishing - Lures": {
+      "route": "Union Cave / 3rd Floor / Fishing",
+      "credit": "Stinky",
+      "variation": "Lures",
+      "total": 33869,
+      "data": [
+        {
+          "pokemon": "Kingler",
+          "encounters": 4487
+        },
+        {
+          "pokemon": "Corsola",
+          "encounters": 13680
+        },
+        {
+          "pokemon": "Krabby",
+          "encounters": 15219
+        },
+        {
+          "pokemon": "Lapras",
+          "encounters": 483
+        }
+      ]
+    },
+    "Safari Zone / Marshland - Carnivine / Day": {
+      "route": "Safari Zone / Marshland",
+      "credit": "ZackTheAce, Hyper",
+      "variation": "Carnivine / Day",
+      "total": 142,
+      "data": [
+        {
+          "pokemon": "Arbok",
+          "encounters": 14
+        },
+        {
+          "pokemon": "Carnivine",
+          "encounters": 23
+        },
+        {
+          "pokemon": "Grimer",
+          "encounters": 11
+        },
+        {
+          "pokemon": "Ekans",
+          "encounters": 15
+        },
+        {
+          "pokemon": "Koffing",
+          "encounters": 79
+        }
+      ]
+    },
+    "Safari Zone / Rocky Beach - No Lure": {
+      "route": "Safari Zone / Rocky Beach",
+      "credit": "",
+      "variation": "No Lure",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Lapras",
+          "encounters": 216
+        },
+        {
+          "pokemon": "Poliwhirl",
+          "encounters": 217
+        },
+        {
+          "pokemon": "Magikarp",
+          "encounters": 300
+        },
+        {
+          "pokemon": "Poliwag",
+          "encounters": 267
+        }
+      ]
+    },
+    "Safari Zone / Forest / Beldum - Night": {
+      "route": "Safari Zone / Forest / Beldum",
       "credit": "Mysto",
       "variation": "Night",
       "total": 213,
@@ -587,82 +663,6 @@
         {
           "pokemon": "Beldum",
           "encounters": 25
-        }
-      ]
-    },
-    "Union Cave / 3rd Floor / Fishing - Lures": {
-      "route": "Union Cave / 3rd Floor / Fishing",
-      "credit": "Stinky",
-      "variation": "Lures",
-      "total": 33869,
-      "data": [
-        {
-          "pokemon": "Kingler",
-          "encounters": 4487
-        },
-        {
-          "pokemon": "Corsola",
-          "encounters": 13680
-        },
-        {
-          "pokemon": "Krabby",
-          "encounters": 15219
-        },
-        {
-          "pokemon": "Lapras",
-          "encounters": 483
-        }
-      ]
-    },
-    "Johto Safari / Rocky Beach - No Lure": {
-      "route": "Johto Safari / Rocky Beach",
-      "credit": "",
-      "variation": "No Lure",
-      "total": 1000,
-      "data": [
-        {
-          "pokemon": "Lapras",
-          "encounters": 216
-        },
-        {
-          "pokemon": "Poliwhirl",
-          "encounters": 217
-        },
-        {
-          "pokemon": "Magikarp",
-          "encounters": 300
-        },
-        {
-          "pokemon": "Poliwag",
-          "encounters": 267
-        }
-      ]
-    },
-    "Safari Zone / Marshland - Carnivine / Day": {
-      "route": "Safari Zone / Marshland",
-      "credit": "ZackTRh",
-      "variation": "Carnivine / Day",
-      "total": 142,
-      "data": [
-        {
-          "pokemon": "Arbok",
-          "encounters": 14
-        },
-        {
-          "pokemon": "Carnivine",
-          "encounters": 23
-        },
-        {
-          "pokemon": "Grimer",
-          "encounters": 11
-        },
-        {
-          "pokemon": "Ekans",
-          "encounters": 15
-        },
-        {
-          "pokemon": "Koffing",
-          "encounters": 79
         }
       ]
     }
@@ -782,6 +782,50 @@
           "encounters": 33
         }
       ]
+    },
+    "Safari Zone / Area 6 - Repel Trick + Rock Smash": {
+      "route": "Safari Zone / Area 6",
+      "credit": "Hyper",
+      "variation": "Repel Trick + Rock Smash",
+      "total": 350,
+      "data": [
+        {
+          "pokemon": "Aipom",
+          "encounters": 137
+        },
+        {
+          "pokemon": "Ledyba",
+          "encounters": 11
+        },
+        {
+          "pokemon": "Houndour",
+          "encounters": 40
+        },
+        {
+          "pokemon": "Sunkern",
+          "encounters": 14
+        },
+        {
+          "pokemon": "Teddiursa",
+          "encounters": 47
+        },
+        {
+          "pokemon": "Miltank",
+          "encounters": 34
+        },
+        {
+          "pokemon": "Shuckle",
+          "encounters": 31
+        },
+        {
+          "pokemon": "Hoothoot",
+          "encounters": 31
+        },
+        {
+          "pokemon": "Pineco",
+          "encounters": 5
+        }
+      ]
     }
   },
   "Sinnoh": {
@@ -789,27 +833,27 @@
       "route": "Honey Trees",
       "credit": "Hyper, KaiDono, Mysto",
       "variation": "",
-      "total": 1246,
+      "total": 1286,
       "data": [
         {
           "pokemon": "Combee",
-          "encounters": 360
+          "encounters": 373
         },
         {
           "pokemon": "Burmy",
-          "encounters": 211
+          "encounters": 222
         },
         {
           "pokemon": "Wurmple",
-          "encounters": 178
+          "encounters": 184
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 128
+          "encounters": 130
         },
         {
           "pokemon": "Aipom",
-          "encounters": 127
+          "encounters": 130
         },
         {
           "pokemon": "Silcoon",
@@ -817,11 +861,11 @@
         },
         {
           "pokemon": "Munchlax",
-          "encounters": 61
+          "encounters": 62
         },
         {
           "pokemon": "Cascoon",
-          "encounters": 53
+          "encounters": 57
         },
         {
           "pokemon": "Heracross",
@@ -1178,46 +1222,6 @@
         }
       ]
     },
-    "Giant Chasm - Lure": {
-      "route": "Giant Chasm",
-      "credit": "qDoll",
-      "variation": "Lure",
-      "total": 1032,
-      "data": [
-        {
-          "pokemon": "Golbat",
-          "encounters": 251
-        },
-        {
-          "pokemon": "Absol",
-          "encounters": 57
-        },
-        {
-          "pokemon": "Tangela",
-          "encounters": 371
-        },
-        {
-          "pokemon": "Drifblim",
-          "encounters": 105
-        },
-        {
-          "pokemon": "Solrock",
-          "encounters": 85
-        },
-        {
-          "pokemon": "Swellow",
-          "encounters": 62
-        },
-        {
-          "pokemon": "Lunatone",
-          "encounters": 71
-        },
-        {
-          "pokemon": "Metagross",
-          "encounters": 30
-        }
-      ]
-    },
     "Challenger's Cave - Floor 2 - Horde": {
       "route": "Challenger's Cave - Floor 2",
       "credit": "Mysto",
@@ -1287,6 +1291,90 @@
         {
           "pokemon": "Dragonair",
           "encounters": 13
+        }
+      ]
+    },
+    "Giant Chasm Outside - Dark Grass - Lure": {
+      "route": "Giant Chasm Outside",
+      "credit": "qDoll",
+      "variation": "Dark Grass - Lure",
+      "total": 1032,
+      "data": [
+        {
+          "pokemon": "Golbat",
+          "encounters": 251
+        },
+        {
+          "pokemon": "Absol",
+          "encounters": 57
+        },
+        {
+          "pokemon": "Tangela",
+          "encounters": 371
+        },
+        {
+          "pokemon": "Drifblim",
+          "encounters": 105
+        },
+        {
+          "pokemon": "Solrock",
+          "encounters": 85
+        },
+        {
+          "pokemon": "Swellow",
+          "encounters": 62
+        },
+        {
+          "pokemon": "Lunatone",
+          "encounters": 71
+        },
+        {
+          "pokemon": "Metagross",
+          "encounters": 30
+        }
+      ]
+    },
+    "Pinwheel Forest - Lures": {
+      "route": "Pinwheel Forest",
+      "credit": "Izay",
+      "variation": "Lures",
+      "total": 1017,
+      "data": [
+        {
+          "pokemon": "Petilil",
+          "encounters": 139
+        },
+        {
+          "pokemon": "Sewaddle",
+          "encounters": 347
+        },
+        {
+          "pokemon": "Cottonee",
+          "encounters": 126
+        },
+        {
+          "pokemon": "Snivy",
+          "encounters": 32
+        },
+        {
+          "pokemon": "Venipede",
+          "encounters": 92
+        },
+        {
+          "pokemon": "Pansear",
+          "encounters": 47
+        },
+        {
+          "pokemon": "Pansage",
+          "encounters": 52
+        },
+        {
+          "pokemon": "Panpour",
+          "encounters": 41
+        },
+        {
+          "pokemon": "Pidove",
+          "encounters": 141
         }
       ]
     }

@@ -8,6 +8,13 @@ import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import styles from './RouteFinder.module.css'
 
 const TARGET_TIERS = new Set([0, 1, 2, 3])
+const BEST_ROUTE_TIERS = new Set([0, 1, 2])
+const REGION_ORDER = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova']
+
+function getRegionOrder(region) {
+  const index = REGION_ORDER.indexOf(region)
+  return index === -1 ? REGION_ORDER.length : index
+}
 
 function normalizeSearch(value) {
   return String(value || '')
@@ -45,6 +52,16 @@ function getRouteTargetPercent(route, pokemonNeedle) {
   }, 0)
 }
 
+function getRouteBestPercentTotal(route) {
+  return route.pokemon.reduce((total, mon) => (
+    BEST_ROUTE_TIERS.has(mon.tier) ? total + mon.percent : total
+  ), 0)
+}
+
+function hasBestRouteTierPokemon(route) {
+  return route.pokemon.some(mon => BEST_ROUTE_TIERS.has(mon.tier))
+}
+
 function getVariationEntries(routeData) {
   if (Array.isArray(routeData)) return routeData
 
@@ -72,6 +89,12 @@ function getDisplayName(routeName, variationData) {
   if (baseRouteName.endsWith(variationSuffix)) return baseRouteName
 
   return `${baseRouteName}${variationSuffix}`
+}
+
+function sortRoutesByRegionThenName(a, b) {
+  const regionDiff = getRegionOrder(a.region) - getRegionOrder(b.region)
+  if (regionDiff !== 0) return regionDiff
+  return a.displayName.localeCompare(b.displayName)
 }
 
 function flattenRoutes() {
@@ -177,14 +200,16 @@ function PokemonPill({ mon, role }) {
   )
 }
 
-function RouteCard({ route, pokemonFilter }) {
+function RouteCard({ route, pokemonFilter, sortMode }) {
   const pokemonNeedle = normalizePokemonKey(pokemonFilter)
+  const displayTargetTiers = (sortMode === 'best' || sortMode === 'worst') ? BEST_ROUTE_TIERS : TARGET_TIERS
   const targetPokemon = route.pokemon.filter(mon => {
     const isSearchedPokemon = pokemonNeedle && normalizePokemonKey(mon.name).includes(pokemonNeedle)
-    return isSearchedPokemon || TARGET_TIERS.has(mon.tier)
+    return isSearchedPokemon || displayTargetTiers.has(mon.tier)
   })
   const targetNames = new Set(targetPokemon.map(mon => normalizePokemonKey(mon.name)))
   const phasePokemon = route.pokemon.filter(mon => !targetNames.has(normalizePokemonKey(mon.name)))
+  const targetHeading = (sortMode === 'best' || sortMode === 'worst') ? 'Tier 0-2 Targets' : 'Target Mons'
 
   return (
     <article className={styles.routeCard}>
@@ -201,7 +226,7 @@ function RouteCard({ route, pokemonFilter }) {
 
       {targetPokemon.length > 0 && (
         <section className={styles.monSection}>
-          <h3>Target Mons</h3>
+          <h3>{targetHeading}</h3>
           <div className={styles.monGrid}>
             {targetPokemon.map(mon => <PokemonPill key={mon.name} mon={mon} role="target" />)}
           </div>
@@ -221,6 +246,7 @@ function RouteCard({ route, pokemonFilter }) {
 export default function RouteFinder() {
   const [pokemonFilter, setPokemonFilter] = useState('')
   const [routeFilter, setRouteFilter] = useState('')
+  const [sortMode, setSortMode] = useState('default')
 
   useDocumentHead({
     title: 'Route Finder',
@@ -245,6 +271,7 @@ export default function RouteFinder() {
 
   const pokemonNeedle = normalizePokemonKey(pokemonFilter)
   const routeNeedle = normalizeSearch(routeFilter)
+  const shouldGroupByRegion = !pokemonNeedle && sortMode === 'default'
 
   const pokemonHasData = !pokemonNeedle || routes.some(route =>
     route.pokemon.some(mon => normalizePokemonKey(mon.name).includes(pokemonNeedle))
@@ -255,15 +282,54 @@ export default function RouteFinder() {
     .filter(route => {
       const routeMatches = !routeNeedle || route.routeSearch.includes(routeNeedle)
       const pokemonMatches = !pokemonNeedle || route.pokemon.some(mon => normalizePokemonKey(mon.name).includes(pokemonNeedle))
-      return routeMatches && pokemonMatches
+      const sortMatches = (sortMode !== 'best' && sortMode !== 'worst') || hasBestRouteTierPokemon(route)
+      return routeMatches && pokemonMatches && sortMatches
     })
     .sort((a, b) => {
-      if (!pokemonNeedle) return a.displayName.localeCompare(b.displayName)
+      if (sortMode === 'best') {
+        const bestDiff = getRouteBestPercentTotal(b) - getRouteBestPercentTotal(a)
+        if (bestDiff !== 0) return bestDiff
+        return sortRoutesByRegionThenName(a, b)
+      }
+
+      if (sortMode === 'worst') {
+        const worstDiff = getRouteBestPercentTotal(a) - getRouteBestPercentTotal(b)
+        if (worstDiff !== 0) return worstDiff
+        return sortRoutesByRegionThenName(a, b)
+      }
+
+      if (sortMode === 'encounters-desc') {
+        const encounterDiff = b.total - a.total
+        if (encounterDiff !== 0) return encounterDiff
+        return sortRoutesByRegionThenName(a, b)
+      }
+
+      if (sortMode === 'encounters-asc') {
+        const encounterDiff = a.total - b.total
+        if (encounterDiff !== 0) return encounterDiff
+        return sortRoutesByRegionThenName(a, b)
+      }
+
+      if (!pokemonNeedle) return sortRoutesByRegionThenName(a, b)
+
       const targetDiff = getRouteTargetPercent(b, pokemonNeedle) - getRouteTargetPercent(a, pokemonNeedle)
       if (targetDiff !== 0) return targetDiff
-      return a.displayName.localeCompare(b.displayName)
+      return sortRoutesByRegionThenName(a, b)
     })
   const filteredTotalEncounters = filteredRoutes.reduce((sum, route) => sum + route.total, 0)
+  const routesByRegion = useMemo(() => {
+    if (!shouldGroupByRegion) return []
+
+    const groupedRoutes = new Map()
+    filteredRoutes.forEach((route) => {
+      const existingRoutes = groupedRoutes.get(route.region) || []
+      existingRoutes.push(route)
+      groupedRoutes.set(route.region, existingRoutes)
+    })
+
+    return [...groupedRoutes.entries()]
+      .sort(([regionA], [regionB]) => getRegionOrder(regionA) - getRegionOrder(regionB))
+  }, [filteredRoutes, shouldGroupByRegion])
 
   let emptyText = ''
   if (pokemonNeedle && !pokemonHasData) {
@@ -317,6 +383,16 @@ export default function RouteFinder() {
             list="route-finder-routes"
           />
         </label>
+        <label>
+          <span>Order</span>
+          <select value={sortMode} onChange={event => setSortMode(event.target.value)}>
+            <option value="default">{pokemonNeedle ? 'Best match for Pokemon' : 'Region order'}</option>
+            <option value="best">Best Routes (Tier 0-2 %)</option>
+            <option value="worst">Worst Routes (Tier 0-2 %)</option>
+            <option value="encounters-desc">Most Encounters Tracked</option>
+            <option value="encounters-asc">Least Encounters Tracked</option>
+          </select>
+        </label>
         <datalist id="route-finder-pokemon">
           {pokemonOptions.map(name => <option value={name} key={name} />)}
         </datalist>
@@ -341,9 +417,20 @@ export default function RouteFinder() {
         <p className={styles.emptyState}>{emptyText}</p>
       ) : (
         <div className={styles.routeList}>
-          {filteredRoutes.map(route => (
-            <RouteCard key={route.id} route={route} pokemonFilter={pokemonFilter} />
-          ))}
+          {!shouldGroupByRegion ? (
+            filteredRoutes.map(route => (
+              <RouteCard key={route.id} route={route} pokemonFilter={pokemonFilter} sortMode={sortMode} />
+            ))
+          ) : (
+            routesByRegion.map(([region, regionRoutes]) => (
+              <section key={region} aria-label={`${region} routes`}>
+                <h2>{region}</h2>
+                {regionRoutes.map(route => (
+                  <RouteCard key={route.id} route={route} pokemonFilter={pokemonFilter} sortMode={sortMode} />
+                ))}
+              </section>
+            ))
+          )}
         </div>
       )}
     </div>

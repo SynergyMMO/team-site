@@ -131,7 +131,7 @@
 
 .searchPanel {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   margin: 24px 0;
   padding: 18px;
@@ -160,7 +160,27 @@
   font: inherit;
 }
 
-.searchPanel input:focus {
+.searchPanel select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: rgba(6, 18, 26, 0.95);
+  color: #f7fbff;
+  font: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.searchPanel select option {
+  background: #0b1a24;
+  color: #f7fbff;
+}
+
+.searchPanel input:focus,
+.searchPanel select:focus {
   outline: 2px solid rgba(115, 214, 196, 0.6);
   outline-offset: 2px;
 }

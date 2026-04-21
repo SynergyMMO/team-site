@@ -37533,16 +37533,6 @@
         "location_area_encounters": [
             {
                 "type": "Grass",
-                "region_id": 0,
-                "region_name": "Kanto",
-                "location": "ROUTE 6",
-                "min_level": 19,
-                "max_level": 19,
-                "rarity": "Lure",
-                "time": "ALL"
-            },
-            {
-                "type": "Grass",
                 "region_id": 2,
                 "region_name": "Unova",
                 "location": "Route 14",
@@ -240783,6 +240773,16 @@
                 "min_level": 18,
                 "max_level": 29,
                 "rarity": "Very Rare",
+                "time": "ALL"
+            },
+            {
+                "type": "Grass",
+                "region_id": 0,
+                "region_name": "Kanto",
+                "location": "ROUTE 6",
+                "min_level": 19,
+                "max_level": 19,
+                "rarity": "Lure",
                 "time": "ALL"
             },
             {
