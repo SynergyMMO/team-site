@@ -499,6 +499,54 @@
           "encounters": 22
         }
       ]
+    },
+    "Kindle Road - Lures": {
+      "route": "Kindle Road",
+      "credit": "SheepieNei",
+      "variation": "Lures",
+      "total": 1039,
+      "data": [
+        {
+          "pokemon": "Ponyta",
+          "encounters": 298
+        },
+        {
+          "pokemon": "Fearow",
+          "encounters": 62
+        },
+        {
+          "pokemon": "Persian",
+          "encounters": 145
+        },
+        {
+          "pokemon": "Geodude",
+          "encounters": 84
+        },
+        {
+          "pokemon": "Meowth",
+          "encounters": 207
+        },
+        {
+          "pokemon": "Rapidash",
+          "encounters": 50
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 59
+        },
+        {
+          "pokemon": "Spearow",
+          "encounters": 56
+        },
+        {
+          "pokemon": "Slowpoke",
+          "encounters": 37
+        },
+        {
+          "pokemon": "Flareon",
+          "encounters": 41
+        }
+      ]
     }
   },
   "Johto": {
@@ -827,43 +875,43 @@
       "route": "Safari Zone / Area 6",
       "credit": "Hyper",
       "variation": "Repel Trick + Rock Smash",
-      "total": 350,
+      "total": 582,
       "data": [
         {
           "pokemon": "Aipom",
-          "encounters": 137
-        },
-        {
-          "pokemon": "Ledyba",
-          "encounters": 11
-        },
-        {
-          "pokemon": "Houndour",
-          "encounters": 40
-        },
-        {
-          "pokemon": "Sunkern",
-          "encounters": 14
+          "encounters": 228
         },
         {
           "pokemon": "Teddiursa",
-          "encounters": 47
+          "encounters": 83
+        },
+        {
+          "pokemon": "Houndour",
+          "encounters": 72
         },
         {
           "pokemon": "Miltank",
-          "encounters": 34
+          "encounters": 56
         },
         {
           "pokemon": "Shuckle",
-          "encounters": 31
+          "encounters": 48
         },
         {
           "pokemon": "Hoothoot",
-          "encounters": 31
+          "encounters": 47
+        },
+        {
+          "pokemon": "Sunkern",
+          "encounters": 18
+        },
+        {
+          "pokemon": "Ledyba",
+          "encounters": 17
         },
         {
           "pokemon": "Pineco",
-          "encounters": 5
+          "encounters": 13
         }
       ]
     }
