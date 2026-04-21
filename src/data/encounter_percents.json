@@ -980,6 +980,54 @@
           "encounters": 43
         }
       ]
+    },
+    "Route 211 - Lures": {
+      "route": "Route 211",
+      "credit": "Faia",
+      "variation": "Lures",
+      "total": 1028,
+      "data": [
+        {
+          "pokemon": "Hoothoot",
+          "encounters": 34
+        },
+        {
+          "pokemon": "Bronzor",
+          "encounters": 94
+        },
+        {
+          "pokemon": "Bidoof",
+          "encounters": 237
+        },
+        {
+          "pokemon": "Geodude",
+          "encounters": 95
+        },
+        {
+          "pokemon": "Meditite",
+          "encounters": 227
+        },
+        {
+          "pokemon": "Machop",
+          "encounters": 114
+        },
+        {
+          "pokemon": "Chimecho",
+          "encounters": 52
+        },
+        {
+          "pokemon": "Zubat",
+          "encounters": 34
+        },
+        {
+          "pokemon": "Ponyta",
+          "encounters": 113
+        },
+        {
+          "pokemon": "Chimchar",
+          "encounters": 28
+        }
+      ]
     }
   },
   "Unova": {
