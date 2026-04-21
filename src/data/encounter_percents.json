@@ -665,6 +665,46 @@
           "encounters": 25
         }
       ]
+    },
+    "Route 34 - Lures": {
+      "route": "Route 34",
+      "credit": "Hyper",
+      "variation": "Lures",
+      "total": 121,
+      "data": [
+        {
+          "pokemon": "Drowzee",
+          "encounters": 38
+        },
+        {
+          "pokemon": "Snubbull",
+          "encounters": 21
+        },
+        {
+          "pokemon": "Rattata",
+          "encounters": 17
+        },
+        {
+          "pokemon": "Abra",
+          "encounters": 14
+        },
+        {
+          "pokemon": "Pidgey",
+          "encounters": 10
+        },
+        {
+          "pokemon": "Ditto",
+          "encounters": 7
+        },
+        {
+          "pokemon": "Jigglypuff",
+          "encounters": 7
+        },
+        {
+          "pokemon": "Togepi",
+          "encounters": 7
+        }
+      ]
     }
   },
   "Hoenn": {

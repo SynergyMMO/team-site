@@ -4,6 +4,7 @@ import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getAssetUrl } from '../../utils/assets'
 import { getLocalPokemonGif, normalizePokemonName, onGifError } from '../../utils/pokemon'
 import encounterPercents from '../../data/encounter_percents.json'
+import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import styles from './RouteFinder.module.css'
 
@@ -35,6 +36,10 @@ function normalizePokemonKey(value) {
 function formatPercent(encounters, total) {
   if (!total) return '0%'
   const percent = (encounters / total) * 100
+  return `${percent.toFixed(percent >= 10 ? 1 : 2)}%`
+}
+
+function formatPercentValue(percent) {
   return `${percent.toFixed(percent >= 10 ? 1 : 2)}%`
 }
 
@@ -91,6 +96,21 @@ function getDisplayName(routeName, variationData) {
   return `${baseRouteName}${variationSuffix}`
 }
 
+function buildEvolutionFamilyLookup() {
+  const lookup = new Map()
+
+  Object.values(generationData).forEach((generationFamilies) => {
+    generationFamilies.forEach((family) => {
+      const normalizedFamily = family.map(member => normalizePokemonKey(member))
+      normalizedFamily.forEach((member) => {
+        lookup.set(member, normalizedFamily)
+      })
+    })
+  })
+
+  return lookup
+}
+
 function sortRoutesByRegionThenName(a, b) {
   const regionDiff = getRegionOrder(a.region) - getRegionOrder(b.region)
   if (regionDiff !== 0) return regionDiff
@@ -117,6 +137,9 @@ function flattenRoutes() {
           }
         })
         .sort((a, b) => b.encounters - a.encounters)
+      const rarePercent = pokemon.reduce((totalRarePercent, mon) => (
+        BEST_ROUTE_TIERS.has(mon.tier) ? totalRarePercent + mon.percent : totalRarePercent
+      ), 0)
 
       return {
         id: `${region}-${routeName}-${variation || variationIndex}`,
@@ -126,6 +149,8 @@ function flattenRoutes() {
         variation,
         credit: variationData?.credit || '',
         total,
+        rarePercent,
+        rarePercentLabel: formatPercentValue(rarePercent),
         pokemon,
         routeSearch: normalizeSearch(`${region} ${routeName} ${displayName} ${variation}`),
       }
@@ -200,11 +225,15 @@ function PokemonPill({ mon, role }) {
   )
 }
 
-function RouteCard({ route, pokemonFilter, sortMode }) {
+function RouteCard({ route, pokemonFilter, pokemonFamilyKeys, sortMode }) {
   const pokemonNeedle = normalizePokemonKey(pokemonFilter)
   const displayTargetTiers = (sortMode === 'best' || sortMode === 'worst') ? BEST_ROUTE_TIERS : TARGET_TIERS
   const targetPokemon = route.pokemon.filter(mon => {
-    const isSearchedPokemon = pokemonNeedle && normalizePokemonKey(mon.name).includes(pokemonNeedle)
+    const monKey = normalizePokemonKey(mon.name)
+    const isSearchedPokemon = pokemonNeedle && (
+      monKey.includes(pokemonNeedle)
+      || pokemonFamilyKeys.has(monKey)
+    )
     return isSearchedPokemon || displayTargetTiers.has(mon.tier)
   })
   const targetNames = new Set(targetPokemon.map(mon => normalizePokemonKey(mon.name)))
@@ -220,6 +249,7 @@ function RouteCard({ route, pokemonFilter, sortMode }) {
         </div>
         <div className={styles.routeMeta}>
           <span>Total Encounters Tracked: {route.total.toLocaleString()}</span>
+          <span>Total Rare %: {route.rarePercentLabel}</span>
           {route.credit && <span>Credit: {route.credit}</span>}
         </div>
       </header>
@@ -259,6 +289,7 @@ export default function RouteFinder() {
   })
 
   const routes = useMemo(() => flattenRoutes(), [])
+  const evolutionFamilyLookup = useMemo(() => buildEvolutionFamilyLookup(), [])
   const topContributors = useMemo(() => getTopContributors(routes), [routes])
   const pokemonOptions = useMemo(() => {
     const names = new Set()
@@ -272,16 +303,37 @@ export default function RouteFinder() {
   const pokemonNeedle = normalizePokemonKey(pokemonFilter)
   const routeNeedle = normalizeSearch(routeFilter)
   const shouldGroupByRegion = !pokemonNeedle && sortMode === 'default'
+  const pokemonFamilyKeys = useMemo(() => {
+    if (!pokemonNeedle) return new Set()
+
+    const directFamily = evolutionFamilyLookup.get(pokemonNeedle)
+    if (directFamily) return new Set(directFamily)
+
+    const matchedFamilies = new Set()
+    evolutionFamilyLookup.forEach((family, member) => {
+      if (member.includes(pokemonNeedle)) {
+        family.forEach(relative => matchedFamilies.add(relative))
+      }
+    })
+
+    return matchedFamilies
+  }, [evolutionFamilyLookup, pokemonNeedle])
 
   const pokemonHasData = !pokemonNeedle || routes.some(route =>
-    route.pokemon.some(mon => normalizePokemonKey(mon.name).includes(pokemonNeedle))
+    route.pokemon.some(mon => {
+      const monKey = normalizePokemonKey(mon.name)
+      return monKey.includes(pokemonNeedle) || pokemonFamilyKeys.has(monKey)
+    })
   )
   const routeHasData = !routeNeedle || routes.some(route => route.routeSearch.includes(routeNeedle))
 
   const filteredRoutes = routes
     .filter(route => {
       const routeMatches = !routeNeedle || route.routeSearch.includes(routeNeedle)
-      const pokemonMatches = !pokemonNeedle || route.pokemon.some(mon => normalizePokemonKey(mon.name).includes(pokemonNeedle))
+      const pokemonMatches = !pokemonNeedle || route.pokemon.some(mon => {
+        const monKey = normalizePokemonKey(mon.name)
+        return monKey.includes(pokemonNeedle) || pokemonFamilyKeys.has(monKey)
+      })
       const sortMatches = (sortMode !== 'best' && sortMode !== 'worst') || hasBestRouteTierPokemon(route)
       return routeMatches && pokemonMatches && sortMatches
     })
@@ -419,14 +471,26 @@ export default function RouteFinder() {
         <div className={styles.routeList}>
           {!shouldGroupByRegion ? (
             filteredRoutes.map(route => (
-              <RouteCard key={route.id} route={route} pokemonFilter={pokemonFilter} sortMode={sortMode} />
+              <RouteCard
+                key={route.id}
+                route={route}
+                pokemonFilter={pokemonFilter}
+                pokemonFamilyKeys={pokemonFamilyKeys}
+                sortMode={sortMode}
+              />
             ))
           ) : (
             routesByRegion.map(([region, regionRoutes]) => (
               <section key={region} aria-label={`${region} routes`}>
                 <h2>{region}</h2>
                 {regionRoutes.map(route => (
-                  <RouteCard key={route.id} route={route} pokemonFilter={pokemonFilter} sortMode={sortMode} />
+                  <RouteCard
+                    key={route.id}
+                    route={route}
+                    pokemonFilter={pokemonFilter}
+                    pokemonFamilyKeys={pokemonFamilyKeys}
+                    sortMode={sortMode}
+                  />
                 ))}
               </section>
             ))
