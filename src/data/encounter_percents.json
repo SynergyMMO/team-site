@@ -254,21 +254,21 @@
     },
     "Lost Cave - Night / Horde": {
       "route": "Lost Cave",
-      "credit": "Dellwina",
+      "credit": "Dellwina, tunacore",
       "variation": "Night / Horde",
-      "total": 10760,
+      "total": 22333,
       "data": [
         {
           "pokemon": "Misdreavus",
-          "encounters": 2808
+          "encounters": 5620
         },
         {
           "pokemon": "Golbat",
-          "encounters": 5034
+          "encounters": 10927
         },
         {
           "pokemon": "Murkrow",
-          "encounters": 2918
+          "encounters": 5786
         }
       ]
     },
@@ -404,47 +404,47 @@
       "route": "Pattern Bush / Day",
       "credit": "SheepieNei, KaiDono",
       "variation": "Lures",
-      "total": 320,
+      "total": 476,
       "data": [
         {
           "pokemon": "Heracross",
-          "encounters": 42
+          "encounters": 66
         },
         {
           "pokemon": "Weedle",
-          "encounters": 44
+          "encounters": 69
         },
         {
           "pokemon": "Ledyba",
-          "encounters": 20
+          "encounters": 26
         },
         {
           "pokemon": "Caterpie",
-          "encounters": 32
+          "encounters": 49
         },
         {
           "pokemon": "Kakuna",
-          "encounters": 45
+          "encounters": 67
         },
         {
           "pokemon": "Beedrill",
-          "encounters": 5
+          "encounters": 10
         },
         {
           "pokemon": "Metapod",
-          "encounters": 78
+          "encounters": 120
         },
         {
           "pokemon": "Butterfree",
-          "encounters": 13
+          "encounters": 16
         },
         {
           "pokemon": "Spinarak",
-          "encounters": 14
+          "encounters": 22
         },
         {
           "pokemon": "Pinsir",
-          "encounters": 12
+          "encounters": 16
         },
         {
           "pokemon": "Beedrill",
@@ -452,51 +452,51 @@
         }
       ]
     },
-    "Five Isle Meadow - Fishing": {
+    "Five Isle Meadow - Preium Lure Fishing": {
       "route": "Five Isle Meadow",
       "credit": "Mysto",
-      "variation": "Fishing",
-      "total": 174,
+      "variation": "Preium Lure Fishing",
+      "total": 351,
       "data": [
         {
           "pokemon": "Qwilfish",
-          "encounters": 21
+          "encounters": 38
         },
         {
           "pokemon": "Corsola",
-          "encounters": 13
+          "encounters": 29
         },
         {
           "pokemon": "Remoraid",
-          "encounters": 20
+          "encounters": 45
         },
         {
           "pokemon": "Krabby",
-          "encounters": 39
+          "encounters": 79
         },
         {
           "pokemon": "Seadra",
-          "encounters": 7
+          "encounters": 15
         },
         {
           "pokemon": "Horsea",
-          "encounters": 32
+          "encounters": 67
         },
         {
           "pokemon": "Gyarados",
-          "encounters": 16
+          "encounters": 23
         },
         {
           "pokemon": "Kingler",
-          "encounters": 6
+          "encounters": 18
         },
         {
           "pokemon": "Psyduck",
-          "encounters": 9
+          "encounters": 15
         },
         {
           "pokemon": "Slowpoke",
-          "encounters": 11
+          "encounters": 22
         }
       ]
     }
@@ -637,6 +637,34 @@
           "encounters": 267
         }
       ]
+    },
+    "Safari Zone / Marshland - Carnivine / Day": {
+      "route": "Safari Zone / Marshland",
+      "credit": "ZackTRh",
+      "variation": "Carnivine / Day",
+      "total": 142,
+      "data": [
+        {
+          "pokemon": "Arbok",
+          "encounters": 14
+        },
+        {
+          "pokemon": "Carnivine",
+          "encounters": 23
+        },
+        {
+          "pokemon": "Grimer",
+          "encounters": 11
+        },
+        {
+          "pokemon": "Ekans",
+          "encounters": 15
+        },
+        {
+          "pokemon": "Koffing",
+          "encounters": 79
+        }
+      ]
     }
   },
   "Hoenn": {
@@ -761,43 +789,43 @@
       "route": "Honey Trees",
       "credit": "Hyper, KaiDono, Mysto",
       "variation": "",
-      "total": 1150,
+      "total": 1246,
       "data": [
         {
           "pokemon": "Combee",
-          "encounters": 328
+          "encounters": 360
         },
         {
           "pokemon": "Burmy",
-          "encounters": 195
+          "encounters": 211
         },
         {
           "pokemon": "Wurmple",
-          "encounters": 168
+          "encounters": 178
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 123
+          "encounters": 128
         },
         {
           "pokemon": "Aipom",
-          "encounters": 111
+          "encounters": 127
         },
         {
           "pokemon": "Silcoon",
-          "encounters": 76
+          "encounters": 79
         },
         {
           "pokemon": "Munchlax",
-          "encounters": 56
+          "encounters": 61
         },
         {
           "pokemon": "Cascoon",
-          "encounters": 47
+          "encounters": 53
         },
         {
           "pokemon": "Heracross",
-          "encounters": 46
+          "encounters": 49
         }
       ]
     },
@@ -1239,6 +1267,26 @@
         {
           "pokemon": "Vanillite",
           "encounters": 710
+        }
+      ]
+    },
+    "Dragonspiral Tower - Fishing": {
+      "route": "Dragonspiral Tower",
+      "credit": "Mysto",
+      "variation": "Fishing",
+      "total": 210,
+      "data": [
+        {
+          "pokemon": "Basculin Red Striped",
+          "encounters": 154
+        },
+        {
+          "pokemon": "Dratini",
+          "encounters": 43
+        },
+        {
+          "pokemon": "Dragonair",
+          "encounters": 13
         }
       ]
     }
