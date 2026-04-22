@@ -547,6 +547,62 @@
           "encounters": 41
         }
       ]
+    },
+    "Sevault Canyon - Lures": {
+      "route": "Sevault Canyon",
+      "credit": "Haribo",
+      "variation": "Lures",
+      "total": 3000,
+      "data": [
+        {
+          "pokemon": "Marowak",
+          "encounters": 719
+        },
+        {
+          "pokemon": "Geodude",
+          "encounters": 393
+        },
+        {
+          "pokemon": "Meowth",
+          "encounters": 282
+        },
+        {
+          "pokemon": "Persian",
+          "encounters": 280
+        },
+        {
+          "pokemon": "Donphan",
+          "encounters": 241
+        },
+        {
+          "pokemon": "Cubone",
+          "encounters": 233
+        },
+        {
+          "pokemon": "Fearow",
+          "encounters": 216
+        },
+        {
+          "pokemon": "Phanpy",
+          "encounters": 203
+        },
+        {
+          "pokemon": "Larvitar",
+          "encounters": 119
+        },
+        {
+          "pokemon": "Skarmory",
+          "encounters": 114
+        },
+        {
+          "pokemon": "Tyranitar",
+          "encounters": 101
+        },
+        {
+          "pokemon": "Onix",
+          "encounters": 99
+        }
+      ]
     }
   },
   "Johto": {
@@ -716,41 +772,81 @@
     },
     "Route 34 - Lures": {
       "route": "Route 34",
-      "credit": "Hyper",
+      "credit": "Hyper, MrBlueStacks",
       "variation": "Lures",
-      "total": 121,
+      "total": 1123,
       "data": [
         {
           "pokemon": "Drowzee",
-          "encounters": 38
+          "encounters": 436
         },
         {
           "pokemon": "Snubbull",
-          "encounters": 21
+          "encounters": 163
         },
         {
           "pokemon": "Rattata",
-          "encounters": 17
+          "encounters": 206
         },
         {
           "pokemon": "Abra",
-          "encounters": 14
+          "encounters": 120
         },
         {
           "pokemon": "Pidgey",
-          "encounters": 10
+          "encounters": 47
         },
         {
           "pokemon": "Ditto",
-          "encounters": 7
+          "encounters": 53
         },
         {
           "pokemon": "Jigglypuff",
-          "encounters": 7
+          "encounters": 66
         },
         {
           "pokemon": "Togepi",
-          "encounters": 7
+          "encounters": 32
+        }
+      ]
+    },
+    "Route 45 - Lures": {
+      "route": "Route 45",
+      "credit": "Dammers",
+      "variation": "Lures",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Graveler",
+          "encounters": 395
+        },
+        {
+          "pokemon": "Gligar",
+          "encounters": 195
+        },
+        {
+          "pokemon": "Donphan",
+          "encounters": 51
+        },
+        {
+          "pokemon": "Teddiursa",
+          "encounters": 43
+        },
+        {
+          "pokemon": "Geodude",
+          "encounters": 158
+        },
+        {
+          "pokemon": "Phanpy",
+          "encounters": 77
+        },
+        {
+          "pokemon": "Quilava",
+          "encounters": 35
+        },
+        {
+          "pokemon": "Skarmory",
+          "encounters": 46
         }
       ]
     }
@@ -1186,6 +1282,114 @@
         {
           "pokemon": "Chimchar",
           "encounters": 28
+        }
+      ]
+    },
+    "Great Marsh - Croagunk - Area 3/4": {
+      "route": "Great Marsh",
+      "credit": "Pinguh",
+      "variation": "Croagunk - Area 3/4",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Croagunk",
+          "encounters": 97
+        },
+        {
+          "pokemon": "Yanma",
+          "encounters": 46
+        },
+        {
+          "pokemon": "Marill",
+          "encounters": 40
+        },
+        {
+          "pokemon": "Bibarel",
+          "encounters": 175
+        },
+        {
+          "pokemon": "Budew",
+          "encounters": 104
+        },
+        {
+          "pokemon": "Quagsire",
+          "encounters": 115
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 60
+        },
+        {
+          "pokemon": "Wooper",
+          "encounters": 67
+        },
+        {
+          "pokemon": "Starly",
+          "encounters": 44
+        },
+        {
+          "pokemon": "Tangela",
+          "encounters": 212
+        },
+        {
+          "pokemon": "Bidoof",
+          "encounters": 40
+        }
+      ]
+    },
+    "Great Marsh - Skorupi - Area 5/6 - Lures": {
+      "route": "Great Marsh",
+      "credit": "Pinguh",
+      "variation": "Skorupi - Area 5/6 - Lures",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Skorupi",
+          "encounters": 88
+        },
+        {
+          "pokemon": "Yanma",
+          "encounters": 180
+        },
+        {
+          "pokemon": "Yanmega",
+          "encounters": 53
+        },
+        {
+          "pokemon": "Marill",
+          "encounters": 37
+        },
+        {
+          "pokemon": "Bibarel",
+          "encounters": 190
+        },
+        {
+          "pokemon": "Budew",
+          "encounters": 105
+        },
+        {
+          "pokemon": "Quagsire",
+          "encounters": 92
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 56
+        },
+        {
+          "pokemon": "Wooper",
+          "encounters": 64
+        },
+        {
+          "pokemon": "Starly",
+          "encounters": 38
+        },
+        {
+          "pokemon": "Tangela",
+          "encounters": 45
+        },
+        {
+          "pokemon": "Bidoof",
+          "encounters": 52
         }
       ]
     }

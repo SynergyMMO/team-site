@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getAssetUrl } from '../../utils/assets'
@@ -11,6 +11,8 @@ import styles from './RouteFinder.module.css'
 const TARGET_TIERS = new Set([0, 1, 2, 3])
 const BEST_ROUTE_TIERS = new Set([0, 1, 2])
 const REGION_ORDER = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova']
+const SUBMISSION_COOLDOWN_MS = 5 * 60 * 1000
+const SUBMISSION_COOLDOWN_KEY = 'routeFinderSubmitCooldownUntil'
 
 function getRegionOrder(region) {
   const index = REGION_ORDER.indexOf(region)
@@ -115,6 +117,22 @@ function sortRoutesByRegionThenName(a, b) {
   const regionDiff = getRegionOrder(a.region) - getRegionOrder(b.region)
   if (regionDiff !== 0) return regionDiff
   return a.displayName.localeCompare(b.displayName)
+}
+
+function getInitialCooldownRemaining() {
+  if (typeof window === 'undefined') return 0
+
+  const storedValue = Number(window.localStorage.getItem(SUBMISSION_COOLDOWN_KEY) || 0)
+  if (!storedValue) return 0
+
+  return Math.max(0, storedValue - Date.now())
+}
+
+function formatCooldown(msRemaining) {
+  const totalSeconds = Math.ceil(msRemaining / 1000)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${minutes}:${String(seconds).padStart(2, '0')}`
 }
 
 function flattenRoutes() {
@@ -258,7 +276,9 @@ function RouteCard({ route, pokemonFilter, pokemonFamilyKeys, sortMode }) {
         <section className={styles.monSection}>
           <h3>{targetHeading}</h3>
           <div className={styles.monGrid}>
-            {targetPokemon.map(mon => <PokemonPill key={mon.name} mon={mon} role="target" />)}
+            {targetPokemon.map((mon, index) => (
+              <PokemonPill key={`${route.id}-target-${mon.name}-${index}`} mon={mon} role="target" />
+            ))}
           </div>
         </section>
       )}
@@ -266,7 +286,9 @@ function RouteCard({ route, pokemonFilter, pokemonFamilyKeys, sortMode }) {
       <section className={styles.monSection}>
         <h3>{targetPokemon.length > 0 ? 'Phases' : 'Pokemon Percentages'}</h3>
         <div className={styles.monGrid}>
-          {phasePokemon.map(mon => <PokemonPill key={mon.name} mon={mon} role="phase" />)}
+          {phasePokemon.map((mon, index) => (
+            <PokemonPill key={`${route.id}-phase-${mon.name}-${index}`} mon={mon} role="phase" />
+          ))}
         </div>
       </section>
     </article>
@@ -277,6 +299,23 @@ export default function RouteFinder() {
   const [pokemonFilter, setPokemonFilter] = useState('')
   const [routeFilter, setRouteFilter] = useState('')
   const [sortMode, setSortMode] = useState('default')
+  const [isSubmitFormOpen, setIsSubmitFormOpen] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const [submitSuccess, setSubmitSuccess] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hasPendingSubmission, setHasPendingSubmission] = useState(false)
+  const [screenshotFile, setScreenshotFile] = useState(null)
+  const [fileInputKey, setFileInputKey] = useState(0)
+  const [cooldownRemaining, setCooldownRemaining] = useState(() => getInitialCooldownRemaining())
+  const [submitForm, setSubmitForm] = useState({
+    region: REGION_ORDER[0],
+    route: '',
+    variation: '',
+    credit: '',
+    discord: '',
+    encounterData: '',
+    notes: '',
+  })
 
   useDocumentHead({
     title: 'Route Finder',
@@ -326,6 +365,21 @@ export default function RouteFinder() {
     })
   )
   const routeHasData = !routeNeedle || routes.some(route => route.routeSearch.includes(routeNeedle))
+
+  useEffect(() => {
+    if (!cooldownRemaining) return undefined
+
+    const intervalId = window.setInterval(() => {
+      const remaining = getInitialCooldownRemaining()
+      setCooldownRemaining(remaining)
+
+      if (!remaining) {
+        window.localStorage.removeItem(SUBMISSION_COOLDOWN_KEY)
+      }
+    }, 1000)
+
+    return () => window.clearInterval(intervalId)
+  }, [cooldownRemaining])
 
   const filteredRoutes = routes
     .filter(route => {
@@ -392,6 +446,81 @@ export default function RouteFinder() {
     emptyText = 'No tracked route currently matches both filters.'
   }
 
+  const handleSubmitFormChange = (field) => (event) => {
+    setSubmitForm((current) => ({
+      ...current,
+      [field]: event.target.value,
+    }))
+  }
+
+  const closeSubmitForm = () => {
+    setIsSubmitFormOpen(false)
+    setSubmitError('')
+    setSubmitSuccess('')
+    setIsSubmitting(false)
+    setHasPendingSubmission(false)
+  }
+
+  const openSubmitForm = () => {
+    setIsSubmitFormOpen(true)
+    setSubmitError('')
+    setSubmitSuccess('')
+  }
+
+  const handleScreenshotChange = (event) => {
+    const nextFile = event.target.files?.[0] || null
+    setScreenshotFile(nextFile)
+  }
+
+  const handleSubmitData = (event) => {
+    if (cooldownRemaining > 0) {
+      event.preventDefault()
+      setSubmitError(`Please wait ${formatCooldown(cooldownRemaining)} before sending another submission.`)
+      return
+    }
+
+    const trimmedRoute = submitForm.route.trim()
+    const trimmedCredit = submitForm.credit.trim()
+    if (!trimmedRoute || !trimmedCredit) {
+      event.preventDefault()
+      setSubmitError('Please add at least a route and credit before submitting.')
+      return
+    }
+
+    if (screenshotFile && screenshotFile.size > 10 * 1024 * 1024) {
+      event.preventDefault()
+      setSubmitError('Screenshots must be 10MB or smaller.')
+      return
+    }
+
+    setIsSubmitting(true)
+    setHasPendingSubmission(true)
+    setSubmitError('')
+    setSubmitSuccess('')
+  }
+
+  const handleSubmitFrameLoad = () => {
+    if (!hasPendingSubmission) return
+
+    const nextCooldownUntil = Date.now() + SUBMISSION_COOLDOWN_MS
+    window.localStorage.setItem(SUBMISSION_COOLDOWN_KEY, String(nextCooldownUntil))
+    setCooldownRemaining(SUBMISSION_COOLDOWN_MS)
+    setHasPendingSubmission(false)
+    setIsSubmitting(false)
+    setSubmitSuccess(`Submission sent successfully. Please wait ${formatCooldown(SUBMISSION_COOLDOWN_MS)} before sending another one.`)
+    setSubmitForm({
+      region: REGION_ORDER[0],
+      route: '',
+      variation: '',
+      credit: '',
+      discord: '',
+      encounterData: '',
+      notes: '',
+    })
+    setScreenshotFile(null)
+    setFileInputKey(current => current + 1)
+  }
+
   return (
     <div className={styles.page}>
       <h1 className="page-title">Route Finder</h1>
@@ -399,6 +528,9 @@ export default function RouteFinder() {
 
       <div className={styles.topControls}>
         <TopContributorsDropdown contributors={topContributors} />
+        <button type="button" className={styles.submitButton} onClick={openSubmitForm}>
+          Submit your own data!
+        </button>
       </div>
 
       <details className={styles.infoDropdown} open>
@@ -495,6 +627,168 @@ export default function RouteFinder() {
               </section>
             ))
           )}
+        </div>
+      )}
+
+      {isSubmitFormOpen && (
+        <div className={styles.submitModalBackdrop} role="presentation" onClick={closeSubmitForm}>
+          <iframe
+            title="Route Finder submission target"
+            name="route-finder-submit-frame"
+            className={styles.hiddenSubmitFrame}
+            onLoad={handleSubmitFrameLoad}
+          />
+          <section
+            className={styles.submitModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="route-finder-submit-title"
+            onClick={event => event.stopPropagation()}
+          >
+            <div className={styles.submitModalHeader}>
+              <div>
+                <p className={styles.submitEyebrow}>Community submissions</p>
+                <h2 id="route-finder-submit-title">Send route data for review</h2>
+              </div>
+              <button
+                type="button"
+                className={styles.closeButton}
+                onClick={closeSubmitForm}
+                aria-label="Close submission form"
+              >
+                x
+              </button>
+            </div>
+
+            <p className={styles.submitDescription}>
+              Fill out the form if you wish to submit your encounter data to the site, the data will be reviewed to ensure it remains accurate and will be added to the site if confirmed. We appreciate anyone who wishes to help with this project! If you have access to a discord account, we would rather you DM oHypers personally to ensure your data is accurate and you understand the criteria, although if you do not wish to do that, this form is good too!
+            </p>
+
+            <form
+              className={styles.submitForm}
+              onSubmit={handleSubmitData}
+              action="https://formsubmit.co/hypersmmo@gmail.com"
+              method="POST"
+              encType="multipart/form-data"
+              target="route-finder-submit-frame"
+            >
+              <input type="hidden" name="_subject" value={`Route Finder Data Submission - ${submitForm.region} - ${submitForm.route.trim() || 'Unknown Route'}`} />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_url" value={`${window.location.origin}/route-finder`} />
+              <input type="text" name="_honey" className={styles.honeypotField} tabIndex="-1" autoComplete="off" />
+
+              <label>
+                <span>Region</span>
+                <select name="region" value={submitForm.region} onChange={handleSubmitFormChange('region')}>
+                  {REGION_ORDER.map(region => <option key={region} value={region}>{region}</option>)}
+                </select>
+              </label>
+
+              <label>
+                <span>Route</span>
+                <input
+                  name="route"
+                  type="text"
+                  value={submitForm.route}
+                  onChange={handleSubmitFormChange('route')}
+                  placeholder="Route 1"
+                  required
+                />
+              </label>
+
+              <label>
+                <span>Variation</span>
+                <input
+                  name="variation"
+                  type="text"
+                  value={submitForm.variation}
+                  onChange={handleSubmitFormChange('variation')}
+                  placeholder="Lures, Hordes, Time of Day etc"
+                />
+              </label>
+
+              <label>
+                <span>Credit</span>
+                <input
+                  name="credit"
+                  type="text"
+                  value={submitForm.credit}
+                  onChange={handleSubmitFormChange('credit')}
+                  placeholder="Your name / IGN"
+                  required
+                />
+              </label>
+
+              <label>
+                <span>Your Discord</span>
+                <input
+                  name="discord"
+                  type="text"
+                  value={submitForm.discord}
+                  onChange={handleSubmitFormChange('discord')}
+                  placeholder="if you are happy with being contacted"
+                />
+              </label>
+
+              <label className={styles.fullWidthField}>
+                <span>Encounter data</span>
+                <textarea
+                  name="encounter_data"
+                  value={submitForm.encounterData}
+                  onChange={handleSubmitFormChange('encounterData')}
+                  placeholder={`Pikachu - 120\nPidgey - 80\nRattata - 40`}
+                  rows={7}
+                />
+              </label>
+
+              <label className={styles.fullWidthField}>
+                <span>Screenshot upload</span>
+                <input
+                  key={fileInputKey}
+                  name="attachment"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={handleScreenshotChange}
+                  required
+                />
+                <small className={styles.fieldHint}>
+                  Please attach a screenshot of your encounter counter trip
+                </small>
+                {screenshotFile && (
+                  <span className={styles.fileName}>{screenshotFile.name}</span>
+                )}
+              </label>
+
+              <label className={styles.fullWidthField}>
+                <span>Extra notes</span>
+                <textarea
+                  name="notes"
+                  value={submitForm.notes}
+                  onChange={handleSubmitFormChange('notes')}
+                  placeholder="Mention here if you think this data might be inaccurate, or if there is something Hyper should know when reviewing the data. For example if this route has very different spawns during a certain time of day, or if there was an event that might have skewed the data such as swarms or alphas etc."
+                  rows={4}
+                />
+              </label>
+
+              {submitError && <p className={styles.submitError}>{submitError}</p>}
+              {submitSuccess && <p className={styles.submitSuccess}>{submitSuccess}</p>}
+              {cooldownRemaining > 0 && (
+                <p className={styles.submitCooldown}>
+                  Submission cooldown active: {formatCooldown(cooldownRemaining)} remaining.
+                </p>
+              )}
+
+              <div className={styles.submitActions}>
+                <button type="button" className={styles.secondaryButton} onClick={closeSubmitForm}>
+                  Cancel
+                </button>
+                <button type="submit" className={styles.primaryButton} disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending...' : cooldownRemaining > 0 ? `Wait ${formatCooldown(cooldownRemaining)}` : 'Send Data'}
+                </button>
+              </div>
+            </form>
+          </section>
         </div>
       )}
     </div>
