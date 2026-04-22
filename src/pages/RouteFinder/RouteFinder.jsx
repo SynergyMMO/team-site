@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { API } from '../../api/endpoints'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getAssetUrl } from '../../utils/assets'
 import { getLocalPokemonGif, normalizePokemonName, onGifError } from '../../utils/pokemon'
@@ -13,6 +14,10 @@ const BEST_ROUTE_TIERS = new Set([0, 1, 2])
 const REGION_ORDER = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova']
 const SUBMISSION_COOLDOWN_MS = 5 * 60 * 1000
 const SUBMISSION_COOLDOWN_KEY = 'routeFinderSubmitCooldownUntil'
+const TURNSTILE_SCRIPT_ID = 'cloudflare-turnstile-script'
+const TURNSTILE_CONTAINER_ID = 'route-finder-turnstile'
+const TURNSTILE_ACTION = 'route_finder_submit'
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAADBIYe2ydf-7nLPt'
 
 function getRegionOrder(region) {
   const index = REGION_ORDER.indexOf(region)
@@ -303,10 +308,13 @@ export default function RouteFinder() {
   const [submitError, setSubmitError] = useState('')
   const [submitSuccess, setSubmitSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [hasPendingSubmission, setHasPendingSubmission] = useState(false)
   const [screenshotFile, setScreenshotFile] = useState(null)
   const [fileInputKey, setFileInputKey] = useState(0)
   const [cooldownRemaining, setCooldownRemaining] = useState(() => getInitialCooldownRemaining())
+  const [isTurnstileReady, setIsTurnstileReady] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileError, setTurnstileError] = useState('')
+  const [turnstileWidgetId, setTurnstileWidgetId] = useState(null)
   const [submitForm, setSubmitForm] = useState({
     region: REGION_ORDER[0],
     route: '',
@@ -380,6 +388,79 @@ export default function RouteFinder() {
 
     return () => window.clearInterval(intervalId)
   }, [cooldownRemaining])
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !TURNSTILE_SITE_KEY) return undefined
+
+    if (window.turnstile) {
+      setIsTurnstileReady(true)
+      return undefined
+    }
+
+    const existingScript = document.getElementById(TURNSTILE_SCRIPT_ID)
+    if (existingScript) {
+      const handleLoad = () => setIsTurnstileReady(true)
+      existingScript.addEventListener('load', handleLoad)
+      return () => existingScript.removeEventListener('load', handleLoad)
+    }
+
+    const script = document.createElement('script')
+    script.id = TURNSTILE_SCRIPT_ID
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
+    script.async = true
+    script.defer = true
+    script.onload = () => setIsTurnstileReady(true)
+    document.head.appendChild(script)
+
+    return undefined
+  }, [])
+
+  useEffect(() => {
+    if (!isSubmitFormOpen) {
+      if (window.turnstile && turnstileWidgetId !== null) {
+        window.turnstile.remove(turnstileWidgetId)
+      }
+      setTurnstileWidgetId(null)
+      setTurnstileToken('')
+      setTurnstileError('')
+      return
+    }
+
+    if (!TURNSTILE_SITE_KEY) {
+      setTurnstileError('Captcha is not configured yet. Please try again later.')
+      return
+    }
+
+    if (!isTurnstileReady || turnstileWidgetId !== null || !window.turnstile) return
+
+    const container = document.getElementById(TURNSTILE_CONTAINER_ID)
+    if (!container) return
+
+    const widgetId = window.turnstile.render(`#${TURNSTILE_CONTAINER_ID}`, {
+      sitekey: TURNSTILE_SITE_KEY,
+      theme: 'auto',
+      size: 'flexible',
+      action: TURNSTILE_ACTION,
+      callback: (token) => {
+        setTurnstileToken(token)
+        setTurnstileError('')
+      },
+      'error-callback': () => {
+        setTurnstileToken('')
+        setTurnstileError('Captcha verification failed. Please try again.')
+      },
+      'expired-callback': () => {
+        setTurnstileToken('')
+        setTurnstileError('Captcha expired. Please complete it again.')
+      },
+      'timeout-callback': () => {
+        setTurnstileToken('')
+        setTurnstileError('Captcha timed out. Please complete it again.')
+      },
+    })
+
+    setTurnstileWidgetId(widgetId)
+  }, [isSubmitFormOpen, isTurnstileReady, turnstileWidgetId])
 
   const filteredRoutes = routes
     .filter(route => {
@@ -458,7 +539,6 @@ export default function RouteFinder() {
     setSubmitError('')
     setSubmitSuccess('')
     setIsSubmitting(false)
-    setHasPendingSubmission(false)
   }
 
   const openSubmitForm = () => {
@@ -472,9 +552,18 @@ export default function RouteFinder() {
     setScreenshotFile(nextFile)
   }
 
-  const handleSubmitData = (event) => {
+  const resetTurnstile = () => {
+    if (window.turnstile && turnstileWidgetId !== null) {
+      window.turnstile.reset(turnstileWidgetId)
+    }
+    setTurnstileToken('')
+    setTurnstileError('')
+  }
+
+  const handleSubmitData = async (event) => {
+    event.preventDefault()
+
     if (cooldownRemaining > 0) {
-      event.preventDefault()
       setSubmitError(`Please wait ${formatCooldown(cooldownRemaining)} before sending another submission.`)
       return
     }
@@ -482,43 +571,71 @@ export default function RouteFinder() {
     const trimmedRoute = submitForm.route.trim()
     const trimmedCredit = submitForm.credit.trim()
     if (!trimmedRoute || !trimmedCredit) {
-      event.preventDefault()
       setSubmitError('Please add at least a route and credit before submitting.')
       return
     }
 
-    if (screenshotFile && screenshotFile.size > 10 * 1024 * 1024) {
-      event.preventDefault()
-      setSubmitError('Screenshots must be 10MB or smaller.')
+    if (!TURNSTILE_SITE_KEY) {
+      setSubmitError('Captcha is not configured yet. Please try again later.')
+      return
+    }
+
+    if (!turnstileToken) {
+      setSubmitError(turnstileError || 'Please complete the captcha verification before sending.')
       return
     }
 
     setIsSubmitting(true)
-    setHasPendingSubmission(true)
     setSubmitError('')
     setSubmitSuccess('')
-  }
 
-  const handleSubmitFrameLoad = () => {
-    if (!hasPendingSubmission) return
+    const payload = new FormData()
+    payload.append('region', submitForm.region)
+    payload.append('route', trimmedRoute)
+    payload.append('variation', submitForm.variation.trim())
+    payload.append('credit', trimmedCredit)
+    payload.append('discord', submitForm.discord.trim())
+    payload.append('encounter_data', submitForm.encounterData.trim())
+    payload.append('notes', submitForm.notes.trim())
+    payload.append('cf-turnstile-response', turnstileToken)
 
-    const nextCooldownUntil = Date.now() + SUBMISSION_COOLDOWN_MS
-    window.localStorage.setItem(SUBMISSION_COOLDOWN_KEY, String(nextCooldownUntil))
-    setCooldownRemaining(SUBMISSION_COOLDOWN_MS)
-    setHasPendingSubmission(false)
-    setIsSubmitting(false)
-    setSubmitSuccess(`Submission sent successfully. Please wait ${formatCooldown(SUBMISSION_COOLDOWN_MS)} before sending another one.`)
-    setSubmitForm({
-      region: REGION_ORDER[0],
-      route: '',
-      variation: '',
-      credit: '',
-      discord: '',
-      encounterData: '',
-      notes: '',
-    })
-    setScreenshotFile(null)
-    setFileInputKey(current => current + 1)
+    if (screenshotFile) {
+      payload.append('attachment', screenshotFile)
+    }
+
+    try {
+      const response = await fetch(API.routeFinderSubmission, {
+        method: 'POST',
+        body: payload,
+      })
+
+      const result = await response.json().catch(() => ({}))
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'The form could not be sent right now.')
+      }
+
+      const nextCooldownUntil = Date.now() + SUBMISSION_COOLDOWN_MS
+      window.localStorage.setItem(SUBMISSION_COOLDOWN_KEY, String(nextCooldownUntil))
+      setCooldownRemaining(SUBMISSION_COOLDOWN_MS)
+      setSubmitSuccess(`Submission sent successfully. Please wait ${formatCooldown(SUBMISSION_COOLDOWN_MS)} before sending another one.`)
+      setSubmitForm({
+        region: REGION_ORDER[0],
+        route: '',
+        variation: '',
+        credit: '',
+        discord: '',
+        encounterData: '',
+        notes: '',
+      })
+      setScreenshotFile(null)
+      setFileInputKey(current => current + 1)
+      resetTurnstile()
+    } catch (error) {
+      setSubmitError(error.message || 'The form could not be sent right now.')
+      resetTurnstile()
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -632,12 +749,6 @@ export default function RouteFinder() {
 
       {isSubmitFormOpen && (
         <div className={styles.submitModalBackdrop} role="presentation" onClick={closeSubmitForm}>
-          <iframe
-            title="Route Finder submission target"
-            name="route-finder-submit-frame"
-            className={styles.hiddenSubmitFrame}
-            onLoad={handleSubmitFrameLoad}
-          />
           <section
             className={styles.submitModal}
             role="dialog"
@@ -664,23 +775,10 @@ export default function RouteFinder() {
               Fill out the form if you wish to submit your encounter data to the site, the data will be reviewed to ensure it remains accurate and will be added to the site if confirmed. We appreciate anyone who wishes to help with this project! If you have access to a discord account, we would rather you DM oHypers personally to ensure your data is accurate and you understand the criteria, although if you do not wish to do that, this form is good too!
             </p>
 
-            <form
-              className={styles.submitForm}
-              onSubmit={handleSubmitData}
-              action="https://formsubmit.co/hypersmmo@gmail.com"
-              method="POST"
-              encType="multipart/form-data"
-              target="route-finder-submit-frame"
-            >
-              <input type="hidden" name="_subject" value={`Route Finder Data Submission - ${submitForm.region} - ${submitForm.route.trim() || 'Unknown Route'}`} />
-              <input type="hidden" name="_template" value="table" />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_url" value={`${window.location.origin}/route-finder`} />
-              <input type="text" name="_honey" className={styles.honeypotField} tabIndex="-1" autoComplete="off" />
-
+            <form className={styles.submitForm} onSubmit={handleSubmitData}>
               <label>
                 <span>Region</span>
-                <select name="region" value={submitForm.region} onChange={handleSubmitFormChange('region')}>
+                <select value={submitForm.region} onChange={handleSubmitFormChange('region')}>
                   {REGION_ORDER.map(region => <option key={region} value={region}>{region}</option>)}
                 </select>
               </label>
@@ -688,7 +786,6 @@ export default function RouteFinder() {
               <label>
                 <span>Route</span>
                 <input
-                  name="route"
                   type="text"
                   value={submitForm.route}
                   onChange={handleSubmitFormChange('route')}
@@ -700,7 +797,6 @@ export default function RouteFinder() {
               <label>
                 <span>Variation</span>
                 <input
-                  name="variation"
                   type="text"
                   value={submitForm.variation}
                   onChange={handleSubmitFormChange('variation')}
@@ -711,7 +807,6 @@ export default function RouteFinder() {
               <label>
                 <span>Credit</span>
                 <input
-                  name="credit"
                   type="text"
                   value={submitForm.credit}
                   onChange={handleSubmitFormChange('credit')}
@@ -723,7 +818,6 @@ export default function RouteFinder() {
               <label>
                 <span>Your Discord</span>
                 <input
-                  name="discord"
                   type="text"
                   value={submitForm.discord}
                   onChange={handleSubmitFormChange('discord')}
@@ -734,7 +828,6 @@ export default function RouteFinder() {
               <label className={styles.fullWidthField}>
                 <span>Encounter data</span>
                 <textarea
-                  name="encounter_data"
                   value={submitForm.encounterData}
                   onChange={handleSubmitFormChange('encounterData')}
                   placeholder={`Pikachu - 120\nPidgey - 80\nRattata - 40`}
@@ -746,7 +839,6 @@ export default function RouteFinder() {
                 <span>Screenshot upload</span>
                 <input
                   key={fileInputKey}
-                  name="attachment"
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
                   onChange={handleScreenshotChange}
@@ -763,7 +855,6 @@ export default function RouteFinder() {
               <label className={styles.fullWidthField}>
                 <span>Extra notes</span>
                 <textarea
-                  name="notes"
                   value={submitForm.notes}
                   onChange={handleSubmitFormChange('notes')}
                   placeholder="Mention here if you think this data might be inaccurate, or if there is something Hyper should know when reviewing the data. For example if this route has very different spawns during a certain time of day, or if there was an event that might have skewed the data such as swarms or alphas etc."
@@ -771,8 +862,14 @@ export default function RouteFinder() {
                 />
               </label>
 
+              <div className={styles.fullWidthField}>
+                <span className={styles.turnstileLabel}>Captcha verification</span>
+                <div id={TURNSTILE_CONTAINER_ID} className={styles.turnstileWrap} />
+              </div>
+
               {submitError && <p className={styles.submitError}>{submitError}</p>}
               {submitSuccess && <p className={styles.submitSuccess}>{submitSuccess}</p>}
+              {turnstileError && <p className={styles.submitError}>{turnstileError}</p>}
               {cooldownRemaining > 0 && (
                 <p className={styles.submitCooldown}>
                   Submission cooldown active: {formatCooldown(cooldownRemaining)} remaining.
