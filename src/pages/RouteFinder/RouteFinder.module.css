@@ -118,6 +118,34 @@
   line-height: 1.6;
 }
 
+.submitLimits {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 226, 134, 0.26);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(104, 72, 13, 0.28), rgba(54, 37, 8, 0.32)),
+    rgba(255, 244, 208, 0.04);
+  color: #ffefbf;
+}
+
+.submitLimits strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #fff4cf;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+}
+
+.submitLimits p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.submitLimits p + p {
+  margin-top: 8px;
+}
+
 .submitForm {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -1,7 +1,12 @@
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 const TURNSTILE_ACTION = 'route_finder_submit'
 const RESEND_SEND_EMAIL_URL = 'https://api.resend.com/emails'
-const MAX_ATTACHMENTS = 10
+const MAX_ATTACHMENTS = 3
+const MAX_TOTAL_ATTACHMENT_BYTES = 5 * 1024 * 1024
+const DEFAULT_SHORT_WINDOW_LIMIT = 1
+const DEFAULT_SHORT_WINDOW_SECONDS = 10 * 60
+const DEFAULT_DAILY_LIMIT = 5
+const DEFAULT_DAILY_WINDOW_SECONDS = 24 * 60 * 60
 
 function normalizeValue(value) {
   return String(value || '').trim()
@@ -52,6 +57,11 @@ function jsonResponse(body, status, corsHeaders) {
 
 async function parseJsonResponse(response) {
   return response.json().catch(() => null)
+}
+
+function getEnvInt(env, key, fallback) {
+  const value = Number.parseInt(normalizeValue(env[key]), 10)
+  return Number.isFinite(value) && value > 0 ? value : fallback
 }
 
 function escapeHtml(value) {
@@ -115,6 +125,102 @@ async function fileToBase64(file) {
   }
 
   return btoa(binary)
+}
+
+function getAttachmentStats(attachments) {
+  const validAttachments = attachments.filter(file => file instanceof File && file.size > 0)
+  const totalBytes = validAttachments.reduce((sum, file) => sum + file.size, 0)
+  return { validAttachments, totalBytes }
+}
+
+function getCurrentUnixSeconds() {
+  return Math.floor(Date.now() / 1000)
+}
+
+async function incrementRateBucket(kv, key, windowSeconds, limit, nowSeconds) {
+  const existing = await kv.get(key, 'json').catch(() => null)
+  const activeEntry = existing && Number(existing.resetAt) > nowSeconds
+    ? existing
+    : { count: 0, resetAt: nowSeconds + windowSeconds }
+
+  const nextEntry = {
+    count: Number(activeEntry.count || 0) + 1,
+    resetAt: Number(activeEntry.resetAt || (nowSeconds + windowSeconds)),
+  }
+
+  await kv.put(key, JSON.stringify(nextEntry), {
+    expirationTtl: Math.max(1, nextEntry.resetAt - nowSeconds),
+  })
+
+  return {
+    allowed: nextEntry.count <= limit,
+    count: nextEntry.count,
+    remaining: Math.max(0, limit - nextEntry.count),
+    resetAt: nextEntry.resetAt,
+  }
+}
+
+async function enforceRateLimit(request, env) {
+  if (!env.RATE_LIMIT_KV) {
+    return {
+      success: false,
+      status: 500,
+      error: 'Rate limiting is not configured.',
+    }
+  }
+
+  const ip = normalizeValue(request.headers.get('CF-Connecting-IP'))
+  if (!ip) {
+    return {
+      success: false,
+      status: 400,
+      error: 'Missing client IP address.',
+    }
+  }
+
+  const nowSeconds = getCurrentUnixSeconds()
+  const shortWindowLimit = getEnvInt(env, 'RATE_LIMIT_SHORT_WINDOW_MAX', DEFAULT_SHORT_WINDOW_LIMIT)
+  const shortWindowSeconds = getEnvInt(env, 'RATE_LIMIT_SHORT_WINDOW_SECONDS', DEFAULT_SHORT_WINDOW_SECONDS)
+  const dailyLimit = getEnvInt(env, 'RATE_LIMIT_DAILY_MAX', DEFAULT_DAILY_LIMIT)
+  const dailyWindowSeconds = getEnvInt(env, 'RATE_LIMIT_DAILY_WINDOW_SECONDS', DEFAULT_DAILY_WINDOW_SECONDS)
+  const shortWindowKey = `rate:${ip}:short`
+  const dailyBucketDate = new Date().toISOString().slice(0, 10)
+  const dailyKey = `rate:${ip}:day:${dailyBucketDate}`
+
+  const shortWindow = await incrementRateBucket(
+    env.RATE_LIMIT_KV,
+    shortWindowKey,
+    shortWindowSeconds,
+    shortWindowLimit,
+    nowSeconds,
+  )
+
+  if (!shortWindow.allowed) {
+    const shortWindowMinutes = Math.max(1, Math.ceil(shortWindowSeconds / 60))
+    return {
+      success: false,
+      status: 429,
+      error: `This IP can only send ${shortWindowLimit} submission(s) every ${shortWindowMinutes} minute(s). Please wait ${Math.max(1, Math.ceil((shortWindow.resetAt - nowSeconds) / 60))} minute(s) and try again.`,
+    }
+  }
+
+  const dailyWindow = await incrementRateBucket(
+    env.RATE_LIMIT_KV,
+    dailyKey,
+    dailyWindowSeconds,
+    dailyLimit,
+    nowSeconds,
+  )
+
+  if (!dailyWindow.allowed) {
+    return {
+      success: false,
+      status: 429,
+      error: `This IP has reached the daily submission limit of ${dailyLimit}. Please try again tomorrow.`,
+    }
+  }
+
+  return { success: true }
 }
 
 async function verifyTurnstile(token, request, env) {
@@ -190,12 +296,11 @@ async function sendWithResend(fields, attachments, env) {
     payload.reply_to = [replyTo]
   }
 
-  const validAttachments = attachments
-    .filter(file => file instanceof File && file.size > 0)
-    .slice(0, MAX_ATTACHMENTS)
+  const { validAttachments } = getAttachmentStats(attachments)
+  const limitedAttachments = validAttachments.slice(0, MAX_ATTACHMENTS)
 
-  if (validAttachments.length > 0) {
-    payload.attachments = await Promise.all(validAttachments.map(async (file) => ({
+  if (limitedAttachments.length > 0) {
+    payload.attachments = await Promise.all(limitedAttachments.map(async (file) => ({
       filename: file.name || 'route-finder-upload',
       content: await fileToBase64(file),
     })))
@@ -259,6 +364,11 @@ export default {
     }
 
     try {
+      const rateLimitCheck = await enforceRateLimit(request, env)
+      if (!rateLimitCheck.success) {
+        return jsonResponse({ success: false, error: rateLimitCheck.error }, rateLimitCheck.status, corsHeaders)
+      }
+
       const body = await request.formData()
       const token = normalizeValue(body.get('cf-turnstile-response'))
       const fields = {
@@ -282,6 +392,14 @@ export default {
       const attachments = body.getAll('attachment')
       if (attachments.length > MAX_ATTACHMENTS) {
         return jsonResponse({ success: false, error: `You can upload up to ${MAX_ATTACHMENTS} screenshots per submission.` }, 400, corsHeaders)
+      }
+
+      const { totalBytes } = getAttachmentStats(attachments)
+      if (totalBytes > MAX_TOTAL_ATTACHMENT_BYTES) {
+        return jsonResponse({
+          success: false,
+          error: 'The total screenshot upload size must be 5 MB or less.',
+        }, 400, corsHeaders)
       }
 
       const turnstileCheck = await verifyTurnstile(token, request, env)

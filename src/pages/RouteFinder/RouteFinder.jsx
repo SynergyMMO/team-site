@@ -12,9 +12,14 @@ import styles from './RouteFinder.module.css'
 const TARGET_TIERS = new Set([0, 1, 2, 3])
 const BEST_ROUTE_TIERS = new Set([0, 1, 2])
 const REGION_ORDER = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova']
-const SUBMISSION_COOLDOWN_MS = 5 * 60 * 1000
+const SUBMISSION_COOLDOWN_MS = 10 * 60 * 1000
 const SUBMISSION_COOLDOWN_KEY = 'routeFinderSubmitCooldownUntil'
-const MAX_SCREENSHOT_FILES = 10
+const MAX_SCREENSHOT_FILES = 3
+const MAX_TOTAL_SCREENSHOT_BYTES = 5 * 1024 * 1024
+const MAX_TOTAL_SCREENSHOT_MB = 5
+const SHORT_WINDOW_SUBMISSION_LIMIT = 1
+const SHORT_WINDOW_SUBMISSION_MINUTES = 10
+const DAILY_SUBMISSION_LIMIT = 5
 const TURNSTILE_SCRIPT_ID = 'cloudflare-turnstile-script'
 const TURNSTILE_CONTAINER_ID = 'route-finder-turnstile'
 const TURNSTILE_ACTION = 'route_finder_submit'
@@ -139,6 +144,10 @@ function formatCooldown(msRemaining) {
   const minutes = Math.floor(totalSeconds / 60)
   const seconds = totalSeconds % 60
   return `${minutes}:${String(seconds).padStart(2, '0')}`
+}
+
+function getTotalFileBytes(files) {
+  return files.reduce((total, file) => total + (file?.size || 0), 0)
 }
 
 function flattenRoutes() {
@@ -554,6 +563,11 @@ export default function RouteFinder() {
 
     if (event.target.files?.length > MAX_SCREENSHOT_FILES) {
       setSubmitError(`You can upload up to ${MAX_SCREENSHOT_FILES} screenshots per submission.`)
+      return
+    }
+
+    if (getTotalFileBytes(nextFiles) > MAX_TOTAL_SCREENSHOT_BYTES) {
+      setSubmitError(`The total screenshot upload size must be ${MAX_TOTAL_SCREENSHOT_MB} MB or less.`)
     } else {
       setSubmitError('')
     }
@@ -594,6 +608,16 @@ export default function RouteFinder() {
 
     if (screenshotFiles.length === 0) {
       setSubmitError('Please attach at least one screenshot before sending.')
+      return
+    }
+
+    if (screenshotFiles.length > MAX_SCREENSHOT_FILES) {
+      setSubmitError(`You can upload up to ${MAX_SCREENSHOT_FILES} screenshots per submission.`)
+      return
+    }
+
+    if (getTotalFileBytes(screenshotFiles) > MAX_TOTAL_SCREENSHOT_BYTES) {
+      setSubmitError(`The total screenshot upload size must be ${MAX_TOTAL_SCREENSHOT_MB} MB or less.`)
       return
     }
 
@@ -858,7 +882,7 @@ export default function RouteFinder() {
                   required
                 />
                 <small className={styles.fieldHint}>
-                  Please attach up to {MAX_SCREENSHOT_FILES} screenshots of your encounter counter trip
+                  Please attach between 1 and {MAX_SCREENSHOT_FILES} screenshots of your encounter counter trip, with {MAX_TOTAL_SCREENSHOT_MB} MB total across all files.
                 </small>
                 {screenshotFiles.length > 0 && (
                   <div className={styles.fileList}>
@@ -880,9 +904,19 @@ export default function RouteFinder() {
               </label>
 
               <div className={styles.fullWidthField}>
+            <div className={styles.submitLimits} aria-label="Submission limits">
+              <strong>Submission limits</strong>
+              <p>Upload up to {MAX_SCREENSHOT_FILES} screenshots per submission, with {MAX_TOTAL_SCREENSHOT_MB} MB total across all files.</p>
+              <p>You can send {SHORT_WINDOW_SUBMISSION_LIMIT} submission every {SHORT_WINDOW_SUBMISSION_MINUTES} minutes, and up to {DAILY_SUBMISSION_LIMIT} submissions per day. This is to prevent spam, if you would like to submit more please contact ohypers on discord</p>
+            </div>
+            </div>
+
+              <div className={styles.fullWidthField}>
                 <span className={styles.turnstileLabel}>Captcha verification</span>
                 <div id={TURNSTILE_CONTAINER_ID} className={styles.turnstileWrap} />
               </div>
+
+              
 
               {submitError && <p className={styles.submitError}>{submitError}</p>}
               {submitSuccess && <p className={styles.submitSuccess}>{submitSuccess}</p>}
@@ -892,6 +926,7 @@ export default function RouteFinder() {
                   Submission cooldown active: {formatCooldown(cooldownRemaining)} remaining.
                 </p>
               )}
+              
 
               <div className={styles.submitActions}>
                 <button type="button" className={styles.secondaryButton} onClick={closeSubmitForm}>
@@ -901,6 +936,7 @@ export default function RouteFinder() {
                   {isSubmitting ? 'Sending...' : cooldownRemaining > 0 ? `Wait ${formatCooldown(cooldownRemaining)}` : 'Send Data'}
                 </button>
               </div>
+              
             </form>
           </section>
         </div>
