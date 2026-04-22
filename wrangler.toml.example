@@ -1,9 +1,0 @@
-name = "adminpage"
-main = "workers/routeFinderSubmissionWorker.js"
-compatibility_date = "2026-04-22"
-
-[vars]
-ALLOWED_ORIGINS = "https://hypersmmo.com,https://www.hypersmmo.com"
-TURNSTILE_EXPECTED_HOSTNAME = "hypersmmo.com"
-FORMSUBMIT_ENDPOINT = "https://formsubmit.co/your-inbox@example.com"
-SUBMISSION_SUBJECT_PREFIX = "Route Finder Data Submission"

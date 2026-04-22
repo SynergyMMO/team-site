@@ -235,10 +235,23 @@
 }
 
 .fileName {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 233, 165, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 245, 205, 0.06);
   color: #fff1bb;
   font-size: 0.9rem;
   font-weight: 700;
   overflow-wrap: anywhere;
+}
+
+.fileList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .submitError {

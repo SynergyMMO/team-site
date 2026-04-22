@@ -14,6 +14,7 @@ const BEST_ROUTE_TIERS = new Set([0, 1, 2])
 const REGION_ORDER = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova']
 const SUBMISSION_COOLDOWN_MS = 5 * 60 * 1000
 const SUBMISSION_COOLDOWN_KEY = 'routeFinderSubmitCooldownUntil'
+const MAX_SCREENSHOT_FILES = 10
 const TURNSTILE_SCRIPT_ID = 'cloudflare-turnstile-script'
 const TURNSTILE_CONTAINER_ID = 'route-finder-turnstile'
 const TURNSTILE_ACTION = 'route_finder_submit'
@@ -308,7 +309,7 @@ export default function RouteFinder() {
   const [submitError, setSubmitError] = useState('')
   const [submitSuccess, setSubmitSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [screenshotFile, setScreenshotFile] = useState(null)
+  const [screenshotFiles, setScreenshotFiles] = useState([])
   const [fileInputKey, setFileInputKey] = useState(0)
   const [cooldownRemaining, setCooldownRemaining] = useState(() => getInitialCooldownRemaining())
   const [isTurnstileReady, setIsTurnstileReady] = useState(false)
@@ -548,8 +549,14 @@ export default function RouteFinder() {
   }
 
   const handleScreenshotChange = (event) => {
-    const nextFile = event.target.files?.[0] || null
-    setScreenshotFile(nextFile)
+    const nextFiles = Array.from(event.target.files || []).slice(0, MAX_SCREENSHOT_FILES)
+    setScreenshotFiles(nextFiles)
+
+    if (event.target.files?.length > MAX_SCREENSHOT_FILES) {
+      setSubmitError(`You can upload up to ${MAX_SCREENSHOT_FILES} screenshots per submission.`)
+    } else {
+      setSubmitError('')
+    }
   }
 
   const resetTurnstile = () => {
@@ -585,6 +592,11 @@ export default function RouteFinder() {
       return
     }
 
+    if (screenshotFiles.length === 0) {
+      setSubmitError('Please attach at least one screenshot before sending.')
+      return
+    }
+
     setIsSubmitting(true)
     setSubmitError('')
     setSubmitSuccess('')
@@ -599,9 +611,9 @@ export default function RouteFinder() {
     payload.append('notes', submitForm.notes.trim())
     payload.append('cf-turnstile-response', turnstileToken)
 
-    if (screenshotFile) {
-      payload.append('attachment', screenshotFile)
-    }
+    screenshotFiles.forEach((file) => {
+      payload.append('attachment', file)
+    })
 
     try {
       const response = await fetch(API.routeFinderSubmission, {
@@ -627,7 +639,7 @@ export default function RouteFinder() {
         encounterData: '',
         notes: '',
       })
-      setScreenshotFile(null)
+      setScreenshotFiles([])
       setFileInputKey(current => current + 1)
       resetTurnstile()
     } catch (error) {
@@ -841,14 +853,19 @@ export default function RouteFinder() {
                   key={fileInputKey}
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
+                  multiple
                   onChange={handleScreenshotChange}
                   required
                 />
                 <small className={styles.fieldHint}>
-                  Please attach a screenshot of your encounter counter trip
+                  Please attach up to {MAX_SCREENSHOT_FILES} screenshots of your encounter counter trip
                 </small>
-                {screenshotFile && (
-                  <span className={styles.fileName}>{screenshotFile.name}</span>
+                {screenshotFiles.length > 0 && (
+                  <div className={styles.fileList}>
+                    {screenshotFiles.map(file => (
+                      <span key={`${file.name}-${file.lastModified}`} className={styles.fileName}>{file.name}</span>
+                    ))}
+                  </div>
                 )}
               </label>
 

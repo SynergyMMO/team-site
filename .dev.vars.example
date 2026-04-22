@@ -1,5 +1,0 @@
-TURNSTILE_SECRET_KEY=replace-with-your-turnstile-secret
-ALLOWED_ORIGINS=https://hypersmmo.com,https://www.hypersmmo.com
-TURNSTILE_EXPECTED_HOSTNAME=hypersmmo.com
-FORMSUBMIT_ENDPOINT=https://formsubmit.co/hypersmmo@gmail.com
-SUBMISSION_SUBJECT_PREFIX=Route Finder Data Submission

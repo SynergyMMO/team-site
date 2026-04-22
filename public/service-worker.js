@@ -40,6 +40,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
+  const isHttpRequest = url.protocol === 'http:' || url.protocol === 'https:'
+
+  if (!isHttpRequest) return
 
   // Skip robots.txt and sitemap.xml — let the browser/server handle them directly
   if (url.pathname === '/robots.txt' || url.pathname === '/sitemap.xml') return
