@@ -1010,6 +1010,22 @@
           "encounters": 13
         }
       ]
+    },
+    "Lilycove City - Fishing - Chum": {
+      "route": "Lilycove City",
+      "credit": "Izay",
+      "variation": "Fishing - Chum",
+      "total": 1711,
+      "data": [
+        {
+          "pokemon": "Wailmer",
+          "encounters": 1420
+        },
+        {
+          "pokemon": "Staryu",
+          "encounters": 291
+        }
+      ]
     }
   },
   "Sinnoh": {
@@ -1667,6 +1683,22 @@
         {
           "pokemon": "Pidove",
           "encounters": 141
+        }
+      ]
+    },
+    "Guidance Chamber / Floor 3 - Horde": {
+      "route": "Guidance Chamber / Floor 3",
+      "credit": "tkZombie",
+      "variation": "Horde",
+      "total": 1700,
+      "data": [
+        {
+          "pokemon": "Woobat",
+          "encounters": 1070
+        },
+        {
+          "pokemon": "Axew",
+          "encounters": 630
         }
       ]
     }

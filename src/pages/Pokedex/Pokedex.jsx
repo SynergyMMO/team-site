@@ -2,6 +2,7 @@ import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
+import { useEncounterPercents } from '../../hooks/useEncounterPercents'
 import { useTierData } from '../../hooks/useTierData'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { getAssetUrl } from '../../utils/assets'
@@ -9,7 +10,12 @@ import { normalizePokemonName, onGifError, getBasePokemonName } from '../../util
 import { API } from '../../api/endpoints'
 import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
-import { getPokemonEncounterPercentLabel, getRouteEncounterPercentData, shouldShowPokemonEncounterPercent } from '../../utils/routeEncounterPercents'
+import {
+  flattenEncounterRoutes,
+  getPokemonEncounterPercentLabel,
+  getRouteEncounterPercentData,
+  shouldShowPokemonEncounterPercent,
+} from '../../utils/routeEncounterPercents'
 import styles from './Pokedex.module.css'
 
 function parseLocationSearch(value) {
@@ -43,6 +49,7 @@ export default function Pokedex() {
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const { data, isLoading } = useDatabase()
+  const { data: encounterPercents = {} } = useEncounterPercents()
   const { tierPokemon, tierLookup } = useTierData()
   const [mode, setMode] = useState(() => searchParams.get('mode') || 'shiny')
   const [hideComplete, setHideComplete] = useState(() => searchParams.get('hideComplete') === '1')
@@ -76,6 +83,7 @@ export default function Pokedex() {
   const [locationSuggestions, setLocationSuggestions] = useState([])
   const infoBoxRef = useRef(null)
   const filterPanelRef = useRef(null)
+  const encounterRoutes = useMemo(() => flattenEncounterRoutes(encounterPercents), [encounterPercents])
   const searchTerm = search.trim().toLowerCase()
   const formatRarityKey = (value) => value.toLowerCase().trim().replace(/\s+/g, '_')
   const formatRarityLabel = (value) => {
@@ -1355,7 +1363,7 @@ export default function Pokedex() {
             })
 
             const { routeName, regionName } = parseLocationSearch(locationSearch)
-            const routePercentData = getRouteEncounterPercentData(regionName, { name: routeName })
+            const routePercentData = getRouteEncounterPercentData(encounterRoutes, regionName, { name: routeName })
 
             return [
               <div key="route-header" style={{ marginBottom: '20px', paddingBottom: '12px', borderBottom: '2px solid rgba(102, 126, 234, 0.5)' }}>

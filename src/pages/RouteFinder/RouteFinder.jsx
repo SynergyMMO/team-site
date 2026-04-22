@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { API } from '../../api/endpoints'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
+import { useEncounterPercents } from '../../hooks/useEncounterPercents'
 import { getAssetUrl } from '../../utils/assets'
 import { getLocalPokemonGif, normalizePokemonName, onGifError } from '../../utils/pokemon'
-import encounterPercents from '../../data/encounter_percents.json'
 import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import styles from './RouteFinder.module.css'
@@ -150,8 +150,8 @@ function getTotalFileBytes(files) {
   return files.reduce((total, file) => total + (file?.size || 0), 0)
 }
 
-function flattenRoutes() {
-  return Object.entries(encounterPercents).flatMap(([region, routes]) =>
+function flattenRoutes(encounterPercents = {}) {
+  return Object.entries(encounterPercents || {}).flatMap(([region, routes]) =>
     Object.entries(routes || {}).flatMap(([routeName, routeData]) => getVariationEntries(routeData).map((variationData, variationIndex) => {
       const variation = String(variationData?.variation || '').trim()
       const baseRouteName = String(variationData?.route || routeName || '').trim()
@@ -311,6 +311,7 @@ function RouteCard({ route, pokemonFilter, pokemonFamilyKeys, sortMode }) {
 }
 
 export default function RouteFinder() {
+  const { data: encounterPercents = {} } = useEncounterPercents()
   const [pokemonFilter, setPokemonFilter] = useState('')
   const [routeFilter, setRouteFilter] = useState('')
   const [sortMode, setSortMode] = useState('default')
@@ -345,7 +346,7 @@ export default function RouteFinder() {
     ],
   })
 
-  const routes = useMemo(() => flattenRoutes(), [])
+  const routes = useMemo(() => flattenRoutes(encounterPercents), [encounterPercents])
   const evolutionFamilyLookup = useMemo(() => buildEvolutionFamilyLookup(), [])
   const topContributors = useMemo(() => getTopContributors(routes), [routes])
   const pokemonOptions = useMemo(() => {

@@ -138,6 +138,7 @@ function MatchingRouteList({ matchingAreas, selectedAreaId, onSelectArea }) {
 }
 
 export default function RouteDetailsPanel({
+  encounterRoutes,
   regionName,
   selectedArea,
   filteredSpawns,
@@ -159,7 +160,7 @@ export default function RouteDetailsPanel({
   }
 
   const spawnCategories = groupSpawnsByCategory(filteredSpawns)
-  const routePercentData = getRouteEncounterPercentData(regionName, selectedArea)
+  const routePercentData = getRouteEncounterPercentData(encounterRoutes, regionName, selectedArea)
 
   return (
     <section className={styles.panelCard}>

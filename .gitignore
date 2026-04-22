@@ -50,7 +50,9 @@ src/data/pokemmo_data/pokemon-data-save.json
 merged_shiny_data.json
 
 scripts/messageIds.json
+scripts/encounter-editor.local.json
 
 scripts/sendBountiesToDiscord.js
 
+scripts/encounterPercentsEditorServer.mjs
 *.md

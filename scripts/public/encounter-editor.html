@@ -123,6 +123,12 @@
       text-align: center;
     }
 
+    .headerActions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .status.saving {
       color: #815d00;
       border-color: #edcf7d;
@@ -358,9 +364,12 @@
     <header>
       <div>
         <h1>Encounter Percent Editor</h1>
-        <p class="subtitle">Add routes, Pokémon, encounter counts, credit, and totals directly into encounter_percents.json.</p>
+        <p class="subtitle">Edit the local encounter_percents draft here, then use Push Changes to sync it to Cloudflare.</p>
       </div>
-      <div id="status" class="status">Loading</div>
+      <div class="headerActions">
+        <button id="pushChanges" class="primary" type="button">Push Changes</button>
+        <div id="status" class="status">Loading</div>
+      </div>
     </header>
 
     <nav id="tabs" class="tabs" aria-label="Regions"></nav>
@@ -419,6 +428,8 @@
       saveTimer: null,
       pendingSave: null,
       saveChain: Promise.resolve(),
+      hasUnsyncedChanges: false,
+      isPushingChanges: false,
     }
 
     const els = {
@@ -431,6 +442,7 @@
       editor: document.getElementById('editor'),
       deleteRoute: document.getElementById('deleteRoute'),
       pokemonNames: document.getElementById('pokemonNames'),
+      pushChanges: document.getElementById('pushChanges'),
     }
 
     async function api(url, options = {}) {
@@ -446,6 +458,16 @@
     function setStatus(text, mode = '') {
       els.status.textContent = text
       els.status.className = `status ${mode}`.trim()
+    }
+
+    function refreshPushButton() {
+      els.pushChanges.disabled = state.isPushingChanges || !state.hasUnsyncedChanges
+      els.pushChanges.textContent = state.isPushingChanges ? 'Pushing...' : 'Push Changes'
+    }
+
+    function markUnsyncedChanges(nextValue) {
+      state.hasUnsyncedChanges = nextValue
+      refreshPushButton()
     }
 
     function getRoutes() {
@@ -727,7 +749,7 @@
         }
 
         clearPendingSave()
-        setStatus('Saving', 'saving')
+        setStatus('Saving locally...', 'saving')
 
         try {
           await api(`/api/regions/${encodeURIComponent(region)}/routes/${encodeURIComponent(routeKey)}`, {
@@ -741,7 +763,8 @@
             state.data[region][routeKey].total = routeSum(state.data[region][routeKey])
           }
 
-          setStatus('Saved', 'saved')
+          markUnsyncedChanges(true)
+          setStatus('Saved locally', 'saved')
           return true
         } catch (error) {
           setStatus(error.message, 'error')
@@ -759,7 +782,7 @@
     }
 
     function scheduleSave() {
-      setStatus('Saving soon', 'saving')
+      setStatus('Saving locally...', 'saving')
       const routeKey = state.route
       const region = state.region
       window.clearTimeout(state.saveTimer)
@@ -771,7 +794,7 @@
     }
 
     function scheduleRouteLabelSave() {
-      setStatus('Saving route label', 'saving')
+      setStatus('Saving route label locally...', 'saving')
       window.clearTimeout(state.saveTimer)
       state.saveTimer = window.setTimeout(renameRoute, 650)
     }
@@ -790,7 +813,7 @@
 
       const result = document.getElementById('importResult')
       result.textContent = 'Scanning screenshot...'
-      setStatus('Scanning screenshot', 'saving')
+      setStatus('Scanning screenshot...', 'saving')
 
       try {
         const imageData = await readFileAsDataUrl(file)
@@ -822,7 +845,7 @@
         await saveNow()
         render()
         result.textContent = `Imported ${payload.rows.length} row${payload.rows.length === 1 ? '' : 's'} (${added} added, ${updated} updated).`
-        setStatus('Saved', 'saved')
+        setStatus('Saved locally', 'saved')
       } catch (error) {
         const message = error.message.includes('404')
           ? 'Screenshot import endpoint is not running. Restart the encounter editor, then refresh this page.'
@@ -849,7 +872,7 @@
       const nextVariation = document.getElementById('variation').value.trim()
       if (!nextName) return
       if (nextName === getRouteBase(state.route) && nextVariation === getRouteVariation(state.route)) return
-      setStatus('Renaming', 'saving')
+      setStatus('Renaming locally...', 'saving')
 
       try {
         const oldName = state.route
@@ -860,7 +883,8 @@
         delete state.data[state.region][oldName]
         state.data[state.region][payload.route] = payload.entry
         state.route = payload.route
-        setStatus('Saved', 'saved')
+        markUnsyncedChanges(true)
+        setStatus('Saved locally', 'saved')
         render()
       } catch (error) {
         setStatus(error.message, 'error')
@@ -874,7 +898,7 @@
       const name = String(form.get('name') || '').trim()
       if (!name) return
 
-      setStatus('Adding route', 'saving')
+      setStatus('Adding route locally...', 'saving')
       try {
         const payload = await api(`/api/regions/${encodeURIComponent(state.region)}/routes`, {
           method: 'POST',
@@ -890,7 +914,8 @@
         state.route = payload.route
         formElement.reset()
         document.getElementById('newRouteTotal').value = '0'
-        setStatus('Saved', 'saved')
+        markUnsyncedChanges(true)
+        setStatus('Saved locally', 'saved')
         render()
       } catch (error) {
         setStatus(error.message, 'error')
@@ -905,16 +930,45 @@
       const confirmed = window.confirm(`Delete ${routeName} from ${state.region}?`)
       if (!confirmed) return
 
-      setStatus('Deleting', 'saving')
+      setStatus('Deleting locally...', 'saving')
       try {
         await api(`/api/regions/${encodeURIComponent(state.region)}/routes/${encodeURIComponent(routeName)}`, {
           method: 'DELETE',
         })
         delete state.data[state.region][routeName]
         state.route = getRoutes()[0] || null
-        setStatus('Saved', 'saved')
+        markUnsyncedChanges(true)
+        setStatus('Saved locally', 'saved')
         render()
       } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    })
+
+    els.pushChanges.addEventListener('click', async () => {
+      const saved = await flushPendingSave()
+      if (!saved) return
+
+      if (!state.hasUnsyncedChanges) {
+        setStatus('No local changes to push', 'saved')
+        return
+      }
+
+      state.isPushingChanges = true
+      refreshPushButton()
+      setStatus('Pushing to Cloudflare...', 'saving')
+
+      try {
+        await api('/api/push-encounter-percents', {
+          method: 'POST',
+          body: JSON.stringify({ data: state.data }),
+        })
+        state.isPushingChanges = false
+        markUnsyncedChanges(false)
+        setStatus('Pushed to Cloudflare', 'saved')
+      } catch (error) {
+        state.isPushingChanges = false
+        refreshPushButton()
         setStatus(error.message, 'error')
       }
     })
@@ -952,6 +1006,7 @@
         state.route = getRoutes()[0] || null
         renderPokemonNames()
         render()
+        markUnsyncedChanges(false)
         setStatus('Ready', 'saved')
       } catch (error) {
         setStatus(error.message, 'error')

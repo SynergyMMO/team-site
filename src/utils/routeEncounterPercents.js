@@ -1,5 +1,3 @@
-import encounterPercents from '../data/encounter_percents.json'
-
 function normalizeSearch(value) {
   return String(value || '')
     .trim()
@@ -62,8 +60,8 @@ function isGenericNumberedRoute(routeName) {
   return /^route \d+[a-z]?$/i.test(routeName)
 }
 
-function flattenEncounterRoutes() {
-  return Object.entries(encounterPercents).flatMap(([region, routes]) =>
+export function flattenEncounterRoutes(encounterPercents = {}) {
+  return Object.entries(encounterPercents || {}).flatMap(([region, routes]) =>
     Object.entries(routes || {}).flatMap(([routeName, routeData]) =>
       getVariationEntries(routeData).map((variationData) => {
         const baseRouteName = String(variationData?.route || routeName || '').trim()
@@ -101,9 +99,7 @@ function flattenEncounterRoutes() {
   )
 }
 
-const encounterRoutes = flattenEncounterRoutes()
-
-export function getRouteEncounterPercentData(regionName, area) {
+export function getRouteEncounterPercentData(encounterRoutes, regionName, area) {
   const candidates = getRouteCandidates(area)
   if (candidates.length === 0) return null
 

@@ -3,7 +3,7 @@ import { getLocalPokemonGif } from '../utils/pokemon'
 const WORKER_BASE = 'https://adminpage.hypersmmo.workers.dev/admin'
 const TWITCH_API = 'https://twitch-api.hypersmmo.workers.dev/api/streamers'
 const OFFICIAL_EVENTS = 'https://official-events-worker.hypersmmo.workers.dev/events'
-const ROUTE_FINDER_SUBMISSION = 'https://route-finder-submission.hypersmmo.workers.dev'
+const ROUTE_FINDER_WORKER = 'https://route-finder-submission.hypersmmo.workers.dev'
 
 export const API = {
   database: `${WORKER_BASE}/database`,
@@ -22,5 +22,6 @@ export const API = {
   currentMembers: `${WORKER_BASE}/current-members`,
   updateCurrentMembers: `${WORKER_BASE}/update-current-members`,
   officialEvents: OFFICIAL_EVENTS,
-  routeFinderSubmission: ROUTE_FINDER_SUBMISSION,
+  routeFinderSubmission: ROUTE_FINDER_WORKER,
+  encounterPercents: `${ROUTE_FINDER_WORKER}/encounter-percents`,
 };
