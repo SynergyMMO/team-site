@@ -597,7 +597,6 @@ export default function RouteFinder() {
 
     setScreenshotFiles(mergedFiles)
     setSubmitError('')
-    clearScreenshotInput()
   }
 
   const resetTurnstile = () => {
