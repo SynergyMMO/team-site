@@ -150,6 +150,17 @@ function getTotalFileBytes(files) {
   return files.reduce((total, file) => total + (file?.size || 0), 0)
 }
 
+function mergeScreenshotFiles(existingFiles, nextFiles) {
+  const seen = new Set()
+
+  return [...existingFiles, ...nextFiles].filter((file) => {
+    const key = `${file.name}-${file.lastModified}-${file.size}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
 function flattenRoutes(encounterPercents = {}) {
   return Object.entries(encounterPercents || {}).flatMap(([region, routes]) =>
     Object.entries(routes || {}).flatMap(([routeName, routeData]) => getVariationEntries(routeData).map((variationData, variationIndex) => {
@@ -559,19 +570,24 @@ export default function RouteFinder() {
   }
 
   const handleScreenshotChange = (event) => {
-    const nextFiles = Array.from(event.target.files || []).slice(0, MAX_SCREENSHOT_FILES)
-    setScreenshotFiles(nextFiles)
+    const selectedFiles = Array.from(event.target.files || [])
+    const mergedFiles = mergeScreenshotFiles(screenshotFiles, selectedFiles)
 
-    if (event.target.files?.length > MAX_SCREENSHOT_FILES) {
+    if (mergedFiles.length > MAX_SCREENSHOT_FILES) {
       setSubmitError(`You can upload up to ${MAX_SCREENSHOT_FILES} screenshots per submission.`)
+      setFileInputKey(current => current + 1)
       return
     }
 
-    if (getTotalFileBytes(nextFiles) > MAX_TOTAL_SCREENSHOT_BYTES) {
+    if (getTotalFileBytes(mergedFiles) > MAX_TOTAL_SCREENSHOT_BYTES) {
       setSubmitError(`The total screenshot upload size must be ${MAX_TOTAL_SCREENSHOT_MB} MB or less.`)
-    } else {
-      setSubmitError('')
+      setFileInputKey(current => current + 1)
+      return
     }
+
+    setScreenshotFiles(mergedFiles)
+    setSubmitError('')
+    setFileInputKey(current => current + 1)
   }
 
   const resetTurnstile = () => {
