@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { API } from '../../api/endpoints'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
@@ -331,12 +331,12 @@ export default function RouteFinder() {
   const [submitSuccess, setSubmitSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [screenshotFiles, setScreenshotFiles] = useState([])
-  const [fileInputKey, setFileInputKey] = useState(0)
   const [cooldownRemaining, setCooldownRemaining] = useState(() => getInitialCooldownRemaining())
   const [isTurnstileReady, setIsTurnstileReady] = useState(false)
   const [turnstileToken, setTurnstileToken] = useState('')
   const [turnstileError, setTurnstileError] = useState('')
   const [turnstileWidgetId, setTurnstileWidgetId] = useState(null)
+  const screenshotInputRef = useRef(null)
   const [submitForm, setSubmitForm] = useState({
     region: REGION_ORDER[0],
     route: '',
@@ -556,17 +556,27 @@ export default function RouteFinder() {
     }))
   }
 
+  const clearScreenshotInput = () => {
+    if (screenshotInputRef.current) {
+      screenshotInputRef.current.value = ''
+    }
+  }
+
   const closeSubmitForm = () => {
     setIsSubmitFormOpen(false)
     setSubmitError('')
     setSubmitSuccess('')
     setIsSubmitting(false)
+    setScreenshotFiles([])
+    clearScreenshotInput()
   }
 
   const openSubmitForm = () => {
     setIsSubmitFormOpen(true)
     setSubmitError('')
     setSubmitSuccess('')
+    setScreenshotFiles([])
+    clearScreenshotInput()
   }
 
   const handleScreenshotChange = (event) => {
@@ -575,19 +585,19 @@ export default function RouteFinder() {
 
     if (mergedFiles.length > MAX_SCREENSHOT_FILES) {
       setSubmitError(`You can upload up to ${MAX_SCREENSHOT_FILES} screenshots per submission.`)
-      setFileInputKey(current => current + 1)
+      clearScreenshotInput()
       return
     }
 
     if (getTotalFileBytes(mergedFiles) > MAX_TOTAL_SCREENSHOT_BYTES) {
       setSubmitError(`The total screenshot upload size must be ${MAX_TOTAL_SCREENSHOT_MB} MB or less.`)
-      setFileInputKey(current => current + 1)
+      clearScreenshotInput()
       return
     }
 
     setScreenshotFiles(mergedFiles)
     setSubmitError('')
-    setFileInputKey(current => current + 1)
+    clearScreenshotInput()
   }
 
   const resetTurnstile = () => {
@@ -681,7 +691,7 @@ export default function RouteFinder() {
         notes: '',
       })
       setScreenshotFiles([])
-      setFileInputKey(current => current + 1)
+      clearScreenshotInput()
       resetTurnstile()
     } catch (error) {
       setSubmitError(error.message || 'The form could not be sent right now.')
@@ -891,12 +901,11 @@ export default function RouteFinder() {
               <label className={styles.fullWidthField}>
                 <span>Screenshot upload</span>
                 <input
-                  key={fileInputKey}
+                  ref={screenshotInputRef}
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
                   multiple
                   onChange={handleScreenshotChange}
-                  required
                 />
                 <small className={styles.fieldHint}>
                   Please attach between 1 and {MAX_SCREENSHOT_FILES} screenshots of your encounter counter trip, with {MAX_TOTAL_SCREENSHOT_MB} MB total across all files.

@@ -1026,6 +1026,70 @@
           "encounters": 291
         }
       ]
+    },
+    "Route 116 - Repel Trick": {
+      "route": "Route 116",
+      "credit": "ImmortalFlame",
+      "variation": "Repel Trick",
+      "total": 506,
+      "data": [
+        {
+          "pokemon": "Nincada",
+          "encounters": 132
+        },
+        {
+          "pokemon": "Skitty",
+          "encounters": 122
+        },
+        {
+          "pokemon": "Zigzagoon",
+          "encounters": 129
+        },
+        {
+          "pokemon": "Poochyena",
+          "encounters": 123
+        }
+      ]
+    },
+    "Route 120 - Repel Trick": {
+      "route": "Route 120",
+      "credit": "ImmortalFlame",
+      "variation": "Repel Trick",
+      "total": 1057,
+      "data": [
+        {
+          "pokemon": "Mightyena",
+          "encounters": 115
+        },
+        {
+          "pokemon": "Kecleon",
+          "encounters": 153
+        },
+        {
+          "pokemon": "Linoone",
+          "encounters": 122
+        },
+        {
+          "pokemon": "Marill",
+          "encounters": 155
+        },
+        {
+          "pokemon": "Oddish",
+          "encounters": 51
+        },
+        {
+          "pokemon": "Gloom",
+          "encounters": 43
+        },
+        {
+          "pokemon": "Absol",
+          "encounters": 148
+        },
+        {
+          "pokemon": "Tropius",
+          "encounters": 270
+        }
+      ]
     }
   },
   "Sinnoh": {
@@ -1406,6 +1470,30 @@
         {
           "pokemon": "Bidoof",
           "encounters": 52
+        }
+      ]
+    },
+    "Route 229 - Repel Trick - Day": {
+      "route": "Route 229",
+      "credit": "ImmortalFlame",
+      "variation": "Repel Trick - Day",
+      "total": 2518,
+      "data": [
+        {
+          "pokemon": "Scyther",
+          "encounters": 707
+        },
+        {
+          "pokemon": "Pinsir",
+          "encounters": 354
+        },
+        {
+          "pokemon": "Weepinbell",
+          "encounters": 703
+        },
+        {
+          "pokemon": "Gloom",
+          "encounters": 754
         }
       ]
     }

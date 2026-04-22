@@ -4,6 +4,16 @@ const RESEND_SEND_EMAIL_URL = 'https://api.resend.com/emails'
 const ENCOUNTER_PERCENTS_KEY = 'encounter_percents'
 const MAX_ATTACHMENTS = 3
 const MAX_TOTAL_ATTACHMENT_BYTES = 5 * 1024 * 1024
+const ALLOWED_ATTACHMENT_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp'])
+const FIELD_LIMITS = {
+  region: 32,
+  route: 120,
+  variation: 120,
+  credit: 80,
+  discord: 80,
+  encounterData: 12000,
+  notes: 4000,
+}
 const DEFAULT_SHORT_WINDOW_LIMIT = 1
 const DEFAULT_SHORT_WINDOW_SECONDS = 10 * 60
 const DEFAULT_DAILY_LIMIT = 5
@@ -135,6 +145,66 @@ function getAttachmentStats(attachments) {
   return { validAttachments, totalBytes }
 }
 
+function truncateForLog(value, maxLength = 120) {
+  const normalized = normalizeValue(value)
+  return normalized.length > maxLength
+    ? `${normalized.slice(0, maxLength)}...`
+    : normalized
+}
+
+function validateSubmissionFields(fields) {
+  if (fields.region && !REGION_NAMES.includes(fields.region)) {
+    return 'Unknown region.'
+  }
+
+  const entries = Object.entries(FIELD_LIMITS)
+  for (const [field, maxLength] of entries) {
+    if ((fields[field] || '').length > maxLength) {
+      return `${field} is too long.`
+    }
+  }
+
+  return null
+}
+
+function validateAttachments(attachments) {
+  const { validAttachments, totalBytes } = getAttachmentStats(attachments)
+
+  if (validAttachments.length === 0) {
+    return {
+      success: false,
+      error: 'Please attach at least one screenshot before sending.',
+    }
+  }
+
+  if (attachments.length !== validAttachments.length) {
+    return {
+      success: false,
+      error: 'One or more uploaded files were invalid.',
+    }
+  }
+
+  if (validAttachments.some(file => !ALLOWED_ATTACHMENT_TYPES.has(normalizeValue(file.type).toLowerCase()))) {
+    return {
+      success: false,
+      error: 'Only PNG, JPEG, and WebP screenshots are allowed.',
+    }
+  }
+
+  if (totalBytes > MAX_TOTAL_ATTACHMENT_BYTES) {
+    return {
+      success: false,
+      error: 'The total screenshot upload size must be 5 MB or less.',
+    }
+  }
+
+  return {
+    success: true,
+    validAttachments,
+    totalBytes,
+  }
+}
+
 function getCurrentUnixSeconds() {
   return Math.floor(Date.now() / 1000)
 }
@@ -164,11 +234,8 @@ async function incrementRateBucket(kv, key, windowSeconds, limit, nowSeconds) {
 
 async function enforceRateLimit(request, env) {
   if (!env.RATE_LIMIT_KV) {
-    return {
-      success: false,
-      status: 500,
-      error: 'Rate limiting is not configured.',
-    }
+    console.warn('Route Finder submissions are running without RATE_LIMIT_KV; rate limiting is disabled.')
+    return { success: true, skipped: true }
   }
 
   const ip = normalizeValue(request.headers.get('CF-Connecting-IP'))
@@ -303,7 +370,7 @@ async function sendWithResend(fields, attachments, env) {
 
   if (limitedAttachments.length > 0) {
     payload.attachments = await Promise.all(limitedAttachments.map(async (file) => ({
-      filename: file.name || 'route-finder-upload',
+      filename: normalizeValue(file.name).replace(/[\r\n]/g, '').slice(0, 120) || 'route-finder-upload',
       content: await fileToBase64(file),
     })))
   }
@@ -597,16 +664,21 @@ async function handleSubmissionRequest(request, env, corsHeaders, origin) {
     return jsonResponse({ success: false, error: 'Missing required submission fields.' }, 400, corsHeaders)
   }
 
+  const fieldValidationError = validateSubmissionFields(fields)
+  if (fieldValidationError) {
+    return jsonResponse({ success: false, error: fieldValidationError }, 400, corsHeaders)
+  }
+
   const attachments = body.getAll('attachment')
   if (attachments.length > MAX_ATTACHMENTS) {
     return jsonResponse({ success: false, error: `You can upload up to ${MAX_ATTACHMENTS} screenshots per submission.` }, 400, corsHeaders)
   }
 
-  const { totalBytes } = getAttachmentStats(attachments)
-  if (totalBytes > MAX_TOTAL_ATTACHMENT_BYTES) {
+  const attachmentValidation = validateAttachments(attachments)
+  if (!attachmentValidation.success) {
     return jsonResponse({
       success: false,
-      error: 'The total screenshot upload size must be 5 MB or less.',
+      error: attachmentValidation.error,
     }, 400, corsHeaders)
   }
 
@@ -617,11 +689,15 @@ async function handleSubmissionRequest(request, env, corsHeaders, origin) {
 
   const emailResult = await sendWithResend(fields, attachments, env)
   if (!emailResult.success) {
+    console.error('Route Finder submission email failed', {
+      status: emailResult.status,
+      route: truncateForLog(fields.route),
+      region: truncateForLog(fields.region),
+    })
+
     return jsonResponse({
       success: false,
-      error: emailResult.error,
-      resendStatus: emailResult.status,
-      resendBody: emailResult.body,
+      error: 'The form could not be sent right now.',
     }, 502, corsHeaders)
   }
 
