@@ -141,7 +141,8 @@ export default function Home() {
         <ul>
           <li><strong>Age:</strong> 18+</li>
           <li><strong>All 5 Regions completed</strong></li>
-          <li><strong>Minimum of 200 hours playtime</strong></li>
+          <li><strong>Minimum of 500 hours playtime</strong></li>
+          <li><strong>Minimum of 3 shinies</strong></li>
         </ul>
         <h3>How to Apply</h3>
         <ol>

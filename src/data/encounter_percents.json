@@ -603,6 +603,62 @@
           "encounters": 99
         }
       ]
+    },
+    "Route 3 - Lures": {
+      "route": "Route 3",
+      "credit": "DexHunterZoro",
+      "variation": "Lures",
+      "total": 499,
+      "data": [
+        {
+          "pokemon": "Zubat",
+          "encounters": 27
+        },
+        {
+          "pokemon": "Nidoran M",
+          "encounters": 53
+        },
+        {
+          "pokemon": "Ekans",
+          "encounters": 80
+        },
+        {
+          "pokemon": "Rattata",
+          "encounters": 92
+        },
+        {
+          "pokemon": "Pidgey",
+          "encounters": 40
+        },
+        {
+          "pokemon": "Nidoran F",
+          "encounters": 63
+        },
+        {
+          "pokemon": "Spearow",
+          "encounters": 28
+        },
+        {
+          "pokemon": "Sandshrew",
+          "encounters": 29
+        },
+        {
+          "pokemon": "Clefairy",
+          "encounters": 8
+        },
+        {
+          "pokemon": "Mankey",
+          "encounters": 40
+        },
+        {
+          "pokemon": "Charmander",
+          "encounters": 14
+        },
+        {
+          "pokemon": "Jigglypuff",
+          "encounters": 25
+        }
+      ]
     }
   },
   "Johto": {
@@ -1097,27 +1153,27 @@
       "route": "Honey Trees",
       "credit": "Hyper, KaiDono, Mysto",
       "variation": "",
-      "total": 1286,
+      "total": 1335,
       "data": [
         {
           "pokemon": "Combee",
-          "encounters": 373
+          "encounters": 384
         },
         {
           "pokemon": "Burmy",
-          "encounters": 222
+          "encounters": 228
         },
         {
           "pokemon": "Wurmple",
-          "encounters": 184
+          "encounters": 195
         },
         {
           "pokemon": "Cherubi",
-          "encounters": 130
+          "encounters": 133
         },
         {
           "pokemon": "Aipom",
-          "encounters": 130
+          "encounters": 137
         },
         {
           "pokemon": "Silcoon",
@@ -1125,15 +1181,15 @@
         },
         {
           "pokemon": "Munchlax",
-          "encounters": 62
+          "encounters": 66
         },
         {
           "pokemon": "Cascoon",
-          "encounters": 57
+          "encounters": 63
         },
         {
           "pokemon": "Heracross",
-          "encounters": 49
+          "encounters": 50
         }
       ]
     },

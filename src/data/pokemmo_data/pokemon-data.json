@@ -297982,16 +297982,6 @@
                 "region_id": 1,
                 "region_name": "Hoenn",
                 "location": "SKY PILLAR",
-                "min_level": 35,
-                "max_level": 37,
-                "rarity": "Horde",
-                "time": "ALL"
-            },
-            {
-                "type": "Cave",
-                "region_id": 1,
-                "region_name": "Hoenn",
-                "location": "SKY PILLAR",
                 "min_level": 37,
                 "max_level": 38,
                 "rarity": "Common",
@@ -298968,16 +298958,6 @@
                 "max_level": 10,
                 "rarity": "Horde",
                 "time": "Day/Morning"
-            },
-            {
-                "type": "Cave",
-                "region_id": 1,
-                "region_name": "Hoenn",
-                "location": "SKY PILLAR",
-                "min_level": 35,
-                "max_level": 37,
-                "rarity": "Horde",
-                "time": "ALL"
             },
             {
                 "type": "Cave",
