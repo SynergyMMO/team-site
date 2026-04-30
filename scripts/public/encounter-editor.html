@@ -34,7 +34,8 @@
     }
 
     button,
-    input {
+    input,
+    select {
       font: inherit;
     }
 
@@ -67,7 +68,8 @@
       background: var(--red-soft);
     }
 
-    input {
+    input,
+    select {
       width: 100%;
       min-width: 0;
       border: 1px solid var(--line);
@@ -77,7 +79,8 @@
       background: #fff;
     }
 
-    input:focus {
+    input:focus,
+    select:focus {
       border-color: var(--accent);
       outline: 3px solid rgba(11, 118, 110, 0.14);
     }
@@ -234,7 +237,7 @@
 
     .formGrid {
       display: grid;
-      grid-template-columns: 1.4fr 1fr 0.8fr auto;
+      grid-template-columns: 1.2fr 1fr 1fr 0.7fr auto;
       gap: 10px;
       align-items: end;
     }
@@ -395,6 +398,20 @@
               <input id="newRouteVariation" name="variation" placeholder="Morning, Horde, Surfing">
             </div>
             <div class="field">
+              <label for="newRouteCategory">Category</label>
+              <select id="newRouteCategory" name="encounterCategory" required>
+                <option value="">Select category</option>
+                <option value="single">Single Encounter</option>
+                <option value="surfing">Surfing</option>
+                <option value="fish">Fish</option>
+                <option value="horde">Horde</option>
+                <option value="surfing-horde">Surfing Horde</option>
+                <option value="headbutt">Headbutt</option>
+                <option value="rock-smash">Rock Smash</option>
+                <option value="repel-trick">Repel Trick</option>
+              </select>
+            </div>
+            <div class="field">
               <label for="newRouteTotal">Total</label>
               <input id="newRouteTotal" name="total" type="number" min="0" step="1" value="0" readonly>
           </div>
@@ -496,6 +513,24 @@
     function getRouteLabel(routeKey) {
       const variation = getRouteVariation(routeKey)
       return variation || 'No variation'
+    }
+
+    function renderEncounterCategoryOptions(value = '') {
+      const categories = [
+        ['', 'Select category'],
+        ['single', 'Single Encounter'],
+        ['surfing', 'Surfing'],
+        ['fish', 'Fish'],
+        ['horde', 'Horde'],
+        ['surfing-horde', 'Surfing Horde'],
+        ['headbutt', 'Headbutt'],
+        ['rock-smash', 'Rock Smash'],
+        ['repel-trick', 'Repel Trick'],
+      ]
+
+      return categories
+        .map(([optionValue, label]) => `<option value="${escapeAttr(optionValue)}"${optionValue === value ? ' selected' : ''}>${escapeHtml(label)}</option>`)
+        .join('')
     }
 
     function routeSum(route) {
@@ -600,6 +635,12 @@
             <input id="variation" value="${escapeAttr(route.variation || '')}" placeholder="Morning, Horde, Surfing">
           </div>
           <div class="field">
+            <label for="encounterCategory">Category</label>
+            <select id="encounterCategory">
+              ${renderEncounterCategoryOptions(route.encounterCategory || '')}
+            </select>
+          </div>
+          <div class="field">
             <label for="total">Total</label>
             <input id="total" type="number" min="0" step="1" value="${sum}" readonly>
           </div>
@@ -636,6 +677,10 @@
       })
 
       document.getElementById('variation').addEventListener('input', scheduleRouteLabelSave)
+      document.getElementById('encounterCategory').addEventListener('change', (event) => {
+        route.encounterCategory = event.target.value
+        scheduleSave()
+      })
 
       document.getElementById('addPokemon').addEventListener('click', () => {
         route.data.push({ pokemon: '', encounters: 0 })
@@ -742,6 +787,7 @@
         route.total = routeSum(route)
         const payloadRoute = {
           ...route,
+          encounterCategory: route.encounterCategory || '',
           data: (route.data || []).map((entry) => ({
             pokemon: entry.pokemon,
             encounters: entry.encounters,
@@ -870,15 +916,20 @@
       window.clearTimeout(state.saveTimer)
       const nextName = document.getElementById('routeName').value.trim()
       const nextVariation = document.getElementById('variation').value.trim()
+      const nextCategory = document.getElementById('encounterCategory')?.value || ''
       if (!nextName) return
-      if (nextName === getRouteBase(state.route) && nextVariation === getRouteVariation(state.route)) return
+      if (
+        nextName === getRouteBase(state.route)
+        && nextVariation === getRouteVariation(state.route)
+        && nextCategory === String(getCurrentRoute()?.encounterCategory || '')
+      ) return
       setStatus('Renaming locally...', 'saving')
 
       try {
         const oldName = state.route
         const payload = await api(`/api/regions/${encodeURIComponent(state.region)}/routes/${encodeURIComponent(oldName)}/rename`, {
           method: 'PUT',
-          body: JSON.stringify({ name: nextName, variation: nextVariation }),
+          body: JSON.stringify({ name: nextName, variation: nextVariation, encounterCategory: nextCategory }),
         })
         delete state.data[state.region][oldName]
         state.data[state.region][payload.route] = payload.entry
@@ -906,6 +957,7 @@
             name,
             credit: form.get('credit') || '',
             variation: form.get('variation') || '',
+            encounterCategory: form.get('encounterCategory') || '',
             total: form.get('total') || 0,
             data: [],
           }),

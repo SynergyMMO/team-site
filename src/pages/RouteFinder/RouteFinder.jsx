@@ -7,11 +7,39 @@ import { getAssetUrl } from '../../utils/assets'
 import { getLocalPokemonGif, normalizePokemonName, onGifError } from '../../utils/pokemon'
 import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
+import { allRegions as regionMapData } from '../../data/region_maps'
 import styles from './RouteFinder.module.css'
 
 const TARGET_TIERS = new Set([0, 1, 2, 3])
 const BEST_ROUTE_TIERS = new Set([0, 1, 2])
+const MIN_CATEGORY_TRACKED_ENCOUNTERS = 1000
 const REGION_ORDER = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova']
+const FISHING_METHODS = new Set(['fishing', 'old rod', 'good rod', 'super rod'])
+const SINGLE_METHODS = new Set(['grass', 'water', 'cave', 'dark grass', 'inside', 'shadow', 'dust cloud'])
+const STANDARD_SPAWN_RARITIES = new Set(['very common', 'common', 'uncommon', 'rare', 'very rare', 'lure'])
+const ENCOUNTER_CATEGORY_MAP = {
+  single: 'singles',
+  surfing: 'surfing',
+  fish: 'fishing',
+  horde: 'horde',
+  'surfing-horde': 'surfingHorde',
+  headbutt: 'headbutt',
+  'rock-smash': 'rockSmash',
+  'repel-trick': 'repelTrick',
+}
+const UNROUTED_CATEGORIES = [
+  { key: 'singles', label: 'Single Encounter' },
+  { key: 'surfing', label: 'Surfing' },
+  { key: 'fishing', label: 'Fish' },
+  { key: 'horde', label: 'Hordes' },
+  { key: 'headbutt', label: 'Headbutt' },
+  { key: 'rockSmash', label: 'Rock Smash' },
+]
+const UNROUTED_CATEGORY_OPTIONS = [
+  { value: 'all', label: 'All Categories' },
+  ...UNROUTED_CATEGORIES.map(category => ({ value: category.key, label: category.label })),
+]
+const INFO_DROPDOWN_CLOSED_KEY = 'routeFinderInfoClosed'
 const SUBMISSION_COOLDOWN_MS = 10 * 60 * 1000
 const SUBMISSION_COOLDOWN_KEY = 'routeFinderSubmitCooldownUntil'
 const MAX_SCREENSHOT_FILES = 3
@@ -39,6 +67,10 @@ function normalizeSearch(value) {
     .replace(/\s+/g, ' ')
 }
 
+function getRouteMapKey(region, routeName) {
+  return `${normalizeSearch(region)}|${normalizeSearch(routeName)}`
+}
+
 function normalizePokemonKey(value) {
   return normalizeSearch(value)
     .replace(/[♀]/g, 'f')
@@ -60,6 +92,35 @@ function getTier(pokemon) {
   const key = normalizePokemonKey(pokemon)
   const data = pokemonData[key]
   return Number.isInteger(data?.shiny_tier) ? data.shiny_tier : null
+}
+
+function formatEncounterTimeLabel(time) {
+  return String(time || '')
+    .replace(/SEASON0/g, 'Summer')
+    .replace(/SEASON1/g, 'Spring')
+    .replace(/SEASON2/g, 'Autumn')
+    .replace(/SEASON3/g, 'Winter')
+}
+
+function hasRareTierPokemon(pokemon = []) {
+  return pokemon.some(mon => BEST_ROUTE_TIERS.has(getTier(mon.name)))
+}
+
+function hasTrackableTierPokemon(pokemon = []) {
+  return pokemon.some(mon => {
+    const tier = getTier(mon.name)
+    return Number.isInteger(tier) && tier >= 0 && tier <= 4
+  })
+}
+
+function isPriorityTarget(mon) {
+  return BEST_ROUTE_TIERS.has(getTier(mon.name))
+}
+
+function pokemonMatchesSearch(mon, pokemonNeedle, pokemonFamilyKeys = new Set()) {
+  if (!pokemonNeedle) return true
+  const monKey = normalizePokemonKey(mon.name)
+  return monKey.includes(pokemonNeedle) || pokemonFamilyKeys.has(monKey)
 }
 
 function getRouteTargetPercent(route, pokemonNeedle) {
@@ -139,6 +200,11 @@ function getInitialCooldownRemaining() {
   return Math.max(0, storedValue - Date.now())
 }
 
+function getInitialInfoDropdownOpen() {
+  if (typeof window === 'undefined') return true
+  return window.localStorage.getItem(INFO_DROPDOWN_CLOSED_KEY) !== 'true'
+}
+
 function formatCooldown(msRemaining) {
   const totalSeconds = Math.ceil(msRemaining / 1000)
   const minutes = Math.floor(totalSeconds / 60)
@@ -191,6 +257,7 @@ function flattenRoutes(encounterPercents = {}) {
         routeName: baseRouteName,
         displayName,
         variation,
+        encounterCategory: variationData?.encounterCategory || '',
         credit: variationData?.credit || '',
         total,
         rarePercent,
@@ -200,6 +267,275 @@ function flattenRoutes(encounterPercents = {}) {
       }
     }))
   )
+}
+
+function getAreaRouteCandidates(area) {
+  return [
+    area?.encounterMatch?.normalizedLocation,
+    area?.sourceLocation,
+    area?.name,
+  ].filter(Boolean)
+}
+
+function getSpawnFields(spawn) {
+  const encounters = Array.isArray(spawn?.encounters) ? spawn.encounters : []
+  const methods = new Set([
+    ...(Array.isArray(spawn?.methods) ? spawn.methods : []),
+    ...encounters.map(encounter => encounter.method),
+  ].filter(Boolean).map(value => normalizeSearch(value)))
+  const rarities = new Set([
+    ...(Array.isArray(spawn?.rarities) ? spawn.rarities : []),
+    ...encounters.map(encounter => encounter.rarity),
+    spawn?.rarity,
+  ].filter(Boolean).map(value => normalizeSearch(value)))
+
+  return { encounters, methods, rarities }
+}
+
+function getSpawnCategoryKeys(spawn) {
+  const categories = new Set()
+  const { encounters, methods, rarities } = getSpawnFields(spawn)
+  const encounterRows = encounters.length > 0
+    ? encounters
+    : [...methods].flatMap(method => [...rarities].map(rarity => ({ method, rarity })))
+
+  encounterRows.forEach((encounter) => {
+    const method = normalizeSearch(encounter.method)
+    const rarity = normalizeSearch(encounter.rarity || spawn?.rarity)
+
+    if (rarity === 'horde') {
+      categories.add(method === 'water' ? 'surfingHorde' : 'horde')
+    }
+    if (FISHING_METHODS.has(method)) categories.add('fishing')
+    if (method === 'headbutt') categories.add('headbutt')
+    if (method === 'rocks' || method === 'rock smash') categories.add('rockSmash')
+    if (method === 'water' && STANDARD_SPAWN_RARITIES.has(rarity)) categories.add('surfing')
+    if (method !== 'water' && SINGLE_METHODS.has(method) && STANDARD_SPAWN_RARITIES.has(rarity)) categories.add('singles')
+  })
+
+  return [...categories]
+}
+
+function formatSpawnMeta(spawn, categoryKey) {
+  const { encounters } = getSpawnFields(spawn)
+  const relevantEncounters = encounters.filter((encounter) => {
+    const method = normalizeSearch(encounter.method)
+    const rarity = normalizeSearch(encounter.rarity)
+
+    if (categoryKey === 'horde') return rarity === 'horde' && method !== 'water'
+    if (categoryKey === 'surfingHorde') return rarity === 'horde' && method === 'water'
+    if (categoryKey === 'fishing') return FISHING_METHODS.has(method)
+    if (categoryKey === 'headbutt') return method === 'headbutt'
+    if (categoryKey === 'rockSmash') return method === 'rocks' || method === 'rock smash'
+    if (categoryKey === 'surfing') return method === 'water' && STANDARD_SPAWN_RARITIES.has(rarity)
+    if (categoryKey === 'singles') {
+      return SINGLE_METHODS.has(method) && method !== 'water' && STANDARD_SPAWN_RARITIES.has(rarity)
+    }
+
+    return false
+  })
+  const sourceEncounters = relevantEncounters.length > 0 ? relevantEncounters : encounters
+  const methods = [...new Set(sourceEncounters.map(encounter => encounter.method).filter(Boolean))]
+  const rarities = [...new Set(sourceEncounters.map(encounter => encounter.rarity).filter(Boolean))]
+  const times = [...new Set(sourceEncounters.map(encounter => encounter.time).filter(Boolean).filter(time => time !== 'ALL'))]
+  const levels = sourceEncounters
+    .filter(encounter => Number.isFinite(encounter.minLevel) && Number.isFinite(encounter.maxLevel))
+    .map(encounter => encounter.minLevel === encounter.maxLevel
+      ? `${encounter.minLevel}`
+      : `${encounter.minLevel}-${encounter.maxLevel}`)
+
+  return {
+    methods,
+    rarities,
+    times,
+    levels: [...new Set(levels)],
+  }
+}
+
+function mergeSpawnMeta(existingMeta, nextMeta) {
+  return {
+    methods: [...new Set([...(existingMeta?.methods || []), ...nextMeta.methods])],
+    rarities: [...new Set([...(existingMeta?.rarities || []), ...nextMeta.rarities])],
+    times: [...new Set([...(existingMeta?.times || []), ...nextMeta.times])],
+    levels: [...new Set([...(existingMeta?.levels || []), ...nextMeta.levels])],
+  }
+}
+
+function addRouteSpawn(route, spawn) {
+  getSpawnCategoryKeys(spawn).forEach((categoryKey) => {
+    route.expectedCategories.add(categoryKey)
+
+    if (!route.pokemonByCategory.has(categoryKey)) {
+      route.pokemonByCategory.set(categoryKey, new Map())
+    }
+
+    const categoryPokemon = route.pokemonByCategory.get(categoryKey)
+    const existingPokemon = categoryPokemon.get(spawn.name)
+    const nextMeta = formatSpawnMeta(spawn, categoryKey)
+    categoryPokemon.set(spawn.name, {
+      name: spawn.name,
+      meta: mergeSpawnMeta(existingPokemon?.meta, nextMeta),
+    })
+  })
+}
+
+function buildExpectedRouteCoverage() {
+  const routeLookup = new Map()
+
+  regionMapData.forEach((region) => {
+    ;(region.maps || []).forEach((map) => {
+      ;(map.areas || []).forEach((area) => {
+        if (!Array.isArray(area.spawns) || area.spawns.length === 0) return
+
+        const candidates = getAreaRouteCandidates(area)
+        if (candidates.length === 0) return
+
+        const primaryRouteName = candidates[0]
+        const key = getRouteMapKey(region.name, primaryRouteName)
+        const route = routeLookup.get(key) || {
+          id: `${region.id || region.name}-${normalizeSearch(primaryRouteName)}`,
+          region: region.name,
+          routeName: area.name || primaryRouteName,
+          displayName: area.name || primaryRouteName,
+          routeSearch: normalizeSearch(`${region.name} ${area.name || ''} ${candidates.join(' ')}`),
+          mapNames: new Set(),
+          kinds: new Set(),
+          expectedCategories: new Set(),
+          pokemonByCategory: new Map(),
+          candidateKeys: new Set(),
+        }
+
+        route.routeName = area.name || route.routeName
+        route.displayName = route.routeName
+        route.mapNames.add(map.name)
+        route.kinds.add(area.kind)
+        candidates.forEach(candidate => route.candidateKeys.add(getRouteMapKey(region.name, candidate)))
+        area.spawns.forEach(spawn => addRouteSpawn(route, spawn))
+        routeLookup.set(key, route)
+      })
+    })
+  })
+
+  return [...routeLookup.values()]
+    .map(route => ({
+      ...route,
+      mapNames: [...route.mapNames].filter(Boolean),
+      kinds: [...route.kinds].filter(Boolean),
+      pokemonByCategory: new Map([...route.pokemonByCategory.entries()].map(([categoryKey, pokemon]) => [
+        categoryKey,
+        [...pokemon.values()].sort((a, b) => {
+          const priorityDiff = Number(isPriorityTarget(b)) - Number(isPriorityTarget(a))
+          if (priorityDiff !== 0) return priorityDiff
+          const tierA = getTier(a.name)
+          const tierB = getTier(b.name)
+          if (isPriorityTarget(a) && isPriorityTarget(b) && tierA !== tierB) return tierA - tierB
+          return a.name.localeCompare(b.name)
+        }),
+      ])),
+      candidateKeys: [...route.candidateKeys],
+    }))
+    .map(route => {
+      const expectedCategories = UNROUTED_CATEGORIES.filter((category) => {
+        if (!route.expectedCategories.has(category.key)) return false
+        const pokemon = route.pokemonByCategory.get(category.key) || []
+        if (category.key === 'horde' || category.key === 'surfingHorde') {
+          return pokemon.length > 1 && hasTrackableTierPokemon(pokemon)
+        }
+        if (['fishing', 'headbutt', 'rockSmash'].includes(category.key)) {
+          return hasTrackableTierPokemon(pokemon)
+        }
+        return true
+      })
+
+      return {
+        ...route,
+        expectedCategories,
+        hasRareTarget: expectedCategories.some(category => hasRareTierPokemon(route.pokemonByCategory.get(category.key) || [])),
+      }
+    })
+    .filter(route => route.expectedCategories.length > 0)
+}
+
+function getTrackedRouteCategories(route) {
+  const explicitCategory = ENCOUNTER_CATEGORY_MAP[route.encounterCategory]
+  if (explicitCategory) {
+    return new Set([explicitCategory])
+  }
+
+  const variation = normalizeSearch(route.variation)
+  const categories = new Set()
+  const isNoLure = variation.includes('no lure')
+
+  if (!variation || isNoLure || variation.includes('day') || variation.includes('night') || variation.includes('morning')) {
+    categories.add('singles')
+  }
+
+  if (variation.includes('surf') || variation.includes('water')) {
+    categories.add(variation.includes('horde') ? 'surfingHorde' : 'surfing')
+  }
+
+  if (!isNoLure && variation.includes('lure') && !variation.includes('fishing') && !variation.includes('rod')) {
+    categories.add('singles')
+  }
+
+  if (variation.includes('fishing') || variation.includes('rod')) {
+    categories.add('fishing')
+  }
+
+  if (variation.includes('horde')) {
+    categories.add(variation.includes('surf') || variation.includes('water') ? 'surfingHorde' : 'horde')
+  }
+
+  if (variation.includes('headbutt')) {
+    categories.add('headbutt')
+  }
+
+  if (variation.includes('rock smash')) {
+    categories.add('rockSmash')
+  }
+
+  return categories
+}
+
+function buildTrackedCoverage(routes) {
+  const coverage = new Map()
+
+  routes.forEach((route) => {
+    const key = getRouteMapKey(route.region, route.routeName)
+    const categories = coverage.get(key) || new Map()
+    getTrackedRouteCategories(route).forEach((category) => {
+      categories.set(category, (categories.get(category) || 0) + route.total)
+    })
+    coverage.set(key, categories)
+  })
+
+  return coverage
+}
+
+function getUnroutedRoutes(expectedRoutes, trackedCoverage) {
+  return expectedRoutes
+    .map((route) => {
+      const trackedCategoryTotals = new Map()
+      route.candidateKeys.forEach((key) => {
+        const categories = trackedCoverage.get(key)
+        if (categories) {
+          categories.forEach((encounters, category) => {
+            trackedCategoryTotals.set(category, (trackedCategoryTotals.get(category) || 0) + encounters)
+          })
+        }
+      })
+
+      const missingCategories = route.expectedCategories.filter(category => (
+        (trackedCategoryTotals.get(category.key) || 0) < MIN_CATEGORY_TRACKED_ENCOUNTERS
+      ))
+      return {
+        ...route,
+        trackedCategoryTotals,
+        missingCategories,
+      }
+    })
+    .filter(route => route.missingCategories.length > 0)
+    .sort(sortRoutesByRegionThenName)
 }
 
 function getTopContributors(routes) {
@@ -321,11 +657,86 @@ function RouteCard({ route, pokemonFilter, pokemonFamilyKeys, sortMode }) {
   )
 }
 
+function UnroutedChecklist({ route, pokemonNeedle, pokemonFamilyKeys }) {
+  return (
+    <article className={styles.unroutedCard}>
+      <header className={styles.unroutedHeader}>
+        <div>
+          <p className={styles.regionLabel}>{route.region}</p>
+          <h2>{route.routeName}</h2>
+        </div>
+        <div className={styles.routeMeta}>
+          {route.kinds.map(kind => <span key={kind}>{kind}</span>)}
+          {route.mapNames.map(mapName => <span key={mapName}>{mapName}</span>)}
+        </div>
+      </header>
+      <ul className={styles.checklistGrid}>
+        {route.expectedCategories.map(category => {
+          const trackedTotal = route.trackedCategoryTotals.get(category.key) || 0
+          const isComplete = trackedTotal >= MIN_CATEGORY_TRACKED_ENCOUNTERS
+          return (
+            <li key={category.key} className={`${styles.checklistItem} ${isComplete ? styles.checklistComplete : styles.checklistMissing}`}>
+              <span className={styles.checkIcon} aria-hidden="true">{isComplete ? 'Y' : 'N'}</span>
+              <span>{category.label}</span>
+              <strong>{isComplete ? 'Yes' : `${trackedTotal.toLocaleString()}/${MIN_CATEGORY_TRACKED_ENCOUNTERS.toLocaleString()}`}</strong>
+            </li>
+          )
+        })}
+      </ul>
+      <div className={styles.unroutedSpawnSections}>
+        {route.expectedCategories.map((category) => {
+          const pokemon = (route.pokemonByCategory.get(category.key) || [])
+            .filter(mon => pokemonMatchesSearch(mon, pokemonNeedle, pokemonFamilyKeys))
+          if (pokemon.length === 0) return null
+
+          return (
+            <section key={`${route.id}-${category.key}-pokemon`} className={styles.unroutedSpawnSection}>
+              <h3>{category.label}</h3>
+              <div className={styles.unroutedPokemonGrid}>
+                {pokemon.map((mon) => (
+                  <Link
+                    key={`${route.id}-${category.key}-${mon.name}`}
+                    to={`/pokemon/${normalizePokemonName(mon.name)}/`}
+                    className={`${styles.unroutedPokemon} ${isPriorityTarget(mon) ? styles.unroutedPokemonPriority : ''}`}
+                  >
+                    <img
+                      src={getLocalPokemonGif(mon.name)}
+                      alt={mon.name}
+                      onError={onGifError(mon.name)}
+                      loading="lazy"
+                    />
+                    <span>{mon.name}</span>
+                    <small>
+                      {[
+                        mon.meta.rarities.join(', '),
+                        mon.meta.methods.join(', '),
+                        mon.meta.levels.length > 0 ? `Lv. ${mon.meta.levels.join(', ')}` : '',
+                        mon.meta.times.map(formatEncounterTimeLabel).join(', '),
+                      ].filter(Boolean).join(' - ')}
+                    </small>
+                    {isPriorityTarget(mon) && <strong className={styles.priorityBadge}>Tier {getTier(mon.name)}</strong>}
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )
+        })}
+      </div>
+    </article>
+  )
+}
+
 export default function RouteFinder() {
   const { data: encounterPercents = {} } = useEncounterPercents()
+  const [activeTab, setActiveTab] = useState('tracked')
   const [pokemonFilter, setPokemonFilter] = useState('')
   const [routeFilter, setRouteFilter] = useState('')
   const [sortMode, setSortMode] = useState('default')
+  const [unroutedRegionFilter, setUnroutedRegionFilter] = useState('all')
+  const [unroutedCategoryFilter, setUnroutedCategoryFilter] = useState('all')
+  const [unroutedRaresOnly, setUnroutedRaresOnly] = useState(true)
+  const [isInfoDropdownOpen, setIsInfoDropdownOpen] = useState(() => getInitialInfoDropdownOpen())
+  const [openUnroutedRegions, setOpenUnroutedRegions] = useState(() => new Set())
   const [isSubmitFormOpen, setIsSubmitFormOpen] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [submitSuccess, setSubmitSuccess] = useState('')
@@ -337,6 +748,7 @@ export default function RouteFinder() {
   const [turnstileError, setTurnstileError] = useState('')
   const [turnstileWidgetId, setTurnstileWidgetId] = useState(null)
   const screenshotInputRef = useRef(null)
+  const unroutedFilterSignatureRef = useRef(null)
   const [submitForm, setSubmitForm] = useState({
     region: REGION_ORDER[0],
     route: '',
@@ -358,16 +770,28 @@ export default function RouteFinder() {
   })
 
   const routes = useMemo(() => flattenRoutes(encounterPercents), [encounterPercents])
+  const expectedRouteCoverage = useMemo(() => buildExpectedRouteCoverage(), [])
+  const trackedCoverage = useMemo(() => buildTrackedCoverage(routes), [routes])
+  const unroutedRoutes = useMemo(
+    () => getUnroutedRoutes(expectedRouteCoverage, trackedCoverage),
+    [expectedRouteCoverage, trackedCoverage]
+  )
   const evolutionFamilyLookup = useMemo(() => buildEvolutionFamilyLookup(), [])
   const topContributors = useMemo(() => getTopContributors(routes), [routes])
   const pokemonOptions = useMemo(() => {
     const names = new Set()
     routes.forEach(route => route.pokemon.forEach(mon => names.add(mon.name)))
+    expectedRouteCoverage.forEach((route) => {
+      route.pokemonByCategory.forEach(pokemon => pokemon.forEach(mon => names.add(mon.name)))
+    })
     return [...names].sort((a, b) => a.localeCompare(b))
-  }, [routes])
+  }, [expectedRouteCoverage, routes])
   const routeOptions = useMemo(() => (
-    [...new Set(routes.flatMap(route => [route.routeName, route.displayName]))].sort((a, b) => a.localeCompare(b))
-  ), [routes])
+    [...new Set([
+      ...routes.flatMap(route => [route.routeName, route.displayName]),
+      ...expectedRouteCoverage.map(route => route.routeName),
+    ])].sort((a, b) => a.localeCompare(b))
+  ), [expectedRouteCoverage, routes])
 
   const pokemonNeedle = normalizePokemonKey(pokemonFilter)
   const routeNeedle = normalizeSearch(routeFilter)
@@ -539,6 +963,63 @@ export default function RouteFinder() {
     return [...groupedRoutes.entries()]
       .sort(([regionA], [regionB]) => getRegionOrder(regionA) - getRegionOrder(regionB))
   }, [filteredRoutes, shouldGroupByRegion])
+  const filteredUnroutedRoutes = useMemo(() => {
+    return unroutedRoutes.map((route) => {
+      if (routeNeedle && !route.routeSearch.includes(routeNeedle)) return false
+      if (unroutedRegionFilter !== 'all' && route.region !== unroutedRegionFilter) return false
+
+      const expectedCategories = route.expectedCategories.filter((category) => {
+        if (unroutedCategoryFilter !== 'all' && category.key !== unroutedCategoryFilter) return false
+        const pokemon = route.pokemonByCategory.get(category.key) || []
+        if (unroutedRaresOnly && !hasRareTierPokemon(pokemon)) return false
+        if (pokemonNeedle && !pokemon.some(mon => pokemonMatchesSearch(mon, pokemonNeedle, pokemonFamilyKeys))) return false
+        return true
+      })
+      const expectedCategoryKeys = new Set(expectedCategories.map(category => category.key))
+      const missingCategories = route.missingCategories.filter(category => expectedCategoryKeys.has(category.key))
+
+      if (missingCategories.length === 0) return false
+
+      return {
+        ...route,
+        expectedCategories,
+        missingCategories,
+      }
+    }).filter(Boolean)
+  }, [pokemonFamilyKeys, pokemonNeedle, routeNeedle, unroutedCategoryFilter, unroutedRaresOnly, unroutedRegionFilter, unroutedRoutes])
+  const missingChecklistTotal = filteredUnroutedRoutes.reduce((total, route) => total + route.missingCategories.length, 0)
+  const unroutedRoutesByRegion = useMemo(() => {
+    const groupedRoutes = new Map()
+    filteredUnroutedRoutes.forEach((route) => {
+      const regionRoutes = groupedRoutes.get(route.region) || []
+      regionRoutes.push(route)
+      groupedRoutes.set(route.region, regionRoutes)
+    })
+
+    return [...groupedRoutes.entries()]
+      .sort(([regionA], [regionB]) => getRegionOrder(regionA) - getRegionOrder(regionB))
+  }, [filteredUnroutedRoutes])
+  const unroutedFilterSignature = [
+    pokemonFilter,
+    routeFilter,
+    unroutedRegionFilter,
+    unroutedCategoryFilter,
+    unroutedRaresOnly ? 'rare' : 'all',
+  ].join('|')
+
+  useEffect(() => {
+    if (activeTab !== 'unrouted') return
+
+    if (unroutedFilterSignatureRef.current === null) {
+      unroutedFilterSignatureRef.current = unroutedFilterSignature
+      return
+    }
+
+    if (unroutedFilterSignatureRef.current === unroutedFilterSignature) return
+
+    unroutedFilterSignatureRef.current = unroutedFilterSignature
+    setOpenUnroutedRegions(new Set(unroutedRoutesByRegion.map(([region]) => region)))
+  }, [activeTab, unroutedFilterSignature, unroutedRoutesByRegion])
 
   let emptyText = ''
   if (pokemonNeedle && !pokemonHasData) {
@@ -560,6 +1041,30 @@ export default function RouteFinder() {
     if (screenshotInputRef.current) {
       screenshotInputRef.current.value = ''
     }
+  }
+
+  const handleInfoDropdownToggle = (event) => {
+    const isOpen = event.currentTarget.open
+    setIsInfoDropdownOpen(isOpen)
+
+    if (typeof window === 'undefined') return
+    if (isOpen) {
+      window.localStorage.removeItem(INFO_DROPDOWN_CLOSED_KEY)
+    } else {
+      window.localStorage.setItem(INFO_DROPDOWN_CLOSED_KEY, 'true')
+    }
+  }
+
+  const handleUnroutedRegionToggle = (region, isOpen) => {
+    setOpenUnroutedRegions((currentRegions) => {
+      const nextRegions = new Set(currentRegions)
+      if (isOpen) {
+        nextRegions.add(region)
+      } else {
+        nextRegions.delete(region)
+      }
+      return nextRegions
+    })
   }
 
   const closeSubmitForm = () => {
@@ -712,7 +1217,7 @@ export default function RouteFinder() {
         </button>
       </div>
 
-      <details className={styles.infoDropdown} open>
+      <details className={styles.infoDropdown} open={isInfoDropdownOpen} onToggle={handleInfoDropdownToggle}>
         <summary>Page Information / Learn More!</summary>
         <p>
           This page is a WORK IN PROGRESS, and there is not much data currently, but the goal is to have as many routes tracked as possible, with as many encounters at that route as possible! If you plan on sitting at a route for a long period of time, consider starting a trip and tracking your encounters!  
@@ -725,17 +1230,46 @@ export default function RouteFinder() {
         </p>
       </details>
 
+      <div className={styles.tabList} role="tablist" aria-label="Route Finder sections">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'tracked'}
+          className={`${styles.tabButton} ${activeTab === 'tracked' ? styles.tabButtonActive : ''}`}
+          onClick={() => setActiveTab('tracked')}
+        >
+          Tracked
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'unrouted'}
+          className={`${styles.tabButton} ${activeTab === 'unrouted' ? styles.tabButtonActive : ''}`}
+          onClick={() => setActiveTab('unrouted')}
+        >
+          Unrouted
+        </button>
+      </div>
+
+      {activeTab === 'unrouted' && (
+        <p className={styles.unroutedIntro}>
+          Wish to help out? These are the untracked routes we still need! Please take these with a grain of salt, as some routes are specific and may need to be handled seperately, such as Altering Cave, Safari zones etc.
+        </p>
+      )}
+
       <section className={styles.searchPanel} aria-label="Route Finder filters">
-        <label>
-          <span>Pokemon</span>
-          <input
-            type="search"
-            value={pokemonFilter}
-            onChange={event => setPokemonFilter(event.target.value)}
-            placeholder="Search Pokemon..."
-            list="route-finder-pokemon"
-          />
-        </label>
+        {(activeTab === 'tracked' || activeTab === 'unrouted') && (
+          <label>
+            <span>Pokemon</span>
+            <input
+              type="search"
+              value={pokemonFilter}
+              onChange={event => setPokemonFilter(event.target.value)}
+              placeholder="Search Pokemon..."
+              list="route-finder-pokemon"
+            />
+          </label>
+        )}
         <label>
           <span>Routes</span>
           <input
@@ -746,16 +1280,18 @@ export default function RouteFinder() {
             list="route-finder-routes"
           />
         </label>
-        <label>
-          <span>Order</span>
-          <select value={sortMode} onChange={event => setSortMode(event.target.value)}>
-            <option value="default">{pokemonNeedle ? 'Best match for Pokemon' : 'Region order'}</option>
-            <option value="best">Best Routes (Tier 0-2 %)</option>
-            <option value="worst">Worst Routes (Tier 0-2 %)</option>
-            <option value="encounters-desc">Most Encounters Tracked</option>
-            <option value="encounters-asc">Least Encounters Tracked</option>
-          </select>
-        </label>
+        {activeTab === 'tracked' && (
+          <label>
+            <span>Order</span>
+            <select value={sortMode} onChange={event => setSortMode(event.target.value)}>
+              <option value="default">{pokemonNeedle ? 'Best match for Pokemon' : 'Region order'}</option>
+              <option value="best">Best Routes (Tier 0-2 %)</option>
+              <option value="worst">Worst Routes (Tier 0-2 %)</option>
+              <option value="encounters-desc">Most Encounters Tracked</option>
+              <option value="encounters-asc">Least Encounters Tracked</option>
+            </select>
+          </label>
+        )}
         <datalist id="route-finder-pokemon">
           {pokemonOptions.map(name => <option value={name} key={name} />)}
         </datalist>
@@ -764,37 +1300,54 @@ export default function RouteFinder() {
         </datalist>
       </section>
 
-      {pokemonNeedle && pokemonHasData && (
+      {activeTab === 'unrouted' && (
+        <section className={styles.unroutedFilterPanel} aria-label="Unrouted filters">
+          <label>
+            <span>Region</span>
+            <select value={unroutedRegionFilter} onChange={event => setUnroutedRegionFilter(event.target.value)}>
+              <option value="all">All Regions</option>
+              {REGION_ORDER.map(region => <option key={region} value={region}>{region}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Missing Category</span>
+            <select value={unroutedCategoryFilter} onChange={event => setUnroutedCategoryFilter(event.target.value)}>
+              {UNROUTED_CATEGORY_OPTIONS.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </label>
+          <label className={styles.checkboxFilter}>
+            <input
+              type="checkbox"
+              checked={unroutedRaresOnly}
+              onChange={event => setUnroutedRaresOnly(event.target.checked)}
+            />
+            <span>Only routes with Tier 2-Tier0 targets</span>
+          </label>
+        </section>
+      )}
+
+      {activeTab === 'tracked' && pokemonNeedle && pokemonHasData && (
         <section className={styles.activeTarget}>
           <span>Target Mon</span>
           <strong>{pokemonFilter.trim()}</strong>
         </section>
       )}
 
-      <p className={styles.resultCount}>
-        {filteredRoutes.length.toLocaleString()} tracked {filteredRoutes.length === 1 ? 'route' : 'routes'}
-        <span>{filteredTotalEncounters.toLocaleString()} Total Encounters</span>
-      </p>
+      {activeTab === 'tracked' ? (
+        <>
+          <p className={styles.resultCount}>
+            {filteredRoutes.length.toLocaleString()} tracked {filteredRoutes.length === 1 ? 'route' : 'routes'}
+            <span>{filteredTotalEncounters.toLocaleString()} Total Encounters</span>
+          </p>
 
-      {emptyText ? (
-        <p className={styles.emptyState}>{emptyText}</p>
-      ) : (
-        <div className={styles.routeList}>
-          {!shouldGroupByRegion ? (
-            filteredRoutes.map(route => (
-              <RouteCard
-                key={route.id}
-                route={route}
-                pokemonFilter={pokemonFilter}
-                pokemonFamilyKeys={pokemonFamilyKeys}
-                sortMode={sortMode}
-              />
-            ))
+          {emptyText ? (
+            <p className={styles.emptyState}>{emptyText}</p>
           ) : (
-            routesByRegion.map(([region, regionRoutes]) => (
-              <section key={region} aria-label={`${region} routes`}>
-                <h2>{region}</h2>
-                {regionRoutes.map(route => (
+            <div className={styles.routeList}>
+              {!shouldGroupByRegion ? (
+                filteredRoutes.map(route => (
                   <RouteCard
                     key={route.id}
                     route={route}
@@ -802,11 +1355,63 @@ export default function RouteFinder() {
                     pokemonFamilyKeys={pokemonFamilyKeys}
                     sortMode={sortMode}
                   />
-                ))}
-              </section>
-            ))
+                ))
+              ) : (
+                routesByRegion.map(([region, regionRoutes]) => (
+                  <section key={region} aria-label={`${region} routes`}>
+                    <h2>{region}</h2>
+                    {regionRoutes.map(route => (
+                      <RouteCard
+                        key={route.id}
+                        route={route}
+                        pokemonFilter={pokemonFilter}
+                        pokemonFamilyKeys={pokemonFamilyKeys}
+                        sortMode={sortMode}
+                      />
+                    ))}
+                  </section>
+                ))
+              )}
+            </div>
           )}
-        </div>
+        </>
+      ) : (
+        <>
+          <p className={styles.resultCount}>
+            {filteredUnroutedRoutes.length.toLocaleString()} incomplete {filteredUnroutedRoutes.length === 1 ? 'route' : 'routes'}
+            <span>{missingChecklistTotal.toLocaleString()} missing checklist {missingChecklistTotal === 1 ? 'item' : 'items'}</span>
+          </p>
+
+          {filteredUnroutedRoutes.length === 0 ? (
+            <p className={styles.emptyState}>Every matching route has tracked data for its available encounter types.</p>
+          ) : (
+            <div className={styles.routeList}>
+              {unroutedRoutesByRegion.map(([region, regionRoutes]) => (
+                <details
+                  key={region}
+                  className={styles.unroutedRegionGroup}
+                  open={openUnroutedRegions.has(region)}
+                  onToggle={event => handleUnroutedRegionToggle(region, event.currentTarget.open)}
+                >
+                  <summary>
+                    <span>{region}</span>
+                    <strong>{regionRoutes.length.toLocaleString()} {regionRoutes.length === 1 ? 'route' : 'routes'}</strong>
+                  </summary>
+                  <div className={styles.unroutedRegionList}>
+                    {regionRoutes.map(route => (
+                      <UnroutedChecklist
+                        key={route.id}
+                        route={route}
+                        pokemonNeedle={pokemonNeedle}
+                        pokemonFamilyKeys={pokemonFamilyKeys}
+                      />
+                    ))}
+                  </div>
+                </details>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {isSubmitFormOpen && (

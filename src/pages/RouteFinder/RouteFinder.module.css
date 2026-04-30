@@ -457,9 +457,47 @@
   line-height: 1.6;
 }
 
+.tabList {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 22px 0 0;
+}
+
+.tabButton {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(115, 214, 196, 0.32);
+  border-radius: 8px;
+  background: rgba(6, 18, 26, 0.74);
+  color: #cdeff0;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.tabButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(115, 214, 196, 0.58);
+  background: rgba(13, 62, 65, 0.82);
+}
+
+.tabButton:focus-visible {
+  outline: 2px solid rgba(115, 214, 196, 0.7);
+  outline-offset: 2px;
+}
+
+.tabButtonActive {
+  border-color: rgba(156, 244, 222, 0.78);
+  background: rgba(13, 89, 74, 0.82);
+  color: #f3fffb;
+}
+
 .searchPanel {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 320px));
+  justify-content: center;
   gap: 16px;
   margin: 24px 0;
   padding: 18px;
@@ -511,6 +549,83 @@
 .searchPanel select:focus {
   outline: 2px solid rgba(115, 214, 196, 0.6);
   outline-offset: 2px;
+}
+
+.unroutedIntro {
+  max-width: 980px;
+  margin: 16px auto 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(151, 205, 223, 0.24);
+  border-radius: 8px;
+  background: rgba(8, 20, 30, 0.72);
+  color: #d8eef4;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.unroutedFilterPanel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr)) minmax(220px, 1fr);
+  gap: 12px;
+  align-items: end;
+  margin: -12px 0 22px;
+  padding: 16px;
+  border: 1px solid rgba(151, 205, 223, 0.24);
+  border-radius: 8px;
+  background: rgba(8, 20, 30, 0.72);
+}
+
+.unroutedFilterPanel label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  color: #bdeee4;
+  font-weight: 700;
+}
+
+.unroutedFilterPanel select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 9px 11px;
+  background: rgba(6, 18, 26, 0.95);
+  color: #f7fbff;
+  font: inherit;
+}
+
+.unroutedFilterPanel select:focus,
+.checkboxFilter input:focus-visible {
+  outline: 2px solid rgba(115, 214, 196, 0.6);
+  outline-offset: 2px;
+}
+
+.checkboxFilter {
+  display: flex;
+  align-items: center;
+  align-self: end;
+  gap: 10px;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid rgba(151, 205, 223, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.unroutedFilterPanel .checkboxFilter {
+  display: flex;
+}
+
+.checkboxFilter input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #19ad92;
+}
+
+.checkboxFilter span {
+  align-self: center;
+  color: #e4f7fb;
 }
 
 .activeTarget {
@@ -568,6 +683,65 @@
   gap: 18px;
 }
 
+.unroutedRegionGroup {
+  display: grid;
+  gap: 14px;
+}
+
+.unroutedRegionGroup summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid rgba(151, 205, 223, 0.28);
+  border-radius: 8px;
+  background: rgba(8, 20, 30, 0.9);
+  color: #f7fbff;
+  cursor: pointer;
+  list-style: none;
+}
+
+.unroutedRegionGroup summary::-webkit-details-marker {
+  display: none;
+}
+
+.unroutedRegionGroup summary::before {
+  content: '+';
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(115, 214, 196, 0.16);
+  color: #9cf4de;
+  font-weight: 900;
+}
+
+.unroutedRegionGroup[open] summary::before {
+  content: '-';
+}
+
+.unroutedRegionGroup summary span {
+  flex: 1;
+  color: #83e8d4;
+  font-size: 1.08rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.unroutedRegionGroup summary strong {
+  color: #d8eef4;
+  font-size: 0.9rem;
+}
+
+.unroutedRegionList {
+  display: grid;
+  gap: 18px;
+}
+
 .routeCard {
   border: 1px solid rgba(151, 205, 223, 0.28);
   border-radius: 8px;
@@ -615,6 +789,180 @@
   background: rgba(255, 255, 255, 0.11);
   border: 1px solid rgba(255, 255, 255, 0.13);
   font-size: 0.82rem;
+}
+
+.unroutedCard {
+  border: 1px solid rgba(151, 205, 223, 0.28);
+  border-radius: 8px;
+  background: rgba(8, 20, 30, 0.88);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+}
+
+.unroutedHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(54, 83, 92, 0.54), rgba(21, 56, 52, 0.5));
+  border-bottom: 1px solid rgba(151, 205, 223, 0.24);
+}
+
+.unroutedHeader h2 {
+  margin: 4px 0 0;
+  color: #fff;
+  font-size: 1.35rem;
+}
+
+.checklistGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 16px 18px 18px;
+  list-style: none;
+}
+
+.checklistItem {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.checkIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.checklistItem strong {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.checklistComplete {
+  border: 1px solid rgba(112, 245, 177, 0.28);
+  background: rgba(18, 99, 63, 0.34);
+  color: #e7fff0;
+}
+
+.checklistComplete .checkIcon {
+  background: rgba(112, 245, 177, 0.2);
+  color: #afffcb;
+}
+
+.checklistMissing {
+  border: 1px solid rgba(255, 180, 116, 0.32);
+  background: rgba(97, 50, 18, 0.38);
+  color: #ffe5c7;
+}
+
+.checklistMissing .checkIcon {
+  background: rgba(255, 180, 116, 0.18);
+  color: #ffd0a2;
+}
+
+.unroutedSpawnSections {
+  display: grid;
+  gap: 16px;
+  padding: 0 18px 18px;
+}
+
+.unroutedSpawnSection {
+  display: grid;
+  gap: 10px;
+}
+
+.unroutedSpawnSection h3 {
+  margin: 0;
+  color: #e9fbff;
+  font-size: 1rem;
+}
+
+.unroutedPokemonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 10px;
+}
+
+.unroutedPokemon {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  grid-template-areas:
+    "sprite name"
+    "sprite meta"
+    "sprite badge";
+  align-items: center;
+  gap: 3px 9px;
+  min-height: 62px;
+  padding: 8px;
+  border: 1px solid rgba(132, 190, 210, 0.24);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #f7fbff;
+  text-decoration: none;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.unroutedPokemonPriority {
+  border-color: rgba(255, 232, 112, 0.6);
+  background: rgba(98, 86, 20, 0.52);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.unroutedPokemonPriority:hover {
+  border-color: rgba(255, 239, 148, 0.9);
+  background: rgba(116, 101, 24, 0.66);
+}
+
+.unroutedPokemon:hover {
+  transform: translateY(-2px);
+  border-color: rgba(132, 210, 190, 0.56);
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.unroutedPokemon img {
+  grid-area: sprite;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.unroutedPokemon span {
+  grid-area: name;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 800;
+}
+
+.unroutedPokemon small {
+  grid-area: meta;
+  min-width: 0;
+  color: #b8ced8;
+  font-size: 0.74rem;
+  line-height: 1.25;
+}
+
+.priorityBadge {
+  grid-area: badge;
+  justify-self: start;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffe984;
+  font-size: 0.72rem;
+  font-weight: 900;
 }
 
 .monSection {
@@ -730,7 +1078,15 @@
     padding: 14px;
   }
 
+  .unroutedFilterPanel {
+    grid-template-columns: 1fr;
+  }
+
   .routeHeader {
+    flex-direction: column;
+  }
+
+  .unroutedHeader {
     flex-direction: column;
   }
 
@@ -739,6 +1095,10 @@
   }
 
   .monGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .unroutedPokemonGrid {
     grid-template-columns: 1fr;
   }
 
