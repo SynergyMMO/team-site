@@ -30,6 +30,7 @@
     "resourceeditor": "node scripts/resourcesEditorServer.mjs",
     "mapeditor": "node scripts/mapEditorServer.mjs",
     "encountereditor": "node scripts/encounterPercentsEditorServer.mjs",
+    "routefinderreward": "node scripts/pickRouteFinderRewardWinner.mjs",
     "sendBountiesToDiscord": "node scripts/sendBountiesToDiscord.js"
   },
   "dependencies": {
