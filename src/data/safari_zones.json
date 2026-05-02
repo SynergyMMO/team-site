@@ -89,6 +89,10 @@
           "encounterType": "water"
         },
         {
+          "name": "Marill", 
+          "encounterType": "day"
+        },
+        {
           "name": "Poliwag",
           "encounterType": "water"
         },
@@ -351,6 +355,10 @@
           {
             "name": "Psyduck",
             "encounterType": "water"
+          },
+          {
+            "name": "Wooper",
+            "encounterType": "night"
           },
           {
             "name": "Wooper",
