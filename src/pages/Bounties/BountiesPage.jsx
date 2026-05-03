@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { API } from '../../api/endpoints';
 import { usePokemonSprites } from '../../hooks/usePokemonSprites';
 import { useDocumentHead } from '../../hooks/useDocumentHead';
@@ -115,13 +116,8 @@ function PokemonSprite({ name }) {
   const gifUrl = getGifUrlFromSprites(sprites);
   if (!gifUrl) return null;
 
-  // Link to the Pokedex page for this Pokemon
-  const pokedexUrl = `/pokemon/${encodeURIComponent(name.toLowerCase())}/`;
-
   return (
-    <a href={pokedexUrl} title={`View ${name} in Pokedex`} tabIndex={0} style={{outline: 'none'}}>
-      <img className={styles['bounty-pokemon-sprite']} src={gifUrl} alt={name} />
-    </a>
+    <img className={styles['bounty-pokemon-sprite']} src={gifUrl} alt={name} />
   );
 }
 
@@ -248,13 +244,13 @@ export default function BountiesPage() {
                   key={b.id || b.pokemon + b.host + i}
                 >
                   {/* Inner wrapper for content */}
-                  <div className={styles['bounty-card-inner']}>
+                  <Link to={`/pokemon/${b.pokemon}/`} className={styles['bounty-card-inner']}>
                   <PokemonSprite name={b.pokemon} />
                   <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
                   <div className={styles['bounty-host']}>Host: {b.host}</div>
                   <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
                   <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
-                  </div>
+                  </Link>
 
                   {/* Claimed overlay and text outside inner div */}
                   {b.claimed && (
@@ -283,13 +279,13 @@ export default function BountiesPage() {
                   key={b.id || b.pokemon + b.host + i}
                 >
                   {/* Inner wrapper for content */}
-                  <div className={styles['bounty-card-inner']}>
+                  <Link to={`/pokemon/${b.pokemon}/`} className={styles['bounty-card-inner']}>
                   <PokemonSprite name={b.pokemon} />
                   <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
                   <div className={styles['bounty-host']}>Host: {b.host}</div>
                   <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
                   <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
-                  </div>
+                  </Link>
 
                   {/* Claimed overlay and text outside inner div */}
                   {b.claimed && (
