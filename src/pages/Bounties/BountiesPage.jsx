@@ -4,6 +4,29 @@ import { usePokemonSprites } from '../../hooks/usePokemonSprites';
 import { useDocumentHead } from '../../hooks/useDocumentHead';
 import styles from './BountiesPage.module.css';
 
+const POKEMON_NAME_OVERRIDES = {
+  'mr-mime':    'Mr. Mime',
+  'mime-jr':    'Mime Jr.',
+  'farfetch-d': "Farfetch'd",
+  'porygon-z':  'Porygon-Z',
+  'ho-oh':      'Ho-Oh',
+  'nidoran-f':  'Nidoran♀',
+  'nidoran-m':  'Nidoran♂',
+  'jangmo-o':   'Jangmo-o',
+  'hakamo-o':   'Hakamo-o',
+  'kommo-o':    'Kommo-o',
+};
+
+function formatPokemonName(slug) {
+  if (!slug) return '';
+  const lower = slug.trim().toLowerCase();
+  if (POKEMON_NAME_OVERRIDES[lower]) return POKEMON_NAME_OVERRIDES[lower];
+  return lower
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -227,7 +250,7 @@ export default function BountiesPage() {
                   {/* Inner wrapper for content */}
                   <div className={styles['bounty-card-inner']}>
                   <PokemonSprite name={b.pokemon} />
-                  <div className={styles['bounty-title']}>{b.pokemon}</div>
+                  <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
                   <div className={styles['bounty-host']}>Host: {b.host}</div>
                   <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
                   <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
@@ -262,7 +285,7 @@ export default function BountiesPage() {
                   {/* Inner wrapper for content */}
                   <div className={styles['bounty-card-inner']}>
                   <PokemonSprite name={b.pokemon} />
-                  <div className={styles['bounty-title']}>{b.pokemon}</div>
+                  <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
                   <div className={styles['bounty-host']}>Host: {b.host}</div>
                   <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
                   <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
