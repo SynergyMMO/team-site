@@ -615,19 +615,30 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  flex-wrap: wrap;
   min-width: 0;
   font-size: 0.84rem;
   font-weight: 800;
 }
 
-.spawnPercent {
+.spawnPercent,
+.spawnAvailabilityTag {
   border: 1px solid rgba(138, 214, 255, 0.5);
   border-radius: 8px;
-  color: #fff7c2;
   flex: 0 0 auto;
   font-size: 0.72rem;
   font-weight: 900;
   padding: 0.08rem 0.28rem;
+}
+
+.spawnPercent {
+  color: #fff7c2;
+}
+
+.spawnAvailabilityTag {
+  background: rgba(39, 113, 172, 0.32);
+  border-color: rgba(157, 213, 255, 0.48);
+  color: #bfe7ff;
 }
 
 .spawnMeta {

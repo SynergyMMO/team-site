@@ -44,6 +44,52 @@ function normalizeEncounterValue(value) {
   return String(value || '').trim().toLowerCase()
 }
 
+const TIME_LABELS = ['Morning', 'Day', 'Night']
+const SEASON_LABELS = {
+  SEASON0: 'Summer',
+  SEASON1: 'Spring',
+  SEASON2: 'Autumn',
+  SEASON3: 'Winter',
+}
+
+function getSpawnAvailabilityTags(spawn) {
+  if (!Array.isArray(spawn.encounters) || spawn.encounters.length === 0) {
+    return []
+  }
+
+  const timeParts = new Set()
+  const seasonParts = new Set()
+
+  spawn.encounters.forEach((encounter) => {
+    String(encounter.time || '')
+      .split('/')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .forEach((part) => {
+        if (part.toUpperCase() === 'ALL') return
+        if (SEASON_LABELS[part]) {
+          seasonParts.add(SEASON_LABELS[part])
+          return
+        }
+        if (TIME_LABELS.includes(part)) {
+          timeParts.add(part)
+        }
+      })
+  })
+
+  const tags = []
+  if (timeParts.size > 0 && timeParts.size < TIME_LABELS.length) {
+    tags.push(TIME_LABELS.filter((label) => timeParts.has(label)).join('/'))
+  }
+
+  const seasonValues = Object.values(SEASON_LABELS)
+  if (seasonParts.size > 0 && seasonParts.size < seasonValues.length) {
+    tags.push(seasonValues.filter((label) => seasonParts.has(label)).join('/'))
+  }
+
+  return tags
+}
+
 function getSpawnCategory(spawn) {
   const encounterTypes = new Set(getSpawnRarityValues(spawn).map(normalizeEncounterValue))
   const methods = new Set((spawn.encounters || []).map((encounter) => normalizeEncounterValue(encounter.method)))
@@ -87,6 +133,7 @@ function formatEncounterSummary(spawn) {
 
 function SpawnRow({ spawn, routePercentData }) {
   const percentLabel = getPokemonEncounterPercentLabel(routePercentData, spawn.name)
+  const availabilityTags = getSpawnAvailabilityTags(spawn)
 
   return (
     <li className={styles.spawnRow}>
@@ -102,6 +149,9 @@ function SpawnRow({ spawn, routePercentData }) {
       <span className={styles.spawnName}>
         {spawn.name}
         {percentLabel && <span className={styles.spawnPercent}>{percentLabel}</span>}
+        {availabilityTags.map((tag) => (
+          <span key={tag} className={styles.spawnAvailabilityTag}>{tag}</span>
+        ))}
       </span>
       <span className={styles.spawnMeta}>
         {(spawn.types || []).join(' / ')} - {formatEncounterSummary(spawn)}
