@@ -6429,6 +6429,29 @@
                   "time": "ALL"
                 }
               ]
+            },
+            {
+              "id": 479,
+              "name": "Rotom",
+              "types": [
+                "electric",
+                "ghost"
+              ],
+              "rarities": [
+                "Lure"
+              ],
+              "methods": [
+                "Inside"
+              ],
+              "encounters": [
+                {
+                  "method": "Inside",
+                  "minLevel": 20,
+                  "maxLevel": 20,
+                  "rarity": "Lure",
+                  "time": "ALL"
+                }
+              ]
             }
           ],
           "points": [

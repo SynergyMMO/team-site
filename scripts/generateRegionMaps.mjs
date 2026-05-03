@@ -129,7 +129,7 @@ function getEncounterBuckets(pokemonData) {
 }
 
 function mergeSpawn(spawnMap, spawn) {
-  const key = spawn.id ?? spawn.name
+  const key = `${spawn.id ?? 'unknown'}::${spawn.name}`
   if (!spawnMap.has(key)) {
     spawnMap.set(key, { ...spawn, encounters: [...spawn.encounters] })
     return

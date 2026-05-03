@@ -80,6 +80,59 @@
               ]
             },
             {
+              "id": 550.5,
+              "name": "Basculin Blue Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Lure"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 28,
+                  "maxLevel": 28,
+                  "rarity": "Lure",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Very Common",
+                "Horde"
+              ],
+              "methods": [
+                "Fishing",
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Fishing",
+                  "minLevel": 25,
+                  "maxLevel": 35,
+                  "rarity": "Very Common",
+                  "time": "ALL"
+                },
+                {
+                  "method": "Water",
+                  "minLevel": 35,
+                  "maxLevel": 55,
+                  "rarity": "Horde",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
               "id": 22,
               "name": "Fearow",
               "types": [
@@ -1201,6 +1254,28 @@
           ],
           "spawns": [
             {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 35,
+                  "maxLevel": 55,
+                  "rarity": "Horde",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
               "id": 525,
               "name": "Boldore",
               "types": [
@@ -1524,6 +1599,28 @@
                   "minLevel": 60,
                   "maxLevel": 65,
                   "rarity": "Special",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 35,
+                  "maxLevel": 55,
+                  "rarity": "Horde",
                   "time": "ALL"
                 }
               ]
@@ -2176,7 +2273,10 @@
               242
             ]
           ],
-          "mapId": "unova-main"
+          "mapId": "unova-main",
+          "encounterAliases": [
+            "Abudant Shrine"
+          ]
         },
         {
           "id": "unova-celestial-tower",
@@ -2420,6 +2520,28 @@
           "sourceLocation": "Challenger's Cave",
           "normalizedLocation": "challengers cave",
           "spawns": [
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 25,
+                  "maxLevel": 35,
+                  "rarity": "Horde",
+                  "time": "ALL"
+                }
+              ]
+            },
             {
               "id": 525,
               "name": "Boldore",
@@ -3889,6 +4011,28 @@
               ]
             },
             {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 25,
+                  "maxLevel": 35,
+                  "rarity": "Horde",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
               "id": 614,
               "name": "Beartic",
               "types": [
@@ -4854,7 +4998,10 @@
               102
             ]
           ],
-          "mapId": "unova-main"
+          "mapId": "unova-main",
+          "encounterAliases": [
+            "Dragonspire Tower"
+          ]
         },
         {
           "id": "unova-driftveil-city",
@@ -5285,6 +5432,28 @@
                   "minLevel": 60,
                   "maxLevel": 65,
                   "rarity": "Special",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 25,
+                  "maxLevel": 35,
+                  "rarity": "Horde",
                   "time": "ALL"
                 }
               ]
@@ -6762,6 +6931,28 @@
           "sourceLocation": "Lostlorn Forest",
           "normalizedLocation": "lostlorn forest",
           "spawns": [
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 25,
+                  "maxLevel": 35,
+                  "rarity": "Horde",
+                  "time": "ALL"
+                }
+              ]
+            },
             {
               "id": 318,
               "name": "Carvanha",
@@ -8505,6 +8696,28 @@
                   "minLevel": 13,
                   "maxLevel": 15,
                   "rarity": "Special",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 25,
+                  "maxLevel": 35,
+                  "rarity": "Horde",
                   "time": "ALL"
                 }
               ]
@@ -10414,6 +10627,28 @@
                   "minLevel": 53,
                   "maxLevel": 53,
                   "rarity": "Uncommon",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 35,
+                  "maxLevel": 55,
+                  "rarity": "Horde",
                   "time": "ALL"
                 }
               ]
@@ -12385,6 +12620,28 @@
                   "minLevel": 54,
                   "maxLevel": 54,
                   "rarity": "Uncommon",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 35,
+                  "maxLevel": 55,
+                  "rarity": "Horde",
                   "time": "ALL"
                 }
               ]
@@ -14753,6 +15010,28 @@
               ]
             },
             {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Very Common"
+              ],
+              "methods": [
+                "Fishing"
+              ],
+              "encounters": [
+                {
+                  "method": "Fishing",
+                  "minLevel": 35,
+                  "maxLevel": 55,
+                  "rarity": "Very Common",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
               "id": 522,
               "name": "Blitzle",
               "types": [
@@ -16031,6 +16310,28 @@
                   "minLevel": 29,
                   "maxLevel": 30,
                   "rarity": "Special",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Very Common"
+              ],
+              "methods": [
+                "Fishing"
+              ],
+              "encounters": [
+                {
+                  "method": "Fishing",
+                  "minLevel": 35,
+                  "maxLevel": 55,
+                  "rarity": "Very Common",
                   "time": "ALL"
                 }
               ]
@@ -17805,6 +18106,28 @@
           "normalizedLocation": "striaton city",
           "spawns": [
             {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 25,
+                  "maxLevel": 35,
+                  "rarity": "Horde",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
               "id": 118,
               "name": "Goldeen",
               "types": [
@@ -17898,7 +18221,10 @@
               364
             ]
           ],
-          "mapId": "unova-main"
+          "mapId": "unova-main",
+          "encounterAliases": [
+            "Straiton City"
+          ]
         },
         {
           "id": "unova-trial-chamber",
@@ -19247,6 +19573,28 @@
               ]
             },
             {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 35,
+                  "maxLevel": 55,
+                  "rarity": "Horde",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
               "id": 525,
               "name": "Boldore",
               "types": [
@@ -19856,6 +20204,28 @@
                   "minLevel": 60,
                   "maxLevel": 65,
                   "rarity": "Special",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 550,
+              "name": "Basculin Red Striped",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Horde"
+              ],
+              "methods": [
+                "Water"
+              ],
+              "encounters": [
+                {
+                  "method": "Water",
+                  "minLevel": 35,
+                  "maxLevel": 55,
+                  "rarity": "Horde",
                   "time": "ALL"
                 }
               ]

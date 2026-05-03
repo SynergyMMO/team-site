@@ -24395,10 +24395,12 @@
                 "rock"
               ],
               "rarities": [
-                "Uncommon"
+                "Uncommon",
+                "Rare"
               ],
               "methods": [
-                "Super Rod"
+                "Super Rod",
+                "Good Rod"
               ],
               "encounters": [
                 {
@@ -24406,6 +24408,13 @@
                   "minLevel": 40,
                   "maxLevel": 40,
                   "rarity": "Uncommon",
+                  "time": "Day/Morning"
+                },
+                {
+                  "method": "Good Rod",
+                  "minLevel": 20,
+                  "maxLevel": 20,
+                  "rarity": "Rare",
                   "time": "Day/Morning"
                 }
               ]
@@ -24465,6 +24474,45 @@
               ]
             },
             {
+              "id": 118,
+              "name": "Goldeen",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Uncommon",
+                "Very Common"
+              ],
+              "methods": [
+                "Old Rod",
+                "Good Rod",
+                "Super Rod"
+              ],
+              "encounters": [
+                {
+                  "method": "Old Rod",
+                  "minLevel": 10,
+                  "maxLevel": 10,
+                  "rarity": "Uncommon",
+                  "time": "ALL"
+                },
+                {
+                  "method": "Good Rod",
+                  "minLevel": 20,
+                  "maxLevel": 20,
+                  "rarity": "Very Common",
+                  "time": "ALL"
+                },
+                {
+                  "method": "Super Rod",
+                  "minLevel": 40,
+                  "maxLevel": 40,
+                  "rarity": "Very Common",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
               "id": 130,
               "name": "Gyarados",
               "types": [
@@ -24483,6 +24531,68 @@
                   "minLevel": 40,
                   "maxLevel": 40,
                   "rarity": "Rare",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 99,
+              "name": "Kingler",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Rare"
+              ],
+              "methods": [
+                "Super Rod"
+              ],
+              "encounters": [
+                {
+                  "method": "Super Rod",
+                  "minLevel": 40,
+                  "maxLevel": 40,
+                  "rarity": "Rare",
+                  "time": "ALL"
+                }
+              ]
+            },
+            {
+              "id": 98,
+              "name": "Krabby",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Rare",
+                "Common",
+                "Very Common"
+              ],
+              "methods": [
+                "Old Rod",
+                "Good Rod",
+                "Super Rod"
+              ],
+              "encounters": [
+                {
+                  "method": "Old Rod",
+                  "minLevel": 10,
+                  "maxLevel": 10,
+                  "rarity": "Rare",
+                  "time": "ALL"
+                },
+                {
+                  "method": "Good Rod",
+                  "minLevel": 20,
+                  "maxLevel": 20,
+                  "rarity": "Common",
+                  "time": "ALL"
+                },
+                {
+                  "method": "Super Rod",
+                  "minLevel": 40,
+                  "maxLevel": 40,
+                  "rarity": "Very Common",
                   "time": "ALL"
                 }
               ]
@@ -24709,6 +24819,37 @@
               ]
             },
             {
+              "id": 120,
+              "name": "Staryu",
+              "types": [
+                "water"
+              ],
+              "rarities": [
+                "Rare",
+                "Uncommon"
+              ],
+              "methods": [
+                "Good Rod",
+                "Super Rod"
+              ],
+              "encounters": [
+                {
+                  "method": "Good Rod",
+                  "minLevel": 20,
+                  "maxLevel": 20,
+                  "rarity": "Rare",
+                  "time": "Night"
+                },
+                {
+                  "method": "Super Rod",
+                  "minLevel": 40,
+                  "maxLevel": 40,
+                  "rarity": "Uncommon",
+                  "time": "Night"
+                }
+              ]
+            },
+            {
               "id": 72,
               "name": "Tentacool",
               "types": [
@@ -24835,7 +24976,12 @@
               1523
             ]
           ],
-          "mapId": "johto-main"
+          "mapId": "johto-main",
+          "encounterAliases": [
+            "Union Cave / Floor 1",
+            "Union Cav / Floor 1",
+            "Union Cave / 2nd floor"
+          ]
         },
         {
           "id": "johto-victory-road",
