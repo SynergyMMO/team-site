@@ -45,6 +45,12 @@
   color: rgb(255, 84, 255);
 }
 
+.inactivePlayer {
+  color: #8f8998;
+  opacity: 0.72;
+  text-decoration-color: #8f8998;
+}
+
 .sparkle {
   animation: sparkle-glow 1.5s infinite alternate;
 }

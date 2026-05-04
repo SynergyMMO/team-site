@@ -8,6 +8,7 @@ import { useStreamers } from '../../hooks/useStreamers'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
 import { getAssetUrl } from '../../utils/assets'
 import { TRAIT_POINTS, calculateShinyPoints } from '../../utils/points'
+import shotmHistory from '../../data/shotm_history.json'
 import styles from './SHOTM.module.css'
 
 function shiftMonth(month, year, delta) {
@@ -25,6 +26,26 @@ function isCurrentMonth(month, year) {
     now.toLocaleString('default', { month: 'long' }).toLowerCase() === month &&
     String(now.getFullYear()) === String(year)
   )
+}
+
+function getMonthKey(month, year) {
+  const date = new Date(`${month} 1, ${year}`)
+  if (Number.isNaN(date.getTime())) return null
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+}
+
+function monthKeyToSelection(monthKey) {
+  const [year, monthNumber] = monthKey.split('-').map(Number)
+  const date = new Date(year, monthNumber - 1, 1)
+  return {
+    month: date.toLocaleString('default', { month: 'long' }).toLowerCase(),
+    year,
+  }
+}
+
+function normalizeShiniesForCard(shinies) {
+  if (!shinies) return {}
+  return Array.isArray(shinies) ? Object.fromEntries(shinies) : shinies
 }
 
 export default function SHOTM() {
@@ -53,10 +74,33 @@ export default function SHOTM() {
   const { data: streamersData } = useStreamers()
   const { data, isLoading } = useDatabase()
   const { tierPoints, tierLookup } = useTierData()
+  const selectedMonthKey = getMonthKey(currentMonth, currentYear)
+  const selectedIsCurrent = isCurrentMonth(currentMonth, currentYear)
+  const selectedHistory = !selectedIsCurrent
+    ? shotmHistory.months?.[selectedMonthKey]
+    : null
+  const historyMonthKeys = useMemo(
+    () => Object.keys(shotmHistory.months || {}).sort(),
+    []
+  )
+  const previousMonthKey = useMemo(
+    () => historyMonthKeys.filter((key) => key < selectedMonthKey).at(-1) || null,
+    [historyMonthKeys, selectedMonthKey]
+  )
+  const nextMonthKey = useMemo(
+    () => historyMonthKeys.find((key) => key > selectedMonthKey) || null,
+    [historyMonthKeys, selectedMonthKey]
+  )
+  const currentShowcasePlayers = useMemo(
+    () => new Set(Object.keys(data || {}).map((player) => player.toLowerCase())),
+    [data]
+  )
 
     // Helper to get streamer info by player name
   // Filter SHOTM data for current month
   const shotmData = useMemo(() => {
+    if (selectedHistory) return selectedHistory.players || {}
+    if (!selectedIsCurrent) return {}
     if (!data) return {}
     const result = {}
     Object.entries(data).forEach(([player, playerData]) => {
@@ -73,11 +117,19 @@ export default function SHOTM() {
       result[player] = { shinies: monthShinies, points: totalPoints }
     })
     return result
-  }, [data, currentMonth, currentYear, tierPoints, tierLookup])
+  }, [data, currentMonth, currentYear, tierPoints, tierLookup, selectedHistory, selectedIsCurrent])
 
   const rankings = useMemo(
-    () => Object.entries(shotmData).sort((a, b) => b[1].points - a[1].points),
-    [shotmData]
+    () => {
+      if (selectedHistory?.rankings) {
+        return selectedHistory.rankings
+          .map(({ player }) => [player, shotmData[player]])
+          .filter(([, info]) => info)
+      }
+
+      return Object.entries(shotmData).sort((a, b) => b[1].points - a[1].points)
+    },
+    [shotmData, selectedHistory]
   )
 
   const tieredHighlights = useTieredShinies(shotmData, tierLookup, {
@@ -110,25 +162,20 @@ export default function SHOTM() {
   const previousRanks = previousRanksRef.current
 
   const goPrev = () => {
-    const p = shiftMonth(currentMonth, currentYear, -1)
+    if (!previousMonthKey) return
+    const p = monthKeyToSelection(previousMonthKey)
     setCurrentMonth(p.month)
     setCurrentYear(p.year)
   }
   const goNext = () => {
-    const n = shiftMonth(currentMonth, currentYear, 1)
+    const n = nextMonthKey ? monthKeyToSelection(nextMonthKey) : shiftMonth(currentMonth, currentYear, 1)
     setCurrentMonth(n.month)
     setCurrentYear(n.year)
   }
 
-  const prev = shiftMonth(currentMonth, currentYear, -1)
-  const hasPrevData = Object.values(data || {}).some(player =>
-    Object.values(player.shinies || {}).some(
-      s => s.Month?.toLowerCase()?.trim() === prev.month && String(s.Year || '').trim() === String(prev.year)
-    )
-  )
-  const isCurrent = isCurrentMonth(currentMonth, currentYear)
+  const hasPrevData = Boolean(previousMonthKey)
 
-  if (isLoading) return <div className="message">Loading...</div>
+  if (selectedIsCurrent && isLoading) return <div className="message">Loading...</div>
 
   return (
     <div>
@@ -208,16 +255,21 @@ export default function SHOTM() {
           </h2>
           <div className={styles.monthButtons}>
             {hasPrevData && <button onClick={goPrev} className={styles.monthBtn}>&#9664; Previous</button>}
-            {!isCurrent && <button onClick={goNext} className={styles.monthBtn}>Next &#9654;</button>}
+            {!selectedIsCurrent && <button onClick={goNext} className={styles.monthBtn}>Next &#9654;</button>}
           </div>
         </div>
 
         <div className={styles.shotmList}>
           {rankings.map(([player, info], index) => {
+            const isInactivePlayer = Boolean(
+              selectedHistory &&
+              data &&
+              !currentShowcasePlayers.has(player.toLowerCase())
+            )
             const playerData = {
               ...info,
               points: info.points, // ensure points is present
-              shinies: Object.fromEntries(info.shinies),
+              shinies: normalizeShiniesForCard(info.shinies),
             }
             return (
               <PlayerCard
@@ -234,6 +286,7 @@ export default function SHOTM() {
                 mobileInteractive={true}
                 linkState={{ from: 'shotm' }}
                 showPoints
+                isInactivePlayer={isInactivePlayer}
               />
             )
           })}

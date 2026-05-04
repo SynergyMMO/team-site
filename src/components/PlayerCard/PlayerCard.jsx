@@ -4,13 +4,14 @@ import ShinyItem from '../ShinyItem/ShinyItem'
 import { getAssetUrl } from '../../utils/assets'
 import styles from './PlayerCard.module.css'
 
-function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, linkState, showPoints = false }) {
+function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, linkState, showPoints = false, isInactivePlayer = false }) {
   const playerClass =
     rank < 5
       ? styles.topPlayer
       : rank < 20
         ? styles.highPlayer
         : ''
+  const inactiveClass = isInactivePlayer ? styles.inactivePlayer : ''
 
   const medal =
     rank === 0 ? '\uD83E\uDD47' : // 🥇 gold
@@ -25,9 +26,10 @@ function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, 
       <div className={styles.nameContainer}>
         <Link
           to={`/player/${player}/`}
-          className={`${styles.playerName} ${playerClass}`}
+          className={`${styles.playerName} ${playerClass} ${inactiveClass}`}
           data-player={player}
           state={linkState}
+          title={isInactivePlayer ? 'No longer in the team shiny showcase database' : undefined}
         >
           #{rank + 1} {player} ({showPoints && typeof data.points === 'number' ? `${data.points} pts` : data.shiny_count})
         </Link>

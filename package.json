@@ -24,6 +24,7 @@
     "preview": "vite preview",
     "sitemap": "node src/utils/sitemap-builder.js",
     "MergeData": "node scripts/mergeShinyData.js",
+    "GenerateShotmHistory": "node scripts/generateShotmHistory.mjs",
     "TestMergeData": "node scripts/mergeShinyData.js --test",
     "MergeUserData": "node scripts/mergeShinyData.js --user=%npm_config_user%",
     "repeltrick": "node scripts/generatePotentialRepelTrick.mjs",
