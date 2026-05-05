@@ -145,21 +145,49 @@ function filterTierColumnsByMethod(tierColumns, activeMethod) {
   }, {})
 }
 
-function getCaughtPokemon(tierColumns, caughtSet) {
-  return TIER_ORDER.flatMap(tier =>
-    tierColumns[tier]
-      .filter(pokemon => caughtSet.has(pokemon.id))
-      .map(pokemon => ({ ...pokemon, tier }))
-  )
+function getCaughtEntry(entry, tier) {
+  if (typeof entry === 'string') {
+    const id = normalizePokemonName(entry)
+    return id ? { id, player: '', tier } : null
+  }
+
+  if (Array.isArray(entry)) {
+    const [player, pokemonName] = entry
+    const id = normalizePokemonName(String(pokemonName || ''))
+    return id ? { id, player: String(player || ''), tier } : null
+  }
+
+  if (entry && typeof entry === 'object') {
+    const pokemonName = entry.pokemon || entry.Pokemon || entry.name || entry.Name
+    const player = entry.player || entry.Player || entry.trainer || entry.Trainer || ''
+    const id = normalizePokemonName(String(pokemonName || ''))
+    return id ? { id, player: String(player), tier } : null
+  }
+
+  return null
+}
+
+function getCaughtEntries(teamData) {
+  return TIER_ORDER.flatMap(tier => {
+    const entries = teamData?.[`Tier ${tier}`] || []
+    return entries
+      .map(entry => getCaughtEntry(entry, tier))
+      .filter(Boolean)
+  })
+}
+
+function getCaughtPokemon(teamData) {
+  return getCaughtEntries(teamData).map(entry => ({
+    ...getDisplayPokemon(entry.id),
+    player: entry.player,
+    tier: entry.tier,
+  }))
 }
 
 function getCaughtSet(teamData) {
   const caught = new Set()
 
-  TIER_ORDER.forEach(tier => {
-    const names = teamData?.[`Tier ${tier}`] || []
-    names.forEach(name => caught.add(normalizePokemonName(String(name))))
-  })
+  getCaughtEntries(teamData).forEach(entry => caught.add(entry.id))
 
   return caught
 }
@@ -207,7 +235,7 @@ export default function OfficialShinyWarsPlanner() {
   const activeTeam = teams.find(team => team.id === activeTeamId) || teams[0]
   const caughtSet = useMemo(() => getCaughtSet(activeTeam?.data), [activeTeam])
   const summary = useMemo(() => getTeamSummary(tierColumns, caughtSet), [tierColumns, caughtSet])
-  const caughtPokemon = useMemo(() => getCaughtPokemon(tierColumns, caughtSet), [tierColumns, caughtSet])
+  const caughtPokemon = useMemo(() => getCaughtPokemon(activeTeam?.data), [activeTeam])
 
   return (
     <div className={styles.page}>
@@ -317,8 +345,8 @@ export default function OfficialShinyWarsPlanner() {
             <p>{caughtPokemon.length === 0 ? 'No caught shinies have been entered for this team yet.' : `${caughtPokemon.length} caught shinies entered for ${activeTeam.label}.`}</p>
           </div>
           <div className={styles.caughtGrid}>
-            {caughtPokemon.map(pokemon => (
-              <Link key={pokemon.id} to={`/pokemon/${pokemon.id}/`} className={styles.caughtCard}>
+            {caughtPokemon.map((pokemon, index) => (
+              <Link key={`${pokemon.tier}-${pokemon.id}-${pokemon.player || index}`} to={`/pokemon/${pokemon.id}/`} className={styles.caughtCard}>
                 <img
                   src={getLocalPokemonGif(pokemon.id)}
                   alt=""
@@ -329,6 +357,7 @@ export default function OfficialShinyWarsPlanner() {
                   onError={onGifError(pokemon.id)}
                 />
                 <span>{pokemon.name}</span>
+                {pokemon.player && <small>Caught by {pokemon.player}</small>}
                 <small>Tier {pokemon.tier} - {pokemon.points} raw pts</small>
               </Link>
             ))}
