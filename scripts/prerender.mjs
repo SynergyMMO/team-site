@@ -243,6 +243,7 @@ const STATIC_ROUTES = [
   '/trophy-board',
   '/events',
   '/official-event-calendar',
+  '/official-shiny-wars-planner',
   '/region-maps',
   '/route-finder',
   '/counter-generator',
@@ -1584,6 +1585,12 @@ async function prerender() {
       route: '/official-event-calendar',
       ogTitle: 'Official Event Calendar | Team Synergy - PokeMMO',
       ogDescription: 'View upcoming official PokeMMO PvP and Catch events from the official RSS feed, sorted by date and shown in your local timezone.',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg',
+    },
+    '/official-shiny-wars-planner': {
+      route: '/official-shiny-wars-planner',
+      ogTitle: 'Official Shiny Wars Planner | Team Synergy - PokeMMO',
+      ogDescription: 'Track Tryhard and Casual team shiny catches for the official PokeMMO Shiny Wars event by tier, points, and evolution family.',
       ogImage: 'https://synergymmo.com/images/openGraph.jpg',
     },
     '/region-maps': {

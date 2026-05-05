@@ -30,6 +30,7 @@ const ThemesPage = lazy(() => import('./pages/Themes/ThemesPage'))
 const ThemeDetail = lazy(() => import('./pages/Themes/ThemeDetail'))
 const ShinyOdds = lazy(() => import('./pages/ShinyOdds/ShinyOdds'))
 const OfficialEventCalendar = lazy(() => import('./pages/OfficialEventCalendar/OfficialEventCalendar'))
+const OfficialShinyWarsPlanner = lazy(() => import('./pages/OfficialShinyWarsPlanner/OfficialShinyWarsPlanner'))
 const TeamStatistics = lazy(() => import('./pages/TeamStatistics/TeamStatistics'))
 const RegionMaps = lazy(() => import('./pages/RegionMaps/RegionMaps'))
 const RouteFinder = lazy(() => import('./pages/RouteFinder/RouteFinder'))
@@ -107,6 +108,7 @@ export default function App() {
             <Route path="/trophy-board" element={<TrophyBoard />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/official-event-calendar" element={<OfficialEventCalendar />} />
+            <Route path="/official-shiny-wars-planner" element={<OfficialShinyWarsPlanner />} />
             <Route path="/region-maps" element={<RegionMaps />} />
             <Route path="/route-finder" element={<RouteFinder />} />
             <Route path="/team-statistics" element={<TeamStatistics />} />

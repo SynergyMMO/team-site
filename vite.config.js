@@ -34,9 +34,9 @@ export default defineConfig(({ mode }) => ({
           query: ['@tanstack/react-query'],
           jszip: ['jszip'],
         },
-        // Optimize chunk names for readability and SEO (shorter hash)
-        entryFileNames: 'js/[name].[hash:6].js',
-        chunkFileNames: 'js/[name].[hash:6].js',
+        // Keep chunk names readable while leaving enough hash space as the app grows.
+        entryFileNames: 'js/[name].[hash:7].js',
+        chunkFileNames: 'js/[name].[hash:7].js',
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.');
           const ext = info[info.length - 1];
