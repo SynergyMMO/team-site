@@ -217,16 +217,25 @@
 }
 
 .statCard span {
-  color: #94a3b8;
+  color: #fbbf24;
   font-size: 0.92rem;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
 }
 
 .statCard strong {
   color: #ffffff;
   font-size: clamp(1.45rem, 3vw, 2.2rem);
   line-height: 1;
+}
+
+.statDetail {
+  color: #cbd5e1;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .statCard .textStatValue {

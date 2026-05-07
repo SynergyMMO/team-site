@@ -241,6 +241,10 @@ function formatPokemonMetric(entry, fallback = '-') {
   return `${entry.name} (${formatNumber(entry.value)})`
 }
 
+function getIvSpread(stats, key) {
+  return stats[key]?.ivs || ''
+}
+
 function drawFitText(ctx, text, x, y, maxWidth, minSize, maxSize, weight = 700) {
   let size = maxSize
   ctx.font = `${weight} ${size}px Arial`
@@ -281,6 +285,7 @@ function analyzeTracker(tracker) {
     .map(entry => ({
       name: entry.name || `Species ${entry.species_id}`,
       value: parseIvTotal(entry.ivs),
+      ivs: entry.ivs,
     }))
     .filter(entry => entry.value !== null)
     .sort((a, b) => b.value - a.value)
@@ -384,10 +389,10 @@ async function downloadPlayerCard({ playerName, playerTime, imagePreview, stats,
   ].filter(([key]) => exportOptions[key])
 
   const detailRows = [
-    ['highestIvShiny', 'Highest IV Shiny', stats.highestIvShiny],
-    ['lowestIvShiny', 'Lowest IV Shiny', stats.lowestIvShiny],
-    ['highestEncounterShiny', 'Highest Encounter Shiny', stats.highestEncounterShiny],
-    ['lowestEncounterShiny', 'Lowest Encounter Shiny', stats.lowestEncounterShiny],
+    ['highestIvShiny', 'Highest IV Shiny', stats.highestIvShiny, stats.highestIvShinyIvs],
+    ['lowestIvShiny', 'Lowest IV Shiny', stats.lowestIvShiny, stats.lowestIvShinyIvs],
+    ['highestEncounterShiny', 'Highest Encounter Shiny', stats.highestEncounterShiny, ''],
+    ['lowestEncounterShiny', 'Lowest Encounter Shiny', stats.lowestEncounterShiny, ''],
   ].filter(([key]) => exportOptions[key])
 
   const hasTopSeen = exportOptions.topSeen
@@ -395,7 +400,7 @@ async function downloadPlayerCard({ playerName, playerTime, imagePreview, stats,
   const hasAnyList = hasTopSeen || hasTopRareSeen
   const statCardHeight = 104
   const statGap = 18
-  const detailCardHeight = 56
+  const detailCardHeight = 72
   const detailGap = 12
   const statGridRows = Math.ceil(statRows.length / 2)
   const detailGridRows = Math.ceil(detailRows.length / 2)
@@ -460,7 +465,7 @@ async function downloadPlayerCard({ playerName, playerTime, imagePreview, stats,
   }
 
   if (hasPlayerTime) {
-    ctx.fillStyle = '#94a3b8'
+    ctx.fillStyle = '#fbbf24'
     ctx.font = '700 18px Arial'
     ctx.textAlign = 'center'
     ctx.fillText('Play Time', 203, 512)
@@ -485,24 +490,28 @@ async function downloadPlayerCard({ playerName, playerTime, imagePreview, stats,
     drawRoundedRect(ctx, x, y, 310, statCardHeight, 12)
     ctx.fillStyle = 'rgba(15, 23, 42, 0.78)'
     ctx.fill()
-    ctx.fillStyle = '#94a3b8'
+    ctx.fillStyle = '#fbbf24'
     ctx.font = '600 22px Arial'
     ctx.fillText(label, x + 24, y + 36)
     ctx.fillStyle = '#f8fafc'
     drawFitText(ctx, value, x + 24, y + 82, 260, 27, 38)
   })
 
-  detailRows.forEach(([, label, value], index) => {
+  detailRows.forEach(([, label, value, subvalue], index) => {
     const x = 408 + (index % 2) * 360
     const y = detailStartY + Math.floor(index / 2) * (detailCardHeight + detailGap)
     drawRoundedRect(ctx, x, y, 310, detailCardHeight, 10)
     ctx.fillStyle = 'rgba(15, 23, 42, 0.58)'
     ctx.fill()
-    ctx.fillStyle = '#94a3b8'
+    ctx.fillStyle = '#fbbf24'
     ctx.font = '600 17px Arial'
     ctx.fillText(label, x + 18, y + 20)
     ctx.fillStyle = '#f8fafc'
     drawFitText(ctx, value, x + 18, y + 42, 270, 14, 19)
+    if (subvalue) {
+      ctx.fillStyle = '#cbd5e1'
+      drawFitText(ctx, subvalue, x + 18, y + 62, 270, 12, 15, 600)
+    }
   })
 
   if (hasTopSeen || hasTopRareSeen) {
@@ -604,6 +613,8 @@ export default function PlayerCardGenerator() {
       totalFossilEncounters: getCardValue(stats, manualValues, 'totalFossilEncounters'),
       highestIvShiny: getCardValue(stats, manualValues, 'highestIvShiny'),
       lowestIvShiny: getCardValue(stats, manualValues, 'lowestIvShiny'),
+      highestIvShinyIvs: getIvSpread(stats, 'highestIvShiny'),
+      lowestIvShinyIvs: getIvSpread(stats, 'lowestIvShiny'),
       highestEncounterShiny: getCardValue(stats, manualValues, 'highestEncounterShiny'),
       lowestEncounterShiny: getCardValue(stats, manualValues, 'lowestEncounterShiny'),
     }
@@ -739,8 +750,8 @@ export default function PlayerCardGenerator() {
             <StatCard label="Wild Other Encounters (non horde)" value={cardStats.totalWildOtherEncounters} />
             <StatCard label="Rare Encounters" value={cardStats.totalRareEncounters} />
             <StatCard label="Fossil Encounters" value={cardStats.totalFossilEncounters} />
-            <StatCard label="Highest IV Shiny" value={cardStats.highestIvShiny} textValue />
-            <StatCard label="Lowest IV Shiny" value={cardStats.lowestIvShiny} textValue />
+            <StatCard label="Highest IV Shiny" value={cardStats.highestIvShiny} detail={cardStats.highestIvShinyIvs} textValue />
+            <StatCard label="Lowest IV Shiny" value={cardStats.lowestIvShiny} detail={cardStats.lowestIvShinyIvs} textValue />
             <StatCard label="Highest Encounter Shiny" value={cardStats.highestEncounterShiny} textValue />
             <StatCard label="Lowest Encounter Shiny" value={cardStats.lowestEncounterShiny} textValue />
           </section>
@@ -883,11 +894,12 @@ export default function PlayerCardGenerator() {
   )
 }
 
-function StatCard({ label, value, compact = false, textValue = false }) {
+function StatCard({ label, value, detail = '', compact = false, textValue = false }) {
   return (
     <div className={`${styles.statCard} ${compact ? styles.compactStat : ''}`}>
       <span>{label}</span>
       <strong className={textValue ? styles.textStatValue : ''}>{textValue ? value : formatCardNumber(value)}</strong>
+      {detail ? <small className={styles.statDetail}>{detail}</small> : null}
     </div>
   )
 }
