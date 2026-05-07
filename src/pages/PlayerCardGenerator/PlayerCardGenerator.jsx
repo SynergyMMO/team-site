@@ -13,6 +13,8 @@ const DEFAULT_EXPORT_OPTIONS = {
   totalWildOtherEncounters: true,
   totalRareEncounters: true,
   totalFossilEncounters: true,
+  includeTimeBreakdown: true,
+  averageEncounterPerHour: true,
   topSeen: true,
   topRareSeen: true,
   highestIvShiny: true,
@@ -30,12 +32,29 @@ const EXPORT_FIELDS = [
   { key: 'totalWildOtherEncounters', label: 'Wild Other Encounters *non horde*' },
   { key: 'totalRareEncounters', label: 'Rare Encounters' },
   { key: 'totalFossilEncounters', label: 'Fossil Encounters' },
+  { key: 'includeTimeBreakdown', label: 'Include Days/Weeks' },
+  { key: 'averageEncounterPerHour', label: 'Avg Encounter Per Hour' },
   { key: 'topSeen', label: 'Top Seen Pokemon' },
   { key: 'topRareSeen', label: 'Top Rare Seen Pokemon' },
   { key: 'highestIvShiny', label: 'Highest IV Shiny' },
   { key: 'lowestIvShiny', label: 'Lowest IV Shiny' },
   { key: 'highestEncounterShiny', label: 'Highest Encounter Shiny' },
   { key: 'lowestEncounterShiny', label: 'Lowest Encounter Shiny' },
+]
+
+const EDITABLE_FIELDS = [
+  { key: 'totalEncounters', label: 'Total Encounters', type: 'number' },
+  { key: 'totalShinies', label: 'Total Shinies', type: 'number' },
+  { key: 'averageEncounterPerShiny', label: 'Average Encounter Per Shiny', type: 'number' },
+  { key: 'totalEggEncounters', label: 'Egg Encounters', type: 'number' },
+  { key: 'totalAlphaEncounters', label: 'Alpha Encounters', type: 'number' },
+  { key: 'totalWildOtherEncounters', label: 'Wild Other Encounters', type: 'number' },
+  { key: 'totalRareEncounters', label: 'Rare Encounters', type: 'number' },
+  { key: 'totalFossilEncounters', label: 'Fossil Encounters', type: 'number' },
+  { key: 'highestIvShiny', label: 'Highest IV Shiny', type: 'text' },
+  { key: 'lowestIvShiny', label: 'Lowest IV Shiny', type: 'text' },
+  { key: 'highestEncounterShiny', label: 'Highest Encounter Shiny', type: 'text' },
+  { key: 'lowestEncounterShiny', label: 'Lowest Encounter Shiny', type: 'text' },
 ]
 
 function normalizeName(name = '') {
@@ -50,6 +69,57 @@ function normalizeName(name = '') {
 
 function formatNumber(value) {
   return Number(value || 0).toLocaleString()
+}
+
+function formatCardNumber(value) {
+  const number = Number(String(value || '').replace(/,/g, ''))
+  return Number.isFinite(number) ? number.toLocaleString() : String(value || '-')
+}
+
+function formatDuration(value, label) {
+  const maximumFractionDigits = Number.isInteger(value) ? 0 : 2
+  return `${value.toLocaleString(undefined, { maximumFractionDigits })} ${label}`
+}
+
+function getPlayerTimeHours(value) {
+  const digits = String(value || '').replace(/\D/g, '')
+  return digits ? Number(digits) : null
+}
+
+function getPlayerTimeBreakdown(value, includeTimeBreakdown = true) {
+  const hours = getPlayerTimeHours(value)
+  if (!hours) return ['-']
+
+  const breakdown = [
+    formatDuration(hours, 'Hours'),
+  ]
+  if (includeTimeBreakdown) {
+    breakdown.push(formatDuration(hours / 24, 'Days'), formatDuration(hours / 168, 'Weeks'))
+  }
+  return breakdown
+}
+
+function formatAverageEncounterPerHour(totalEncounters, playerTime) {
+  const hours = getPlayerTimeHours(playerTime)
+  const encounters = Number(String(totalEncounters || '').replace(/,/g, ''))
+  if (!hours || !Number.isFinite(encounters)) return null
+  return `${(encounters / hours).toLocaleString(undefined, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })} Encounters/Hour`
+}
+
+function hasManualOverrides(manualValues) {
+  return Object.values(manualValues).some(value => String(value || '').trim())
+}
+
+function getCardValue(stats, manualValues, key) {
+  const manualValue = String(manualValues[key] || '').trim()
+  if (manualValue) return manualValue
+  if (key === 'highestIvShiny' || key === 'lowestIvShiny' || key === 'highestEncounterShiny' || key === 'lowestEncounterShiny') {
+    return formatPokemonMetric(stats[key])
+  }
+  return stats[key]
 }
 
 function getSection(tracker, sectionName) {
@@ -298,23 +368,26 @@ function drawContainImage(ctx, img, x, y, width, height) {
   ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
 }
 
-async function downloadPlayerCard({ playerName, imagePreview, stats, exportOptions }) {
+async function downloadPlayerCard({ playerName, playerTime, imagePreview, stats, exportOptions, hasManualEdits }) {
+  const displayName = playerName.trim()
+  const hasPlayerTime = String(playerTime || '').replace(/\D/g, '').length > 0
+  const averageEncounterPerHour = formatAverageEncounterPerHour(stats.totalEncounters, playerTime)
   const statRows = [
-    ['totalEncounters', 'Total Encounters', stats.totalEncounters],
-    ['totalShinies', 'Total Shinies', stats.totalShinies],
-    ['averageEncounterPerShiny', 'Avg Encounter/Shiny', stats.averageEncounterPerShiny],
-    ['totalEggEncounters', 'Egg Encounters', stats.totalEggEncounters],
-    ['totalAlphaEncounters', 'Alpha Encounters', stats.totalAlphaEncounters],
-    ['totalWildOtherEncounters', 'Wild Other Encounters', stats.totalWildOtherEncounters],
-    ['totalRareEncounters', 'Rare Encounters', stats.totalRareEncounters],
-    ['totalFossilEncounters', 'Fossil Encounters', stats.totalFossilEncounters],
+    ['totalEncounters', 'Total Encounters', formatCardNumber(stats.totalEncounters)],
+    ['totalShinies', 'Total Shinies', formatCardNumber(stats.totalShinies)],
+    ['averageEncounterPerShiny', 'Avg Encounter/Shiny', formatCardNumber(stats.averageEncounterPerShiny)],
+    ['totalEggEncounters', 'Egg Encounters', formatCardNumber(stats.totalEggEncounters)],
+    ['totalAlphaEncounters', 'Alpha Encounters', formatCardNumber(stats.totalAlphaEncounters)],
+    ['totalWildOtherEncounters', 'Wild Other Encounters', formatCardNumber(stats.totalWildOtherEncounters)],
+    ['totalRareEncounters', 'Rare Encounters', formatCardNumber(stats.totalRareEncounters)],
+    ['totalFossilEncounters', 'Fossil Encounters', formatCardNumber(stats.totalFossilEncounters)],
   ].filter(([key]) => exportOptions[key])
 
   const detailRows = [
-    ['highestIvShiny', 'Highest IV Shiny', formatPokemonMetric(stats.highestIvShiny)],
-    ['lowestIvShiny', 'Lowest IV Shiny', formatPokemonMetric(stats.lowestIvShiny)],
-    ['highestEncounterShiny', 'Highest Encounter Shiny', formatPokemonMetric(stats.highestEncounterShiny)],
-    ['lowestEncounterShiny', 'Lowest Encounter Shiny', formatPokemonMetric(stats.lowestEncounterShiny)],
+    ['highestIvShiny', 'Highest IV Shiny', stats.highestIvShiny],
+    ['lowestIvShiny', 'Lowest IV Shiny', stats.lowestIvShiny],
+    ['highestEncounterShiny', 'Highest Encounter Shiny', stats.highestEncounterShiny],
+    ['lowestEncounterShiny', 'Lowest Encounter Shiny', stats.lowestEncounterShiny],
   ].filter(([key]) => exportOptions[key])
 
   const hasTopSeen = exportOptions.topSeen
@@ -356,9 +429,11 @@ async function downloadPlayerCard({ playerName, imagePreview, stats, exportOptio
   ctx.fillStyle = 'rgba(251, 191, 36, 0.9)'
   ctx.fillRect(0, 10, 1200, 4)
 
-  ctx.fillStyle = '#f8fafc'
-  ctx.font = '700 54px Arial'
-  ctx.fillText(playerName || 'PokeMMO Player', 48, 82)
+  if (displayName) {
+    ctx.fillStyle = '#f8fafc'
+    ctx.font = '700 54px Arial'
+    ctx.fillText(displayName, 48, 82)
+  }
   ctx.font = '600 23px Arial'
   ctx.fillStyle = '#fbbf24'
   ctx.fillText('Player Card', 52, 120)
@@ -384,6 +459,26 @@ async function downloadPlayerCard({ playerName, imagePreview, stats, exportOptio
     ctx.fillText('No Image', 148, 334)
   }
 
+  if (hasPlayerTime) {
+    ctx.fillStyle = '#94a3b8'
+    ctx.font = '700 18px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText('Play Time', 203, 512)
+    getPlayerTimeBreakdown(playerTime, exportOptions.includeTimeBreakdown).forEach((line, index) => {
+      ctx.fillStyle = index === 0 ? '#f8fafc' : '#cbd5e1'
+      drawFitText(ctx, line, 203, 546 + index * 32, 270, 18, index === 0 ? 30 : 22)
+    })
+    if (exportOptions.averageEncounterPerHour && averageEncounterPerHour) {
+      ctx.fillStyle = '#fbbf24'
+      ctx.font = '700 18px Arial'
+      const y = exportOptions.includeTimeBreakdown ? 644 : 586
+      ctx.fillText('Avg Encounter Per Hour', 203, y)
+      ctx.fillStyle = '#f8fafc'
+      drawFitText(ctx, averageEncounterPerHour, 203, y + 30, 270, 16, 22)
+    }
+    ctx.textAlign = 'left'
+  }
+
   statRows.forEach(([, label, value], index) => {
     const x = 408 + (index % 2) * 360
     const y = 158 + Math.floor(index / 2) * (statCardHeight + statGap)
@@ -394,7 +489,7 @@ async function downloadPlayerCard({ playerName, imagePreview, stats, exportOptio
     ctx.font = '600 22px Arial'
     ctx.fillText(label, x + 24, y + 36)
     ctx.fillStyle = '#f8fafc'
-    drawFitText(ctx, formatNumber(value), x + 24, y + 82, 260, 27, 38)
+    drawFitText(ctx, value, x + 24, y + 82, 260, 27, 38)
   })
 
   detailRows.forEach(([, label, value], index) => {
@@ -443,6 +538,29 @@ async function downloadPlayerCard({ playerName, imagePreview, stats, exportOptio
     }
   }
 
+  if (hasManualEdits) {
+    const markerX = 68
+    const markerY = canvas.height - 88
+    drawRoundedRect(ctx, markerX, markerY, 42, 34, 8)
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.72)'
+    ctx.fill()
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.42)'
+    ctx.lineWidth = 1.5
+    ctx.stroke()
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.86)'
+    ctx.lineWidth = 3
+    ctx.lineCap = 'round'
+    ctx.beginPath()
+    ctx.moveTo(markerX + 14, markerY + 23)
+    ctx.lineTo(markerX + 27, markerY + 10)
+    ctx.stroke()
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(markerX + 12, markerY + 25)
+    ctx.lineTo(markerX + 20, markerY + 25)
+    ctx.stroke()
+  }
+
   const link = document.createElement('a')
   link.download = `${normalizeName(playerName || 'pokemmo-player')}-player-card.png`
   link.href = canvas.toDataURL('image/png')
@@ -451,12 +569,14 @@ async function downloadPlayerCard({ playerName, imagePreview, stats, exportOptio
 
 export default function PlayerCardGenerator() {
   const [playerName, setPlayerName] = useState('')
+  const [playerTime, setPlayerTime] = useState('')
   const [imagePreview, setImagePreview] = useState('')
   const [tracker, setTracker] = useState(null)
   const [fileName, setFileName] = useState('')
   const [error, setError] = useState('')
   const [isDownloading, setIsDownloading] = useState(false)
   const [exportOptions, setExportOptions] = useState(DEFAULT_EXPORT_OPTIONS)
+  const [manualValues, setManualValues] = useState({})
 
   useDocumentHead({
     title: 'PokeMMO Player Card Generator',
@@ -470,6 +590,25 @@ export default function PlayerCardGenerator() {
   })
 
   const stats = useMemo(() => (tracker ? analyzeTracker(tracker) : null), [tracker])
+  const cardStats = useMemo(() => {
+    if (!stats) return null
+    return {
+      ...stats,
+      totalEncounters: getCardValue(stats, manualValues, 'totalEncounters'),
+      totalShinies: getCardValue(stats, manualValues, 'totalShinies'),
+      averageEncounterPerShiny: getCardValue(stats, manualValues, 'averageEncounterPerShiny'),
+      totalEggEncounters: getCardValue(stats, manualValues, 'totalEggEncounters'),
+      totalAlphaEncounters: getCardValue(stats, manualValues, 'totalAlphaEncounters'),
+      totalWildOtherEncounters: getCardValue(stats, manualValues, 'totalWildOtherEncounters'),
+      totalRareEncounters: getCardValue(stats, manualValues, 'totalRareEncounters'),
+      totalFossilEncounters: getCardValue(stats, manualValues, 'totalFossilEncounters'),
+      highestIvShiny: getCardValue(stats, manualValues, 'highestIvShiny'),
+      lowestIvShiny: getCardValue(stats, manualValues, 'lowestIvShiny'),
+      highestEncounterShiny: getCardValue(stats, manualValues, 'highestEncounterShiny'),
+      lowestEncounterShiny: getCardValue(stats, manualValues, 'lowestEncounterShiny'),
+    }
+  }, [manualValues, stats])
+  const hasManualEdits = hasManualOverrides(manualValues)
 
   async function handleJsonUpload(event) {
     const file = event.target.files?.[0]
@@ -496,11 +635,18 @@ export default function PlayerCardGenerator() {
   }
 
   async function handleDownload() {
-    if (!stats) return
+    if (!cardStats) return
     setIsDownloading(true)
     setError('')
     try {
-      await downloadPlayerCard({ playerName, imagePreview, stats, exportOptions })
+      await downloadPlayerCard({
+        playerName,
+        playerTime,
+        imagePreview,
+        stats: cardStats,
+        exportOptions,
+        hasManualEdits,
+      })
     } catch {
       setError('The player card image could not be generated.')
     } finally {
@@ -510,6 +656,10 @@ export default function PlayerCardGenerator() {
 
   function handleExportOptionChange(key) {
     setExportOptions(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  function handleManualValueChange(key, value) {
+    setManualValues(prev => ({ ...prev, [key]: value }))
   }
 
   return (
@@ -545,12 +695,22 @@ export default function PlayerCardGenerator() {
 
       <section className={styles.controls} aria-label="Player card inputs">
         <label className={styles.field}>
-          <span>PokeMMO Name</span>
+          <span>Player Name</span>
           <input
             type="text"
             value={playerName}
             onChange={event => setPlayerName(event.target.value)}
             placeholder="Your trainer name"
+          />
+        </label>
+
+        <label className={styles.field}>
+          <span>Player Time</span>
+          <input
+            type="text"
+            value={playerTime}
+            onChange={event => setPlayerTime(event.target.value)}
+            placeholder="e.g. 1,234 hours"
           />
         </label>
 
@@ -568,21 +728,21 @@ export default function PlayerCardGenerator() {
       {error && <div className={styles.error}>{error}</div>}
       {fileName && !error && <div className={styles.fileStatus}>Loaded {fileName}</div>}
 
-      {stats ? (
+      {stats && cardStats ? (
         <>
           <section className={styles.summaryGrid} aria-label="Player tracker summary">
-            <StatCard label="Total Encounters" value={stats.totalEncounters} />
-            <StatCard label="Total Shinies on Counter" value={stats.totalShinies} />
-            <StatCard label="Average Encounter Per Shiny" value={stats.averageEncounterPerShiny} />
-            <StatCard label="Egg Encounters" value={stats.totalEggEncounters} />
-            <StatCard label="Alpha Encounters" value={stats.totalAlphaEncounters} />
-            <StatCard label="Wild Other Encounters (non horde)" value={stats.totalWildOtherEncounters} />
-            <StatCard label="Rare Encounters" value={stats.totalRareEncounters} />
-            <StatCard label="Fossil Encounters" value={stats.totalFossilEncounters} />
-            <StatCard label="Highest IV Shiny" value={formatPokemonMetric(stats.highestIvShiny)} textValue />
-            <StatCard label="Lowest IV Shiny" value={formatPokemonMetric(stats.lowestIvShiny)} textValue />
-            <StatCard label="Highest Encounter Shiny" value={formatPokemonMetric(stats.highestEncounterShiny)} textValue />
-            <StatCard label="Lowest Encounter Shiny" value={formatPokemonMetric(stats.lowestEncounterShiny)} textValue />
+            <StatCard label="Total Encounters" value={cardStats.totalEncounters} />
+            <StatCard label="Total Shinies on Counter" value={cardStats.totalShinies} />
+            <StatCard label="Average Encounter Per Shiny" value={cardStats.averageEncounterPerShiny} />
+            <StatCard label="Egg Encounters" value={cardStats.totalEggEncounters} />
+            <StatCard label="Alpha Encounters" value={cardStats.totalAlphaEncounters} />
+            <StatCard label="Wild Other Encounters (non horde)" value={cardStats.totalWildOtherEncounters} />
+            <StatCard label="Rare Encounters" value={cardStats.totalRareEncounters} />
+            <StatCard label="Fossil Encounters" value={cardStats.totalFossilEncounters} />
+            <StatCard label="Highest IV Shiny" value={cardStats.highestIvShiny} textValue />
+            <StatCard label="Lowest IV Shiny" value={cardStats.lowestIvShiny} textValue />
+            <StatCard label="Highest Encounter Shiny" value={cardStats.highestEncounterShiny} textValue />
+            <StatCard label="Lowest Encounter Shiny" value={cardStats.lowestEncounterShiny} textValue />
           </section>
 
           <section className={styles.checklist} aria-label="Player card PNG options">
@@ -601,15 +761,44 @@ export default function PlayerCardGenerator() {
             </div>
           </section>
 
+          <section className={styles.manualEditor} aria-label="Manual player card value edits">
+            <h2>Manual Edits</h2>
+            {hasManualEdits && <span className={styles.editedBadge}>Edited marker will appear on PNG</span>}
+            <div className={styles.manualGrid}>
+              {EDITABLE_FIELDS.map(field => (
+                <label key={field.key} className={styles.field}>
+                  <span>{field.label}</span>
+                  <input
+                    type="text"
+                    value={manualValues[field.key] || ''}
+                    onChange={event => handleManualValueChange(field.key, event.target.value)}
+                    inputMode={field.type === 'number' ? 'numeric' : undefined}
+                    placeholder={String(getCardValue(stats, {}, field.key) || '-')}
+                  />
+                </label>
+              ))}
+            </div>
+          </section>
+
           <section className={styles.cardPreviewSection}>
             <div className={styles.playerCard}>
               <div className={styles.trainerPanel}>
-                <div className={styles.imageFrame}>
-                  {imagePreview ? (
-                    <img src={imagePreview} alt="" />
-                  ) : (
-                    <span>No image uploaded</span>
-                  )}
+                <div className={styles.photoStack}>
+                  <div className={styles.imageFrame}>
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="" />
+                    ) : (
+                      <span>No image uploaded</span>
+                    )}
+                  </div>
+                  <div className={styles.playerTime}>
+                    {getPlayerTimeBreakdown(playerTime, exportOptions.includeTimeBreakdown).map(line => (
+                      <span key={line}>{line}</span>
+                    ))}
+                    {exportOptions.averageEncounterPerHour && formatAverageEncounterPerHour(cardStats.totalEncounters, playerTime) && (
+                      <span>{formatAverageEncounterPerHour(cardStats.totalEncounters, playerTime)}</span>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <h2>{playerName || 'PokeMMO Player'}</h2>
@@ -618,9 +807,9 @@ export default function PlayerCardGenerator() {
               </div>
 
               <div className={styles.previewStats}>
-                <StatCard label="Encounters" value={stats.totalEncounters} compact />
-                <StatCard label="Shinies" value={stats.totalShinies} compact />
-                <StatCard label="Rare Encounters" value={stats.totalRareEncounters} compact />
+                <StatCard label="Encounters" value={cardStats.totalEncounters} compact />
+                <StatCard label="Shinies" value={cardStats.totalShinies} compact />
+                <StatCard label="Rare Encounters" value={cardStats.totalRareEncounters} compact />
               </div>
             </div>
 
@@ -698,7 +887,7 @@ function StatCard({ label, value, compact = false, textValue = false }) {
   return (
     <div className={`${styles.statCard} ${compact ? styles.compactStat : ''}`}>
       <span>{label}</span>
-      <strong className={textValue ? styles.textStatValue : ''}>{textValue ? value : formatNumber(value)}</strong>
+      <strong className={textValue ? styles.textStatValue : ''}>{textValue ? value : formatCardNumber(value)}</strong>
     </div>
   )
 }
