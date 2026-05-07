@@ -34,6 +34,7 @@ const OfficialShinyWarsPlanner = lazy(() => import('./pages/OfficialShinyWarsPla
 const TeamStatistics = lazy(() => import('./pages/TeamStatistics/TeamStatistics'))
 const RegionMaps = lazy(() => import('./pages/RegionMaps/RegionMaps'))
 const RouteFinder = lazy(() => import('./pages/RouteFinder/RouteFinder'))
+const PlayerCardGenerator = lazy(() => import('./pages/PlayerCardGenerator/PlayerCardGenerator'))
 
 const BountiesPage = lazy(() => import('./pages/Bounties/BountiesPage'));
 const SpriteRecolour = lazy(() => import('./pages/SpriteRecolour/SpriteRecolour'));
@@ -116,6 +117,7 @@ export default function App() {
             <Route path="/trophy/:trophySlug" element={<TrophyPage />} />
             <Route path="/LnyCatchCalc" element={<LnyCatchCalc />} />
             <Route path="/counter-generator" element={<CounterGenerator />} />
+            <Route path="/player-card-generator" element={<PlayerCardGenerator />} />
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />
             <Route path="/shiny-odds" element={<ShinyOdds />} />
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />

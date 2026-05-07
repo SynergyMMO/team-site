@@ -1413,27 +1413,27 @@
       "route": "Safari Zone / Marshland",
       "credit": "ZackTheAce, Hyper",
       "variation": "Carnivine / Day",
-      "total": 142,
+      "total": 716,
       "data": [
         {
-          "pokemon": "Arbok",
-          "encounters": 14
+          "pokemon": "Koffing",
+          "encounters": 410
         },
         {
           "pokemon": "Carnivine",
-          "encounters": 23
-        },
-        {
-          "pokemon": "Grimer",
-          "encounters": 11
+          "encounters": 98
         },
         {
           "pokemon": "Ekans",
-          "encounters": 15
+          "encounters": 80
         },
         {
-          "pokemon": "Koffing",
-          "encounters": 79
+          "pokemon": "Arbok",
+          "encounters": 64
+        },
+        {
+          "pokemon": "Grimer",
+          "encounters": 64
         }
       ],
       "encounterCategory": "single"

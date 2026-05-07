@@ -30,6 +30,7 @@ const NAV_ITEMS = [
     submenu: [
       { to: '/LnyCatchCalc/', label: 'LNY Pokemon Catch Calculators' },
       { to: '/counter-generator/', label: 'Counter Generator' },
+      { to: '/player-card-generator/', label: 'Player Card Generator' },
       { to: '/random-pokemon-generator/', label: 'Random Pokemon Generator' },
       { to: '/shiny-odds/', label: 'Shiny Odds' },
       { to: '/sprite-recolour/', label: 'Sprite Recolour' },

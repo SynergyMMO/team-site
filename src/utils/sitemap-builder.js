@@ -21,6 +21,7 @@ const staticRoutes = [
   { path: '/streamers/', changefreq: 'daily', priority: '0.7' },
   { path: '/trophy-board/', changefreq: 'monthly', priority: '0.6' },
   { path: '/counter-generator/', changefreq: 'monthly', priority: '0.6' },
+  { path: '/player-card-generator/', changefreq: 'monthly', priority: '0.6' },
   { path: '/random-pokemon-generator/', changefreq: 'monthly', priority: '0.7' },
   { path: '/LnyCatchCalc/', changefreq: 'weekly', priority: '0.4' },
   { path: '/events/', changefreq: 'weekly', priority: '0.6' },
