@@ -3,11 +3,20 @@ import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-do
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useEncounterPercents } from '../../hooks/useEncounterPercents'
+import { useInGameClock } from '../../hooks/useInGameClock'
 import { useTierData } from '../../hooks/useTierData'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { getAssetUrl } from '../../utils/assets'
+import {
+  DAY_OFFSET,
+  IN_GAME_DAYS,
+  formatRotationDuration,
+  getAlteringCaveRotationState,
+  getAlteringCaveMoveWarning,
+} from '../../utils/alteringCave'
 import { normalizePokemonName, onGifError, getBasePokemonName } from '../../utils/pokemon'
 import { API } from '../../api/endpoints'
+import alteringCaveData from '../../data/altering_cave_rotations.json'
 import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import {
@@ -33,6 +42,10 @@ function parseLocationSearch(value) {
   }
 }
 
+function isAlteringCaveSearch(value) {
+  return String(value || '').toLowerCase().replace(/-/g, ' ').includes('altering cave')
+}
+
 export default function Pokedex() {
   const breadcrumbs = [
     { name: 'Home', url: '/' },
@@ -51,6 +64,7 @@ export default function Pokedex() {
   const { data, isLoading } = useDatabase()
   const { data: encounterPercents = {} } = useEncounterPercents()
   const { tierPokemon, tierLookup } = useTierData()
+  useInGameClock(DAY_OFFSET, IN_GAME_DAYS)
   const [mode, setMode] = useState(() => searchParams.get('mode') || 'shiny')
   const [hideComplete, setHideComplete] = useState(() => searchParams.get('hideComplete') === '1')
   const [search, setSearch] = useState(() => searchParams.get('q') || '')
@@ -451,6 +465,7 @@ export default function Pokedex() {
         }
       })
     })
+    options.add('Altering Cave - Hoenn')
     const sorted = Array.from(options).sort()
     return sorted
   }, [])
@@ -1364,6 +1379,168 @@ export default function Pokedex() {
 
             const { routeName, regionName } = parseLocationSearch(locationSearch)
             const routePercentData = getRouteEncounterPercentData(encounterRoutes, regionName, { name: routeName })
+            const rotationState = getAlteringCaveRotationState()
+
+            if (isAlteringCaveSearch(locationSearch)) {
+              const activeCycle = alteringCaveData.cycles.find(cycle => cycle.cycle === rotationState.rotation) || alteringCaveData.cycles[0]
+              const otherCycles = alteringCaveData.cycles.filter(cycle => cycle.cycle !== activeCycle.cycle)
+
+              const pokemonMatchesFilters = (pokemon) => {
+                const normalized = normalizePokemonName(pokemon.name)
+                const lookupName = nameAliasMap[normalized] || normalized
+                const details = pokemonData[lookupName] || {}
+                const pokemonTier = tierLookup[normalized] || ''
+                const pokemonEggGroups = eggGroupIndex.get(lookupName) || []
+
+                if (synergyDataToggle && (details.is_legendary || details.is_mythical)) return false
+
+                const lowerName = pokemon.name.toLowerCase()
+                const isComplete = globalShinies.has(lowerName)
+                if (hideComplete && isComplete) return false
+
+                if (searchTerm) {
+                  const matchesSearch = lowerName.includes(searchTerm) || normalized.includes(searchTerm)
+                  if (!matchesSearch) return false
+                }
+
+                if (selectedRarities.length > 0) {
+                  const rarityKeys = new Set()
+                  if (pokemon.repelTrickRarity) rarityKeys.add(formatRarityKey(pokemon.repelTrickRarity))
+                  rarityKeys.add('singles')
+                  const matchesRarity = selectedRarities.some(value => rarityKeys.has(value))
+                  if (!matchesRarity) return false
+                }
+
+                if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return false
+
+                if (selectedEggGroups.length > 0) {
+                  const matchesGroups = eggGroupMatchMode === 'both'
+                    ? selectedEggGroups.every(group => {
+                        if (group.toLowerCase() === 'legendary') return details.is_legendary || details.is_mythical
+                        return pokemonEggGroups.includes(group)
+                      })
+                    : selectedEggGroups.some(group => {
+                        if (group.toLowerCase() === 'legendary') return details.is_legendary || details.is_mythical
+                        return pokemonEggGroups.includes(group)
+                      })
+                  if (!matchesGroups) return false
+                }
+
+                if (selectedTypes.length > 0) {
+                  const pokemonTypes = details.types || []
+                  const matchesType = selectedTypes.every(type => pokemonTypes.includes(type))
+                  if (!matchesType) return false
+                }
+
+                const filledMoves = movesToFilterBy.filter(m => m.trim())
+                if (filledMoves.length > 0) {
+                  const pokemonMovesRaw = details.moves || []
+                  const pokemonMoveNames = pokemonMovesRaw.map(m => typeof m === 'string' ? m : m.name).filter(Boolean)
+                  const matchesMove = filledMoves.every(moveFilter =>
+                    pokemonMoveNames.some(pokemonMove =>
+                      pokemonMove.toLowerCase().includes(moveFilter.toLowerCase())
+                    )
+                  )
+                  if (!matchesMove) return false
+                }
+
+                if (abilitySearch.trim()) {
+                  const pokemonAbilitiesRaw = details.abilities || []
+                  const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.ability_name).filter(Boolean)
+                  const searchLower = abilitySearch.toLowerCase()
+                  const matchesAbility = pokemonAbilityNames.some(ability =>
+                    ability.toLowerCase().includes(searchLower)
+                  )
+                  if (!matchesAbility) return false
+                }
+
+                return matchesStatSearch(details, shouldHideUnobtainable())
+              }
+
+              const renderAlteringPokemon = (pokemon, cycleNumber, idx) => {
+                const normalized = normalizePokemonName(pokemon.name)
+                const lowerName = pokemon.name.toLowerCase()
+                const isComplete = globalShinies.has(lowerName)
+                const moveWarning = getAlteringCaveMoveWarning(pokemon.name)
+
+                return (
+                  <div key={`${cycleNumber}-${pokemon.name}-${idx}`} className={`${styles.locationPokemonItem} ${styles.alteringCavePokemonItem}`}>
+                    {moveWarning && <span className={styles.alteringCaveMoveWarning}>{moveWarning}</span>}
+                    <span className={styles.alteringCaveRateBadge}>{pokemon.rate}%</span>
+                    <div
+                      className={styles.pokemonContainer}
+                      onClick={() => navigate(`/pokemon/${getBasePokemonName(pokemon.name).toLowerCase()}/`)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          navigate(`/pokemon/${getBasePokemonName(pokemon.name).toLowerCase()}/`)
+                        }
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <img
+                        src={API.pokemonSprite(normalized)}
+                        alt={pokemon.name}
+                        className={`${styles.pokemon} ${
+                          synergyDataToggle
+                            ? (isComplete ? styles.complete : styles.incomplete)
+                            : styles.complete
+                        }`}
+                        width="50"
+                        height="50"
+                        loading="lazy"
+                        onError={onGifError(normalized)}
+                      />
+                    </div>
+                    <div className={styles.alteringCavePokemonMeta}>
+                      <strong>{pokemon.name}</strong>
+                      <span>Lvl {pokemon.levelRange[0]}-{pokemon.levelRange[1]}</span>
+                      {pokemon.repelTrickRarity && <span>{pokemon.repelTrickRarity} repel</span>}
+                    </div>
+                  </div>
+                )
+              }
+
+              const renderCycle = (cycle, isCurrent = false) => {
+                const visiblePokemon = cycle.pokemon
+                  .filter(pokemonMatchesFilters)
+                  .sort((a, b) => b.rate - a.rate || a.name.localeCompare(b.name))
+                if (visiblePokemon.length === 0) return null
+
+                return (
+                  <div key={`altering-${cycle.cycle}`} className={`${styles.generationSection} ${isCurrent ? styles.alteringCaveCurrentSection : ''}`}>
+                    <div className={styles.alteringCaveSectionHeader}>
+                      <h2 className={styles.generationTitle}>{isCurrent ? `Current Rotation ${cycle.cycle}` : `Rotation ${cycle.cycle}`}</h2>
+                      <p>
+                        {cycle.repelTrick ? `Repel Trick: Lvl ${cycle.repelLevel}` : 'No repel trick route'}
+                      </p>
+                    </div>
+                    <div className={styles.locationGrid}>
+                      {visiblePokemon.map((pokemon, idx) => renderAlteringPokemon(pokemon, cycle.cycle, idx))}
+                    </div>
+                  </div>
+                )
+              }
+
+              return [
+                <div key="altering-header" className={styles.alteringCaveHeader}>
+                  <div>
+                    <h1>Altering Cave</h1>
+                    <p>Current rotation changes every in-game day.</p>
+                  </div>
+                  <div className={styles.alteringCaveTimer}>
+                    <span>Next rotation in</span>
+                    <strong>{formatRotationDuration(rotationState.msUntilSwap)}</strong>
+                  </div>
+                </div>,
+                renderCycle(activeCycle, true),
+                <div key="altering-rest-header" className={styles.alteringCaveRestHeader}>
+                  Rest of Altering Cave Rotations
+                </div>,
+                ...otherCycles.map(cycle => renderCycle(cycle)).filter(Boolean)
+              ]
+            }
 
             return [
               <div key="route-header" style={{ marginBottom: '20px', paddingBottom: '12px', borderBottom: '2px solid rgba(102, 126, 234, 0.5)' }}>

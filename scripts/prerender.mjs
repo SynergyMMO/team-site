@@ -39,7 +39,8 @@ const PAGE_KEYWORDS = {
   '/themes': "PokeMMO themes, encounter counter themes, Pokemon retexture, PokeMMO mods, custom UI, visual mods, Team Synergy themes, PokeMMO overlays, download themes, shiny hunting tools, game customization, PokeMMO resources",
   '/time-display': 'PokeMMO time display, in-game clock, real-time events, Team Synergy time tool, PokeMMO time zones, event timing, shiny hunting time, day/night cycle, PokeMMO utilities, Team Synergy tools',
   '/region-maps': 'PokeMMO interactive map, Kanto map, Johto map, Hoenn map, Sinnoh map, Unova map, Pokemon spawn map, route overlays, Pokemon route planner, Team Synergy tools',
-  '/route-finder': 'PokeMMO route finder, Pokemon encounter percentages, shiny hunt phases, tracked route data, Pokemon route search, Team Synergy tools'
+  '/route-finder': 'PokeMMO route finder, Pokemon encounter percentages, shiny hunt phases, tracked route data, Pokemon route search, Team Synergy tools',
+  '/altering-cave-rotations': 'PokeMMO Altering Cave rotations, Altering Cave repel trick, rotation timer, Bagon, Absol, Aron, shiny hunting route'
 };
 
 const DYNAMIC_KEYWORDS = {
@@ -247,6 +248,7 @@ const STATIC_ROUTES = [
   '/official-shiny-wars-planner',
   '/region-maps',
   '/route-finder',
+  '/altering-cave-rotations',
   '/counter-generator',
   '/player-card-generator',
   '/sprite-recolour',
@@ -1647,6 +1649,12 @@ async function prerender() {
       ogTitle: 'PokeMMO Safari Zone Guide - Catch Rates, Flee Rates & Best Strategies',
       ogDescription: 'Complete PokeMMO Safari Zone guide with catch rates, flee rates, and optimal strategies for Johto and Sinnoh (Great Marsh). Find the best approach for every Safari Zone Pokemon.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif'
+    },
+    '/altering-cave-rotations': {
+      route: '/altering-cave-rotations',
+      ogTitle: 'Altering Cave Rotations - PokeMMO Shiny Hunting | Team Synergy',
+      ogDescription: 'Track PokeMMO Altering Cave rotations with the current rotation, swap timer, repel trick filter, repel levels, and target rarity.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/bagon.gif'
     },
     '/resources': {
       route: '/resources',

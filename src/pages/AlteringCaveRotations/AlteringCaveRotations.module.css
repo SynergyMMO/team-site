@@ -1,0 +1,352 @@
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+.credit {
+  margin: -4px auto 8px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.credit a {
+  color: #c7a8ff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.credit a:hover {
+  color: #ea66cd;
+  text-decoration: underline;
+}
+
+.clockPanel {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  max-width: 900px;
+  margin: 18px auto 22px;
+  padding: 18px 22px;
+  border: 1px solid rgba(155, 89, 182, 0.38);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(20, 10, 35, 0.86), rgba(30, 25, 50, 0.82));
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.clockTime {
+  color: #f8fafc;
+  font-size: 2.35rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.clockDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 700;
+}
+
+.clockDetails span,
+.periodBadge {
+  border: 1px solid rgba(155, 89, 182, 0.34);
+  border-radius: 999px;
+  background: rgba(74, 144, 226, 0.16);
+  padding: 5px 11px;
+  font-size: 0.88rem;
+}
+
+.swapTimer {
+  display: grid;
+  gap: 4px;
+  min-width: 164px;
+  color: #cbd5e1;
+  text-align: right;
+}
+
+.swapTimer strong {
+  color: #fff7c2;
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 22px;
+  flex-wrap: wrap;
+}
+
+.checkboxControl {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 1px solid rgba(155, 89, 182, 0.36);
+  border-radius: 8px;
+  background: rgba(20, 10, 35, 0.75);
+  color: #e2e8f0;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.checkboxControl input {
+  width: 18px;
+  height: 18px;
+  accent-color: #ea66cd;
+}
+
+.viewAllButton {
+  min-height: 42px;
+  padding: 8px 16px;
+  border: 1px solid rgba(155, 89, 182, 0.48);
+  border-radius: 8px;
+  background: rgba(74, 144, 226, 0.18);
+  color: #f8fafc;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.viewAllButton:hover {
+  border-color: rgba(234, 102, 205, 0.72);
+  background: rgba(234, 102, 205, 0.18);
+}
+
+.rotationList {
+  display: grid;
+  gap: 18px;
+}
+
+.rotationPanel {
+  border: 1px solid rgba(155, 89, 182, 0.28);
+  border-radius: 12px;
+  background: rgba(20, 10, 35, 0.72);
+  padding: 18px;
+}
+
+.currentPanel {
+  border-color: rgba(234, 102, 205, 0.58);
+  box-shadow: 0 0 0 1px rgba(234, 102, 205, 0.12), 0 12px 30px rgba(234, 102, 205, 0.08);
+}
+
+.rotationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.rotationHeader h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.45rem;
+}
+
+.rotationHeader p {
+  margin: 5px 0 0;
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
+.currentBadge {
+  border-radius: 999px;
+  background: rgba(234, 102, 205, 0.18);
+  border: 1px solid rgba(234, 102, 205, 0.55);
+  color: #ffd6f7;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.pokemonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 12px;
+}
+
+.pokemonCard {
+  display: grid;
+  grid-template-rows: auto 58px auto auto auto;
+  justify-items: center;
+  gap: 6px;
+  min-height: 178px;
+  padding: 12px 10px;
+  border: 1px solid rgba(155, 89, 182, 0.26);
+  border-radius: 8px;
+  background: rgba(20, 10, 35, 0.75);
+  color: #f8fafc;
+  text-decoration: none;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.moveWarning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  max-width: 100%;
+  padding: 3px 7px;
+  border: 1px solid rgba(251, 191, 36, 0.52);
+  border-radius: 6px;
+  background: rgba(120, 53, 15, 0.38);
+  color: #fde68a;
+  font-size: 0.64rem;
+  font-weight: 900;
+  line-height: 1.12;
+  text-align: center;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.pokemonCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(74, 144, 226, 0.72);
+  background: rgba(30, 25, 50, 0.92);
+}
+
+.pokemonGif {
+  max-width: 64px;
+  max-height: 58px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.pokemonName {
+  color: #f8fafc;
+  font-weight: 900;
+  text-align: center;
+}
+
+.levelRange {
+  color: #bae6fd;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.statBadge {
+  min-width: 78px;
+  border-radius: 999px;
+  padding: 4px 9px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.rateBadge {
+  background: rgba(148, 163, 184, 0.16);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.rarityCommon {
+  background: rgba(34, 197, 94, 0.18);
+  border: 1px solid rgba(74, 222, 128, 0.42);
+  color: #bbf7d0;
+}
+
+.rarityUncommon {
+  background: rgba(59, 130, 246, 0.18);
+  border: 1px solid rgba(96, 165, 250, 0.42);
+  color: #bfdbfe;
+}
+
+.rarityRare {
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(192, 132, 252, 0.46);
+  color: #e9d5ff;
+}
+
+.rarityVeryRare {
+  background: rgba(244, 63, 94, 0.18);
+  border: 1px solid rgba(251, 113, 133, 0.48);
+  color: #fecdd3;
+}
+
+.emptyState {
+  border: 1px dashed rgba(148, 163, 184, 0.34);
+  border-radius: 8px;
+  color: #cbd5e1;
+  padding: 22px;
+  text-align: center;
+}
+
+.moveSummary {
+  max-width: 900px;
+  margin: 0 auto 22px;
+  border: 1px solid rgba(155, 89, 182, 0.36);
+  border-radius: 8px;
+  background: rgba(20, 10, 35, 0.72);
+  color: #e2e8f0;
+  overflow: hidden;
+}
+
+.moveSummary summary {
+  cursor: pointer;
+  padding: 12px 16px;
+  color: #f8fafc;
+  font-weight: 900;
+}
+
+.moveSummary summary:hover {
+  background: rgba(234, 102, 205, 0.12);
+}
+
+.moveSummaryContent {
+  display: grid;
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+
+.moveSummaryItem {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(155, 89, 182, 0.18);
+  line-height: 1.45;
+}
+
+.moveSummaryItem strong {
+  color: #ffd6f7;
+}
+
+.moveSummaryItem span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+@media (max-width: 720px) {
+  .clockPanel {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .clockDetails {
+    justify-content: center;
+  }
+
+  .swapTimer {
+    text-align: center;
+  }
+
+  .pokemonGrid {
+    grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  }
+
+  .moveSummaryItem {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

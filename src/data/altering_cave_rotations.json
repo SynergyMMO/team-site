@@ -1,0 +1,324 @@
+{
+  "location": "Altering Cave",
+  "cycles": [
+    {
+      "cycle": 1,
+      "repelTrick": true,
+      "repelLevel": 18,
+      "pokemon": [
+        {
+          "name": "Zubat",
+          "rate": 35,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Houndour",
+          "rate": 9,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Aipom",
+          "rate": 10,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Pineco",
+          "rate": 10,
+          "levelRange": [19, 29],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Mareep",
+          "rate": 10,
+          "levelRange": [18, 26],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Smeargle",
+          "rate": 1,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Very Rare"
+        },
+        {
+          "name": "Stantler",
+          "rate": 5,
+          "levelRange": [12, 20],
+          "repelTrickRarity": "Rare"
+        },
+        {
+          "name": "Teddiursa",
+          "rate": 10,
+          "levelRange": [5, 16]
+        }
+      ]
+    },
+    {
+      "cycle": 2,
+      "repelTrick": true,
+      "repelLevel": 21,
+      "pokemon": [
+        {
+          "name": "Zubat",
+          "rate": 53,
+          "levelRange": [10, 20]
+        },
+        {
+          "name": "Bagon",
+          "rate": 0.5,
+          "levelRange": [18, 25],
+          "repelTrickRarity": "Very Rare"
+        },
+        {
+          "name": "Poochyena",
+          "rate": 8,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Snubbull",
+          "rate": 8,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Stantler",
+          "rate": 6.5,
+          "levelRange": [12, 20]
+        },
+        {
+          "name": "Teddiursa",
+          "rate": 8,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Smeargle",
+          "rate": 8,
+          "levelRange": [19, 29],
+          "repelTrickRarity": "Common"
+        }
+      ]
+    },
+    {
+      "cycle": 3,
+      "repelTrick": true,
+      "repelLevel": 21,
+      "pokemon": [
+        {
+          "name": "Zubat",
+          "rate": 35,
+          "levelRange": [18, 25],
+          "repelTrickRarity": "Uncommon"
+        },
+        {
+          "name": "Slakoth",
+          "rate": 10,
+          "levelRange": [12, 16]
+        },
+        {
+          "name": "Mawile",
+          "rate": 1,
+          "levelRange": [18, 25],
+          "repelTrickRarity": "Rare"
+        },
+        {
+          "name": "Sableye",
+          "rate": 15,
+          "levelRange": [12, 28],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Spinda",
+          "rate": 10,
+          "levelRange": [19, 29],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Mareep",
+          "rate": 10,
+          "levelRange": [18, 26],
+          "repelTrickRarity": "Uncommon"
+        },
+        {
+          "name": "Poochyena",
+          "rate": 9,
+          "levelRange": [12, 20]
+        },
+        {
+          "name": "Snubbull",
+          "rate": 10,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Common"
+        }
+      ]
+    },
+    {
+      "cycle": 4,
+      "repelTrick": false,
+      "repelLevel": null,
+      "pokemon": [
+        {
+          "name": "Zubat",
+          "rate": 100,
+          "levelRange": [18, 25]
+        }
+      ]
+    },
+    {
+      "cycle": 5,
+      "repelTrick": true,
+      "repelLevel": 18,
+      "pokemon": [
+        {
+          "name": "Zubat",
+          "rate": 45,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Poochyena",
+          "rate": 9,
+          "levelRange": [12, 16]
+        },
+        {
+          "name": "Mareep",
+          "rate": 10,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Teddiursa",
+          "rate": 10,
+          "levelRange": [12, 20],
+          "repelTrickRarity": "Rare"
+        },
+        {
+          "name": "Mawile",
+          "rate": 5,
+          "levelRange": [12, 20],
+          "repelTrickRarity": "Rare"
+        },
+        {
+          "name": "Spinda",
+          "rate": 10,
+          "levelRange": [19, 29],
+          "repelTrickRarity": "Common"
+        }
+      ]
+    },
+    {
+      "cycle": 6,
+      "repelTrick": true,
+      "repelLevel": 18,
+      "pokemon": [
+        {
+          "name": "Zubat",
+          "rate": 45,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Absol",
+          "rate": 0.5,
+          "levelRange": [18, 25],
+          "repelTrickRarity": "Very Rare"
+        },
+        {
+          "name": "Duskull",
+          "rate": 6.5,
+          "levelRange": [12, 20],
+          "repelTrickRarity": "Uncommon"
+        },
+        {
+          "name": "Shuppet",
+          "rate": 8,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Pineco",
+          "rate": 8,
+          "levelRange": [19, 29],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Houndour",
+          "rate": 8,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Zigzagoon",
+          "rate": 8,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Aipom",
+          "rate": 8,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Snubbull",
+          "rate": 8,
+          "levelRange": [18, 26],
+          "repelTrickRarity": "Common"
+        }
+      ]
+    },
+    {
+      "cycle": 7,
+      "repelTrick": true,
+      "repelLevel": 18,
+      "pokemon": [
+        {
+          "name": "Zubat",
+          "rate": 45,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Aron",
+          "rate": 0.5,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Very Rare"
+        },
+        {
+          "name": "Stantler",
+          "rate": 6.5,
+          "levelRange": [12, 20],
+          "repelTrickRarity": "Rare"
+        },
+        {
+          "name": "Shuppet",
+          "rate": 8,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Pineco",
+          "rate": 8,
+          "levelRange": [19, 29],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Poochyena",
+          "rate": 8,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Zigzagoon",
+          "rate": 8,
+          "levelRange": [5, 16]
+        },
+        {
+          "name": "Aipom",
+          "rate": 8,
+          "levelRange": [18, 28],
+          "repelTrickRarity": "Common"
+        },
+        {
+          "name": "Snubbull",
+          "rate": 8,
+          "levelRange": [18, 26],
+          "repelTrickRarity": "Common"
+        }
+      ]
+    }
+  ]
+}

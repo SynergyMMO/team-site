@@ -447,6 +447,212 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.38);
 }
 
+.alteringCaveHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: min(1120px, calc(100% - 28px));
+  margin: 0 auto 22px;
+  padding: 16px 20px;
+  border: 1px solid rgba(155, 89, 182, 0.38);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(20, 10, 35, 0.86), rgba(30, 25, 50, 0.82));
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.alteringCaveHeader h1 {
+  margin: 0 0 4px;
+  color: #ea66cd;
+  font-size: 1.55rem;
+  line-height: 1.1;
+}
+
+.alteringCaveHeader p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.9rem;
+}
+
+.alteringCaveTimer {
+  display: grid;
+  gap: 4px;
+  min-width: 160px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.82rem;
+}
+
+.alteringCaveTimer strong {
+  color: #fff7c2;
+  font-size: 1.08rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.alteringCaveCurrentSection {
+  width: min(1120px, calc(100% - 28px));
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px 18px 24px;
+  border: 1px solid rgba(234, 102, 205, 0.38);
+  border-radius: 12px;
+  background: rgba(20, 10, 35, 0.46);
+  box-shadow: 0 0 22px rgba(234, 102, 205, 0.08);
+}
+
+.alteringCaveSectionHeader {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.alteringCaveSectionHeader .generationTitle {
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 1.35rem;
+  letter-spacing: 0.4px;
+}
+
+.alteringCaveSectionHeader p {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.alteringCaveRestHeader {
+  width: min(1120px, calc(100% - 28px));
+  max-width: none;
+  margin: 32px auto 6px;
+  padding: 11px 16px;
+  border-top: 1px solid rgba(155, 89, 182, 0.28);
+  border-bottom: 1px solid rgba(155, 89, 182, 0.28);
+  color: rgba(255, 255, 255, 0.78);
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.alteringCavePokemonItem {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 8px;
+  min-height: 184px;
+  width: 100px;
+}
+
+.alteringCavePokemonItem .pokemonContainer {
+  width: 78px;
+  height: 78px;
+}
+
+.alteringCavePokemonItem .pokemonContainer:hover {
+  transform: scale(1.08);
+}
+
+.alteringCaveRateBadge {
+  position: absolute;
+  top: 31px;
+  right: 4px;
+  z-index: 4;
+  border: 1px solid rgba(138, 214, 255, 0.65);
+  border-radius: 8px;
+  background: rgba(14, 30, 52, 0.92);
+  color: #fff7c2;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1;
+  padding: 0.18rem 0.28rem;
+  pointer-events: none;
+}
+
+.alteringCaveMoveWarning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  width: 100%;
+  padding: 3px 6px;
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  border-radius: 6px;
+  background: rgba(120, 53, 15, 0.36);
+  color: #fde68a;
+  font-size: 0.58rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+}
+
+.alteringCavePokemonMeta {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.7rem;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.alteringCavePokemonMeta strong {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.76rem;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+  .alteringCaveHeader {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .alteringCaveTimer {
+    text-align: center;
+  }
+}
+
+.alteringCaveCurrentSection .locationGrid,
+.alteringCaveCurrentSection + .alteringCaveRestHeader + .generationSection .locationGrid,
+.generationSection:has(.alteringCavePokemonItem) .locationGrid {
+  grid-template-columns: repeat(auto-fit, minmax(100px, 100px));
+  grid-auto-rows: auto;
+  gap: 18px 14px;
+  row-gap: 22px;
+  justify-content: center;
+  align-items: start;
+  padding: 12px 0 0;
+}
+
+.generationSection:has(.alteringCavePokemonItem) {
+  margin: 26px auto;
+  width: min(1120px, calc(100% - 28px));
+}
+
+@media (max-width: 600px) {
+  .alteringCaveCurrentSection .locationGrid,
+  .generationSection:has(.alteringCavePokemonItem) .locationGrid {
+    grid-template-columns: repeat(auto-fit, minmax(86px, 86px));
+    gap: 16px 10px;
+  }
+
+  .alteringCavePokemonItem {
+    width: 86px;
+  }
+
+  .alteringCavePokemonItem .pokemonContainer {
+    width: 68px;
+    height: 68px;
+  }
+}
+
 /* Location lookup grid - designed for items with additional labels below */
 .locationGrid {
   display: grid;

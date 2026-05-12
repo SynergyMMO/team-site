@@ -20,6 +20,7 @@ const LnyCatchCalc = lazy(() => import('./pages/LnyCatchCalc/LnyCatchCalc'))
 const ShinyWar2025 = lazy(() => import('./pages/ShinyWar2025/ShinyWar2025'))
 const RoamingLegendariesCalendar = lazy(() => import('./pages/RoamingLegendaries/RoamingLegendariesCalendar'))
 const SafariZones = lazy(() => import('./pages/SafariZones/SafariZones'))
+const AlteringCaveRotations = lazy(() => import('./pages/AlteringCaveRotations/AlteringCaveRotations'))
 const Resources = lazy(() => import('./pages/Resources/Resources'))
 const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
@@ -122,6 +123,7 @@ export default function App() {
             <Route path="/shiny-odds" element={<ShinyOdds />} />
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />
             <Route path="/safari-zones" element={<SafariZones />} />
+            <Route path="/altering-cave-rotations" element={<AlteringCaveRotations />} />
             <Route path="/dex-helper" element={<DexHelper />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/resources/:category" element={<Resources />} />
