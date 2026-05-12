@@ -10,6 +10,7 @@ import {
   formatRotationDuration,
   getAlteringCaveRotationState,
   getAlteringCaveMoveWarning,
+  getMsUntilAlteringCaveRotation,
 } from '../../utils/alteringCave'
 import { getLocalPokemonGif, normalizePokemonName, onGifError } from '../../utils/pokemon'
 import alteringCaveData from '../../data/altering_cave_rotations.json'
@@ -52,7 +53,7 @@ function PokemonCard({ pokemon, repelOnly }) {
   )
 }
 
-function RotationPanel({ cycle, isCurrent, repelOnly }) {
+function RotationPanel({ cycle, isCurrent, repelOnly, showTimeUntil, timeUntil }) {
   const visiblePokemon = repelOnly
     ? cycle.pokemon.filter((pokemon) => pokemon.repelTrickRarity).sort(sortByCommonness)
     : [...cycle.pokemon].sort(sortByCommonness)
@@ -64,7 +65,15 @@ function RotationPanel({ cycle, isCurrent, repelOnly }) {
           <h2>Rotation {cycle.cycle}</h2>
           <p>{cycle.repelTrick ? `Repel Trick: Lvl ${cycle.repelLevel}` : 'No repel trick route'}</p>
         </div>
-        {isCurrent && <span className={styles.currentBadge}>Current</span>}
+        <div className={styles.rotationStatus}>
+          {showTimeUntil && (
+            <div className={styles.timeUntil}>
+              <span>Time Until</span>
+              <strong>{timeUntil === 0 ? 'Active now' : formatRotationDuration(timeUntil)}</strong>
+            </div>
+          )}
+          {isCurrent && <span className={styles.currentBadge}>Current</span>}
+        </div>
       </div>
 
       {visiblePokemon.length > 0 ? (
@@ -159,6 +168,8 @@ export default function AlteringCaveRotations() {
             cycle={cycle}
             isCurrent={cycle.cycle === rotationState.rotation}
             repelOnly={repelOnly}
+            showTimeUntil={viewAll}
+            timeUntil={getMsUntilAlteringCaveRotation(cycle.cycle, rotationState)}
           />
         ))}
       </div>

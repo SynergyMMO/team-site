@@ -63,6 +63,16 @@ export function getAlteringCaveRotationState(nowMs = Date.now()) {
   }
 }
 
+export function getMsUntilAlteringCaveRotation(targetRotation, rotationState = getAlteringCaveRotationState()) {
+  const currentIndex = rotationState.rotation - 1
+  const targetIndex = targetRotation - 1
+  const rotationsUntilTarget = positiveModulo(targetIndex - currentIndex, 7)
+
+  if (rotationsUntilTarget === 0) return 0
+
+  return rotationState.msUntilSwap + (rotationsUntilTarget - 1) * REAL_MS_PER_INGAME_DAY
+}
+
 export function formatRotationDuration(ms) {
   const totalSeconds = Math.max(0, Math.ceil(ms / 1000))
   const hours = Math.floor(totalSeconds / 3600)

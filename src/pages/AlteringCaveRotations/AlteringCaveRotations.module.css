@@ -170,6 +170,38 @@
   text-transform: uppercase;
 }
 
+.rotationStatus {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.timeUntil {
+  display: grid;
+  gap: 3px;
+  min-width: 128px;
+  padding: 7px 10px;
+  border: 1px solid rgba(138, 214, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(14, 30, 52, 0.34);
+  color: rgba(226, 232, 240, 0.72);
+  text-align: right;
+}
+
+.timeUntil span {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.timeUntil strong {
+  color: #fff7c2;
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+
 .pokemonGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
@@ -343,6 +375,18 @@
 
   .pokemonGrid {
     grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  }
+
+  .rotationHeader {
+    display: grid;
+  }
+
+  .rotationStatus {
+    justify-content: flex-start;
+  }
+
+  .timeUntil {
+    text-align: left;
   }
 
   .moveSummaryItem {
