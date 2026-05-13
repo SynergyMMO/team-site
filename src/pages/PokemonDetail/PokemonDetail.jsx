@@ -1706,10 +1706,10 @@ useDocumentHead({
                   )
                 })()}
                 {(() => {
-                  const duskBall100 = calculateCatchChance(pokemon.catchRate, 3.5, 100).toFixed(1)
-                  const duskBall1 = calculateCatchChance(pokemon.catchRate, 3.5, 1).toFixed(1)
-                  const duskBallSleep100 = calculateCatchChance(pokemon.catchRate, 3.5, 100, 2.0).toFixed(1)
-                  const duskBallSleep1 = calculateCatchChance(pokemon.catchRate, 3.5, 1, 2.0).toFixed(1)
+                  const duskBall100 = calculateCatchChance(pokemon.catchRate, 2.5, 100).toFixed(1)
+                  const duskBall1 = calculateCatchChance(pokemon.catchRate, 2.5, 1).toFixed(1)
+                  const duskBallSleep100 = calculateCatchChance(pokemon.catchRate, 2.5, 100, 2.0).toFixed(1)
+                  const duskBallSleep1 = calculateCatchChance(pokemon.catchRate, 2.5, 1, 2.0).toFixed(1)
                   return (
                     <div className={styles.tooltipRow}>
                       <div>Dusk Ball<span className={styles.tooltipNote}>(Night)</span></div>
