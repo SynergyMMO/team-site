@@ -25,6 +25,7 @@ const PAGE_KEYWORDS = {
   '/roaming-legendaries': 'PokeMMO roaming legendaries, roaming legendary calendar, Zapdos, Articuno, Moltres, Entei, Suicune, Raikou, PokeMMO legendary spawns, roaming Pokémon locations, legendary monthly schedule, PokeMMO shiny hunting legendaries',
   '/random-pokemon-generator': 'Pokemon randomizer, shiny hunt randomizer, random Pokemon generator, shiny bingo cards, encounter picker, hunt challenge',
   '/counter-generator': 'PokeMMO counter theme, counter theme generator, encounter counter, PokeMMO tools, theme customizer, counter maker',
+  '/egg-move-calculator': 'PokeMMO egg move calculator, egg move breeding chains, Pokemon egg groups, PokeMMO breeding tool, egg move transfer route',
   '/player-card-generator': 'PokeMMO player card generator, encounter tracker JSON, shiny hunting stats, trainer card, player profile PNG',
   '/sprite-recolour': 'sprite recolour tool, Pokemon sprite editor, GIF palette editor, sprite recolor, Pokemon GIF editor, palette swap tool, PokeMMO tools, Team Synergy tools',
   '/events': 'PokeMMO events, shiny hunting competition, PokeMMO PVP events, gaming tournament, team events, community challenges',
@@ -147,6 +148,11 @@ const PAGE_FAQS = {
     { question: 'What file format does the Counter Generator export?', answer: 'Themes are exported as downloadable packages compatible with PokeMMO counter mod systems.' },
     { question: 'Can I share custom themes with others?', answer: 'Yes, exported themes can be easily shared with other PokeMMO players.' },
   ],
+  '/egg-move-calculator': [
+    { question: 'What is the Egg Move Calculator?', answer: 'The Egg Move Calculator finds PokeMMO breeding chains for passing egg moves through shared egg groups.' },
+    { question: 'How does the calculator find a chain?', answer: 'It starts from Pokemon that learn the move naturally, then follows compatible egg groups into Pokemon that can inherit the move as an egg move.' },
+    { question: 'Can it handle bridge Pokemon?', answer: 'Yes, it can show multi-step lines such as moving Water Spout from Wailmer to Remoraid and then to Squirtle.' },
+  ],
   '/sprite-recolour': [
     { question: 'What does the Sprite Recolour Tool do?', answer: 'The Sprite Recolour Tool lets you edit the palette of Pokemon sprite GIFs and images directly in your browser.' },
     { question: 'Can I search for Pokemon sprites in the tool?', answer: 'Yes, you can search the local Pokemon GIF library with autocomplete and load a sprite instantly.' },
@@ -250,6 +256,7 @@ const STATIC_ROUTES = [
   '/route-finder',
   '/altering-cave-rotations',
   '/counter-generator',
+  '/egg-move-calculator',
   '/player-card-generator',
   '/sprite-recolour',
   '/random-pokemon-generator',
@@ -1584,6 +1591,13 @@ async function prerender() {
       ogTitle: 'PokeMMO Counter Theme Generator | Team Synergy - PokeMMO',
       ogDescription: 'Create custom encounter counter themes for PokeMMO. Upload Pokémon GIFs, resize and customize them, then download ready-to-use counter theme packages to track your shiny hunts in-game.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/charmander.gif',
+    },
+    '/egg-move-calculator': {
+      route: '/egg-move-calculator',
+      ogTitle: 'PokeMMO Egg Move Calculator | Team Synergy',
+      ogDescription: 'Calculate PokeMMO egg move breeding chains from natural move learners through shared egg groups.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/blastoise.gif',
+      crawlerLinks: pokemonLinks,
     },
     '/player-card-generator': {
       route: '/player-card-generator',

@@ -35,7 +35,8 @@
 
     button,
     input,
-    select {
+    select,
+    textarea {
       font: inherit;
     }
 
@@ -69,7 +70,8 @@
     }
 
     input,
-    select {
+    select,
+    textarea {
       width: 100%;
       min-width: 0;
       border: 1px solid var(--line);
@@ -80,9 +82,15 @@
     }
 
     input:focus,
-    select:focus {
+    select:focus,
+    textarea:focus {
       border-color: var(--accent);
       outline: 3px solid rgba(11, 118, 110, 0.14);
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
     }
 
     .shell {
@@ -312,6 +320,12 @@
       font-size: 0.92rem;
     }
 
+    .bulkTextBox {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
     .pokemonRows {
       display: grid;
       gap: 10px;
@@ -344,6 +358,88 @@
       margin-bottom: 14px;
     }
 
+    .modalBackdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(20, 26, 32, 0.54);
+    }
+
+    .modalBackdrop[hidden] {
+      display: none;
+    }
+
+    .modal {
+      width: min(900px, 100%);
+      max-height: min(760px, calc(100vh - 40px));
+      overflow: auto;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 20px 60px rgba(20, 26, 32, 0.28);
+    }
+
+    .modalHead,
+    .modalActions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modalActions {
+      justify-content: flex-end;
+      border-top: 1px solid var(--line);
+      border-bottom: 0;
+    }
+
+    .modalBody {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .imagePreview {
+      display: grid;
+      gap: 8px;
+    }
+
+    .imagePreview[hidden] {
+      display: none;
+    }
+
+    .imagePreview img {
+      display: block;
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f2f5f7;
+    }
+
+    .bulkPreviewRows {
+      display: grid;
+      gap: 8px;
+    }
+
+    .bulkPreviewRow {
+      display: grid;
+      grid-template-columns: minmax(150px, 1fr) repeat(3, minmax(88px, 120px));
+      gap: 10px;
+      align-items: end;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfcfd;
+    }
+
     @media (max-width: 820px) {
       header {
         align-items: stretch;
@@ -357,6 +453,10 @@
       }
 
       .pokemonRow {
+        grid-template-columns: 1fr;
+      }
+
+      .bulkPreviewRow {
         grid-template-columns: 1fr;
       }
     }
@@ -414,7 +514,11 @@
             <div class="field">
               <label for="newRouteTotal">Total</label>
               <input id="newRouteTotal" name="total" type="number" min="0" step="1" value="0" readonly>
-          </div>
+            </div>
+            <div class="field">
+              <label for="newRouteBulkText">Bulk Text Add</label>
+              <textarea id="newRouteBulkText" name="bulkText" placeholder="Heracross - 105&#10;Kakuna - 248"></textarea>
+            </div>
             <button class="primary" type="submit">Add</button>
           </form>
           <div id="routeList" class="routeList"></div>
@@ -434,6 +538,35 @@
   </main>
 
   <datalist id="pokemonNames"></datalist>
+  <div id="bulkConfirmModal" class="modalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bulkConfirmTitle">
+      <div class="modalHead">
+        <div>
+          <h2 id="bulkConfirmTitle">Confirm Bulk Text Add</h2>
+          <p id="bulkConfirmSubtitle" class="subtitle"></p>
+        </div>
+        <button id="bulkConfirmClose" type="button">Close</button>
+      </div>
+      <div class="modalBody">
+        <div id="bulkImagePreview" class="imagePreview" hidden>
+          <div class="field">
+            <label>Uploaded Screenshot</label>
+            <img id="bulkImagePreviewImg" alt="Uploaded encounter screenshot preview">
+          </div>
+        </div>
+        <div class="summary">
+          <div class="summaryItem"><strong id="bulkConfirmRows">0</strong><span>Pokémon</span></div>
+          <div class="summaryItem"><strong id="bulkConfirmAdded">0</strong><span>Added encounters</span></div>
+          <div class="summaryItem"><strong id="bulkConfirmNewTotal">0</strong><span>New route total</span></div>
+        </div>
+        <div id="bulkPreviewRows" class="bulkPreviewRows"></div>
+      </div>
+      <div class="modalActions">
+        <button id="bulkConfirmCancel" type="button">Cancel</button>
+        <button id="bulkConfirmApply" class="primary" type="button">Apply Additions</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const state = {
@@ -447,6 +580,7 @@
       saveChain: Promise.resolve(),
       hasUnsyncedChanges: false,
       isPushingChanges: false,
+      bulkConfirm: null,
     }
 
     const els = {
@@ -460,6 +594,17 @@
       deleteRoute: document.getElementById('deleteRoute'),
       pokemonNames: document.getElementById('pokemonNames'),
       pushChanges: document.getElementById('pushChanges'),
+      bulkConfirmModal: document.getElementById('bulkConfirmModal'),
+      bulkConfirmSubtitle: document.getElementById('bulkConfirmSubtitle'),
+      bulkConfirmRows: document.getElementById('bulkConfirmRows'),
+      bulkConfirmAdded: document.getElementById('bulkConfirmAdded'),
+      bulkConfirmNewTotal: document.getElementById('bulkConfirmNewTotal'),
+      bulkImagePreview: document.getElementById('bulkImagePreview'),
+      bulkImagePreviewImg: document.getElementById('bulkImagePreviewImg'),
+      bulkPreviewRows: document.getElementById('bulkPreviewRows'),
+      bulkConfirmClose: document.getElementById('bulkConfirmClose'),
+      bulkConfirmCancel: document.getElementById('bulkConfirmCancel'),
+      bulkConfirmApply: document.getElementById('bulkConfirmApply'),
     }
 
     async function api(url, options = {}) {
@@ -535,6 +680,164 @@
 
     function routeSum(route) {
       return (route?.data || []).reduce((sum, entry) => sum + (Number(entry.encounters) || 0), 0)
+    }
+
+    function normalizePokemonName(value) {
+      return String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+    }
+
+    function findPokemonName(rawName) {
+      const normalizedRaw = normalizePokemonName(rawName)
+      if (!normalizedRaw) return ''
+      return state.pokemonNames.find((name) => normalizePokemonName(name) === normalizedRaw)
+        || String(rawName || '').trim()
+    }
+
+    function parseBulkText(text) {
+      const rowsByPokemon = new Map()
+      const lines = String(text || '')
+        .split(/\r?\n/)
+        .map((line) => line.replace(/\s+/g, ' ').trim())
+        .filter(Boolean)
+
+      for (const line of lines) {
+        const match = line.match(/^(.+?)\s*(?:[-:,\t]|\s{2,})\s*(\d{1,9})\s*$/)
+          || line.match(/^(.+?)\s+(\d{1,9})\s*$/)
+        if (!match) continue
+
+        const pokemon = findPokemonName(match[1].replace(/[^A-Za-z0-9.' -]/g, ' ').trim())
+        const encounters = Math.max(0, Math.trunc(Number(match[2]) || 0))
+        if (!pokemon || !encounters) continue
+
+        const key = pokemon.toLowerCase()
+        const existing = rowsByPokemon.get(key)
+        rowsByPokemon.set(key, {
+          pokemon,
+          encounters: (existing?.encounters || 0) + encounters,
+        })
+      }
+
+      return Array.from(rowsByPokemon.values())
+    }
+
+    function getBulkPreviewRows(route, parsedRows) {
+      return parsedRows.map((row) => {
+        const existing = (route?.data || []).find((entry) => entry.pokemon.toLowerCase() === row.pokemon.toLowerCase())
+        const oldEncounters = Math.max(0, Math.trunc(Number(existing?.encounters) || 0))
+        const addEncounters = Math.max(0, Math.trunc(Number(row.encounters) || 0))
+        return {
+          pokemon: row.pokemon,
+          oldEncounters,
+          addEncounters,
+          newEncounters: oldEncounters + addEncounters,
+        }
+      })
+    }
+
+    function openBulkConfirm({ title, subtitle, route, rows, onApply, imageData = '' }) {
+      state.bulkConfirm = { title, subtitle, route, rows, onApply, imageData }
+      document.getElementById('bulkConfirmTitle').textContent = title
+      els.bulkConfirmSubtitle.textContent = subtitle
+      if (imageData) {
+        els.bulkImagePreviewImg.src = imageData
+        els.bulkImagePreview.hidden = false
+      } else {
+        els.bulkImagePreviewImg.removeAttribute('src')
+        els.bulkImagePreview.hidden = true
+      }
+      renderBulkConfirmRows()
+      els.bulkConfirmModal.hidden = false
+    }
+
+    function closeBulkConfirm() {
+      state.bulkConfirm = null
+      els.bulkConfirmModal.hidden = true
+      els.bulkImagePreviewImg.removeAttribute('src')
+      els.bulkImagePreview.hidden = true
+      els.bulkPreviewRows.innerHTML = ''
+    }
+
+    function renderBulkConfirmRows() {
+      const confirm = state.bulkConfirm
+      if (!confirm) return
+
+      const routeTotalWithoutPreview = routeSum(confirm.route)
+      const addedTotal = confirm.rows.reduce((sum, row) => sum + (Number(row.addEncounters) || 0), 0)
+      els.bulkConfirmRows.textContent = confirm.rows.length
+      els.bulkConfirmAdded.textContent = addedTotal
+      els.bulkConfirmNewTotal.textContent = routeTotalWithoutPreview + addedTotal
+      els.bulkPreviewRows.innerHTML = confirm.rows.map((row, index) => `
+        <div class="bulkPreviewRow" data-index="${index}">
+          <div class="field">
+            <label>Pokemon</label>
+            <input data-field="pokemon" list="pokemonNames" value="${escapeAttr(row.pokemon)}">
+          </div>
+          <div class="field">
+            <label>Old</label>
+            <input data-field="oldEncounters" type="number" min="0" step="1" value="${Number(row.oldEncounters) || 0}" readonly>
+          </div>
+          <div class="field">
+            <label>Add</label>
+            <input data-field="addEncounters" type="number" min="0" step="1" value="${Number(row.addEncounters) || 0}">
+          </div>
+          <div class="field">
+            <label>New</label>
+            <input data-field="newEncounters" type="number" min="0" step="1" value="${Number(row.newEncounters) || 0}">
+          </div>
+        </div>
+      `).join('')
+
+      els.bulkPreviewRows.querySelectorAll('.bulkPreviewRow').forEach((rowElement) => {
+        const index = Number(rowElement.dataset.index)
+        const row = confirm.rows[index]
+        rowElement.querySelector('[data-field="pokemon"]').addEventListener('input', (event) => {
+          row.pokemon = event.target.value
+          const existing = (confirm.route?.data || []).find((entry) => entry.pokemon.toLowerCase() === row.pokemon.toLowerCase())
+          row.oldEncounters = Math.max(0, Math.trunc(Number(existing?.encounters) || 0))
+          row.newEncounters = row.oldEncounters + row.addEncounters
+          rowElement.querySelector('[data-field="oldEncounters"]').value = row.oldEncounters
+          rowElement.querySelector('[data-field="newEncounters"]').value = row.newEncounters
+          updateBulkConfirmSummary()
+        })
+        rowElement.querySelector('[data-field="addEncounters"]').addEventListener('input', (event) => {
+          row.addEncounters = Math.max(0, Math.trunc(Number(event.target.value) || 0))
+          row.newEncounters = row.oldEncounters + row.addEncounters
+          rowElement.querySelector('[data-field="newEncounters"]').value = row.newEncounters
+          updateBulkConfirmSummary()
+        })
+        rowElement.querySelector('[data-field="newEncounters"]').addEventListener('input', (event) => {
+          row.newEncounters = Math.max(0, Math.trunc(Number(event.target.value) || 0))
+          row.addEncounters = Math.max(0, row.newEncounters - row.oldEncounters)
+          rowElement.querySelector('[data-field="addEncounters"]').value = row.addEncounters
+          updateBulkConfirmSummary()
+        })
+      })
+    }
+
+    function updateBulkConfirmSummary() {
+      const confirm = state.bulkConfirm
+      if (!confirm) return
+      const addedTotal = confirm.rows.reduce((sum, row) => sum + (Number(row.addEncounters) || 0), 0)
+      els.bulkConfirmAdded.textContent = addedTotal
+      els.bulkConfirmNewTotal.textContent = routeSum(confirm.route) + addedTotal
+    }
+
+    function applyBulkRowsToRoute(route, rows) {
+      route.data = Array.isArray(route.data) ? route.data : []
+      for (const row of rows) {
+        const pokemon = String(row.pokemon || '').trim()
+        if (!pokemon) continue
+        const addEncounters = Math.max(0, Math.trunc(Number(row.addEncounters) || 0))
+        if (!addEncounters) continue
+
+        const existing = route.data.find((entry) => entry.pokemon.toLowerCase() === pokemon.toLowerCase())
+        if (existing) {
+          existing.encounters = Math.max(0, Math.trunc(Number(existing.encounters) || 0)) + addEncounters
+        } else {
+          route.data.push({ pokemon, encounters: addEncounters })
+        }
+      }
+      route.total = routeSum(route)
     }
 
     function clearPendingSave() {
@@ -661,6 +964,14 @@
           <span id="importResult" class="importResult">Scans the Pokémon and Species Encounter columns.</span>
         </div>
 
+        <div class="bulkTextBox">
+          <div class="field">
+            <label for="bulkTextAdd">Bulk Text Add</label>
+            <textarea id="bulkTextAdd" placeholder="Heracross - 105&#10;Kakuna - 248"></textarea>
+          </div>
+          <button id="bulkTextAddButton" type="button">Bulk Text Add</button>
+        </div>
+
         <div class="toolbar">
           <p class="subtitle">Changes autosave after you type.</p>
           <button id="sortRows" type="button">Sort by Encounters</button>
@@ -712,6 +1023,27 @@
         if (!file) return
         importScreenshot(file)
         event.target.value = ''
+      })
+
+      document.getElementById('bulkTextAddButton').addEventListener('click', () => {
+        const parsedRows = parseBulkText(document.getElementById('bulkTextAdd').value)
+        if (!parsedRows.length) {
+          setStatus('No bulk text rows found', 'error')
+          return
+        }
+
+        openBulkConfirm({
+          title: 'Confirm Bulk Text Add',
+          subtitle: `${els.editorTitle.textContent} in ${state.region}`,
+          route,
+          rows: getBulkPreviewRows(route, parsedRows),
+          onApply: async (rows) => {
+            applyBulkRowsToRoute(route, rows)
+            await saveNow()
+            render()
+            setStatus('Saved locally', 'saved')
+          },
+        })
       })
 
       els.editor.querySelectorAll('.pokemonRow').forEach((row) => {
@@ -874,24 +1206,22 @@
           return
         }
 
-        let added = 0
-        let updated = 0
-        for (const row of payload.rows) {
-          const existing = route.data.find((entry) => entry.pokemon.toLowerCase() === row.pokemon.toLowerCase())
-          if (existing) {
-            existing.encounters = row.encounters
-            updated += 1
-          } else {
-            route.data.push(row)
-            added += 1
-          }
-        }
+        result.textContent = `Scanned ${payload.rows.length} row${payload.rows.length === 1 ? '' : 's'}. Review the additions before saving.`
+        setStatus('Review screenshot import', 'saving')
 
-        route.total = routeSum(route)
-        await saveNow()
-        render()
-        result.textContent = `Imported ${payload.rows.length} row${payload.rows.length === 1 ? '' : 's'} (${added} added, ${updated} updated).`
-        setStatus('Saved locally', 'saved')
+        openBulkConfirm({
+          title: 'Confirm Photo Encounter Add',
+          subtitle: `${els.editorTitle.textContent} in ${state.region}`,
+          route,
+          rows: getBulkPreviewRows(route, payload.rows),
+          imageData,
+          onApply: async (rows) => {
+            applyBulkRowsToRoute(route, rows)
+            await saveNow()
+            render()
+            setStatus('Saved locally', 'saved')
+          },
+        })
       } catch (error) {
         const message = error.message.includes('404')
           ? 'Screenshot import endpoint is not running. Restart the encounter editor, then refresh this page.'
@@ -948,7 +1278,33 @@
       const form = new FormData(formElement)
       const name = String(form.get('name') || '').trim()
       if (!name) return
+      const bulkRows = parseBulkText(form.get('bulkText') || '')
 
+      if (bulkRows.length) {
+        openBulkConfirm({
+          title: 'Confirm New Route Bulk Add',
+          subtitle: `${name} in ${state.region}`,
+          route: { data: [] },
+          rows: getBulkPreviewRows({ data: [] }, bulkRows),
+          onApply: async (rows) => {
+            await createRouteFromForm(formElement, rows
+              .filter((row) => String(row.pokemon || '').trim() && Number(row.addEncounters) > 0)
+              .map((row) => ({
+                pokemon: String(row.pokemon || '').trim(),
+                encounters: Math.max(0, Math.trunc(Number(row.addEncounters) || 0)),
+              })))
+          },
+        })
+        return
+      }
+
+      await createRouteFromForm(formElement, [])
+    })
+
+    async function createRouteFromForm(formElement, rows) {
+      const form = new FormData(formElement)
+      const name = String(form.get('name') || '').trim()
+      if (!name) return
       setStatus('Adding route locally...', 'saving')
       try {
         const payload = await api(`/api/regions/${encodeURIComponent(state.region)}/routes`, {
@@ -959,7 +1315,7 @@
             variation: form.get('variation') || '',
             encounterCategory: form.get('encounterCategory') || '',
             total: form.get('total') || 0,
-            data: [],
+            data: rows,
           }),
         })
         state.data[state.region][payload.route] = payload.entry
@@ -969,6 +1325,23 @@
         markUnsyncedChanges(true)
         setStatus('Saved locally', 'saved')
         render()
+      } catch (error) {
+        setStatus(error.message, 'error')
+      }
+    }
+
+    els.bulkConfirmClose.addEventListener('click', closeBulkConfirm)
+    els.bulkConfirmCancel.addEventListener('click', closeBulkConfirm)
+    els.bulkConfirmModal.addEventListener('click', (event) => {
+      if (event.target === els.bulkConfirmModal) closeBulkConfirm()
+    })
+    els.bulkConfirmApply.addEventListener('click', async () => {
+      const confirm = state.bulkConfirm
+      if (!confirm) return
+      setStatus('Applying bulk text locally...', 'saving')
+      try {
+        await confirm.onApply(confirm.rows)
+        closeBulkConfirm()
       } catch (error) {
         setStatus(error.message, 'error')
       }

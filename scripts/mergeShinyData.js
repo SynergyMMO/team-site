@@ -19,6 +19,12 @@ const ALL_MERGEABLE_FIELDS = [
   'variant',
 ];
 
+const LEGACY_FIELDS_BY_CANONICAL_FIELD = {
+  location: ['Location'],
+  encounter_method: ['Encounter Type'],
+  encounter_count: ['Encounter Count'],
+};
+
 const USERNAME_MAPPING = {
 
 };
@@ -30,10 +36,26 @@ const DEFAULT_MODE = 'update';
 
 const OUTPUT_FILE_PATH = './merged_shiny_data.json';
 
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import readline from 'readline';
+import pokemonData from '../src/data/pokemmo_data/pokemon-data.json' with { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -102,6 +124,46 @@ function normalizePokemonName(name) {
   return normalized;
 }
 
+function collectEvolutionChainNames(chainNode, names = []) {
+  if (!chainNode) return names;
+
+  if (chainNode.species?.name) {
+    names.push(chainNode.species.name);
+  }
+
+  (chainNode.evolves_to || []).forEach((nextNode) => {
+    collectEvolutionChainNames(nextNode, names);
+  });
+
+  return names;
+}
+
+function buildEvolutionGroups() {
+  const groups = {};
+
+  Object.values(pokemonData).forEach((pokemon) => {
+    const chainNames = collectEvolutionChainNames(pokemon.evolution_chain?.chain)
+      .map(normalizePokemonName)
+      .filter(Boolean);
+
+    if (chainNames.length === 0) return;
+
+    const group = new Set(chainNames);
+    chainNames.forEach((name) => {
+      groups[name] = group;
+    });
+  });
+
+  return groups;
+}
+
+const EVOLUTION_GROUPS = buildEvolutionGroups();
+
+function getEvolutionGroup(name) {
+  const normalizedName = normalizePokemonName(name);
+  return EVOLUTION_GROUPS[normalizedName] || new Set([normalizedName]);
+}
+
 
 function log(message, type = 'info') {
   const colors = {
@@ -138,61 +200,21 @@ function promptCredentials() {
 
 async function grabShinyData(playerName) {
   const results = [];
-  const pagesToFetch = [];
-  let pageNum = 1;
-  let hasMore = true;
+  let currentUrl = `https://shinyboard.net/api/users/${encodeURIComponent(playerName)}/shinies?page=1`;
 
   try {
-    const initialUrl = `https://shinyboard.net/api/users/${playerName}/shinies?page=1`;
-    const response = await fetch(initialUrl);
-    if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
-    const data = await response.json();
+    while (currentUrl) {
+      const response = await fetch(currentUrl);
+      if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
+      const data = await response.json();
 
-    if (data.shinies && Array.isArray(data.shinies)) {
-      data.shinies.forEach((shiny) => {
-        results.push({
-          encounter_count: shiny.encounter_count,
-          encounter_method: shiny.encounter_method,
-          date_caught: shiny.date_caught,
-          variant: shiny.variant,
-          nickname: shiny.nickname,
-          ivs: shiny.ivs,
-          nature: shiny.nature,
-          location: shiny.location,
-          pokemon_name: (shiny.pokemon?.name || '').toLowerCase(),
+      if (data.shinies && Array.isArray(data.shinies)) {
+        data.shinies.forEach((shiny) => {
+          results.push(normalizeApiShiny(shiny, results.length));
         });
-      });
-    }
-
-    if (data.next_page_url) {
-      let nextUrl = data.next_page_url;
-      while (nextUrl) {
-        pagesToFetch.push(nextUrl);
-        // Extract page number to calculate next
-        const pageMatch = nextUrl.match(/page=([0-9]+)/);
-        if (pageMatch) {
-          const currentPage = parseInt(pageMatch[1]);
-          nextUrl = `https://shinyboard.net/api/users/${playerName}/shinies?page=${currentPage + 1}`;
-        }
-        break;
       }
-    }
 
-    if (pagesToFetch.length > 0) {
-      const promises = pagesToFetch.map(async (url) => {
-        try {
-          const pageData = await fetchAllPagesFromUrl(url, playerName);
-          return pageData;
-        } catch (err) {
-          console.warn(`Warning: Failed to fetch ${url}:`, err.message);
-          return [];
-        }
-      });
-
-      const allPages = await Promise.all(promises);
-      allPages.forEach((pageResults) => {
-        results.push(...pageResults);
-      });
+      currentUrl = data.next_page_url || null;
     }
 
     return results;
@@ -214,17 +236,7 @@ async function fetchAllPagesFromUrl(url, playerName) {
 
       if (data.shinies && Array.isArray(data.shinies)) {
         data.shinies.forEach((shiny) => {
-          results.push({
-            encounter_count: shiny.encounter_count,
-            encounter_method: shiny.encounter_method,
-            date_caught: shiny.date_caught,
-            variant: shiny.variant,
-            nickname: shiny.nickname,
-            ivs: shiny.ivs,
-            nature: shiny.nature,
-            location: shiny.location,
-            pokemon_name: (shiny.pokemon?.name || '').toLowerCase(),
-          });
+          results.push(normalizeApiShiny(shiny, results.length));
         });
       }
 
@@ -236,6 +248,22 @@ async function fetchAllPagesFromUrl(url, playerName) {
   }
 
   return results;
+}
+
+function normalizeApiShiny(shiny, apiIndex) {
+  return {
+    encounter_count: shiny.encounter_count,
+    encounter_method: shiny.encounter_method,
+    date_caught: shiny.date_caught,
+    variant: shiny.variant,
+    nickname: shiny.nickname,
+    ivs: shiny.ivs,
+    nature: shiny.nature,
+    location: shiny.location,
+    pokemon_id: shiny.pokemon_id ?? shiny.pokemon?.id ?? null,
+    pokemon_name: (shiny.pokemon?.name || '').toLowerCase(),
+    api_index: apiIndex,
+  };
 }
 
 async function fetchCloudflareDatabase() {
@@ -260,7 +288,69 @@ function extractApiFields(apiShiny, fieldsToMerge) {
       extracted[field] = apiShiny[field];
     }
   });
+
+  if (fieldsToMerge.includes('date_caught') && apiShiny.date_caught) {
+    const caughtDateParts = getCaughtDateParts(apiShiny.date_caught);
+    if (caughtDateParts) {
+      extracted.Month = caughtDateParts.month;
+      extracted.Year = caughtDateParts.year;
+    }
+  }
+
   return extracted;
+}
+
+function getCaughtDateParts(dateCaught) {
+  const match = String(dateCaught).match(/^(\d{4})-(\d{2})-/);
+  if (!match) return null;
+
+  const monthIndex = Number(match[2]) - 1;
+  const month = MONTH_NAMES[monthIndex];
+  if (!month) return null;
+
+  return {
+    month,
+    year: match[1],
+  };
+}
+
+function applyApiFields(cloudflareShiny, apiShiny, fieldsToMerge, fieldsChanged) {
+  const apiFields = extractApiFields(apiShiny, fieldsToMerge);
+
+  Object.keys(apiFields).forEach(field => {
+    const oldValue = cloudflareShiny[field];
+    const newValue = apiFields[field];
+
+    if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+      fieldsChanged.push(field);
+    }
+  });
+
+  return apiFields;
+}
+
+function findBestApiMatch(apiShinies, matchedApiIndexes, cloudflarePokemonName, cloudflareIndex) {
+  const normalizedCloudflareName = normalizePokemonName(cloudflarePokemonName);
+  const cloudflareGroup = getEvolutionGroup(cloudflarePokemonName);
+  const unmatchedApiShinies = apiShinies.filter(apiShiny => !matchedApiIndexes.has(apiShiny.api_index));
+  const compatibleMatches = unmatchedApiShinies
+    .map((apiShiny) => {
+      const apiName = normalizePokemonName(apiShiny.pokemon_name);
+      const exactMatch = apiName === normalizedCloudflareName;
+      const evolutionMatch = apiName && cloudflareGroup.has(apiName);
+
+      if (!exactMatch && !evolutionMatch) return null;
+
+      const distance = Math.abs(apiShiny.api_index - cloudflareIndex);
+      return {
+        apiShiny,
+        score: (distance * 2) + (exactMatch ? 0 : 1),
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.score - b.score || a.apiShiny.api_index - b.apiShiny.api_index);
+
+  return compatibleMatches[0]?.apiShiny || null;
 }
 
 function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
@@ -272,35 +362,21 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
   }
 
   const fieldsToRemove = new Set(ALL_MERGEABLE_FIELDS.filter(f => !fieldsToMerge.includes(f)));
-
-  const pokemonToApiData = {};
-  const pokemonCount = {};
-
-  apiShinies.forEach((apiShiny) => {
-    const pokemonName = apiShiny.pokemon_name;
-    if (!pokemonName) return;
-
-    // Normalize the name for matching purposes
-    const normalizedName = normalizePokemonName(pokemonName);
-
-    if (!pokemonCount[normalizedName]) {
-      pokemonCount[normalizedName] = 0;
-      pokemonToApiData[normalizedName] = [];
-    }
-
-    pokemonToApiData[normalizedName][pokemonCount[normalizedName]] = apiShiny;
-    pokemonCount[normalizedName]++;
+  const legacyFieldsToRemove = new Set();
+  fieldsToMerge.forEach((field) => {
+    (LEGACY_FIELDS_BY_CANONICAL_FIELD[field] || []).forEach((legacyField) => {
+      legacyFieldsToRemove.add(legacyField);
+    });
   });
+
+  const matchedApiIndexes = new Set();
 
   const mergedShinies = { ...cloudflareUserData.shinies };
   const changeLog = [];
+  const shinyKeys = Object.keys(mergedShinies);
 
-  Object.keys(mergedShinies).forEach((shinyIndex) => {
+  shinyKeys.forEach((shinyIndex, cloudflareIndex) => {
     const cloudflareShiny = mergedShinies[shinyIndex];
-    const pokemonName = cloudflareShiny.Pokemon.toLowerCase();
-    
-    const normalizedName = normalizePokemonName(pokemonName);
-
     let newShiny = { ...cloudflareShiny };
     let fieldsChanged = [];
 
@@ -311,26 +387,28 @@ function mergeUserData(cloudflareUserData, apiShinies, fieldsToMerge) {
       }
     });
 
-    if (
-      pokemonToApiData[normalizedName] &&
-      pokemonToApiData[normalizedName].length > 0
-    ) {
-      const apiShiny = pokemonToApiData[normalizedName].shift();
-      const apiFields = extractApiFields(apiShiny, fieldsToMerge);
-      
-      Object.keys(apiFields).forEach(field => {
-        const oldValue = cloudflareShiny[field];
-        const newValue = apiFields[field];
-        
-        if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-          fieldsChanged.push(field);
-        }
-      });
+    const apiShiny = findBestApiMatch(
+      apiShinies,
+      matchedApiIndexes,
+      cloudflareShiny.Pokemon,
+      cloudflareIndex
+    );
+
+    if (apiShiny) {
+      matchedApiIndexes.add(apiShiny.api_index);
+      const apiFields = applyApiFields(cloudflareShiny, apiShiny, fieldsToMerge, fieldsChanged);
 
       newShiny = {
         ...newShiny,
         ...apiFields,
       };
+
+      legacyFieldsToRemove.forEach(field => {
+        if (newShiny.hasOwnProperty(field)) {
+          fieldsChanged.push(`removed ${field}`);
+          delete newShiny[field];
+        }
+      });
     }
 
     if (fieldsChanged.length > 0) {

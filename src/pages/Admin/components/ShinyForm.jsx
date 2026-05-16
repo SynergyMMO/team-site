@@ -7,7 +7,18 @@ import pokemonData from '../../../data/pokemmo_data/pokemon-data.json'
 
 const MONTHS = [ 'January','February','March','April','May','June','July','August','September','October','November','December']
 const YEARS = ['2025','2026','2027','2028','2029','2030']
-const ENCOUNTER_TYPES = ['5x Horde','3x Horde','Single','Fishing','Honey Tree','Egg','Safari','Fossil','Swarm','Gift']
+const ENCOUNTER_TYPES = [
+  { value: '5x horde', label: '5x Horde' },
+  { value: '3x horde', label: '3x Horde' },
+  { value: 'single', label: 'Single' },
+  { value: 'fishing', label: 'Fishing' },
+  { value: 'honey tree', label: 'Honey Tree' },
+  { value: 'egg', label: 'Egg' },
+  { value: 'safari', label: 'Safari' },
+  { value: 'fossil', label: 'Fossil' },
+  { value: 'swarm', label: 'Swarm' },
+  { value: 'gift', label: 'Gift' },
+]
 const NATURES = [ 'Adamant','Bashful','Bold','Brave','Calm','Careful','Docile','Gentle','Hardy','Hasty','Impish','Jolly','Lax','Lonely','Mild','Modest','Naive','Naughty','Quiet','Quirky','Rash','Relaxed','Sassy','Serious','Timid']
 const YES_NO_FIELDS = [
   { key: 'Egg', label: 'Egg' },
@@ -42,9 +53,9 @@ function getDefaultState() {
     Pokemon: '',
     Month: '',
     Year: '',
-    'Encounter Type': '',
-    Location: '',
-    'Encounter Count': '',
+    encounter_method: '',
+    location: '',
+    encounter_count: '',
     date_caught: null,
     nature: '',
     ivs: '',
@@ -71,9 +82,23 @@ function reducer(state, action) {
     case 'RESET': return getDefaultState()
     case 'LOAD':
       const normalizedDate = action.data?.date_caught ? action.data.date_caught.split('T')[0] : null
-      return { ...getDefaultState(), ...action.data, date_caught: normalizedDate }
+      return {
+        ...getDefaultState(),
+        ...action.data,
+        encounter_method: action.data?.encounter_method ?? normalizeLegacyEncounterMethod(action.data?.['Encounter Type']) ?? '',
+        location: action.data?.location ?? action.data?.Location ?? '',
+        encounter_count: action.data?.encounter_count ?? action.data?.['Encounter Count'] ?? '',
+        date_caught: normalizedDate
+      }
     default: return state
   }
+}
+
+function normalizeLegacyEncounterMethod(method) {
+  if (!method) return ''
+  const normalized = String(method).trim().toLowerCase()
+  const values = new Set(ENCOUNTER_TYPES.map(type => type.value))
+  return values.has(normalized) ? normalized : ''
 }
 
 export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', allPokemonNames=[], isMutating=false }) {
@@ -101,9 +126,9 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', al
 
   const handlePokemonChange = val => {
     dispatch({ type:'SET_FIELD', field:'Pokemon', value:val })
-    dispatch({ type:'SET_FIELD', field:'Location', value:'' })
+    dispatch({ type:'SET_FIELD', field:'location', value:'' })
   }
-  const handleLocationChange = val => dispatch({ type:'SET_FIELD', field:'Location', value:val })
+  const handleLocationChange = val => dispatch({ type:'SET_FIELD', field:'location', value:val })
   const handleDateCaughtChange = val => {
     dispatch({ type:'SET_FIELD', field:'date_caught', value:val })
     if(val){
@@ -120,7 +145,16 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', al
   const handleSubmit = (e) => {
     if(e) e.preventDefault()
     if(!form.Pokemon.trim()) return
-    const cleaned = { ...form, Month: form.Month || null, Year: form.Year || null, date_caught: form.date_caught || null }
+    const cleaned = {
+      ...form,
+      Month: form.Month || null,
+      Year: form.Year || null,
+      date_caught: form.date_caught || null,
+      encounter_count: form.encounter_count === '' ? null : Number(form.encounter_count),
+    }
+    delete cleaned.Location
+    delete cleaned['Encounter Type']
+    delete cleaned['Encounter Count']
     onSubmit(cleaned)
   }
 
@@ -154,23 +188,23 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', al
       />
 
       <label>Encounter Type:</label>
-      <select value={form['Encounter Type']} onChange={e=>dispatch({ type:'SET_FIELD', field:'Encounter Type', value:e.target.value })}>
+      <select value={form.encounter_method} onChange={e=>dispatch({ type:'SET_FIELD', field:'encounter_method', value:e.target.value })}>
         <option value="">Select a method</option>
-        {ENCOUNTER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+        {ENCOUNTER_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
       </select>
 
       <label>Location:</label>
       {locationOptions.length > 0 ? (
-        <select value={form.Location} onChange={e=>handleLocationChange(e.target.value)}>
+        <select value={form.location} onChange={e=>handleLocationChange(e.target.value)}>
           <option value="">Select a location</option>
           {locationOptions.map(loc => <option key={loc} value={loc}>{loc}</option>)}
         </select>
       ) : (
-        <input type="text" value={form.Location} onChange={e=>handleLocationChange(e.target.value)} placeholder="Enter location" />
+        <input type="text" value={form.location} onChange={e=>handleLocationChange(e.target.value)} placeholder="Enter location" />
       )}
 
       <label>Encounter Count:</label>
-      <input type="number" min="0" value={form['Encounter Count']} onChange={e=>dispatch({ type:'SET_FIELD', field:'Encounter Count', value:e.target.value })} placeholder="e.g. 3240" />
+      <input type="number" min="0" value={form.encounter_count ?? ''} onChange={e=>dispatch({ type:'SET_FIELD', field:'encounter_count', value:e.target.value })} placeholder="e.g. 3240" />
 
       <label>Month:</label>
       <select value={form.Month||''} onChange={e=>dispatch({ type:'SET_FIELD', field:'Month', value:e.target.value })}>
