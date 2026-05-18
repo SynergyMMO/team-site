@@ -5,7 +5,6 @@ import { usePokemonSprites } from '../../hooks/usePokemonSprites';
 
 function PokemonGif({ name }) {
   const sprites = usePokemonSprites(name);
-  // Try to get animated gif from gen 5, fallback to any available
   let gifUrl = null;
   if (sprites['generation-v']) {
     const genVSprites = sprites['generation-v'];
@@ -28,9 +27,9 @@ function PokemonGif({ name }) {
 export default function MarshMondayPopup() {
   return (
     <div className="marsh-monday-popup" role="status" aria-live="polite">
-      <div className="marsh-monday-popup-title">Marsh Mondays</div>
+      <div className="marsh-monday-popup-title">Monferno Marsh Mondays</div>
       <div className="marsh-monday-popup-desc">
-        Catch a shiny Pokemon in the Great Marsh for 500rp, active every monday!
+        Catch a shiny Pokemon in the Great Marsh for 500rp, active every monday! Remember your Monferno Follower!
       </div>
       <div className="marsh-monday-pokemon-row">
         <PokemonGif name="skorupi" />
