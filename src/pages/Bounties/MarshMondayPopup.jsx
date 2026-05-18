@@ -29,7 +29,7 @@ export default function MarshMondayPopup() {
     <div className="marsh-monday-popup" role="status" aria-live="polite">
       <div className="marsh-monday-popup-title">Monferno Marsh Mondays</div>
       <div className="marsh-monday-popup-desc">
-        Catch a shiny Pokemon in the Great Marsh for 500rp, active every monday! Remember your Monferno Follower!
+        Catch a shiny Pokemon in the Great Marsh for 1000rp, active every monday! Remember your Monferno Follower!
       </div>
       <div className="marsh-monday-pokemon-row">
         <PokemonGif name="skorupi" />
