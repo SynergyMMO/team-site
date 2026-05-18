@@ -1,0 +1,84 @@
+
+.marsh-monday-popup {
+  margin: 32px auto 36px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #a259c4 0%, #6d3bbd 50%, #b983ff 100%);
+  color: #f8eaff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 rgba(155, 89, 182, 0.18), 0 0 0 4px #e0cfff;
+  padding: 1.3em 2.8em 1.3em 2.2em;
+  min-width: 340px;
+  max-width: 95vw;
+  font-size: 1.13rem;
+  border: 2.5px solid #e0cfff;
+  position: relative;
+  overflow: hidden;
+  animation: marshMondayFlash 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.marsh-monday-popup-title {
+  font-weight: bold;
+  font-size: 1.28em;
+  margin-bottom: 0.25em;
+  letter-spacing: 1.2px;
+  text-shadow: 0 0 8px #e0cfff, 0 0 2px #a259c4;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.marsh-monday-popup-desc {
+  font-size: 1.08em;
+  opacity: 0.98;
+  color: #f8eaff;
+  font-weight: 500;
+  text-shadow: 0 1px 8px #e0cfff;
+}
+
+.marsh-monday-pokemon-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 36px;
+  margin-top: 18px;
+  width: 100%;
+}
+.marsh-monday-pokemon-sprite {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px #b983ff) drop-shadow(0 0 2px #fff);
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.marsh-monday-pokemon-sprite:hover {
+  transform: scale(1.12) rotate(-6deg);
+  box-shadow: 0 0 16px #a259c4, 0 0 32px #b983ff;
+}
+
+@keyframes marshMondayFlash {
+  0% {
+    opacity: 0;
+    filter: blur(8px) brightness(1.5);
+    transform: scale(0.95) translateY(-30px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0.5px) brightness(1.1);
+    transform: scale(1.04) translateY(2px);
+  }
+  80% {
+    filter: none;
+    transform: scale(0.98) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    filter: none;
+    transform: scale(1) translateY(0);
+  }
+}

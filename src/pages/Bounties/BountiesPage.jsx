@@ -5,6 +5,8 @@ import { usePokemonSprites } from '../../hooks/usePokemonSprites';
 import { useDocumentHead } from '../../hooks/useDocumentHead';
 import styles from './BountiesPage.module.css';
 
+import MarshMondayPopup from './MarshMondayPopup';
+
 const POKEMON_NAME_OVERRIDES = {
   'mr-mime':    'Mr. Mime',
   'mime-jr':    'Mime Jr.',
@@ -123,6 +125,8 @@ function PokemonSprite({ name }) {
 
 export default function BountiesPage() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().toLocaleString('default', { month: 'long' }));
+  // Show popup only on Mondays (real life)
+  const isMonday = new Date().getDay() === 1;
   const [bounties, setBounties] = useState({ Perm: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -212,6 +216,10 @@ export default function BountiesPage() {
           Permanent
         </button>
       </div>
+
+      {/* Marsh Monday Popup Event - now above bounties section, on both views */}
+      {isMonday && <MarshMondayPopup />}
+      <div style={{ height: 18 }} />
 
       {view === 'monthly' && monthCategories.length > 0 && (
         <div className={styles['bounties-header-controls']}>
