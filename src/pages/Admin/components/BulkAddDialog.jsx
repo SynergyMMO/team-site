@@ -11,8 +11,8 @@ export function parseBulkAddText(text) {
     if (!match) continue
     const player = match[1].trim()
     const right = match[2].trim()
-    // Split on / or |, but keep (flags) with each
-    const pokeParts = right.split(/\s*[\/|]\s*/)
+    // Split on /, |, or , but keep (flags) with each
+    const pokeParts = right.split(/\s*[\/|,]\s*/)
     for (const part of pokeParts) {
       // Extract 'Pokemon (flags)' or just 'Pokemon'
       const pokeMatch = part.match(/^([^()]+?)(?:\s*\(([^)]+)\))?$/)
