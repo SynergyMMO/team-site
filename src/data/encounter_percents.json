@@ -4092,7 +4092,7 @@
       "credit": "shunting",
       "variation": "Lures",
       "encounterCategory": "single",
-      "total": 3011,
+      "total": 2918,
       "data": [
         {
           "pokemon": "Shellos",
@@ -4113,10 +4113,6 @@
         {
           "pokemon": "Floatzel",
           "encounters": 253
-        },
-        {
-          "pokemon": "Piplup",
-          "encounters": 93
         },
         {
           "pokemon": "Piplup",

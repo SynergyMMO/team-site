@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import Autocomplete from './Autocomplete'
 import ShinyForm from './ShinyForm'
+import BulkAddDialog, { parseBulkAddText } from './BulkAddDialog'
 import styles from '../Admin.module.css'
 
-export default function AddPokemonTab({ db, playerNames, allPokemonNames, onAdd, isMutating }) {
+export default function AddPokemonTab({ db, playerNames, allPokemonNames, onAdd, isMutating, onBulkAdd }) {
   const [player, setPlayer] = useState('')
   const [duplicateNotice, setDuplicateNotice] = useState(null)
+  const [bulkOpen, setBulkOpen] = useState(false)
 
   function checkDuplicates(pokemonName) {
     if (!player || !pokemonName || !db[player]) return null
@@ -32,6 +34,26 @@ export default function AddPokemonTab({ db, playerNames, allPokemonNames, onAdd,
     return result
   }
 
+  async function handleBulkAdd(entries) {
+    // Batch all new shinies into a single DB update
+    const newDb = JSON.parse(JSON.stringify(db));
+    const added = [];
+    for (const entry of entries) {
+      const { player: entryPlayer, ...shinyData } = entry;
+      if (!entryPlayer) continue;
+      if (!newDb[entryPlayer]) newDb[entryPlayer] = { shiny_count: 0, shinies: {} };
+      const existingIds = Object.keys(newDb[entryPlayer].shinies).map(Number);
+      const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
+      newDb[entryPlayer].shinies[nextId] = { ...shinyData };
+      newDb[entryPlayer].shiny_count = (newDb[entryPlayer].shiny_count || 0) + 1;
+      added.push({ player: entryPlayer, id: nextId });
+    }
+    if (onBulkAdd) {
+      await onBulkAdd(newDb, added);
+    }
+    // Optionally, show a confirmation or error summary here
+  }
+
   return (
     <div>
       <label>Player Name:</label>
@@ -41,6 +63,19 @@ export default function AddPokemonTab({ db, playerNames, allPokemonNames, onAdd,
         onChange={setPlayer}
         getOptions={() => playerNames}
         placeholder="Hyper"
+      />
+
+      <button style={{ marginTop: 10, marginBottom: 10 }} onClick={() => setBulkOpen(true)}>
+        Bulk Add
+      </button>
+
+      <BulkAddDialog
+        open={bulkOpen}
+        onClose={() => setBulkOpen(false)}
+        onBulkAdd={handleBulkAdd}
+        playerNames={playerNames}
+        allPokemonNames={allPokemonNames}
+        db={db}
       />
 
       {!player.trim() && (

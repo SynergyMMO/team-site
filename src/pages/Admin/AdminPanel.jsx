@@ -85,6 +85,17 @@ export default function AdminPanel() {
           playerNames={db.playerNames}
           allPokemonNames={db.allPokemonNames}
           onAdd={withToast(db.addShiny, 'Pokemon added!')}
+          onBulkAdd={async (newDb, added) => {
+            // Compose a detailed log message for the admin log
+            let action = 'Bulk add:';
+            if (Array.isArray(added) && added.length > 0) {
+              action += '\n' + added.map(e => `- ${e.player}: ${newDb[e.player]?.shinies[e.id]?.Pokemon || 'Unknown'}`).join('\n');
+            }
+            const result = await db.updateFullDatabase(newDb, action);
+            if (result?.success) showToast('Bulk add complete!', 'success');
+            else showToast(result?.error || 'Bulk add failed', 'error');
+            return result;
+          }}
           isMutating={db.isMutating}
         />
       )}

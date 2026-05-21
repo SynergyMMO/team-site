@@ -1,3 +1,120 @@
+/* Bulk Add Review grid layout for alignment */
+/* Bulk Add Review grid layout for alignment */
+.bulkReviewGridHeader, .bulkReviewGridRow {
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr repeat(7, 0.8fr) 1fr;
+  gap: 8px;
+  align-items: center;
+}
+.bulkReviewGridHeader {
+  font-weight: bold;
+  background: #23213a;
+  color: #bfaaff;
+  border-bottom: 1px solid #4b3b6b;
+  padding: 4px 0;
+}
+.bulkReviewGridHeader span {
+  color: #bfaaff;
+  font-size: 1em;
+  white-space: nowrap;
+}
+.bulkReviewGridRow {
+  border-bottom: 1px solid #3a2b4b;
+  padding: 4px 0;
+}
+/* Full width for bulk review dialog */
+/* Full width for bulk review dialog, but allow scroll if content is too large */
+.bulkReviewFullWidth {
+  min-width: 900px;
+  max-width: 98vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* By default, no scroll, but add scroll for entry list on small screens */
+.bulkReviewList {
+  margin-bottom: 12px;
+}
+
+@media (max-width: 700px) {
+  .bulkReviewFullWidth {
+    min-width: 98vw;
+    max-width: 98vw;
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+  .bulkReviewList {
+    max-height: 350px;
+    overflow-y: auto;
+  }
+}
+.dialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialogBox {
+  background: #23213a;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  padding: 32px 28px 20px 28px;
+  min-width: 340px;
+  max-width: 95vw;
+  color: #fff;
+}
+
+.errorNotice {
+  color: #ffb3b3;
+  background: #3a2323;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.bulkReviewRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+  background: rgba(155, 89, 182, 0.07);
+  border-radius: 8px;
+  padding: 6px 4px;
+  transition: background 0.2s;
+}
+.bulkReviewRow input[type="text"] {
+  min-width: 90px;
+  max-width: 120px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #888;
+  background: #2b2b3b;
+  color: #fff;
+}
+.bulkReviewRow label {
+  font-size: 12px;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.bulkReviewRow input[type="checkbox"] {
+  margin-right: 2px;
+}
+.bulkReviewHeader {
+  font-weight: bold;
+  color: #bfaaff;
+  margin-bottom: 6px;
+  font-size: 1.1em;
+}
 /* ========== Login Page ========== */
 
 .loginContainer {
@@ -237,6 +354,41 @@
   background: linear-gradient(135deg, #9b59b6, #8e44ad);
   box-shadow: 0 0 14px rgba(155, 89, 182, 0.7), 0 4px 10px rgba(0, 0, 0, 0.4);
   transform: scale(1.03);
+}
+
+/* Bulk Add Dialog Styles */
+.dialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialogBox {
+  background: #23213a;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  padding: 32px 28px 20px 28px;
+  min-width: 340px;
+  max-width: 95vw;
+  color: #fff;
+}
+
+.errorNotice {
+  color: #ffb3b3;
+  background: #3a2323;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
 /* ========== Messages & Notices ========== */

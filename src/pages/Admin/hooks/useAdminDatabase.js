@@ -154,7 +154,7 @@ export default function useAdminDB(auth) {
     }
   }, [auth]);
    // ---------------- UPDATE FULL DATABASE ----------------
-  const updateFullDatabase = useCallback(async (newDatabase) => {
+  const updateFullDatabase = useCallback(async (newDatabase, customAction) => {
     if (!auth) return { success: false, error: 'Unauthorized' };
     saveSnapshot(); setIsMutating(true);
     try {
@@ -166,11 +166,11 @@ export default function useAdminDB(auth) {
         username: auth.name || auth.username,
         password: auth.password,
         data: newDatabase,
-        action: 'Full database overwrite',
+        action: customAction || 'Full database overwrite',
       });
       if (result.success) {
         setDatabase(newDatabase);
-        await logAdminAction('Full database overwrite');
+        await logAdminAction(customAction || 'Full database overwrite');
         return { success: true };
       }
       return { success: false, error: 'Server rejected update' };
