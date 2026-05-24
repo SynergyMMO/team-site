@@ -253,8 +253,7 @@
     ["manaphy"],
     ["shaymin-land"],
     ["darkrai"],
-    ["arceus"],
-    ["victini"]
+    ["arceus"]
   ],
   "Generation 5": [
     ["snivy","servine","serperior"],
@@ -335,6 +334,7 @@
     ["kyurem"],
     ["keldeo-ordinary"],
     ["meloetta-aria"],
-    ["genesect"]
+    ["genesect"],
+    ["victini"]
   ]
 }
