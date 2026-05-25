@@ -2951,27 +2951,27 @@
       "credit": "Hyper",
       "variation": "Rotation 1 / Repel Trick",
       "encounterCategory": "repel-trick",
-      "total": 360,
+      "total": 724,
       "data": [
         {
-          "pokemon": "Stantler",
-          "encounters": 21
-        },
-        {
           "pokemon": "Aipom",
-          "encounters": 109
-        },
-        {
-          "pokemon": "Smeargle",
-          "encounters": 19
+          "encounters": 226
         },
         {
           "pokemon": "Mareep",
-          "encounters": 106
+          "encounters": 215
         },
         {
           "pokemon": "Pineco",
-          "encounters": 105
+          "encounters": 211
+        },
+        {
+          "pokemon": "Stantler",
+          "encounters": 40
+        },
+        {
+          "pokemon": "Smeargle",
+          "encounters": 32
         }
       ]
     },

@@ -15,6 +15,10 @@ import {
   getAlteringCaveMoveWarning,
 } from '../../utils/alteringCave'
 import { normalizePokemonName, onGifError, getBasePokemonName } from '../../utils/pokemon'
+import {
+  formatDangerousPokemonWarningTitle,
+  getDangerousPokemonWarnings,
+} from '../../utils/dangerousPokemonWarnings'
 import { API } from '../../api/endpoints'
 import alteringCaveData from '../../data/altering_cave_rotations.json'
 import generationData from '../../data/generation.json'
@@ -324,7 +328,8 @@ export default function Pokedex() {
       rarities: Array.from(rarities),
       primaryRarity,
       grassTypes,
-      time
+      time,
+      dangerousWarnings: getDangerousPokemonWarnings(pokemonDetails, matchingEncounters)
     }
   }
 
@@ -574,12 +579,50 @@ export default function Pokedex() {
     return `${labels.slice(0, 2).join(', ')} +${labels.length - 2}`
   }
 
-    const handleMouseOver = useCallback((e) => {
-      const target = e.target
-      if (target.tagName !== 'IMG' || !target.classList.contains(styles.complete)) return
+  const showInfoBoxForTarget = useCallback((target, text) => {
+    if (!target || !text) return
 
+    setHoverInfo(text)
+
+    const rect = target.getBoundingClientRect()
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    const infoBoxWidth = 320
+
+    let xPos = rect.right + 8
+    if (xPos + infoBoxWidth > viewportWidth) {
+      xPos = rect.left - infoBoxWidth - 8
+    }
+
+    xPos = Math.max(8, Math.min(xPos, viewportWidth - infoBoxWidth - 8))
+
+    const yPos = rect.top
+
+    requestAnimationFrame(() => {
+      if (!infoBoxRef.current) return
+
+      const realHeight = infoBoxRef.current.offsetHeight
+
+      const clampedY = Math.max(
+        8,
+        Math.min(yPos, viewportHeight - realHeight - 8)
+      )
+
+      setHoverPos({ x: xPos, y: clampedY })
+    })
+
+    setHoverPos({ x: xPos, y: yPos })
+  }, [])
+
+  const handleMouseOver = useCallback((e) => {
+      const target = e.target
+      if (target.tagName !== 'IMG') return
+
+      const dangerousWarningText = target.dataset.dangerousWarning || ''
       const pokemonName = target.alt.toLowerCase()
-      const owners = ownerMap.get(pokemonName) || []
+      const owners = target.classList.contains(styles.complete)
+        ? ownerMap.get(pokemonName) || []
+        : []
 
       const counts = owners.reduce((acc, name) => {
         acc[name] = (acc[name] || 0) + 1
@@ -590,41 +633,12 @@ export default function Pokedex() {
         count > 1 ? `${name}\u00A0(${count})` : name
       )
 
-      const text = formattedOwners.length
-        ? `Owned by: ${formattedOwners.join(', ')}`
-        : ''
+      const infoLines = []
+      if (dangerousWarningText) infoLines.push(dangerousWarningText)
+      if (formattedOwners.length) infoLines.push(`Owned by: ${formattedOwners.join(', ')}`)
 
-      setHoverInfo(text)
-
-      const rect = target.getBoundingClientRect()
-      const viewportWidth = window.innerWidth
-      const viewportHeight = window.innerHeight
-      const infoBoxWidth = 250
-
-      let xPos = rect.right + 8
-      if (xPos + infoBoxWidth > viewportWidth) {
-        xPos = rect.left - infoBoxWidth - 8
-      }
-
-      xPos = Math.max(8, Math.min(xPos, viewportWidth - infoBoxWidth - 8))
-
-      let yPos = rect.top
-
-      requestAnimationFrame(() => {
-        if (!infoBoxRef.current) return
-
-        const realHeight = infoBoxRef.current.offsetHeight
-
-        const clampedY = Math.max(
-          8,
-          Math.min(yPos, viewportHeight - realHeight - 8)
-        )
-
-        setHoverPos({ x: xPos, y: clampedY })
-      })
-
-      setHoverPos({ x: xPos, y: yPos })
-    }, [ownerMap])
+      showInfoBoxForTarget(target, infoLines.join('\n\n'))
+    }, [ownerMap, showInfoBoxForTarget])
 
 
 
@@ -1371,7 +1385,8 @@ export default function Pokedex() {
                     rarities: details.rarities,
                     primaryRarity: details.primaryRarity,
                     grassTypes: details.grassTypes,
-                    time: details.time
+                    time: details.time,
+                    dangerousWarnings: details.dangerousWarnings
                   })
                 })
               })
@@ -1584,6 +1599,8 @@ export default function Pokedex() {
                       const showRarityInfo = type === 'Singles' || type === 'Rares'
                       const primaryRarity = pokemonData.rarities && pokemonData.rarities[0]
                       const hasMultipleGrassTypes = pokemonData.grassTypes && pokemonData.grassTypes.length > 1
+                      const dangerousWarnings = pokemonData.dangerousWarnings || []
+                      const dangerousWarningTitle = formatDangerousPokemonWarningTitle(dangerousWarnings)
                       
                       const getTimeBasedStyle = () => {
                         if (!pokemonData.time || pokemonData.time === 'ALL') {
@@ -1608,9 +1625,19 @@ export default function Pokedex() {
                       }
 
                       return (
-                        <div key={`${type}-${pokemon}-${idx}`} className={styles.locationPokemonItem} style={{ position: 'relative', display: 'inline-block', ...getTimeBasedStyle() }}>
+                        <div
+                          key={`${type}-${pokemon}-${idx}`}
+                          className={styles.locationPokemonItem}
+                          style={{ position: 'relative', display: 'inline-block', ...getTimeBasedStyle() }}
+                        >
                           {percentLabel && (
                             <span className={styles.locationPercentBadge}>{percentLabel}</span>
+                          )}
+
+                          {dangerousWarnings.length > 0 && (
+                            <span className={styles.dangerousPokemonBadge}>
+                              {dangerousWarnings.length === 1 ? dangerousWarnings[0].name : `${dangerousWarnings.length} Warnings`}
+                            </span>
                           )}
 
                           {hasMultipleGrassTypes && (
@@ -1701,6 +1728,7 @@ export default function Pokedex() {
                               height="50"
                               loading="lazy"
                               onError={onGifError(normalized)}
+                              data-dangerous-warning={dangerousWarningTitle}
                               style={{ position: 'relative', zIndex: 1 }}
                             />
                           </div>

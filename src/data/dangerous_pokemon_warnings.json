@@ -1,0 +1,130 @@
+{
+  "moves": [
+    {
+      "name": "Self Destruct",
+      "message": "Instantly kills the user, use a Damp Pokemon to prevent this"
+    },
+    {
+      "name": "Explosion",
+      "message": "Instantly kills the user, use a Damp Pokemon to prevent this"
+    },
+    {
+      "name": "Take Down",
+      "message": "Does recoil damage, do not False Swipe"
+    },
+    {
+      "name": "Sketch",
+      "message": "Pick a move turn 1 to prevent them from struggling"
+    },
+    {
+      "name": "Roar",
+      "message": "Make sure your Pokemon is a higher level, as otherwise the battle will instantly end"
+    },
+    {
+      "name": "Curse",
+      "message": "If Pokemon is a ghost type, Curse will lower its HP by 50% each turn, eventually killing it. Soak it so it is not a ghost type"
+    },
+    {
+      "name": "High Jump Kick",
+      "message": "If misses does huge recoil damage, can use Gravity to prevent this"
+    },
+    {
+      "name": "Double Edge",
+      "message": "Recoil damage, do not False Swipe"
+    },
+    {
+      "name": "Jump Kick",
+      "message": "If misses does huge recoil damage, can use Gravity to prevent this"
+    },
+    {
+      "name": "Brave Bird",
+      "message": "Recoil damage, do not False Swipe"
+    },
+    {
+      "name": "Flare Blitz",
+      "message": "Recoil damage, do not False Swipe"
+    },
+    {
+      "name": "Head Smash",
+      "message": "Recoil damage, do not False Swipe"
+    },
+    {
+      "name": "Wild Charge",
+      "message": "Recoil damage, do not False Swipe"
+    },
+    {
+      "name": "Wood Hammer",
+      "message": "Recoil damage, do not False Swipe"
+    },
+    {
+      "name": "Whirlwind",
+      "message": "Make sure your Pokemon is a higher level, as otherwise the battle will instantly end"
+    },
+    {
+      "name": "Outrage",
+      "message": "Can cause confusion which may lead to recoil"
+    },
+    {
+      "name": "Thrash",
+      "message": "Can cause confusion which may lead to recoil"
+    },
+    {
+      "name": "Teleport",
+      "message": "Instantly ends the battle if used, bring an Arena Trap Pokemon, or a move which prevents teleport"
+    },
+    {
+      "name": "Memento",
+      "message": "Instantly kills the Pokemon if used, taunt it or Imprison it to prevent the move being used"
+    },
+    {
+      "name": "Follow Me",
+      "message": "Can cause you to accidentally target the Pokemon, taunt it or Imprison it to prevent the move being used"
+    },
+    {
+      "name": "Final Gambit",
+      "message": "Instantly kills the Pokemon, use a ghost type to make it fail"
+    },
+    {
+      "name": "Ally Switch",
+      "message": "Switches Pokemon with ally, dangerous in double battles, use Taunt or Imprison to prevent the move"
+    },
+    {
+      "name": "Metronome",
+      "message": "Low chance for user to use a self damaging move, taunt it"
+    },
+    {
+      "name": "Submission",
+      "message": "Recoil damage, do not False Swipe"
+    },
+    {
+      "name": "Perish Song",
+      "message": "Can kill the Pokemon, does not work in hordes"
+    },
+    {
+      "name": "Petal Dance",
+      "message": "Can cause confusion which may lead to recoil"
+    },
+    {
+      "name": "Rage Powder",
+      "message": "Can cause you to accidentally target the Pokemon, does not work on Grass Type Pokemon"
+    },
+    {
+      "name": "Trick",
+      "message": "Can steal your item, dangerous if using Poison Heal Breloom"
+    },
+    {
+      "name": "Covet",
+      "message": "Can steal your item, dangerous if using Poison Heal Breloom"
+    },
+    {
+      "name": "Switcharoo",
+      "message": "Can steal your item, dangerous if using Poison Heal Breloom"
+    }
+  ],
+  "items": [
+    {
+      "name": "Life Orb",
+      "message": "Rare chance it is holding a Life Orb, do not False Swipe if so"
+    }
+  ]
+}

@@ -447,6 +447,29 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.38);
 }
 
+.dangerousPokemonBadge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  z-index: 4;
+  max-width: calc(100% - 8px);
+  border: 1px solid rgba(251, 191, 36, 0.68);
+  border-radius: 8px;
+  background: rgba(113, 63, 18, 0.94);
+  color: #fde68a;
+  font-size: 0.58rem;
+  font-weight: 900;
+  line-height: 1;
+  padding: 0.18rem 0.28rem;
+  text-align: center;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.38);
+}
+
 .alteringCaveHeader {
   display: flex;
   align-items: center;
@@ -802,18 +825,19 @@
 
 .infoBox {
   position: fixed;
-  max-width: 280px;
-  padding: 12px 16px;
+  width: min(360px, calc(100vw - 16px));
+  max-width: 360px;
+  padding: 14px 16px;
   background: linear-gradient(135deg, rgba(30, 30, 50, 0.98) 0%, rgba(40, 35, 60, 0.98) 100%);
   color: #fff;
   border-radius: 12px;
   border: 1px solid rgba(74, 144, 226, 0.3);
   box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 12px rgba(74,144,226,0.2);
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.92rem;
+  line-height: 1.45;
   pointer-events: none;
   z-index: 1000;
-  white-space: normal;
+  white-space: pre-line;
   word-break: break-word;
   backdrop-filter: blur(10px);
 }

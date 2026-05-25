@@ -132493,6 +132493,12 @@
                 "level": 49
             },
             {
+                "id": 370,
+                "name": "Close Combat",
+                "type": "level",
+                "level": 50
+            },
+            {
                 "id": 98,
                 "name": "Quick Attack",
                 "type": "EGG"
