@@ -2,7 +2,7 @@
 /* Bulk Add Review grid layout for alignment */
 .bulkReviewGridHeader, .bulkReviewGridRow {
   display: grid;
-  grid-template-columns: 1.5fr 1.5fr repeat(7, 0.8fr) 1fr;
+  grid-template-columns: 1.5fr 1.5fr repeat(9, 0.8fr) 1fr;
   gap: 8px;
   align-items: center;
 }
@@ -548,6 +548,24 @@
   background-color: rgba(255, 152, 0, 0.2);
   color: #ffa726;
   border: 1px solid rgba(255, 152, 0, 0.4);
+}
+
+.traitFossil {
+  background-color: rgba(141, 110, 99, 0.24);
+  color: #bcaaa4;
+  border: 1px solid rgba(141, 110, 99, 0.45);
+}
+
+.traitSwarm {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #66bb6a;
+  border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.traitFishing {
+  background-color: rgba(3, 169, 244, 0.2);
+  color: #4fc3f7;
+  border: 1px solid rgba(3, 169, 244, 0.4);
 }
 
 .traitSold {

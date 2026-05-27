@@ -31,6 +31,9 @@ const YES_NO_FIELDS = [
   { key: 'MysteriousBall', label: 'Mysterious Ball' },
   { key: 'Safari', label: 'Safari' },
   { key: 'Honey Tree', label: 'Honey Tree' },
+  { key: 'Fossil', label: 'Fossil' },
+  { key : 'Swarm', label: 'Swarm' },
+  { key: 'Fishing', label: 'Fishing' },
   { key: 'Legendary', label: 'Legendary' },
 ]
 
@@ -71,6 +74,8 @@ function getDefaultState() {
     MysteriousBall: 'No',
     Safari: 'No',
     'Honey Tree': 'No',
+    Fossil: 'No',
+    Fishing: 'No',
     Legendary: 'No',
     'Reaction Link': '',
   }

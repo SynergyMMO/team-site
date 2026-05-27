@@ -166,6 +166,17 @@
   z-index: 5;
 }
 
+.fossilIcon,
+.fishingIcon, .swarmIcon {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 5;
+}
+
 .mysteriousballGif {
   position: absolute;
   top: 2px;
@@ -201,7 +212,7 @@
 }
 
 @media (max-width: 900px) {
-  .secretIcon, .eggIcon, .reactionIcon, .safariIcon, .mysteriousballGif, .honeyIcon {
+  .secretIcon, .eggIcon, .reactionIcon, .safariIcon, .fossilIcon, .fishingIcon, .swarmIcon, .mysteriousballGif, .honeyIcon {
     max-width: 10px;
     max-height: 10px;
   }

@@ -284,6 +284,8 @@ export default function PlayerPage() {
               { key: 'mostSingleEncounters', label: 'Most Single Encounters' },
               { key: 'most5xHordes', label: 'Most 5x Hordes' },
               { key: 'mostFishing', label: 'Most Fishing Shinies' },
+              { key: 'mostFossils', label: 'Most Fossil Shinies' },
+              { key: 'mostSwarm', label: 'Most Swarm Shinies' },
               { key: 'mostSafariCatches', label: 'Most Safari Catches' },
               { key: 'mostSafariFlees', label: 'Most Safari Flees' },
               { key: 'mostBountiesClaimed', label: 'Most Bounties Claimed' },

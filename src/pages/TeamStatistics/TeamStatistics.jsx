@@ -105,6 +105,18 @@ const PLAYER_LEADERBOARD_SECTIONS = [
     value: (entry) => `${entry.fishingCount} shinies`,
   },
   {
+    key: 'mostFossilShinies',
+    title: 'Most Fossil Shinies',
+    subtitle: 'Certified museum supplier',
+    value: (entry) => `${entry.fossilCount} shinies`,
+  },
+  {
+    key: 'mostSwarmShinies',
+    title: 'Most Swarm Shinies',
+    subtitle: 'Swarm enthusiasts',
+    value: (entry) => `${entry.swarmCount} shinies`,
+  },
+  {
     key: 'mostSafariCatches',
     title: 'Most Safari Catches',
     subtitle: 'It was meant to be!',
@@ -381,12 +393,12 @@ export default function TeamStatistics() {
             aria-label={searchPlaceholder}
           />
         </div>
-        <article className={styles.card}>
+        <article key={activeCategory.key} className={styles.card}>
           <h3>{activeCategory.title}</h3>
           <p className={styles.subtitle}>{activeCategory.subtitle}</p>
-          <ol className={styles.list}>
+          <ol key={`${activeCategory.key}-list`} className={styles.list}>
             {filteredIndexEntries.map((entry) => (
-              <li key={`${activeCategory.key}-${entry.canonical}`}>
+              <li key={`${activeCategory.key}-${entry.rank}-${entry.canonical}`}>
                 <div className={styles.rowTop}>
                   <span className={styles.rank}>#{entry.rank}</span>
                   {entry.isPlayer ? (

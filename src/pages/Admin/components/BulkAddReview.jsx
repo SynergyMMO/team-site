@@ -10,6 +10,9 @@ const FLAG_FIELDS = [
   { key: 'Event', label: 'Event' },
   { key: 'MysteriousBall', label: 'Mystery Ball' },
   { key: 'Honey Tree', label: 'Honey Tree' },
+  { key: 'Fossil', label: 'Fossil' },
+  { key: 'Swarm', label: 'Swarm' },
+  { key: 'Fishing', label: 'Fishing' },
 ]
 
 

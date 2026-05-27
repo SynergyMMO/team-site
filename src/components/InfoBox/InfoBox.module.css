@@ -128,6 +128,24 @@
   border: 1px solid rgba(255, 152, 0, 0.4);
 }
 
+.tagFossil {
+  background-color: rgba(141, 110, 99, 0.24);
+  color: #bcaaa4;
+  border: 1px solid rgba(141, 110, 99, 0.45);
+}
+
+.tagFishing {
+  background-color: rgba(3, 169, 244, 0.2);
+  color: #4fc3f7;
+  border: 1px solid rgba(3, 169, 244, 0.4);
+}
+
+.tagSwarm {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #66bb6a;
+  border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
 .tagEvent {
   background-color: rgba(0, 188, 212, 0.2);
   color: #26c6da;

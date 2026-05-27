@@ -5,6 +5,9 @@ const TRAIT_POINTS = {
   Safari: 5,
   Event: 5,
   'Honey Tree': 5,
+  Fossil: 10,
+  Swarm: 5,
+  Fishing: 0,
 }
 
 export { TRAIT_POINTS }
