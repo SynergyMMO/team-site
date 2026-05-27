@@ -79,12 +79,22 @@ export default function SHOTM() {
   const selectedHistory = !selectedIsCurrent
     ? shotmHistory.months?.[selectedMonthKey]
     : null
+  // Only include months from January 2026 onward
+  const MIN_MONTH_KEY = '2026-01';
   const historyMonthKeys = useMemo(
-    () => Object.keys(shotmHistory.months || {}).sort(),
+    () =>
+      Object.keys(shotmHistory.months || {})
+        .filter((key) => key >= MIN_MONTH_KEY)
+        .sort(),
     []
   )
+  // Prevent navigating before January 2026
   const previousMonthKey = useMemo(
-    () => historyMonthKeys.filter((key) => key < selectedMonthKey).at(-1) || null,
+    () => {
+      const prev = historyMonthKeys.filter((key) => key < selectedMonthKey).at(-1) || null;
+      if (prev && prev < MIN_MONTH_KEY) return null;
+      return prev;
+    },
     [historyMonthKeys, selectedMonthKey]
   )
   const nextMonthKey = useMemo(
@@ -162,10 +172,12 @@ export default function SHOTM() {
   const previousRanks = previousRanksRef.current
 
   const goPrev = () => {
-    if (!previousMonthKey) return
-    const p = monthKeyToSelection(previousMonthKey)
-    setCurrentMonth(p.month)
-    setCurrentYear(p.year)
+    if (!previousMonthKey) return;
+    // Prevent navigation before January 2026
+    if (previousMonthKey < MIN_MONTH_KEY) return;
+    const p = monthKeyToSelection(previousMonthKey);
+    setCurrentMonth(p.month);
+    setCurrentYear(p.year);
   }
   const goNext = () => {
     const n = nextMonthKey ? monthKeyToSelection(nextMonthKey) : shiftMonth(currentMonth, currentYear, 1)
@@ -175,6 +187,10 @@ export default function SHOTM() {
 
   const hasPrevData = Boolean(previousMonthKey)
 
+  // If current selection is before January 2026, show nothing
+  if (getMonthKey(currentMonth, currentYear) < MIN_MONTH_KEY) {
+    return <div className="message">No data available before January 2026.</div>;
+  }
   if (selectedIsCurrent && isLoading) return <div className="message">Loading...</div>
 
   return (

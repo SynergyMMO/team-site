@@ -3388,6 +3388,39 @@
           "encounters": 27
         }
       ]
+    },
+    "Altering Cave - Rotation 6 / Repel Trick": {
+      "route": "Altering Cave",
+      "credit": "Hyper",
+      "variation": "Rotation 6 / Repel Trick",
+      "encounterCategory": "repel-trick",
+      "total": 158,
+      "data": [
+        {
+          "pokemon": "Aipom",
+          "encounters": 41
+        },
+        {
+          "pokemon": "Shuppet",
+          "encounters": 37
+        },
+        {
+          "pokemon": "Pineco",
+          "encounters": 32
+        },
+        {
+          "pokemon": "Snubbull",
+          "encounters": 36
+        },
+        {
+          "pokemon": "Duskull",
+          "encounters": 11
+        },
+        {
+          "pokemon": "Absol",
+          "encounters": 1
+        }
+      ]
     }
   },
   "Sinnoh": {
