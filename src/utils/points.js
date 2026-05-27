@@ -5,7 +5,7 @@ const TRAIT_POINTS = {
   Safari: 5,
   Event: 5,
   'Honey Tree': 5,
-  Fossil: 10,
+  Fossil: 5,
   Swarm: 5,
   Fishing: 0,
   Headbutt: 10,
