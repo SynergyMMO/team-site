@@ -13,6 +13,7 @@ const FLAG_FIELDS = [
   { key: 'Fossil', label: 'Fossil' },
   { key: 'Swarm', label: 'Swarm' },
   { key: 'Fishing', label: 'Fishing' },
+  { key: 'Headbutt', label: 'Headbutt' },
 ]
 
 

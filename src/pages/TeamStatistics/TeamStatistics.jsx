@@ -116,6 +116,12 @@ const PLAYER_LEADERBOARD_SECTIONS = [
     subtitle: 'Swarm enthusiasts',
     value: (entry) => `${entry.swarmCount} shinies`,
   },
+  {    
+    key: 'mostHeadbuttShinies',
+    title: 'Most Headbutt Shinies',
+    subtitle: 'KaiDonos Category',
+    value: (entry) => `${entry.headbuttCount} shinies`,
+  },
   {
     key: 'mostSafariCatches',
     title: 'Most Safari Catches',

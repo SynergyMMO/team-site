@@ -21,6 +21,7 @@ const ICON_MAP = {
   Fossil: [`${BASE}images/Shiny Showcase/fossil.png`, 'fossilIcon'],
   Fishing: [`${BASE}images/Shiny Showcase/fishing.png`, 'fishingIcon'],
   Swarm: [`${BASE}images/Shiny Showcase/swarm.png`, 'swarmIcon'],
+  Headbutt: [`${BASE}images/Shiny Showcase/headbutt.png`, 'headbuttIcon'],
   Event: [`${BASE}images/Shiny Showcase/event.png`, 'eventIcon'],
   MysteriousBall: [`${BASE}images/Shiny Showcase/mysteriousball.gif`, 'mysteriousballGif'],
   Favourite: [`${BASE}images/Shiny Showcase/heart.png`, 'favouriteHeart'],

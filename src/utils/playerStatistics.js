@@ -538,6 +538,7 @@ export const getPlayerRanks = (data, playerName, externalData = {}) => {
       fishingCount: Number(player.fishingCount) || 0,
       fossilCount: Number(player.fossilCount) || 0,
       swarmCount: Number(player.swarmCount) || 0,
+      headbuttCount: Number(player.headbuttCount) || 0,
       safariCatchCount: Number(player.safariCatchCount) || 0,
       safariFleeCount: Number(player.safariFleeCount) || 0,
 
@@ -594,6 +595,10 @@ export const getPlayerRanks = (data, playerName, externalData = {}) => {
 
   const qualifiedSwarm = allPlayers.filter((p) =>
     isValid(p, "swarmCount")
+  )
+
+  const qualifiedHeadbutt = allPlayers.filter((p) =>
+    isValid(p, "headbuttCount")
   )
 
   const qualifiedAll = allPlayers // for stats that should include everyone
@@ -667,6 +672,11 @@ export const getPlayerRanks = (data, playerName, externalData = {}) => {
     mostSwarm: getRank(
       qualifiedSwarm,
       (a, b) => b.swarmCount - a.swarmCount
+    ),
+
+    mostHeadbutt: getRank(
+      qualifiedHeadbutt,
+      (a, b) => b.headbuttCount - a.headbuttCount
     ),
 
     mostSafariCatches: getRank(
@@ -793,6 +803,7 @@ export const calculatePlayerStatistics = (data) => {
     const fishingCount = ownedShinyEntries.filter((s) => isTruthyFlag(s.Fishing)).length
     const fossilCount = ownedShinyEntries.filter((s) => isTruthyFlag(s.Fossil)).length
     const swarmCount = ownedShinyEntries.filter((s) => isTruthyFlag(s.Swarm)).length  
+    const headbuttCount = ownedShinyEntries.filter((s) => isTruthyFlag(s.Headbutt)).length
     const safariFleeCount = shinyEntries.filter((s) => isTruthyFlag(s.Safari) && isTruthyFlag(s.Sold)).length
     const safariCatchCount = shinyEntries.filter((s) => isTruthyFlag(s.Safari) && !isTruthyFlag(s.Sold)).length
 
@@ -816,6 +827,7 @@ export const calculatePlayerStatistics = (data) => {
       fishingCount,
       fossilCount,
       swarmCount,
+      headbuttCount,
       safariFleeCount,
       safariCatchCount,
       dataCompleteness,
@@ -870,6 +882,8 @@ export const getStatisticsWinners = (data, externalData = {}) => {
   const byHorde5x = [...allEligiblePlayers].sort((a, b) => b.horde5xCount - a.horde5xCount)
   const byFishing = [...allEligiblePlayers].sort((a, b) => b.fishingCount - a.fishingCount)
   const byFossils = [...allEligiblePlayers].sort((a, b) => b.fossilCount - a.fossilCount)
+  const bySwarm = [...allEligiblePlayers].sort((a, b) => b.swarmCount - a.swarmCount)
+  const byHeadbutt = [...allEligiblePlayers].sort((a, b) => b.headbuttCount - a.headbuttCount)
   const bySafariFlees = [...allEligiblePlayers].sort((a, b) => b.safariFleeCount - a.safariFleeCount)
   const bySafariCatches = [...allEligiblePlayers].sort((a, b) => b.safariCatchCount - a.safariCatchCount)
   const byBountyClaims = [...allEligiblePlayers].sort((a, b) => b.bountyClaimCount - a.bountyClaimCount)
@@ -889,6 +903,7 @@ export const getStatisticsWinners = (data, externalData = {}) => {
     mostFishingShinies: byFishing[0],
     mostFossilShinies: byFossils[0],
     mostSwarmShinies: bySwarm[0],
+    mostHeadbuttShinies: byHeadbutt[0],
     mostSafariFlees: bySafariFlees[0],
     mostSafariCatches: bySafariCatches[0],
     mostBountiesClaimed: byBountyClaims[0],
@@ -969,6 +984,7 @@ export const getStatisticsLeaderboards = (data, limit = 3, externalData = {}) =>
     mostFishingShinies: getTopEntries(allEligiblePlayers, (a, b) => b.fishingCount - a.fishingCount, limit, (p) => p.fishingCount),
     mostFossilShinies: getTopEntries(allEligiblePlayers, (a, b) => b.fossilCount - a.fossilCount, limit, (p) => p.fossilCount),
     mostSwarmShinies: getTopEntries(allEligiblePlayers, (a, b) => b.swarmCount - a.swarmCount, limit, (p) => p.swarmCount),
+    mostHeadbuttShinies: getTopEntries(allEligiblePlayers, (a, b) => b.headbuttCount - a.headbuttCount, limit, (p) => p.headbuttCount),
     mostSafariCatches: getTopEntries(allEligiblePlayers, (a, b) => b.safariCatchCount - a.safariCatchCount, limit, (p) => p.safariCatchCount),
     mostSafariFlees: getTopEntries(allEligiblePlayers, (a, b) => b.safariFleeCount - a.safariFleeCount, limit, (p) => p.safariFleeCount),
     mostBountiesClaimed: getTopEntries(allEligiblePlayers, (a, b) => b.bountyClaimCount - a.bountyClaimCount, limit, (p) => p.bountyClaimCount),

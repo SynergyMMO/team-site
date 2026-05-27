@@ -10,6 +10,7 @@ const TRAIT_CHECKS = [
   { key: 'Fossil', label: 'Fossil', cls: 'tagFossil' },
   { key: 'Fishing', label: 'Fishing', cls: 'tagFishing' },
   { key: 'Swarm', label: 'Swarm', cls: 'tagSwarm' },
+  { key: 'Headbutt', label: 'Headbutt', cls: 'tagHeadbutt' },
   { key: 'Event', label: 'Event', cls: 'tagEvent' },
   { key: 'Favourite', label: 'Favourite', cls: 'tagFav' },
   { key: 'Legendary', label: 'Legend', cls: 'tagLegend' },

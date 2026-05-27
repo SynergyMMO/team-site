@@ -8,6 +8,7 @@ const TRAIT_POINTS = {
   Fossil: 10,
   Swarm: 5,
   Fishing: 0,
+  Headbutt: 10,
 }
 
 export { TRAIT_POINTS }

@@ -18,6 +18,7 @@ const SHINY_FILTERS = [
   { label: 'Fossils', key: 'Fossil' },
   { label: 'Swarm', key: 'Swarm' },
   { label: 'Fishing', key: 'Fishing' },
+  { label: `Headbutt`, key: 'Headbutt' },
   { label: 'Reaction', key: 'Reaction' },
   { label: 'Mysterious Ball', key: 'MysteriousBall' },
   { label: 'Honey Tree', key: 'Honey Tree' },
