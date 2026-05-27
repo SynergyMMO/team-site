@@ -680,7 +680,7 @@ export default function PlayerCardGenerator() {
         <p>Upload an encounter tracker JSON, add your PokeMMO name and trainer image, then export a clean player card.</p>
       </header>
 
-      <details className={styles.helpPanel}>
+      <details className={styles.helpPanel} open>
         <summary>How to use this page</summary>
         <div className={styles.helpContent}>
           <article>

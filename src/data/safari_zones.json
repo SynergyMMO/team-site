@@ -3112,6 +3112,11 @@
         ]
       }
     ],
-    "catchData": {}
+    "catchData": {
+      "Castform": {
+        "ballsOnly": 28.98,
+        "bestStrategy": "ballsOnly",
+        "bestOdds": 28.98
+      }}
   }
 }
