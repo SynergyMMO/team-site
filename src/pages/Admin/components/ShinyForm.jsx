@@ -76,6 +76,7 @@ function getDefaultState() {
     'Honey Tree': 'No',
     Fossil: 'No',
     Fishing: 'No',
+    Swarm: 'No',
     Legendary: 'No',
     'Reaction Link': '',
   }
