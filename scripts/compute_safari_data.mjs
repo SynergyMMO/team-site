@@ -24,7 +24,7 @@ function getModifiedRate(rate, mod = 6) {
   if (mod === 11) return Math.floor(rate * 35 / 10)
   if (mod === 12) return Math.floor(rate * 40 / 10)
   return rate
-}
+} 
 
 function calculateCatchOdds(rate, catchMod = 6) {
   rate = getModifiedRate(rate, catchMod)

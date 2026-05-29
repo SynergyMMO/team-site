@@ -16,9 +16,8 @@ const TRAIT_CHECKS = [
   { key: 'Legendary', label: 'Legend', cls: 'tagLegend' },
   { key: 'MysteriousBall', label: 'Mystery', cls: 'tagMystery' },
   { key: 'Reaction', label: 'Reaction', cls: 'tagReaction' },
-]
+] 
 
-// API merged fields to display (in order)
 const API_FIELDS = [
   { key: 'ivs', label: 'IVs' },
   { key: 'nature', label: 'Nature' },
