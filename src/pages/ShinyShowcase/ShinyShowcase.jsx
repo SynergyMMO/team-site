@@ -178,11 +178,11 @@ export default function ShinyShowcase() {
 
       <div className={styles.videoContainer}>
         <h2>
-          <a href="https://www.youtube.com/watch?v=ngejc1FMWqg" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.youtube.com/watch?v=G5zh-xZs-eg" target="_blank" rel="noopener noreferrer">
             Watch our Shiny Showcase Video!
           </a>
         </h2>
-        <a href="https://www.youtube.com/watch?v=ngejc1FMWqg" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.youtube.com/watch?v=G5zh-xZs-eg" target="_blank" rel="noopener noreferrer">
           <img
             src={getAssetUrl('images/shinyshowcase.png')}
             alt="Shiny Showcase Video"

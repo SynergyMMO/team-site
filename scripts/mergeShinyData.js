@@ -510,20 +510,24 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
     log(`⚙️  Mode: ${mode === 'test' ? 'TEST (output to file)' : 'UPDATE (real database)'}`, 'warning');
 
     log('\n📥 Fetching API data...', 'info');
-    const userPromises = users.map(async (user) => {
+    // Sequentially fetch each user's data with a 1-second cooldown between requests
+    const userResults = [];
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
       const shinyboardUsername = USERNAME_MAPPING[user] || user;
       process.stdout.write(`  → Fetching ${shinyboardUsername}${USERNAME_MAPPING[user] ? ` (mapped from "${user}")` : ''}...`);
       try {
         const data = await grabShinyData(shinyboardUsername);
         log(` ✓ (${data.length} shinies)`, 'success');
-        return [user, data];
+        userResults.push([user, data]);
       } catch (error) {
         log(` ✗ Failed`, 'error');
-        return [user, []];
+        userResults.push([user, []]);
       }
-    });
-
-    const userResults = await Promise.all(userPromises);
+      if (i < users.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second cooldown
+      }
+    }
     const apiDataMap = Object.fromEntries(userResults);
     log('\n🔍 Creating name mappings...', 'info');
     const normalizedToActualName = {};

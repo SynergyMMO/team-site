@@ -1997,113 +1997,113 @@
     },
     "Route 46 - Headbutt": {
       "route": "Route 46",
-      "credit": "KaiDono",
+      "credit": "KaiDono, Hyper",
       "variation": "Headbutt",
       "encounterCategory": "headbutt",
-      "total": 649,
+      "total": 677,
       "data": [
         {
           "pokemon": "Spearow",
-          "encounters": 145
+          "encounters": 150
         },
         {
           "pokemon": "Exeggcute",
-          "encounters": 142
+          "encounters": 152
         },
         {
           "pokemon": "Pidgey",
-          "encounters": 134
+          "encounters": 140
         },
         {
           "pokemon": "Murkrow",
-          "encounters": 96
+          "encounters": 97
         },
         {
           "pokemon": "Heracross",
-          "encounters": 73
+          "encounters": 76
         },
         {
           "pokemon": "Pineco",
-          "encounters": 59
+          "encounters": 62
         }
       ]
     },
     "New Bark Town - Headbutt": {
       "route": "New Bark Town",
-      "credit": "KaiDono",
+      "credit": "KaiDono, Hyper",
       "variation": "Headbutt",
       "encounterCategory": "headbutt",
-      "total": 369,
+      "total": 386,
       "data": [
         {
           "pokemon": "Pidgey",
-          "encounters": 150
+          "encounters": 153
         },
         {
           "pokemon": "Exeggcute",
-          "encounters": 111
+          "encounters": 115
         },
         {
           "pokemon": "Hoothoot",
-          "encounters": 81
+          "encounters": 90
         },
         {
           "pokemon": "Pineco",
-          "encounters": 27
+          "encounters": 28
         }
       ]
     },
     "Cherrygrove City - Headbutt": {
       "route": "Cherrygrove City",
-      "credit": "KaiDono, Faia",
+      "credit": "KaiDono, Faia, Hyper",
       "variation": "Headbutt",
       "encounterCategory": "headbutt",
-      "total": 346,
+      "total": 359,
       "data": [
         {
           "pokemon": "Pidgey",
-          "encounters": 112
+          "encounters": 115
         },
         {
           "pokemon": "Exeggcute",
-          "encounters": 110
+          "encounters": 113
         },
         {
           "pokemon": "Hoothoot",
-          "encounters": 83
+          "encounters": 86
         },
         {
           "pokemon": "Pineco",
-          "encounters": 41
+          "encounters": 45
         }
       ]
     },
     "Route 29 - Headbutt": {
       "route": "Route 29",
-      "credit": "KaiDono",
+      "credit": "KaiDono, Hyper",
       "variation": "Headbutt",
       "encounterCategory": "headbutt",
-      "total": 848,
+      "total": 901,
       "data": [
         {
           "pokemon": "Exeggcute",
-          "encounters": 261
+          "encounters": 281
         },
         {
           "pokemon": "Hoothoot",
-          "encounters": 254
+          "encounters": 275
         },
         {
           "pokemon": "Pidgey",
-          "encounters": 142
+          "encounters": 144
         },
         {
           "pokemon": "Spearow",
-          "encounters": 126
+          "encounters": 129
         },
         {
           "pokemon": "Pineco",
-          "encounters": 65
+          "encounters": 72
         }
       ]
     },

@@ -39,8 +39,15 @@ export default function AddPokemonTab({ db, playerNames, allPokemonNames, onAdd,
     const newDb = JSON.parse(JSON.stringify(db));
     const added = [];
     for (const entry of entries) {
-      const { player: entryPlayer, ...shinyData } = entry;
+      let { player: entryPlayer, ...shinyData } = entry;
       if (!entryPlayer) continue;
+      // Find canonical player name (case-insensitive)
+      const canonicalName = Object.keys(newDb).find(
+        name => name.toLowerCase() === entryPlayer.toLowerCase()
+      );
+      if (canonicalName) {
+        entryPlayer = canonicalName;
+      }
       if (!newDb[entryPlayer]) newDb[entryPlayer] = { shiny_count: 0, shinies: {} };
       const existingIds = Object.keys(newDb[entryPlayer].shinies).map(Number);
       const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
