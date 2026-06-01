@@ -46785,7 +46785,7 @@
           }
         },
         "Dracula": {
-          "points": 124,
+          "points": 99,
           "shinies": {
             "4": {
               "Pokemon": "Vigoroth",
@@ -46808,34 +46808,6 @@
               "MysteriousBall": "No",
               "Safari": "No",
               "Honey Tree": "No",
-              "Legendary": "No",
-              "Reaction Link": ""
-            },
-            "5": {
-              "Pokemon": "Slaking",
-              "Month": "May",
-              "Year": "2026",
-              "encounter_method": "single",
-              "location": "Hoenn - Petalburg Woods",
-              "encounter_count": 6196,
-              "date_caught": "2026-05-15T00:00:00.000000Z",
-              "nature": null,
-              "ivs": null,
-              "nickname": "agaDrake",
-              "Egg": "No",
-              "Favourite": "No",
-              "Secret Shiny": "No",
-              "Alpha": "No",
-              "Sold": "No",
-              "Event": "No",
-              "Reaction": "No",
-              "MysteriousBall": "No",
-              "Safari": "No",
-              "Honey Tree": "No",
-              "Fossil": "No",
-              "Fishing": "No",
-              "Swarm": "No",
-              "Headbutt": "No",
               "Legendary": "No",
               "Reaction Link": ""
             },
