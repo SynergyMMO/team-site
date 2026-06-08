@@ -1,0 +1,7427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Shiny War Fishing Point Return Report</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 12mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: #18212f;
+      background: #f4f6f8;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .page {
+      padding: 24px;
+    }
+
+    .hero {
+      min-height: 285px;
+      padding: 30px;
+      border-radius: 10px;
+      color: #ffffff;
+      background:
+        linear-gradient(135deg, rgba(16, 30, 44, 0.95), rgba(31, 68, 73, 0.88)),
+        radial-gradient(circle at 82% 18%, rgba(255, 208, 88, 0.45), transparent 34%),
+        linear-gradient(90deg, #0c1824, #1c5b62);
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 24px;
+      align-items: end;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 780px;
+      font-size: 42px;
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin-top: 16px;
+      color: #d6e5e5;
+      font-size: 13px;
+    }
+
+    .generated {
+      margin-top: 22px;
+      color: #a9c7c9;
+      font-size: 11px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: #c8dddd;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: 20px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 10px 28px rgba(25, 39, 52, 0.08);
+      break-inside: avoid;
+    }
+
+    .sectionHeader {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    .sectionHeader h2 {
+      font-size: 20px;
+      color: #18212f;
+    }
+
+    .sectionHeader p {
+      max-width: 560px;
+      color: #667383;
+      font-size: 10.5px;
+      text-align: right;
+    }
+
+    .featureGrid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .featureCard {
+      min-height: 160px;
+      padding: 14px;
+      border: 1px solid #dfe7ec;
+      border-radius: 8px;
+      background: #fbfcfd;
+      break-inside: avoid;
+    }
+
+    .cardTopline {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .rank {
+      color: #5b6878;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .score {
+      display: inline-flex;
+      min-width: 46px;
+      justify-content: center;
+      padding: 4px 7px;
+      border-radius: 999px;
+      color: #1f3a4a;
+      background: #e8eef2;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .scoreMedium {
+      color: #174743;
+      background: #dff2ec;
+    }
+
+    .scoreHigh {
+      color: #4e3511;
+      background: #ffe6ad;
+    }
+
+    .featureCard h2 {
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .featureCard h2 span {
+      display: block;
+      margin-top: 2px;
+      color: #6b7785;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .chipRow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .pokemonChip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      max-width: 100%;
+      padding: 4px 7px;
+      border-radius: 999px;
+      color: #243041;
+      background: #e8eef2;
+      font-size: 9px;
+      white-space: nowrap;
+    }
+
+    .pokemonChip strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tier0, .tier1 {
+      background: #ffe0e7;
+    }
+
+    .tier2, .tier3 {
+      background: #fff0bd;
+    }
+
+    .tier4, .tier5 {
+      background: #dff2ec;
+    }
+
+    .chipPercent {
+      color: #44515f;
+      font-weight: 700;
+    }
+
+    .locationList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+      color: #3d4b5b;
+      font-size: 9.5px;
+    }
+
+    .featureCard p {
+      margin-top: 10px;
+      color: #6b7785;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    th {
+      padding: 8px 7px;
+      color: #536171;
+      background: #eef3f6;
+      font-size: 8.5px;
+      text-align: left;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    td {
+      padding: 8px 7px;
+      border-bottom: 1px solid #e6edf1;
+      vertical-align: top;
+    }
+
+    tr {
+      break-inside: avoid;
+    }
+
+    .rankCell {
+      color: #667383;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .muted {
+      display: block;
+      margin-top: 2px;
+      color: #7b8794;
+      font-size: 9px;
+    }
+
+    .compact {
+      margin-top: 0;
+    }
+
+    .compact .pokemonChip {
+      max-width: 160px;
+      padding: 3px 6px;
+      font-size: 8.5px;
+    }
+
+    .weightBadge,
+    .manualBadge {
+      display: inline-flex;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #e8eef2;
+      color: #4d5a68;
+      font-size: 8.5px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .weightBadge.weighted {
+      background: #dff2ec;
+      color: #174743;
+    }
+
+    .manualBadge {
+      background: #f7e2d4;
+      color: #7a3c1f;
+    }
+
+    .rankedTable th:nth-child(1),
+    .rankedTable td:nth-child(1) {
+      width: 38px;
+    }
+
+    .rankedTable th:nth-child(2),
+    .rankedTable td:nth-child(2) {
+      width: 70px;
+    }
+
+    .rankedTable th:nth-child(3),
+    .rankedTable td:nth-child(3) {
+      width: 110px;
+    }
+
+    .rankedTable th:nth-child(5),
+    .rankedTable td:nth-child(5) {
+      width: 230px;
+    }
+
+    .rankedTable th:nth-child(6),
+    .rankedTable td:nth-child(6) {
+      width: 105px;
+    }
+
+    .manualTable th:nth-child(1),
+    .manualTable td:nth-child(1) {
+      width: 42px;
+    }
+
+    .manualTable th:nth-child(2),
+    .manualTable td:nth-child(2) {
+      width: 72px;
+    }
+
+    .manualTable th:nth-child(3),
+    .manualTable td:nth-child(3) {
+      width: 120px;
+    }
+
+    .manualTable th:nth-child(5),
+    .manualTable td:nth-child(5) {
+      width: 70px;
+    }
+
+    .manualTable th:nth-child(6),
+    .manualTable td:nth-child(6) {
+      width: 110px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <h1>Shiny War Fishing Point Return Report</h1>
+        <p class="subtitle">A ranked fishing report covering Old Rod, Good Rod, Super Rod, Fishing samples, and each route water-lure encounter. Route Finder samples are weighted when available; the rest are adjusted by rarity so rare targets do not overstate a route.</p>
+        <p class="generated">Generated 7 June 2026 at 22:06 BST</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong>88</strong><span>Fishing routes</span></div>
+        <div class="stat"><strong>88</strong><span>Ranked routes</span></div>
+        <div class="stat"><strong>3</strong><span>Weighted splits</span></div>
+        <div class="stat"><strong>0</strong><span>Manual review</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sectionHeader">
+        <h2>Best Fishing Returns</h2>
+        <p>These are the strongest fishing routes after weaker duplicate target routes are filtered out.</p>
+      </div>
+      <div class="featureGrid">
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#1</span>
+        <span class="score scoreHigh">12.32</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier3">
+        <strong>Barboach</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Finneon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Lumineon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Whiscash</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Quagsire</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Sinnoh Route 205</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#2</span>
+        <span class="score scoreHigh">11.82</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier3">
+        <strong>Barboach</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Corphish</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Crawdaunt</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Whiscash</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Dratini</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Sinnoh Celestic Town</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#3</span>
+        <span class="score scoreHigh">11.64</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier2">
+        <strong>Lapras</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Sinnoh PokéMon League</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#4</span>
+        <span class="score scoreHigh">11.44</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier3">
+        <strong>Finneon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Lumineon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Starmie</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Sinnoh Canalave City</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#5</span>
+        <span class="score scoreHigh">10.74</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier2">
+        <strong>Lapras</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Sinnoh Sunyshore City</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#6</span>
+        <span class="score scoreHigh">10.46</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier1">
+        <strong>Feebas</strong>
+        <span>25 pts</span>
+        <span>T1</span>
+        <span>Special</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Barboach</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Starmie</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Whiscash</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Dragonair</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Very Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Dratini</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Sinnoh Mt.. Coronet</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#7</span>
+        <span class="score scoreHigh">10.22</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon/Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Chinchou</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Dewgong</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Lanturn</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare/Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common/Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacruel</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Johto Route 47</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#8</span>
+        <span class="score scoreHigh">10.22</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Mantine</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Hoenn Ever Grande City</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#9</span>
+        <span class="score scoreHigh">10.22</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Mantyke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Hoenn Route 128</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#10</span>
+        <span class="score scoreHigh">10.14</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier3">
+        <strong>Cloyster</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common/Special</span>
+        <span>Old Rod/Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Eelektrik</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Unova Undella Bay</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#11</span>
+        <span class="score scoreHigh">10.14</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier3">
+        <strong>Cloyster</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common/Special</span>
+        <span>Old Rod/Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Eelektrik</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div>
+      <div class="locationList"><span>Unova Undella Town</span></div>
+      
+    </article>
+  
+    <article class="featureCard">
+      <div class="cardTopline">
+        <span class="rank">#12</span>
+        <span class="score scoreHigh">10.00</span>
+      </div>
+      <h2>Fishing <span>ALL</span></h2>
+      <div class="chipRow">
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        
+        
+        <span class="chipPercent">17.0%</span>
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        
+        
+        <span class="chipPercent">83.0%</span>
+      </span>
+    </div>
+      <div class="locationList"><span>Hoenn Lilycove City</span></div>
+      <p>Weighted sample</p>
+    </article>
+  </div>
+    </section>
+
+    <section class="section">
+      <div class="sectionHeader">
+        <h2>Full Fishing Ranked List</h2>
+        <p>Non-sampled rows show rarity and method chips. Weighted rows show encounter percentages from Route Finder samples.</p>
+      </div>
+      <table class="rankedTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Score</th>
+            <th>Method</th>
+            <th>Split</th>
+            <th>Locations</th>
+            <th>Weighting</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr>
+      <td class="rankCell">1</td>
+      <td><span class="score scoreHigh">12.32</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Barboach</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Finneon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Lumineon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Whiscash</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Quagsire</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 205</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">2</td>
+      <td><span class="score scoreHigh">11.82</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Barboach</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Corphish</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Crawdaunt</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Whiscash</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Dratini</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Celestic Town</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">3</td>
+      <td><span class="score scoreHigh">11.64</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Lapras</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh PokéMon League</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">4</td>
+      <td><span class="score scoreHigh">11.44</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Finneon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Lumineon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Starmie</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Canalave City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">5</td>
+      <td><span class="score scoreHigh">10.74</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Lapras</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Sunyshore City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">6</td>
+      <td><span class="score scoreHigh">10.46</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier1">
+        <strong>Feebas</strong>
+        <span>25 pts</span>
+        <span>T1</span>
+        <span>Special</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Barboach</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Starmie</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Whiscash</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Dragonair</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Very Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Dratini</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Mt.. Coronet</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">7</td>
+      <td><span class="score scoreHigh">10.22</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon/Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Chinchou</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Dewgong</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Lanturn</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare/Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common/Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacruel</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Route 47</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">8</td>
+      <td><span class="score scoreHigh">10.22</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Mantine</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Ever Grande City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">9</td>
+      <td><span class="score scoreHigh">10.22</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Mantyke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Route 128</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">10</td>
+      <td><span class="score scoreHigh">10.14</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Cloyster</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common/Special</span>
+        <span>Old Rod/Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Eelektrik</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Undella Bay</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">11</td>
+      <td><span class="score scoreHigh">10.14</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Cloyster</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common/Special</span>
+        <span>Old Rod/Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Eelektrik</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Undella Town</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">12</td>
+      <td><span class="score scoreHigh">10.00</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        
+        
+        <span class="chipPercent">17.0%</span>
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        
+        
+        <span class="chipPercent">83.0%</span>
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Lilycove City</span></div></td>
+      <td><span class="weightBadge weighted">Weighted sample</span></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">13</td>
+      <td><span class="score scoreHigh">9.96</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">Night</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Lapras</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Route 19</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">14</td>
+      <td><span class="score scoreHigh">9.96</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">Day/Morning</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Lapras</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Route 19</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">15</td>
+      <td><span class="score scoreHigh">9.64</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Sharpedo</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailord</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 213</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">16</td>
+      <td><span class="score scoreHigh">9.54</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Qwilfish</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Finneon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Lumineon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Clamperl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 219</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">17</td>
+      <td><span class="score scoreHigh">9.54</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Qwilfish</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Finneon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Lumineon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Clamperl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 221</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">18</td>
+      <td><span class="score scoreHigh">9.24</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Relicanth</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Finneon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Lumineon</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 218</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">19</td>
+      <td><span class="score scoreHigh">9.10</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier1">
+        <strong>Feebas</strong>
+        <span>25 pts</span>
+        <span>T1</span>
+        <span>Special</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Carvanha</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Sharpedo</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Quagsire</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Route 119</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">20</td>
+      <td><span class="score scoreHigh">9.04</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Carvanha</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Pastoria City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">21</td>
+      <td><span class="score scoreHigh">9.04</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Sharpedo</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Route 122</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">22</td>
+      <td><span class="score scoreHigh">9.04</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Sharpedo</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Starmie</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Route 103</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">23</td>
+      <td><span class="score scoreHigh">8.88</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Barboach</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Whiscash</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure/Uncommon</span>
+        <span>Water/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 212</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">24</td>
+      <td><span class="score scoreHigh">8.34</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Cloyster</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Luvdisc</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common/Special</span>
+        <span>Old Rod/Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Eelektross</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Route 13</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">25</td>
+      <td><span class="score scoreHigh">8.14</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Five Island</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">26</td>
+      <td><span class="score scoreHigh">8.06</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Lapras</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        
+        
+        <span class="chipPercent">2.6%</span>
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Carvanha</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        
+        
+        <span class="chipPercent">71.6%</span>
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Basculin (Red)</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        
+        
+        <span class="chipPercent">25.8%</span>
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Village Bridge</span></div></td>
+      <td><span class="weightBadge weighted">Weighted sample</span></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">27</td>
+      <td><span class="score scoreHigh">7.09</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Qwilfish</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Memorial Pillar</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">28</td>
+      <td><span class="score scoreHigh">7.09</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Qwilfish</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Resort Gorgeous</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">29</td>
+      <td><span class="score scoreHigh">7.09</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Qwilfish</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Water Labyrinth</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">30</td>
+      <td><span class="score scoreHigh">7.09</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Qwilfish</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Tanoby Ruins</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">31</td>
+      <td><span class="score scoreHigh">7.00</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">Night</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Starmie</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon/Rare</span>
+        <span>Super Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Cerulean City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">32</td>
+      <td><span class="score scoreHigh">7.00</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">Day/Morning</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Corsola</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon/Rare</span>
+        <span>Super Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Starmie</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Cerulean City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">33</td>
+      <td><span class="score scoreHigh">6.93</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Qwilfish</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier4">
+        <strong>Dragonite</strong>
+        <span>6 pts</span>
+        <span>T4</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Outcast Island</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">34</td>
+      <td><span class="score scoreHigh">6.82</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Cloyster</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Chinchou</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Lanturn</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Rare</span>
+        <span>Old Rod/Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto S.S. Anne</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">35</td>
+      <td><span class="score scoreHigh">6.82</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Cloyster</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Chinchou</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Lanturn</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Rare</span>
+        <span>Old Rod/Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Vermilion City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">36</td>
+      <td><span class="score scoreHigh">6.52</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Shellder</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Starmie</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Staryu</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common/Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Rare</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Seafoam Islands</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">37</td>
+      <td><span class="score scoreMedium">5.66</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier2">
+        <strong>Lapras</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        
+        
+        <span class="chipPercent">4.0%</span>
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Octillery</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        
+        
+        <span class="chipPercent">5.3%</span>
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        
+        
+        <span class="chipPercent">29.4%</span>
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailord</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        
+        
+        <span class="chipPercent">4.5%</span>
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        
+        
+        <span class="chipPercent">56.8%</span>
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 223</span></div></td>
+      <td><span class="weightBadge weighted">Weighted sample</span></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">38</td>
+      <td><span class="score scoreMedium">5.44</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Dewford Town</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">39</td>
+      <td><span class="score scoreMedium">5.44</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Route 105</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">40</td>
+      <td><span class="score scoreMedium">5.44</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Remoraid</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Wailmer</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Route 106</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">41</td>
+      <td><span class="score scoreMedium">4.46</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowbro</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Cerulean Cave</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">42</td>
+      <td><span class="score">3.80</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Fuchsia City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">43</td>
+      <td><span class="score">3.68</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingdra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common/Rare</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Route 4</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">44</td>
+      <td><span class="score">3.62</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Azumarill</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Route 25</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">45</td>
+      <td><span class="score">3.50</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Azumarill</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Berry Forest</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">46</td>
+      <td><span class="score">3.50</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Ruin Valley</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">47</td>
+      <td><span class="score">3.50</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Cape Brink</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">48</td>
+      <td><span class="score">3.38</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common/Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Tentacool</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Viridian City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">49</td>
+      <td><span class="score">3.26</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Azumarill</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Route 22</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">50</td>
+      <td><span class="score">3.26</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Four Island</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">51</td>
+      <td><span class="score">3.02</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Route 6</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">52</td>
+      <td><span class="score">3.02</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Lanturn</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Kindle Road</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">53</td>
+      <td><span class="score">3.02</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Lanturn</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Psyduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowpoke</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Treasure Beach</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">54</td>
+      <td><span class="score">3.02</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Horsea</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingdra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingler</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Krabby</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seadra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Whirl Islands</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">55</td>
+      <td><span class="score">2.96</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Azurill</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 203</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">56</td>
+      <td><span class="score">2.96</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Dewgong</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Lake Acuity</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">57</td>
+      <td><span class="score">2.96</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Masquerain</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 204</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">58</td>
+      <td><span class="score">2.96</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 214</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">59</td>
+      <td><span class="score">2.96</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Route 229</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">60</td>
+      <td><span class="score">2.96</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Surskit</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Twinleaf Town</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">61</td>
+      <td><span class="score">2.88</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure/Very Common</span>
+        <span>Water/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Lake Verity</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">62</td>
+      <td><span class="score">2.36</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwrath</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Route 35</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">63</td>
+      <td><span class="score">2.36</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Route 30</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">64</td>
+      <td><span class="score">2.36</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Route 31</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">65</td>
+      <td><span class="score">2.27</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier3">
+        <strong>Barboach</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Carvanha</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Sharpedo</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier3">
+        <strong>Whiscash</strong>
+        <span>10 pts</span>
+        <span>T3</span>
+        <span>Very Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Rare/Rare</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Rare</span>
+        <span>Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Great Marsh</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">66</td>
+      <td><span class="score">2.15</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier0">
+        <strong>Basculin Blue Striped</strong>
+        <span>30 pts</span>
+        <span>T0</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier2">
+        <strong>Qwilfish</strong>
+        <span>15 pts</span>
+        <span>T2</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Basculin Red Striped</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Fishing</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Route 1</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">67</td>
+      <td><span class="score">2.04</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure/Very Common/Uncommon</span>
+        <span>Water/Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Route 43</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">68</td>
+      <td><span class="score">1.94</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwrath</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Ilex Forest</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">69</td>
+      <td><span class="score">1.94</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Azumarill</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Mt.. Mortar</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">70</td>
+      <td><span class="score">1.94</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Golduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Dark Cave</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">71</td>
+      <td><span class="score">1.94</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Violet City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">72</td>
+      <td><span class="score">1.88</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwrath</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Cliff Edge Gate</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">73</td>
+      <td><span class="score">1.82</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Blackthorn City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">74</td>
+      <td><span class="score">1.82</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common/Uncommon</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon</span>
+        <span>Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Ecruteak City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">75</td>
+      <td><span class="score">1.67</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Basculin Red Striped</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Bibarel</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare/Special</span>
+        <span>Old Rod/Fishing</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Route 6</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">76</td>
+      <td><span class="score">1.58</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Basculin Red Striped</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Floatzel</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Route 3</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">77</td>
+      <td><span class="score">1.52</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Azurill</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Good Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Super Rod/Old Rod/Good Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Sinnoh Resort Area</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">78</td>
+      <td><span class="score">1.52</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Very Common</span>
+        <span>Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Kingdra</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Johto Lake Of Rage</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">79</td>
+      <td><span class="score">1.10</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Uncommon/Special</span>
+        <span>Old Rod/Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwrath</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure/Special</span>
+        <span>Water/Fishing</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Wellspring Cave</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">80</td>
+      <td><span class="score">0.95</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Poliwag</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare/Special</span>
+        <span>Old Rod/Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwrath</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Walrein</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Giant Chasm</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">81</td>
+      <td><span class="score">0.92</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Grimer</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Weezing</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Kanto Celadon City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">82</td>
+      <td><span class="score">0.86</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Golduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Pinwheel Forest Outside</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">83</td>
+      <td><span class="score">0.86</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Golduck</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Politoed</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Poliwhirl</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Pinewheel Forest Inside</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">84</td>
+      <td><span class="score">0.84</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gyarados</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Rare</span>
+        <span>Super Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Magikarp</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod/Good Rod/Super Rod</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Sootopolis City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">85</td>
+      <td><span class="score">0.83</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Floatzel</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Route 11</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">86</td>
+      <td><span class="score">0.83</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Special</span>
+        <span>Fishing</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Slowking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Abundant Shrine</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">87</td>
+      <td><span class="score">0.80</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Goldeen</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Very Common</span>
+        <span>Old Rod</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Seaking</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure/Special</span>
+        <span>Water/Fishing</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Unova Striaton City</span></div></td>
+      <td></td>
+    </tr>
+  
+    <tr>
+      <td class="rankCell">88</td>
+      <td><span class="score">0.16</span></td>
+      <td>
+        <strong>Fishing</strong>
+        <span class="muted">ALL</span>
+      </td>
+      <td><div class="chipRow compact">
+      <span class="pokemonChip tier6">
+        <strong>Gorebyss</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    
+      <span class="pokemonChip tier6">
+        <strong>Huntail</strong>
+        <span>2 pts</span>
+        <span>T6</span>
+        <span>Lure</span>
+        <span>Water</span>
+        
+      </span>
+    </div></td>
+      <td><div class="locationList compact"><span>Hoenn Underwater</span></div></td>
+      <td></td>
+    </tr>
+  </tbody>
+      </table>
+    </section>
+    
+  </main>
+</body>
+</html>

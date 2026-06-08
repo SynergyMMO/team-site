@@ -1,0 +1,280 @@
+rank,point_return_average,method,time,split,route_count,locations,weighting,manual_review
+1,10.75,Land Horde,Day/Morning,"Zorua (25 pts, T1); Cottonee (6 pts, T4); Petilil (6 pts, T4); Venipede (6 pts, T4)",1,Unova Lostlorn Forest,,no
+2,8.00,Land Horde,Night,"Cacnea (10 pts, T3); Trapinch (6 pts, T4)",2,Hoenn Mirage Tower; Hoenn Route 111,,no
+3,7.33,Land Horde,Night,"Illumise (10 pts, T3); Volbeat (10 pts, T3); Oddish (2 pts, T6)",1,Hoenn Route 117,,no
+4,7.00,Land Horde,Night,"Maractus (10 pts, T3); Sigilyph (10 pts, T3); Darumaka (6 pts, T4); Sandile (2 pts, T6)",1,Unova Desert Resort,,no
+5,6.50,Land Horde,Day/Morning,"Zangoose (10 pts, T3); Seedot (3 pts, T5)",1,Hoenn Route 114,,no
+6,6.03,Land Horde,Night,"Houndour (10 pts, T3, 43.2%); Girafarig (3 pts, T5, 56.8%)",1,Sinnoh Valor Lakefront,weighted,no
+7,6.00,Land Horde,Day/Morning,"Bellsprout (6 pts, T4)",2,Kanto Route 13; Kanto Route 25,,no
+8,6.00,Land Horde,Morning,"Ledyba (6 pts, T4)",1,Johto National Park,,no
+9,6.00,Land Horde,ALL,"Minccino (6 pts, T4)",1,Unova Route 5,,no
+10,6.00,Land Horde,ALL,"Minccino (6 pts, T4); Trubbish (6 pts, T4)",1,Unova Route 16,,no
+11,6.00,Land Horde,ALL,"Ralts (10 pts, T3); Bibarel (2 pts, T6)",1,Sinnoh Route 209,,no
+12,6.00,Land Horde,Night/Morning,"Seviper (10 pts, T3); Lotad (2 pts, T6)",1,Hoenn Route 114,,no
+13,6.00,Land Horde,ALL,"Spinda (6 pts, T4)",1,Hoenn Route 113,,no
+14,6.00,Land Horde,ALL,"Stantler (6 pts, T4)",1,Johto Route 37,,no
+15,6.00,Land Horde,Day,"Sunkern (6 pts, T4)",1,Johto National Park,,no
+16,6.00,Land Horde,Night,"Venonat (6 pts, T4)",2,Johto Ilex Forest; Kanto Route 24,,no
+17,5.00,Land Horde,Day/Morning,"Sawk (6 pts, T4); Throh (6 pts, T4); Scraggy (3 pts, T5)",1,Unova Route 18,,no
+18,4.67,Land Horde,Day/Morning,"Chatot (10 pts, T3); Shellos (2 pts, T6); Shellos East (2 pts, T6)",1,Sinnoh Route 213,,no
+19,4.50,Land Horde,Day/Morning,"Magmar (6 pts, T4); Luxio (3 pts, T5)",1,Sinnoh Fuego Ironworks,,no
+20,4.50,Land Horde,ALL,"Pachirisu (6 pts, T4); Shinx (3 pts, T5)",1,Sinnoh Valley Windworks,,no
+21,4.50,Land Horde,ALL,"Stantler (6 pts, T4); Vulpix (3 pts, T5)",1,Unova Abundant Shrine,,no
+22,4.50,Land Horde,Day/Morning/SEASON0,"Staravia (6 pts, T4); Girafarig (3 pts, T5)",1,Sinnoh Valor Lakefront,,no
+23,4.50,Land Horde,Day/Morning/SEASON1,"Staravia (6 pts, T4); Girafarig (3 pts, T5)",1,Sinnoh Valor Lakefront,,no
+24,4.50,Land Horde,Day/Morning/SEASON2,"Staravia (6 pts, T4); Girafarig (3 pts, T5)",1,Sinnoh Valor Lakefront,,no
+25,4.08,Land Horde,Night,"Misdreavus (6 pts, T4, 25.8%); Murkrow (6 pts, T4, 26.1%); Golbat (2 pts, T6, 48.0%)",1,Kanto Lost Cave,weighted,no
+26,4.00,Land Horde,Night,"Drifblim (6 pts, T4); Lunatone (2 pts, T6)",1,Unova Route 13,,no
+27,4.00,Land Horde,Day/Morning,"Electabuzz (6 pts, T4); Floatzel (2 pts, T6)",1,Sinnoh Route 222,,no
+28,4.00,Land Horde,ALL,"Hippopotas (6 pts, T4); Geodude (2 pts, T6)",1,Sinnoh Maniac Tunnel,,no
+29,4.00,Land Horde,Day/Morning,"Snubbull (6 pts, T4); Drowzee (2 pts, T6)",1,Johto Route 34,,no
+30,4.00,Land Horde,ALL,"Spoink (6 pts, T4); Machop (2 pts, T6)",1,Hoenn Jagged Pass,,no
+31,4.00,Land Horde,ALL,"Stunky (6 pts, T4); Rhyhorn (2 pts, T6)",1,Sinnoh Route 214,,no
+32,4.00,Land Horde,Day/Morning,"Wurmple (6 pts, T4); Bidoof (2 pts, T6)",1,Sinnoh Route 204,,no
+33,3.86,Land Horde,Day/Morning,"Buneary (6 pts, T4, 46.6%); Budew (2 pts, T6, 53.4%)",1,Sinnoh Eterna Forest,weighted,no
+34,3.86,Land Horde,Night,"Buneary (6 pts, T4, 46.6%); Budew (2 pts, T6, 53.4%)",1,Sinnoh Eterna Forest,weighted,no
+35,3.75,Land Horde,ALL,"Tynamo (6 pts, T4); Ferroseed (3 pts, T5); Joltik (3 pts, T5); Klink (3 pts, T5)",1,Unova Chargestone Cave,,no
+36,3.67,Land Horde,Night,"Miltank (6 pts, T4); Noctowl (3 pts, T5); Raticate (2 pts, T6)",1,Johto Route 47,,no
+37,3.60,Land Horde,ALL,"Cryogonal (10 pts, T3); Boldore (2 pts, T6); Cubchoo (2 pts, T6); Gurdurr (2 pts, T6); Woobat (2 pts, T6)",1,Unova Twist Mountain,,no
+38,3.33,Land Horde,Day/Morning,"Tauros (6 pts, T4); Fearow (2 pts, T6); Gloom (2 pts, T6)",1,Johto Route 48,,no
+39,3.33,Land Horde,Night,"Whirlipede (6 pts, T4); Timburr (2 pts, T6); Tympole (2 pts, T6)",2,Unova Pinewheel Forest Inside; Unova Pinwheel Forest Outside,,no
+40,3.17,Land Horde,ALL,"Chimecho (6 pts, T4); Clefairy (6 pts, T4); Nosepass (6 pts, T4); Medicham (3 pts, T5); Meditite (3 pts, T5); Bronzong (2 pts, T6); Bronzor (2 pts, T6); Geodude (2 pts, T6); Golbat (2 pts, T6); Graveler (2 pts, T6); Machoke (2 pts, T6); Machop (2 pts, T6)",1,Sinnoh Mt.. Coronet,,no
+41,3.00,Land Horde,Day/Morning,"Arbok (3 pts, T5); Dodrio (3 pts, T5)",1,Johto Route 27,,no
+42,3.00,Land Horde,ALL,"Arbok (3 pts, T5); Primeape (3 pts, T5)",1,Kanto Route 23,,no
+43,3.00,Land Horde,Day/Morning,"Dodrio (3 pts, T5); Donphan (3 pts, T5)",1,Johto Mt.. Silver,,no
+44,3.00,Land Horde,ALL,"Electrike (3 pts, T5)",1,Hoenn Route 110,,no
+45,3.00,Land Horde,ALL,"Flaaffy (3 pts, T5); Girafarig (3 pts, T5)",1,Johto Route 43,,no
+46,3.00,Land Horde,Day/Morning,"Growlithe (3 pts, T5)",1,Johto Route 36,,no
+47,3.00,Land Horde,Night,"Hoothoot (3 pts, T5)",1,Kanto Route 8,,no
+48,3.00,Land Horde,Night/Morning,"Hoothoot (3 pts, T5); Vulpix (3 pts, T5)",1,Kanto Route 8,,no
+49,3.00,Land Horde,ALL,"Kakuna (3 pts, T5); Metapod (3 pts, T5)",1,Kanto Pattern Bush,,no
+50,3.00,Land Horde,ALL,"Mankey (3 pts, T5); Mareep (3 pts, T5)",1,Johto Route 42,,no
+51,3.00,Land Horde,Day/Morning,"Meditite (3 pts, T5); Vulpix (3 pts, T5)",1,Hoenn Mt.. Pyre,,no
+52,3.00,Land Horde,Night,"Spinarak (3 pts, T5)",1,Johto National Park,,no
+53,2.90,Land Horde,Night,"Larvitar (6 pts, T4); Misdreavus (6 pts, T4); Ursaring (3 pts, T5); Golduck (2 pts, T6); Graveler (2 pts, T6); Machoke (2 pts, T6); Onix (2 pts, T6); Parasect (2 pts, T6); Quagsire (2 pts, T6); Steelix (2 pts, T6)",1,Johto Mt.. Silver Cave,,no
+54,2.80,Land Horde,ALL,"Karrablast (6 pts, T4); Deerling (2 pts, T6); Deerling Autumn (2 pts, T6); Deerling Summer (2 pts, T6); Deerling Winter (2 pts, T6)",1,Unova Route 6,,no
+55,2.69,Water Horde,ALL,"Dratini (6 pts, T4, 17.3%); Horsea (2 pts, T6, 44.3%); Magikarp (2 pts, T6, 38.3%)",1,Johto Dragon'S Den,weighted,no
+56,2.67,Land Horde,Night,"Rufflet (3 pts, T5); Vullaby (3 pts, T5); Bibarel (2 pts, T6)",1,Unova Village Bridge,,no
+57,2.50,Land Horde,ALL,"Axew (3 pts, T5); Woobat (2 pts, T6)",1,Unova Guidance Chamber,,no
+58,2.50,Land Horde,Day/Morning,"Doduo (3 pts, T5); Raticate (2 pts, T6)",1,Kanto Route 18,,no
+59,2.50,Land Horde,ALL,"Donphan (3 pts, T5); Ursaring (3 pts, T5); Golbat (2 pts, T6); Sandslash (2 pts, T6)",1,Johto Victory Road,,no
+60,2.50,Land Horde,ALL,"Gligar (3 pts, T5); Amoonguss (2 pts, T6)",1,Unova Route 11,,no
+61,2.50,Land Horde,ALL,"Gligar (3 pts, T5); Graveler (2 pts, T6)",1,Johto Route 45,,no
+62,2.50,Land Horde,Night,"Kricketot (3 pts, T5); Bidoof (2 pts, T6)",1,Sinnoh Route 204,,no
+63,2.50,Land Horde,Night,"Kricketune (3 pts, T5); Swablu (2 pts, T6)",1,Sinnoh Route 210,,no
+64,2.50,Land Horde,ALL,"Natu (3 pts, T5); Smeargle (2 pts, T6)",1,Johto Ruins Of Alph,,no
+65,2.50,Land Horde,Day/Morning,"Phanpy (3 pts, T5); Fearow (2 pts, T6)",1,Kanto Canyon Entrance,,no
+66,2.50,Land Horde,Night,"Phanpy (3 pts, T5); Persian (2 pts, T6)",1,Kanto Canyon Entrance,,no
+67,2.50,Land Horde,ALL,"Purugly (3 pts, T5); Roselia (2 pts, T6)",1,Sinnoh Route 229,,no
+68,2.50,Land Horde,Night,"Snorunt (3 pts, T5); Snover (2 pts, T6)",1,Sinnoh Lake Acuity,,no
+69,2.50,Land Horde,ALL,"Vanillite (3 pts, T5); Herdier (2 pts, T6)",1,Unova Cold Storage,,no
+70,2.50,Land Horde,ALL,"Vanillite (3 pts, T5); Timburr (2 pts, T6)",1,Unova Cold Storage,,no
+71,2.49,Land Horde,ALL,"Gible (3 pts, T5, 48.9%); Bronzor (2 pts, T6, 51.1%)",1,Sinnoh Wayward Cave,weighted,no
+72,2.40,Land Horde,ALL,"Mawile (3 pts, T5); Sableye (3 pts, T5); Boldore (2 pts, T6); Graveler (2 pts, T6); Lickitung (2 pts, T6)",1,Unova Challenger's Cave,,no
+73,2.38,Land Horde,Night,"Ariados (3 pts, T5); Mawile (3 pts, T5); Sableye (3 pts, T5); Altaria (2 pts, T6); Banette (2 pts, T6); Claydol (2 pts, T6); Dusclops (2 pts, T6); Golbat (2 pts, T6)",1,Hoenn Sky Pillar,,no
+74,2.33,Land Horde,ALL,"Delibird (3 pts, T5); Golbat (2 pts, T6); Jynx (2 pts, T6)",1,Johto Ice Path,,no
+75,2.29,Land Horde,Day/Morning,"Ditto (3 pts, T5); Growlithe (3 pts, T5); Grimer (2 pts, T6); Koffing (2 pts, T6); Ponyta (2 pts, T6); Raticate (2 pts, T6); Rattata (2 pts, T6)",1,Kanto PokéMon Mansion,,no
+76,2.29,Land Horde,Night/Morning,"Ditto (3 pts, T5); Vulpix (3 pts, T5); Grimer (2 pts, T6); Koffing (2 pts, T6); Ponyta (2 pts, T6); Raticate (2 pts, T6); Rattata (2 pts, T6)",1,Kanto PokéMon Mansion,,no
+77,2.29,Land Horde,ALL,"Gabite (3 pts, T5); Medicham (3 pts, T5); Azumarill (2 pts, T6); Floatzel (2 pts, T6); Graveler (2 pts, T6); Kadabra (2 pts, T6); Rhydon (2 pts, T6)",1,Sinnoh Victory Road,,no
+78,2.20,Land Horde,ALL,"Deino (3 pts, T5); Boldore (2 pts, T6); Durant (2 pts, T6); Mienfoo (2 pts, T6); Woobat (2 pts, T6)",1,Unova Victory Road,,no
+79,2.17,Land Horde,ALL,"Vanillish (3 pts, T5); Beartic (2 pts, T6); Sawsbuck (2 pts, T6); Sawsbuck Autumn (2 pts, T6); Sawsbuck Summer (2 pts, T6); Sawsbuck Winter (2 pts, T6)",1,Unova Dragonspiral Tower,,no
+80,2.00,Land Horde,ALL,"Abomasnow (2 pts, T6)",1,Sinnoh Mt.. Coronet,,no
+81,2.00,Land Horde,ALL,"Amoonguss (2 pts, T6); Herdier (2 pts, T6)",1,Unova Route 10,,no
+82,2.00,Land Horde,Night,"Banette (2 pts, T6)",1,Sinnoh Route 226,,no
+83,2.00,Land Horde,Night,"Banette (2 pts, T6); Camerupt (2 pts, T6)",1,Sinnoh Route 227,,no
+84,2.00,Water Horde,ALL,"Basculin (Red) (2 pts, T6); Buizel (2 pts, T6)",2,Unova Route 11; Unova Route 14,,no
+85,2.00,Water Horde,ALL,"Basculin (Red) (2 pts, T6); Seel (2 pts, T6)",1,Unova Giant Chasm,,no
+86,2.00,Water Horde,ALL,"Basculin (Red) (2 pts, T6); Slowpoke (2 pts, T6)",1,Unova Abundant Shrine,,no
+87,2.00,Land Horde,ALL,"Beheeyem (2 pts, T6)",1,Unova Route 14,,no
+88,2.00,Land Horde,ALL,"Bibarel (2 pts, T6)",3,Sinnoh Lake Valor; Sinnoh Sendoff Spring; Unova Village Bridge,,no
+89,2.00,Land Horde,ALL,"Bidoof (2 pts, T6); Buizel (2 pts, T6); Shellos (2 pts, T6); Shellos East (2 pts, T6)",1,Sinnoh Route 205,,no
+90,2.00,Land Horde,Day/Morning,"Blitzle (2 pts, T6); Pidove (2 pts, T6)",1,Unova Route 3,,no
+91,2.00,Land Horde,Night,"Blitzle (2 pts, T6); Purrloin (2 pts, T6)",1,Unova Route 3,,no
+92,2.00,Land Horde,ALL,"Boldore (2 pts, T6); Woobat (2 pts, T6)",2,Unova Mistralton Cave; Unova Wellspring Cave,,no
+93,2.00,Land Horde,ALL,"Bouffalant (2 pts, T6); Herdier (2 pts, T6)",1,Unova Route 10,,no
+94,2.00,Land Horde,Day/Morning,"Budew (2 pts, T6); Psyduck (2 pts, T6)",1,Sinnoh Route 208,,no
+95,2.00,Land Horde,Night,"Buizel (2 pts, T6); Shellos (2 pts, T6); Shellos East (2 pts, T6)",1,Sinnoh Route 213,,no
+96,2.00,Land Horde,ALL,"Camerupt (2 pts, T6)",1,Sinnoh Stark Mountain,,no
+97,2.00,Land Horde,Day/Morning,"Camerupt (2 pts, T6); Fearow (2 pts, T6)",1,Sinnoh Route 227,,no
+98,2.00,Water Horde,ALL,"Clamperl (2 pts, T6); Lanturn (2 pts, T6)",1,Hoenn Underwater,,no
+99,2.00,Land Horde,ALL,"Claydol (2 pts, T6); Cofagrigus (2 pts, T6); Krokorok (2 pts, T6); Onix (2 pts, T6); Sandile (2 pts, T6); Sandslash (2 pts, T6); Yamask (2 pts, T6)",1,Unova Relic Castle,,no
+100,2.00,Land Horde,ALL,"Crustle (2 pts, T6)",1,Unova Route 18,,no
+101,2.00,Land Horde,ALL,"Cubone (2 pts, T6); Gastly (2 pts, T6); Golbat (2 pts, T6); Haunter (2 pts, T6); Zubat (2 pts, T6)",1,Kanto PokéMon Tower,,no
+102,2.00,Water Horde,ALL,"Dewgong (2 pts, T6)",1,Kanto Seafoam Islands,,no
+103,2.00,Water Horde,ALL,"Dewgong (2 pts, T6); Floatzel (2 pts, T6); Golbat (2 pts, T6)",1,Sinnoh Victory Road,,no
+104,2.00,Land Horde,ALL,"Dewgong (2 pts, T6); Golbat (2 pts, T6); Piloswine (2 pts, T6)",1,Kanto Icefall Cave,,no
+105,2.00,Water Horde,ALL,"Dewgong (2 pts, T6); Pelipper (2 pts, T6); Sealeo (2 pts, T6)",1,Sinnoh Route 226,,no
+106,2.00,Land Horde,ALL,"Diglett (2 pts, T6)",1,Kanto Diglett'S Cave,,no
+107,2.00,Land Horde,ALL,"Drowzee (2 pts, T6)",1,Kanto Route 11,,no
+108,2.00,Land Horde,Night,"Drowzee (2 pts, T6); Magnemite (2 pts, T6)",1,Kanto Route 6,,no
+109,2.00,Land Horde,ALL,"Dugtrio (2 pts, T6)",1,Sinnoh Route 228,,no
+110,2.00,Land Horde,ALL,"Dunsparce (2 pts, T6)",1,Kanto Three Isle Port,,no
+111,2.00,Land Horde,ALL,"Duosion (2 pts, T6)",1,Unova Route 9,,no
+112,2.00,Land Horde,ALL,"Durant (2 pts, T6); Mienfoo (2 pts, T6); Woobat (2 pts, T6)",1,Unova Trial Chamber,,no
+113,2.00,Land Horde,ALL,"Duskull (2 pts, T6); Shuppet (2 pts, T6)",1,Hoenn Mt.. Pyre,,no
+114,2.00,Land Horde,ALL,"Elgyem (2 pts, T6)",1,Unova Celestial Tower,,no
+115,2.00,Land Horde,ALL,"Elgyem (2 pts, T6); Litwick (2 pts, T6)",1,Unova Celestial Tower,,no
+116,2.00,Land Horde,ALL,"Fearow (2 pts, T6)",2,Kanto Ruin Valley; Unova Route 15,,no
+117,2.00,Land Horde,Day/Morning/SEASON0,"Fearow (2 pts, T6)",1,Sinnoh Route 226,,no
+118,2.00,Land Horde,Day/Morning/SEASON1,"Fearow (2 pts, T6)",1,Sinnoh Route 226,,no
+119,2.00,Land Horde,Day/Morning/SEASON2,"Fearow (2 pts, T6)",1,Sinnoh Route 226,,no
+120,2.00,Land Horde,Day/Morning,"Fearow (2 pts, T6); Raticate (2 pts, T6)",2,Kanto Route 17; Sinnoh Route 225,,no
+121,2.00,Land Horde,ALL,"Floatzel (2 pts, T6)",1,Sinnoh Route 218,,no
+122,2.00,Land Horde,ALL,"Gastly (2 pts, T6)",1,Sinnoh Old Chateau,,no
+123,2.00,Land Horde,ALL,"Gastrodon (2 pts, T6); Gastrodon (East) (2 pts, T6)",2,Sinnoh Route 221; Sinnoh Route 224,,no
+124,2.00,Land Horde,ALL,"Geodude (2 pts, T6); Golbat (2 pts, T6); Graveler (2 pts, T6); Onix (2 pts, T6)",1,Sinnoh Iron Island,,no
+125,2.00,Land Horde,ALL,"Geodude (2 pts, T6); Graveler (2 pts, T6); Torkoal (2 pts, T6)",1,Hoenn Magma Hideout,,no
+126,2.00,Land Horde,ALL,"Geodude (2 pts, T6); Machoke (2 pts, T6); Machop (2 pts, T6); Magcargo (2 pts, T6); Slugma (2 pts, T6)",1,Kanto Mt.. Ember,,no
+127,2.00,Land Horde,ALL,"Geodude (2 pts, T6); Machoke (2 pts, T6); Machop (2 pts, T6); Rattata (2 pts, T6); Zubat (2 pts, T6)",1,Johto Mt.. Mortar,,no
+128,2.00,Land Horde,ALL,"Geodude (2 pts, T6); Onix (2 pts, T6); Zubat (2 pts, T6)",1,Kanto Rock Tunnel,,no
+129,2.00,Land Horde,ALL,"Geodude (2 pts, T6); Paras (2 pts, T6); Zubat (2 pts, T6)",1,Kanto Mt. Moon,,no
+130,2.00,Land Horde,ALL,"Geodude (2 pts, T6); Voltorb (2 pts, T6)",1,Johto Team Rocket Hq,,no
+131,2.00,Land Horde,ALL,"Geodude (2 pts, T6); Zubat (2 pts, T6)",1,Sinnoh Ruin Maniac Cave,,no
+132,2.00,Land Horde,ALL,"Gloom (2 pts, T6)",2,Hoenn Route 119; Kanto Bond Bridge,,no
+133,2.00,Land Horde,ALL,"Golbat (2 pts, T6)",3,Hoenn Cave Of Origin; Hoenn Scorched Slab; Hoenn Seafloor Cavern,,no
+134,2.00,Water Horde,ALL,"Golbat (2 pts, T6)",2,Hoenn Victory Road; Sinnoh Ravaged Path,,no
+135,2.00,Land Horde,ALL,"Golbat (2 pts, T6); Jynx (2 pts, T6); Onix (2 pts, T6); Sneasel (2 pts, T6)",1,Sinnoh Snowpoint Temple,,no
+136,2.00,Land Horde,ALL,"Golbat (2 pts, T6); Krabby (2 pts, T6); Seel (2 pts, T6)",1,Johto Whirl Islands,,no
+137,2.00,Land Horde,Night/Morning,"Golbat (2 pts, T6); Lunatone (2 pts, T6)",1,Unova Giant Chasm,,no
+138,2.00,Water Horde,Night/Morning,"Golbat (2 pts, T6); Lunatone (2 pts, T6); Zubat (2 pts, T6)",1,Hoenn Meteor Falls,,no
+139,2.00,Land Horde,ALL,"Golbat (2 pts, T6); Raticate (2 pts, T6); Slowbro (2 pts, T6)",1,Johto Tohjo Falls,,no
+140,2.00,Land Horde,ALL,"Golbat (2 pts, T6); Sandshrew (2 pts, T6); Zubat (2 pts, T6)",1,Johto Union Cave,,no
+141,2.00,Land Horde,ALL,"Golbat (2 pts, T6); Sneasel (2 pts, T6)",1,Johto Mt.. Silver Cave,,no
+142,2.00,Land Horde,Day/Morning,"Golbat (2 pts, T6); Solrock (2 pts, T6)",1,Unova Giant Chasm,,no
+143,2.00,Water Horde,Day/Morning,"Golbat (2 pts, T6); Solrock (2 pts, T6); Zubat (2 pts, T6)",1,Hoenn Meteor Falls,,no
+144,2.00,Water Horde,ALL,"Golbat (2 pts, T6); Tentacruel (2 pts, T6)",1,Hoenn Shoal Cave,,no
+145,2.00,Water Horde,ALL,"Golbat (2 pts, T6); Zubat (2 pts, T6)",1,Sinnoh Mt.. Coronet,,no
+146,2.00,Water Horde,ALL,"Goldeen (2 pts, T6)",4,Johto Route 42; Johto Tohjo Falls; Kanto Cerulean City; Kanto Route 10,,no
+147,2.00,Water Horde,ALL,"Goldeen (2 pts, T6); Tentacool (2 pts, T6)",2,Kanto Route 24; Kanto Route 4,,no
+148,2.00,Water Horde,ALL,"Golduck (2 pts, T6)",4,Kanto Cape Brink; Sinnoh Resort Area; Sinnoh Route 225; Sinnoh Sendoff Spring,,no
+149,2.00,Land Horde,ALL,"Golduck (2 pts, T6)",1,Unova Route 11,,no
+150,2.00,Water Horde,ALL,"Golduck (2 pts, T6); Seaking (2 pts, T6)",1,Johto Mt.. Silver Cave,,no
+151,2.00,Water Horde,ALL,"Golduck (2 pts, T6); Slowbro (2 pts, T6)",2,Kanto Berry Forest; Kanto Cerulean Cave,,no
+152,2.00,Land Horde,ALL,"Gothita (2 pts, T6); Solosis (2 pts, T6)",1,Unova Route 16,,no
+153,2.00,Land Horde,ALL,"Gothorita (2 pts, T6)",1,Unova Route 9,,no
+154,2.00,Water Horde,ALL,"Grimer (2 pts, T6)",1,Kanto Celadon City,,no
+155,2.00,Land Horde,ALL,"Grimer (2 pts, T6); Raticate (2 pts, T6)",1,Kanto Route 16,,no
+156,2.00,Land Horde,Night,"Grimer (2 pts, T6); Raticate (2 pts, T6)",1,Kanto Route 18,,no
+157,2.00,Water Horde,ALL,"Gyarados (2 pts, T6)",1,Johto Lake Of Rage,,no
+158,2.00,Land Horde,ALL,"Haunter (2 pts, T6)",1,Sinnoh Turnback Cave,,no
+159,2.00,Land Horde,ALL,"Haunter (2 pts, T6); Raticate (2 pts, T6)",1,Johto Bell Tower,,no
+160,2.00,Land Horde,ALL,"Heatmor (2 pts, T6)",1,Unova Victory Road,,no
+161,2.00,Land Horde,ALL,"Herdier (2 pts, T6)",1,Unova P2 Laboratory,,no
+162,2.00,Water Horde,ALL,"Hoppip (2 pts, T6)",1,Kanto Five Island,,no
+163,2.00,Water Horde,Day/Morning,"Hoppip (2 pts, T6)",3,Kanto Five Isle Meadow; Kanto Memorial Pillar; Kanto Resort Gorgeous,,no
+164,2.00,Land Horde,Day/Morning,"Hoppip (2 pts, T6)",1,Johto Route 33,,no
+165,2.00,Water Horde,Day/Morning,"Hoppip (2 pts, T6); Tentacruel (2 pts, T6)",1,Kanto Water Labyrinth,,no
+166,2.00,Water Horde,ALL,"Horsea (2 pts, T6); Tentacool (2 pts, T6)",1,Johto Whirl Islands,,no
+167,2.00,Land Horde,ALL,"Hypno (2 pts, T6)",1,Kanto Berry Forest,,no
+168,2.00,Land Horde,ALL,"Jigglypuff (2 pts, T6)",1,Unova Route 14,,no
+169,2.00,Land Horde,ALL,"Jigglypuff (2 pts, T6); Swablu (2 pts, T6); Swellow (2 pts, T6)",1,Hoenn Route 115,,no
+170,2.00,Land Horde,ALL,"Kadabra (2 pts, T6); Lickitung (2 pts, T6); Parasect (2 pts, T6); Wobbuffet (2 pts, T6)",1,Kanto Cerulean Cave,,no
+171,2.00,Land Horde,ALL,"Kingler (2 pts, T6); Krabby (2 pts, T6); Psyduck (2 pts, T6); Seel (2 pts, T6); Slowpoke (2 pts, T6)",1,Kanto Seafoam Islands,,no
+172,2.00,Land Horde,ALL,"Kingler (2 pts, T6); Machoke (2 pts, T6)",1,Johto Cliff Cave,,no
+173,2.00,Land Horde,ALL,"Koffing (2 pts, T6); Rattata (2 pts, T6)",1,Johto Burned Tower,,no
+174,2.00,Land Horde,Day/Morning,"Krabby (2 pts, T6); Pidgey (2 pts, T6)",1,Kanto Route 12,,no
+175,2.00,Land Horde,ALL,"Lickitung (2 pts, T6)",1,Johto Route 44,,no
+176,2.00,Land Horde,ALL,"Liepard (2 pts, T6)",1,Unova Route 5,,no
+177,2.00,Land Horde,ALL,"Linoone (2 pts, T6)",1,Hoenn Route 121,,no
+178,2.00,Land Horde,ALL,"Linoone (2 pts, T6); Mightyena (2 pts, T6)",1,Hoenn Route 123,,no
+179,2.00,Water Horde,ALL,"Lombre (2 pts, T6)",1,Hoenn Route 117,,no
+180,2.00,Land Horde,ALL,"Loudred (2 pts, T6)",1,Hoenn Desert Underpass,,no
+181,2.00,Land Horde,Night/Morning,"Lunatone (2 pts, T6)",1,Unova Route 13,,no
+182,2.00,Land Horde,ALL,"Lunatone (2 pts, T6); Solrock (2 pts, T6)",1,Hoenn Meteor Falls,,no
+183,2.00,Land Horde,ALL,"Machoke (2 pts, T6); Sneasel (2 pts, T6); Snover (2 pts, T6)",1,Sinnoh Route 216,,no
+184,2.00,Land Horde,ALL,"Magcargo (2 pts, T6)",1,Sinnoh Stark Mountain,,no
+185,2.00,Water Horde,ALL,"Magikarp (2 pts, T6)",4,Hoenn Sootopolis City; Johto Dark Cave; Johto Route 43; Johto Route 45,,no
+186,2.00,Land Horde,ALL,"Magnemite (2 pts, T6)",1,Johto Route 38,,no
+187,2.00,Land Horde,ALL,"Magnemite (2 pts, T6); Voltorb (2 pts, T6)",2,Hoenn New Mauville; Kanto Route 10,,no
+188,2.00,Water Horde,ALL,"Mantine (2 pts, T6)",2,Johto Route 41; Unova Undella Town,,no
+189,2.00,Water Horde,ALL,"Mantine (2 pts, T6); Tentacruel (2 pts, T6)",1,Sinnoh Route 223,,no
+190,2.00,Land Horde,Night/SEASON0,"Marill (2 pts, T6)",1,Sinnoh Route 215,,no
+191,2.00,Land Horde,Night/SEASON1,"Marill (2 pts, T6)",1,Sinnoh Route 215,,no
+192,2.00,Land Horde,Night/SEASON2,"Marill (2 pts, T6)",1,Sinnoh Route 215,,no
+193,2.00,Water Horde,ALL,"Marill (2 pts, T6); Surskit (2 pts, T6)",2,Hoenn Petalburg City; Hoenn Route 111,,no
+194,2.00,Land Horde,ALL,"Marowak (2 pts, T6)",1,Kanto Sevault Canyon,,no
+195,2.00,Land Horde,ALL,"Meowth (2 pts, T6); Ponyta (2 pts, T6)",1,Kanto Kindle Road,,no
+196,2.00,Land Horde,ALL,"Mienfoo (2 pts, T6)",1,Unova Dragonspiral Tower,,no
+197,2.00,Land Horde,ALL,"Mightyena (2 pts, T6)",1,Hoenn Route 120,,no
+198,2.00,Land Horde,ALL,"Nidoran F (2 pts, T6); Nidoran M (2 pts, T6)",1,Johto Route 35,,no
+199,2.00,Land Horde,ALL,"Nidorina (2 pts, T6)",1,Kanto Route 14,,no
+200,2.00,Land Horde,ALL,"Nidorino (2 pts, T6)",1,Kanto Route 15,,no
+201,2.00,Land Horde,ALL,"Numel (2 pts, T6)",1,Hoenn Route 112,,no
+202,2.00,Land Horde,ALL,"Numel (2 pts, T6); Torkoal (2 pts, T6)",1,Hoenn Fiery Path,,no
+203,2.00,Land Horde,Night/Morning,"Oddish (2 pts, T6)",2,Kanto Route 13; Kanto Route 25,,no
+204,2.00,Land Horde,ALL,"Palpitoad (2 pts, T6)",1,Unova Moor Of Icirrus,,no
+205,2.00,Land Horde,ALL,"Palpitoad (2 pts, T6); Stunfisk (2 pts, T6)",1,Unova Route 8,,no
+206,2.00,Water Horde,Day/Morning,"Pelipper (2 pts, T6); Tentacool (2 pts, T6); Tentacruel (2 pts, T6)",1,Hoenn Route 126,,no
+207,2.00,Water Horde,ALL,"Pelipper (2 pts, T6); Tentacruel (2 pts, T6)",4,Hoenn Route 125; Hoenn Route 130; Hoenn Route 131; Sinnoh Iron Island,,no
+208,2.00,Water Horde,ALL,"Pelipper (2 pts, T6); Wingull (2 pts, T6)",1,Hoenn Route 108,,no
+209,2.00,Land Horde,ALL,"Persian (2 pts, T6)",1,Kanto Water Path,,no
+210,2.00,Land Horde,ALL,"Persian (2 pts, T6); Tangela (2 pts, T6)",1,Kanto Treasure Beach,,no
+211,2.00,Land Horde,ALL,"Pidgeotto (2 pts, T6)",1,Kanto Five Isle Meadow,,no
+212,2.00,Land Horde,Day/Morning,"Pidgeotto (2 pts, T6); Raticate (2 pts, T6)",1,Johto Route 39,,no
+213,2.00,Land Horde,Day/Morning,"Pidgey (2 pts, T6)",2,Johto Ilex Forest; Kanto Route 24,,no
+214,2.00,Land Horde,Day,"Pidgey (2 pts, T6)",1,Kanto Route 8,,no
+215,2.00,Land Horde,Day/Morning,"Pidove (2 pts, T6)",1,Unova Route 3,,no
+216,2.00,Land Horde,Day/Morning,"Pidove (2 pts, T6); Sewaddle (2 pts, T6); Tympole (2 pts, T6)",2,Unova Pinewheel Forest Inside; Unova Pinwheel Forest Outside,,no
+217,2.00,Land Horde,ALL,"Pikachu (2 pts, T6)",2,Kanto Power Plant; Sinnoh Trophy Garden,,no
+218,2.00,Land Horde,ALL,"Piloswine (2 pts, T6); Sneasel (2 pts, T6)",1,Unova Giant Chasm,,no
+219,2.00,Land Horde,ALL,"Piloswine (2 pts, T6); Tangela (2 pts, T6)",1,Unova Giant Chasm,,no
+220,2.00,Water Horde,ALL,"Psyduck (2 pts, T6); Shellos (2 pts, T6); Shellos East (2 pts, T6); Tentacool (2 pts, T6)",1,Sinnoh Route 205,,no
+221,2.00,Water Horde,ALL,"Psyduck (2 pts, T6); Shellos (2 pts, T6); Shellos East (2 pts, T6); Wooper (2 pts, T6)",1,Sinnoh Route 212,,no
+222,2.00,Water Horde,ALL,"Psyduck (2 pts, T6); Slowpoke (2 pts, T6)",3,Kanto Fuchsia City; Kanto Route 23; Kanto Route 6,,no
+223,2.00,Land Horde,ALL,"Psyduck (2 pts, T6); Zubat (2 pts, T6)",1,Sinnoh Oreburgh Gate,,no
+224,2.00,Water Horde,ALL,"Psyduck (2 pts, T6); Zubat (2 pts, T6)",1,Sinnoh Oreburgh Gate,,no
+225,2.00,Land Horde,Night,"Psyduck (2 pts, T6); Zubat (2 pts, T6)",1,Sinnoh Route 208,,no
+226,2.00,Land Horde,Night,"Purrloin (2 pts, T6)",1,Unova Route 3,,no
+227,2.00,Water Horde,ALL,"Quagsire (2 pts, T6)",3,Johto Cliff Edge Gate; Johto Ruins Of Alph; Johto Union Cave,,no
+228,2.00,Land Horde,ALL,"Rapidash (2 pts, T6)",2,Kanto Mt.. Ember; Unova Route 12,,no
+229,2.00,Land Horde,ALL,"Rapidash (2 pts, T6); Tangela (2 pts, T6)",1,Johto Route 28,,no
+230,2.00,Land Horde,Night/SEASON0,"Raticate (2 pts, T6)",1,Johto Route 39,,no
+231,2.00,Land Horde,Night/SEASON1,"Raticate (2 pts, T6)",1,Johto Route 39,,no
+232,2.00,Land Horde,Night/SEASON2,"Raticate (2 pts, T6)",1,Johto Route 39,,no
+233,2.00,Land Horde,Day/Morning/SEASON3,"Raticate (2 pts, T6)",1,Sinnoh Route 226,,no
+234,2.00,Land Horde,Night,"Rattata (2 pts, T6)",1,Johto Route 33,,no
+235,2.00,Land Horde,Day/Morning,"Rattata (2 pts, T6); Spearow (2 pts, T6)",2,Kanto Route 4; Kanto Route 9,,no
+236,2.00,Land Horde,Day/Morning,"Roselia (2 pts, T6)",1,Hoenn Route 117,,no
+237,2.00,Land Horde,ALL,"Roselia (2 pts, T6)",1,Sinnoh Route 230,,no
+238,2.00,Land Horde,ALL,"Sandslash (2 pts, T6)",1,Johto Route 26,,no
+239,2.00,Water Horde,ALL,"Seaking (2 pts, T6)",1,Kanto Route 25,,no
+240,2.00,Water Horde,ALL,"Sealeo (2 pts, T6)",1,Sinnoh Route 230,,no
+241,2.00,Water Horde,ALL,"Seel (2 pts, T6)",1,Johto Route 47,,no
+242,2.00,Water Horde,ALL,"Seel (2 pts, T6); Tentacool (2 pts, T6); Tentacruel (2 pts, T6)",1,Kanto Icefall Cave,,no
+243,2.00,Water Horde,ALL,"Shellos (2 pts, T6); Shellos East (2 pts, T6); Tentacool (2 pts, T6)",1,Sinnoh Valley Windworks,,no
+244,2.00,Water Horde,ALL,"Shellos (2 pts, T6); Shellos East (2 pts, T6); Tentacool (2 pts, T6); Wingull (2 pts, T6)",1,Sinnoh Route 213,,no
+245,2.00,Land Horde,ALL,"Shelmet (2 pts, T6)",1,Unova Icirrus City,,no
+246,2.00,Land Horde,ALL,"Skiploom (2 pts, T6)",1,Kanto Memorial Pillar,,no
+247,2.00,Land Horde,ALL,"Slowbro (2 pts, T6)",1,Kanto Cape Brink,,no
+248,2.00,Land Horde,ALL,"Slowpoke (2 pts, T6)",1,Johto Slowpoke Well,,no
+249,2.00,Water Horde,ALL,"Slowpoke (2 pts, T6)",1,Johto Slowpoke Well,,no
+250,2.00,Water Horde,ALL,"Slowpoke (2 pts, T6); Tentacruel (2 pts, T6)",1,Kanto Route 12,,no
+251,2.00,Land Horde,ALL,"Smeargle (2 pts, T6)",1,Hoenn Artisan Cave,,no
+252,2.00,Land Horde,Day/Morning,"Snover (2 pts, T6)",1,Sinnoh Acuity Lakefront,,no
+253,2.00,Land Horde,Day/Morning,"Solrock (2 pts, T6)",1,Unova Route 13,,no
+254,2.00,Land Horde,Day/Morning,"Solrock (2 pts, T6); Swellow (2 pts, T6)",1,Unova Route 13,,no
+255,2.00,Water Horde,ALL,"Stunfisk (2 pts, T6)",3,Unova Icirrus City; Unova Moor Of Icirrus; Unova Route 8,,no
+256,2.00,Water Horde,ALL,"Surskit (2 pts, T6)",1,Hoenn Route 123,,no
+257,2.00,Water Horde,ALL,"Surskit (2 pts, T6); Wingull (2 pts, T6)",1,Sinnoh Route 229,,no
+258,2.00,Land Horde,ALL,"Swadloon (2 pts, T6)",1,Unova Lostlorn Forest,,no
+259,2.00,Land Horde,ALL,"Tangela (2 pts, T6)",1,Kanto Route 21,,no
+260,2.00,Water Horde,ALL,"Tentacool (2 pts, T6); Tentacruel (2 pts, T6)",3,Hoenn Abandoned Ship; Kanto Bond Bridge; Kanto Route 20,,no
+261,2.00,Water Horde,ALL,"Tentacool (2 pts, T6); Wingull (2 pts, T6)",4,Hoenn Route 106; Hoenn Route 109; Hoenn Route 122; Hoenn Route 134,,no
+262,2.00,Water Horde,Night,"Tentacruel (2 pts, T6)",3,Kanto Five Isle Meadow; Kanto Memorial Pillar; Kanto Resort Gorgeous,,no
+263,2.00,Land Horde,ALL,"Tranquill (2 pts, T6)",2,Unova Route 12; Unova Route 6,,no
+264,2.00,Land Horde,ALL,"Watchog (2 pts, T6)",2,Unova Route 1; Unova Route 7,,no
+265,2.00,Land Horde,ALL,"Whismur (2 pts, T6)",1,Hoenn Rusturf Tunnel,,no
+266,2.00,Land Horde,ALL,"Wobbuffet (2 pts, T6)",1,Johto Dark Cave,,no
+267,2.00,Water Horde,ALL,"Wooper (2 pts, T6)",2,Johto Route 32; Kanto Four Island,,no
+268,2.00,Land Horde,ALL,"Zebstrika (2 pts, T6)",1,Unova Route 7,,no
+269,2.00,Water Horde,ALL,"Zubat (2 pts, T6)",1,Hoenn Scorched Slab,,no
+270,2.00,Water Horde,ALL,"Basculin (Red) (2 pts, T6)",12,12 routes - manual review,,yes
+271,2.00,Water Horde,ALL,"Frillish (2 pts, T6)",5,5 routes - manual review,,yes
+272,2.00,Water Horde,ALL,"Marill (2 pts, T6)",5,5 routes - manual review,,yes
+273,2.00,Water Horde,ALL,"Pelipper (2 pts, T6)",8,8 routes - manual review,,yes
+274,2.00,Water Horde,ALL,"Poliwag (2 pts, T6)",5,5 routes - manual review,,yes
+275,2.00,Water Horde,ALL,"Poliwhirl (2 pts, T6)",7,7 routes - manual review,,yes
+276,2.00,Water Horde,ALL,"Psyduck (2 pts, T6)",14,14 routes - manual review,,yes
+277,2.00,Water Horde,ALL,"Tentacool (2 pts, T6)",29,29 routes - manual review,,yes
+278,2.00,Water Horde,ALL,"Tentacruel (2 pts, T6)",17,17 routes - manual review,,yes
+279,2.00,Water Horde,ALL,"Wingull (2 pts, T6)",8,8 routes - manual review,,yes

@@ -28,6 +28,7 @@
     "TestMergeData": "node scripts/mergeShinyData.js --test",
     "MergeUserData": "node scripts/mergeShinyData.js --user=%npm_config_user%",
     "repeltrick": "node scripts/generatePotentialRepelTrick.mjs",
+    "hordereport": "node scripts/generateShinyWarHordePointReport.mjs",
     "resourceeditor": "node scripts/resourcesEditorServer.mjs",
     "mapeditor": "node scripts/mapEditorServer.mjs",
     "encountereditor": "node scripts/encounterPercentsEditorServer.mjs",

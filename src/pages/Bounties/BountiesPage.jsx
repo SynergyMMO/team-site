@@ -243,7 +243,11 @@ export default function BountiesPage() {
       {/* Monthly Bounties */}
         {view === 'monthly' && (
         <section className={styles['bounties-section']}>
-            <h3>Current Month's Bounties</h3>
+            <h3>
+              {selectedMonth === new Date().toLocaleString('default', { month: 'long' })
+                ? "Current Month's Bounties"
+                : `${selectedMonth} Bounties, These are not claimable anymore`}
+            </h3>
             {currentMonthBounties.length === 0 ? <p>No bounties for this month.</p> : (
             <ul className={styles['bounty-list']}>
                 {currentMonthBounties.map((b, i) => (
