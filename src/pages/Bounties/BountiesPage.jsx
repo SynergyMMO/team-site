@@ -170,6 +170,12 @@ export default function BountiesPage() {
   const currentMonthBounties = selectedMonth ? (bounties[selectedMonth] || []) : [];
   const permBounties = (bounties.Perm || []).filter(b => b.perm === true || b.type === 'perm');
 
+  const activeMonthlyBounties = currentMonthBounties.filter(b => !b.claimed);
+  const claimedMonthlyBounties = currentMonthBounties.filter(b => b.claimed);
+
+  const activePermBounties = permBounties.filter(b => !b.claimed);
+  const claimedPermBounties = permBounties.filter(b => b.claimed);
+
   // Use first monthly bounty for ogImage
   const firstBountyPokemon = currentMonthBounties.length > 0 ? currentMonthBounties[0].pokemon : null;
   const firstBountySprites = usePokemonSprites(firstBountyPokemon);
@@ -249,31 +255,54 @@ export default function BountiesPage() {
                 : `${selectedMonth} Bounties, These are not claimable anymore`}
             </h3>
             {currentMonthBounties.length === 0 ? <p>No bounties for this month.</p> : (
-            <ul className={styles['bounty-list']}>
-                {currentMonthBounties.map((b, i) => (
-                <li
-                  className={`${styles['bounty-card']} ${b.claimed ? styles.claimed : ''}`}
-                  key={b.id || b.pokemon + b.host + i}
-                >
-                  {/* Inner wrapper for content */}
-                  <Link to={`/pokemon/${b.pokemon}/`} className={styles['bounty-card-inner']}>
-                  <PokemonSprite name={b.pokemon} />
-                  <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
-                  <div className={styles['bounty-host']}>Host: {b.host}</div>
-                  <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
-                  <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
-                  </Link>
+            <>
+              {activeMonthlyBounties.length > 0 ? (
+                <>
+                  <h4>Active</h4>
+                  <ul className={styles['bounty-list']}>
+                    {activeMonthlyBounties.map((b, i) => (
+                    <li
+                      className={styles['bounty-card']}
+                      key={b.id || b.pokemon + b.host + i}
+                    >
+                      <Link to={`/pokemon/${b.pokemon}/`} className={styles['bounty-card-inner']}>
+                        <PokemonSprite name={b.pokemon} />
+                        <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
+                        <div className={styles['bounty-host']}>Host: {b.host}</div>
+                        <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
+                        <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
+                      </Link>
+                    </li>
+                    ))}
+                  </ul>
+                </>
+              ) : <p>No active bounties.</p>}
 
-                  {/* Claimed overlay and text outside inner div */}
-                  {b.claimed && (
-                  <>
-                    <div className={styles['bounty-claimed']}><em>Claimed by: {b.claimed}</em></div>
-                    <div className={styles['bounty-overlay']}>CLAIMED</div>
-                  </>
-                  )}
-                </li>
-                ))}
-            </ul>
+              {claimedMonthlyBounties.length > 0 && (
+                <>
+                  <h4>Claimed</h4>
+                  <ul className={styles['bounty-list']}>
+                    {claimedMonthlyBounties.map((b, i) => (
+                    <li
+                      className={`${styles['bounty-card']} ${b.claimed ? styles.claimed : ''}`}
+                      key={b.id || b.pokemon + b.host + i}
+                    >
+                      <Link to={`/pokemon/${b.pokemon}/`} className={styles['bounty-card-inner']}>
+                        <PokemonSprite name={b.pokemon} />
+                        <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
+                        <div className={styles['bounty-host']}>Host: {b.host}</div>
+                        <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
+                        <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
+                      </Link>
+
+                      <div className={styles['bounty-claimed']}><em>Claimed by: {b.claimed}</em></div>
+                      <div className={styles['bounty-overlay']}>CLAIMED</div>
+                    </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </>
             )}
         </section>
         )}
@@ -284,30 +313,53 @@ export default function BountiesPage() {
         <section className={styles['bounties-section']}>
           <h3>Permanent Bounties</h3>
           {permBounties.length === 0 ? <p>No permanent bounties.</p> : (
-            <ul className={styles['bounty-list']}>
-              {permBounties.map((b, i) => (
-                <li
-                  className={`${styles['bounty-card']} ${b.claimed ? styles.claimed : ''}`}
-                  key={b.id || b.pokemon + b.host + i}
-                >
-                  {/* Inner wrapper for content */}
-                  <Link to={`/pokemon/${b.pokemon}/`} className={styles['bounty-card-inner']}>
-                  <PokemonSprite name={b.pokemon} />
-                  <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
-                  <div className={styles['bounty-host']}>Host: {b.host}</div>
-                  <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
-                  <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
-                  </Link>
+            <>
+              {activePermBounties.length > 0 ? (
+                <>
+                  <h4>Active</h4>
+                  <ul className={styles['bounty-list']}>
+                    {activePermBounties.map((b, i) => (
+                      <li
+                        className={styles['bounty-card']}
+                        key={b.id || b.pokemon + b.host + i}
+                      >
+                        <Link to={`/pokemon/${b.pokemon}/`} className={styles['bounty-card-inner']}>
+                          <PokemonSprite name={b.pokemon} />
+                          <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
+                          <div className={styles['bounty-host']}>Host: {b.host}</div>
+                          <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
+                          <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : <p>No active permanent bounties.</p>}
 
-                  {/* Claimed overlay and text outside inner div */}
-                  {b.claimed && (
-                  <>
-                    <div className={styles['bounty-claimed']}><em>Claimed by: {b.claimed}</em></div>
-                  </>
-                  )}
-                </li>
-              ))}
-            </ul>
+              {claimedPermBounties.length > 0 && (
+                <>
+                  <h4>Claimed</h4>
+                  <ul className={styles['bounty-list']}>
+                    {claimedPermBounties.map((b, i) => (
+                      <li
+                        className={`${styles['bounty-card']} ${b.claimed ? styles.claimed : ''}`}
+                        key={b.id || b.pokemon + b.host + i}
+                      >
+                        <Link to={`/pokemon/${b.pokemon}/`} className={styles['bounty-card-inner']}>
+                          <PokemonSprite name={b.pokemon} />
+                          <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
+                          <div className={styles['bounty-host']}>Host: {b.host}</div>
+                          <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
+                          <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
+                        </Link>
+
+                        <div className={styles['bounty-claimed']}><em>Claimed by: {b.claimed}</em></div>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </>
           )}
         </section>
       )}
