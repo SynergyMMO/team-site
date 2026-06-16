@@ -21,8 +21,10 @@ function toValidDate(year, month, day) {
 }
 
 function extractEventDate(title, now) {
-  const dayMonthPattern = /\((?:[A-Za-z]+,\s*)?(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\)/i
-  const monthDayPattern = /\((?:[A-Za-z]+,\s*)?([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?\)/i
+  // Accept variants like "(Friday 19th, June)", "(19th June)", "(June 19th)",
+  // and optional commas or weekday tokens with or without commas.
+  const dayMonthPattern = /\((?:[A-Za-z]+(?:,\s*|\s+))?(\d{1,2})(?:st|nd|rd|th)?(?:,\s*|\s+)([A-Za-z]+)\)/i
+  const monthDayPattern = /\((?:[A-Za-z]+(?:,\s*|\s+))?([A-Za-z]+)(?:,\s*|\s+)(\d{1,2})(?:st|nd|rd|th)?\)/i
 
   let day = null, monthName = null
   const dayMonthMatch = title.match(dayMonthPattern)
@@ -201,38 +203,52 @@ function extractFirstPlacePokemon(description) {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = description;
 
-  let firstReward = null;
+  const rewards = [];
 
   // Get all <strong> tags
   const nodes = Array.from(tempDiv.querySelectorAll('strong'));
 
+  let collecting = false;
   for (const strong of nodes) {
     if (/1st place/i.test(strong.textContent)) {
-      firstReward = { shiny: false, pokemon: null };
+      collecting = true;
       continue;
     }
 
-    if (firstReward && !firstReward.pokemon) {
-      // Normalize text
-      let text = strong.textContent.replace(/\s+/g, ' ').trim();
+    if (!collecting) continue;
 
+    // Raw text for this strong tag
+    let raw = strong.textContent.replace(/\s+/g, ' ').trim();
+    if (!raw) continue;
+
+    // Normalize gender symbols to match generation.json keys
+    raw = raw.replace(/♂/g, '-m').replace(/♀/g, '-f');
+    // Remove non-breaking spaces and asterisks
+    raw = raw.replace(/\u00A0/g, ' ').replace(/\*/g, ' ');
+
+    // Detect shiny once from the whole raw string
+    const shinyFlag = /shiny/i.test(raw);
+
+    // Split on common OR separators (" OR ", "/", " or ") to allow multiple choices
+    const parts = raw.split(/\s+(?:OR|\/|or)\s+/i).map(p => p.trim()).filter(Boolean);
+
+    for (const part of parts) {
+      // Remove common non-name tokens
+      let text = part.replace(/\b(GIFT|SHINY|Lv\.?\d*)\b/gi, '').trim();
       if (!text) continue;
 
-      // Detect shiny
-      if (/shiny/i.test(text)) firstReward.shiny = true;
-
-      // Remove common non-name words
-      text = text.replace(/\b(GIFT|Shiny|Lv\.?\d*)\b/gi, '').trim();
-
-      // Match against generation.json
-      const match = allPokemonNames.find(name => text.toLowerCase().includes(name));
-      if (match) firstReward.pokemon = match;
-
-      if (firstReward.pokemon) break; // stop after finding Pokémon
+      const lowered = text.toLowerCase();
+      const match = allPokemonNames.find(name => lowered.includes(name));
+      if (match) {
+        rewards.push({ shiny: shinyFlag, pokemon: match });
+      }
     }
+
+    // Stop collecting after processing the first reward block
+    break;
   }
 
-  return firstReward;
+  return rewards; // may be empty array
 }
 
 
@@ -347,14 +363,20 @@ function EventCell({ event, now }) {
       {event.rewards && event.rewards.length > 0 && event.rewards[0].pokemon && (
         <div className={styles.firstPlaceReward}>
           <strong>1st Place:</strong>
-          <div>
-            <span>{event.rewards[0].shiny ? 'Shiny' : 'Non Shiny'}</span>
-            <br />
-            <img
-              src={getPokemonSprite(event.rewards[0])}
-              alt={event.rewards[0].pokemon}
-              className={styles.pokemonGif}
-            />
+          <div className={styles.rewardList}>
+            {event.rewards.map((r, idx) => (
+              <span key={`${r.pokemon}-${idx}`} className={styles.rewardItem}>
+                <span className={styles.rewardLabel}>{r.shiny ? 'Shiny' : 'Non Shiny'}</span>
+                <img
+                  src={getPokemonSprite(r)}
+                  alt={r.pokemon}
+                  className={styles.pokemonGif}
+                />
+                {idx < event.rewards.length - 1 && (
+                  <span className={styles.orSeparator}>OR</span>
+                )}
+              </span>
+            ))}
           </div>
         </div>
       )}
@@ -417,8 +439,8 @@ export default function OfficialEventCalendar() {
       const participatingStaff = extractParticipatingStaff(item.description)
       const details = type === 'pvp' ? extractEventDetails(item.description) : []
 
-      const rewards = extractFirstPlacePokemon(item.description)
-      const hasShinyReward = rewards?.shiny || false
+      const rewards = extractFirstPlacePokemon(item.description) || []
+      const hasShinyReward = rewards.some(r => r.shiny)
 
       return {
         title: item.title,
@@ -431,7 +453,7 @@ export default function OfficialEventCalendar() {
         participatingStaff, 
         details,
         utcTime,
-        rewards: rewards ? [rewards] : [],
+        rewards: rewards,
         hasShinyReward,
       }
     }).filter(Boolean)

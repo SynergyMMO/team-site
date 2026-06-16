@@ -271,9 +271,34 @@
 }
 
 .pokemonGif {
-  display: block;
-  margin-top: 4px;
+  display: inline-block;
+  margin: 0 4px;
   image-rendering: pixelated;
+}
+
+.rewardList {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.rewardItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rewardLabel {
+  font-size: 0.78rem;
+  color: #d2b4de;
+  white-space: nowrap;
+}
+
+.orSeparator {
+  margin: 0 6px;
+  color: #d2b4de;
+  font-weight: 700;
 }
 
 /* ===== Past Events ===== */
