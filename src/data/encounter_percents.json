@@ -3326,51 +3326,6 @@
       ],
       "encounterCategory": "single"
     },
-    "Petalburg Woods - Lures / Day": {
-      "route": "Petalburg Woods",
-      "credit": "Shlaxs",
-      "variation": "Lures / Day",
-      "total": 3923,
-      "data": [
-        {
-          "pokemon": "Poochyena",
-          "encounters": 967
-        },
-        {
-          "pokemon": "Zigzagoon",
-          "encounters": 964
-        },
-        {
-          "pokemon": "Wurmple",
-          "encounters": 374
-        },
-        {
-          "pokemon": "Silcoon",
-          "encounters": 408
-        },
-        {
-          "pokemon": "Cascoon",
-          "encounters": 399
-        },
-        {
-          "pokemon": "Shroomish",
-          "encounters": 415
-        },
-        {
-          "pokemon": "Slakoth",
-          "encounters": 201
-        },
-        {
-          "pokemon": "Taillow",
-          "encounters": 195
-        },
-        {
-          "pokemon": "Treecko",
-          "encounters": 0
-        }
-      ],
-      "encounterCategory": "single"
-    },
     "Route 120 - Lures": {
       "route": "Route 120",
       "credit": "Rizz",

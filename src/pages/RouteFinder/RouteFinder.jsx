@@ -102,6 +102,39 @@ function formatEncounterTimeLabel(time) {
     .replace(/SEASON3/g, 'Winter')
 }
 
+function collapseSeasonalTimes(times = []) {
+  const originalsByBase = new Map()
+  const others = []
+
+  times.forEach((time) => {
+    const t = String(time || '')
+    const match = t.match(/^(.*)\/SEASON([0-3])$/)
+    if (match) {
+      const base = match[1]
+      const season = match[2]
+      const entry = originalsByBase.get(base) || { seasons: new Set(), originals: [] }
+      entry.seasons.add(season)
+      entry.originals.push(t)
+      originalsByBase.set(base, entry)
+    } else if (t) {
+      others.push(t)
+    }
+  })
+
+  const result = [...others]
+  originalsByBase.forEach((entry, base) => {
+    if (entry.seasons.size === 4) {
+      result.push(base)
+    } else {
+      // keep original entries (so they will get season names later)
+      result.push(...entry.originals)
+    }
+  })
+
+  // unique and preserve order
+  return [...new Set(result)]
+}
+
 function hasRareTierPokemon(pokemon = []) {
   return pokemon.some(mon => BEST_ROUTE_TIERS.has(getTier(mon.name)))
 }
@@ -711,7 +744,7 @@ function UnroutedChecklist({ route, pokemonNeedle, pokemonFamilyKeys }) {
                         mon.meta.rarities.join(', '),
                         mon.meta.methods.join(', '),
                         mon.meta.levels.length > 0 ? `Lv. ${mon.meta.levels.join(', ')}` : '',
-                        mon.meta.times.map(formatEncounterTimeLabel).join(', '),
+                        collapseSeasonalTimes(mon.meta.times).map(formatEncounterTimeLabel).join(', '),
                       ].filter(Boolean).join(' - ')}
                     </small>
                     {isPriorityTarget(mon) && <strong className={styles.priorityBadge}>Tier {getTier(mon.name)}</strong>}

@@ -135,7 +135,7 @@ export function usePokemonDetails(pokemonName) {
           'defense': 'DEF',
           'special-attack': 'SP.ATK',
           'special-defense': 'SP.DEF',
-          'speed': 'SPD'
+          'speed': 'SPE'
         }
         
         const evYields = []
