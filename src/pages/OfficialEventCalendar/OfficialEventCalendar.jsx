@@ -199,56 +199,74 @@ const allPokemonNames = Object.values(generationData) // get arrays for each gen
   .flat() // flatten the Pokémon arrays into a single list
   .map(name => name.toLowerCase()); // normalize for case-insensitive matching
 
+function parsePokemonRewardText(raw) {
+  const rewards = [];
+  let text = raw.replace(/\s+/g, ' ').replace(/\u00A0/g, ' ').replace(/\*/g, ' ').trim();
+  if (!text) return rewards;
+
+  const shinyFlag = /shiny/i.test(text);
+  const parts = text.split(/\s+(?:OR|\/|or)\s+/i).map(p => p.trim()).filter(Boolean);
+
+  for (const part of parts) {
+    const candidate = part.replace(/\b(GIFT|SHINY|LV\.?\s*\d*|L(v|vl)\.?\s*\d*)\b/gi, '').trim();
+    if (!candidate) continue;
+
+    const lowered = candidate.toLowerCase();
+    const match = allPokemonNames.find(name => lowered.includes(name));
+    if (match) {
+      rewards.push({ shiny: shinyFlag, pokemon: match });
+    }
+  }
+
+  return rewards;
+}
+
 function extractFirstPlacePokemon(description) {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = description;
 
   const rewards = [];
-
-  // Get all <strong> tags
   const nodes = Array.from(tempDiv.querySelectorAll('strong'));
 
   let collecting = false;
   for (const strong of nodes) {
-    if (/1st place/i.test(strong.textContent)) {
+    const rawText = strong.textContent.replace(/\s+/g, ' ').trim();
+    if (!rawText) continue;
+
+    if (/1st place/i.test(rawText)) {
       collecting = true;
+      const inlineRewards = rawText.replace(/.*?1st place[:\-–—]?\s*/i, '').trim();
+      if (inlineRewards) {
+        rewards.push(...parsePokemonRewardText(inlineRewards));
+        if (rewards.length) return rewards;
+      }
       continue;
     }
 
     if (!collecting) continue;
-
-    // Raw text for this strong tag
-    let raw = strong.textContent.replace(/\s+/g, ' ').trim();
-    if (!raw) continue;
-
-    // Normalize gender symbols to match generation.json keys
-    raw = raw.replace(/♂/g, '-m').replace(/♀/g, '-f');
-    // Remove non-breaking spaces and asterisks
-    raw = raw.replace(/\u00A0/g, ' ').replace(/\*/g, ' ');
-
-    // Detect shiny once from the whole raw string
-    const shinyFlag = /shiny/i.test(raw);
-
-    // Split on common OR separators (" OR ", "/", " or ") to allow multiple choices
-    const parts = raw.split(/\s+(?:OR|\/|or)\s+/i).map(p => p.trim()).filter(Boolean);
-
-    for (const part of parts) {
-      // Remove common non-name tokens
-      let text = part.replace(/\b(GIFT|SHINY|Lv\.?\d*)\b/gi, '').trim();
-      if (!text) continue;
-
-      const lowered = text.toLowerCase();
-      const match = allPokemonNames.find(name => lowered.includes(name));
-      if (match) {
-        rewards.push({ shiny: shinyFlag, pokemon: match });
-      }
-    }
-
-    // Stop collecting after processing the first reward block
-    break;
+    rewards.push(...parsePokemonRewardText(rawText));
+    if (rewards.length) return rewards;
   }
 
-  return rewards; // may be empty array
+  if (rewards.length) return rewards;
+
+  const descriptionText = tempDiv.textContent.replace(/\s+/g, ' ').trim();
+  const firstPlaceText = descriptionText.match(/1st place[:\-–—]?\s*(.+?)(?:$|\.|\n)/i);
+  if (firstPlaceText) {
+    rewards.push(...parsePokemonRewardText(firstPlaceText[1]));
+  }
+
+  if (rewards.length) return rewards;
+
+  const lines = descriptionText.split(/\r?\n/);
+  for (const line of lines) {
+    if (/\bGIFT\b/i.test(line) || /\bSHINY\b/i.test(line)) {
+      rewards.push(...parsePokemonRewardText(line));
+      if (rewards.length) break;
+    }
+  }
+
+  return rewards;
 }
 
 
