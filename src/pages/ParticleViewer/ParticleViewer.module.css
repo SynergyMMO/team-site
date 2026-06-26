@@ -1,0 +1,358 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #fff;
+  text-align: center;
+}
+
+.description {
+  text-align: center;
+  color: #ccc;
+  margin-bottom: 40px;
+  font-size: 1.1rem;
+}
+
+.creditBanner {
+  max-width: 800px;
+  margin: 0 auto 24px auto;
+  padding: 16px 18px;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.18);
+  border-radius: 12px;
+  color: #e5f7ff;
+  text-align: center;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.creditBanner p {
+  margin: 0;
+}
+
+.legend {
+  max-width: 800px;
+  margin: 0 auto 20px auto;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.legendIcon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.mainContent {
+  display: block;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* Video Section */
+.videoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.videoFrame {
+   background: rgba(10, 10, 18, 0.85);
+   border: 1px solid rgba(255, 255, 255, 0.08);
+   border-radius: 18px;
+   box-shadow: 0 14px 44px rgba(0, 0, 0, 0.45);
+   overflow: hidden;
+   display: flex;
+   flex-direction: column;
+ }
+ 
+ .videoFrameHeader {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background: rgba(10, 10, 18, 0.95);
+   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+   padding: 14px 16px;
+   text-align: center;
+ }
+ 
+ .videoFrameHeader h2 {
+   font-size: 1.35rem;
+   color: #e9f7ff;
+   margin: 0;
+   letter-spacing: 0.02em;
+ }
+ 
+ .videoPlayer {
+  background: rgba(8, 13, 28, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 260px;
+  padding: 20px;
+}
+
+.brokenNotice {
+  color: #f7c2c2;
+  font-size: 1rem;
+  text-align: center;
+  max-width: 680px;
+  line-height: 1.6;
+}
+
+.videoPlayer video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.videoFrameFooter {
+   background: rgba(10, 10, 18, 0.9);
+   border-top: 1px solid rgba(255, 255, 255, 0.08);
+   padding: 12px 16px;
+   display: flex;
+   gap: 10px;
+   justify-content: center;
+ }
+ 
+ .navButton {
+   background: rgba(255, 255, 255, 0.06);
+   border: 1px solid rgba(255, 255, 255, 0.12);
+   color: #d0e9ff;
+   padding: 10px 18px;
+   border-radius: 999px;
+   cursor: pointer;
+   font-size: 0.9rem;
+   font-weight: 600;
+   transition: all 0.2s ease;
+   min-width: 110px;
+ }
+ 
+ .navButton:hover {
+   background: rgba(255, 255, 255, 0.12);
+   border-color: rgba(255, 255, 255, 0.22);
+ }
+ 
+ .navButton:active {
+   transform: translateY(1px);
+ }
+ 
+ .speedControls {
+   display: flex;
+   flex-wrap: wrap;
+   align-items: center;
+   justify-content: center;
+   gap: 10px;
+   padding: 14px 16px 18px;
+   border-top: 1px solid rgba(255, 255, 255, 0.08);
+   background: rgba(10, 10, 18, 0.88);
+ }
+ 
+ .speedLabel {
+   color: #b8d9ff;
+   font-size: 0.9rem;
+   font-weight: 600;
+ }
+ 
+ .speedButton {
+   background: rgba(255, 255, 255, 0.05);
+   border: 1px solid rgba(255, 255, 255, 0.1);
+   color: #cbdcff;
+   padding: 8px 14px;
+   border-radius: 999px;
+   cursor: pointer;
+   font-size: 0.9rem;
+   transition: all 0.18s ease;
+ }
+ 
+ .speedButton:hover {
+   background: rgba(255, 255, 255, 0.14);
+ }
+ 
+ .speedButtonActive {
+   background: rgba(0, 212, 255, 0.16);
+   border-color: rgba(0, 212, 255, 0.35);
+   color: #e8f8ff;
+ }
+
+.particleInfo {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.particleInfo h2 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin: 0 0 10px 0;
+}
+
+.particleInfo p {
+  color: #ccc;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Particles List */
+
+.particlesList {
+  display: block;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.particlesList h3 {
+  font-size: 1.2rem;
+  color: #fff;
+  margin: 0 0 8px 0;
+}
+
+.particlesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+  align-items: start;
+}
+
+.particleItem {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: center;
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.iconContainer {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.particleIcon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.breedIcon {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.particleItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+.particleItem.active {
+  background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+  border-color: #00d4ff;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.18);
+}
+
+.particleName {
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.particleItem.active .particleName {
+  color: #00d4ff;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .particlesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .container {
+    padding: 28px 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .particlesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .container h1 {
+    font-size: 1.8rem;
+  }
+
+  .particleInfo {
+    order: -1;
+  }
+
+  .container {
+    padding: 20px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container h1 {
+    font-size: 1.5rem;
+  }
+
+  .description {
+    font-size: 0.95rem;
+  }
+
+  .particlesList h3 {
+    font-size: 1.1rem;
+  }
+
+  .particleItem {
+    padding: 12px;
+  }
+}

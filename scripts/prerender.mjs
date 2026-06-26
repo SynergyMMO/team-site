@@ -28,9 +28,10 @@ const PAGE_KEYWORDS = {
   '/egg-move-calculator': 'PokeMMO egg move calculator, egg move breeding chains, Pokemon egg groups, PokeMMO breeding tool, egg move transfer route',
   '/player-card-generator': 'PokeMMO player card generator, encounter tracker JSON, shiny hunting stats, trainer card, player profile PNG',
   '/sprite-recolour': 'sprite recolour tool, Pokemon sprite editor, GIF palette editor, sprite recolor, Pokemon GIF editor, palette swap tool, PokeMMO tools, Team Synergy tools',
+  '/particle-viewer': 'Particle Viewer, PokeMMO particle effects, particle animations, shiny particles, PokeMMO visual effects, Team Synergy tools',
   '/events': 'PokeMMO events, shiny hunting competition, PokeMMO PVP events, gaming tournament, team events, community challenges',
-  '/trophy-board': 'PokeMMO trophies, achievement trophies, trophy list, PokeMMO leaderboard, gaming achievements, community awards',
   '/streamers': 'PokeMMO streamers, PokeMMO Twitch streamers, PokeMMO YouTube, gaming livestream, content creators, streamer directory',
+  '/trophy-board': 'PokeMMO trophies, achievement trophies, trophy list, PokeMMO leaderboard, gaming achievements, community awards',
   '/team-statistics': 'Team Statistics, Team Synergy leaderboard, PokeMMO player leaderboard, all-time SHOTM points, top shiny hunters, most common shiny pokemon',
   '/shiny-war-2025': 'Shiny Wars 2025, PokeMMO competition, Shiny Wars standings, leaderboard results, shiny catching championship, competition rankings, team synergy shiny war results',
   '/resources': 'PokeMMO resources, PokeMMO guides, hunting tools, community links, shiny hunting guides, PokeMMO calculators, Team Synergy resources',
@@ -189,6 +190,12 @@ const PAGE_FAQS = {
         { question: 'How often are new Bounties added?', answer: 'Monthly bounties are updated each month, while permanent bounties are ongoing challenges.' },
         { question: 'Can anyone join the Bounties?', answer: 'Most bounties are open to all Team Synergy members. Check the Bounties page for details and requirements.' }
       ],
+  '/particle-viewer': [
+    { question: 'What is the Particle Viewer page?', answer: 'The Particle Viewer lets you browse PokeMMO particle effects and watch in-game particle animations in one place.' },
+    { question: 'Can I view shiny and breed particle animations?', answer: 'Yes, the Particle Viewer includes both regular and shiny particles, with breed-only items marked clearly in the list.' },
+    { question: 'How do I control playback speed?', answer: 'Use the playback speed buttons to switch between 50%, 75%, 100%, 150%, and 200% playback rates for the particle videos.' },
+    { question: 'Are broken particles handled specially?', answer: 'Broken particles display a notice instead of the video so you know if a particle is currently broken in-game and does not show correctly.' },
+  ],
 };
 
 // FAQs for dynamic pages (use {placeholder} for dynamic values)
@@ -260,6 +267,7 @@ const STATIC_ROUTES = [
   '/player-card-generator',
   '/sprite-recolour',
   '/random-pokemon-generator',
+  '/particle-viewer',
   '/shiny-war-2025',
   '/safari-zones',
   '/resources',

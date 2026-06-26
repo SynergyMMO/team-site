@@ -1,0 +1,213 @@
+[
+  {
+    "name": "Anniversary",
+    "icon": "Anniverssary.png",
+    "description": "Seasonal Anniversary item first introduced in 2022. Found in Anniversary Chest's and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Bats",
+    "icon": "bats.png",
+    "description": "Seasonal Halloween item first introduced in 2018. Purchasable from the gift shop for 250RP during each Halloween event."
+  },
+  {
+    "name": "Black Hole",
+    "icon": "Black Hole.png",
+    "description": "Permanent gift shop item first introduced in 2019, purchasable for 200RP."
+  },
+  {
+    "name": "Blood Lotus Field",
+    "icon": "Blood Lotus Field.png",
+    "description": "Exclusive to Halloween (2025). Found in Pumpking Goodie Bags (2025)."
+  },
+  {
+    "name": "Dark Crystal",
+    "icon": "Dark Crystal.png",
+    "breed": true,
+    "description": "Exclusive to Halloween (2024). Attached to all party members defeating Pumpking on hard mode. Can only be attached by breeding now."
+  },
+  {
+    "name": "Eerie Howl",
+    "icon": "Eerie Howl.png",
+    "description": "Exclusive to Halloween (2021). Found in Pumpking Goodie Bag (2021) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Fireworks",
+    "icon": "Fireworks.png",
+    "description": "Seasonal Lunar New Year item first introduced in 2019. Purchasable from the gift shop for 250RP during each Lunar New Year event."
+  },
+  {
+    "name": "Ghosts",
+    "icon": "ghosts.png",
+    "description": "Exclusive to Halloween (2018). Found in Pumpking Goodie Bag (2018) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Graveyard",
+    "icon": "Graveyard.png",
+    "description": "Exclusive to Halloween (2021). Found in Pumpking Goodie Bag (2021) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Hitodama",
+    "icon": "hitodama.png",
+    "description": "Exclusive to Halloween (2018). Found in Pumpking Goodie Bag (2018) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Kanto Friends",
+    "icon": "Kanto Friends.png",
+    "breed": true,
+    "broken": true,
+    "description": "Exclusive to 10th Year Anniversary (2022). Attached to all party members defeating The Original You. Can only be attached by breeding now."
+  },
+  {
+    "name": "King's Fall",
+    "icon": "King's Fall.png",
+    "breed": true,
+    "description": "Exclusive to Halloween (2021). Attached to all party members defeating Pumpking on hard mode. Can ony be attached by breeding now."
+  },
+  {
+    "name": "Lotus Field",
+    "icon": "Lotus Field.png",
+    "breed": true,
+    "description": "Exclusive to Halloween (2025). Attached to all party members defeating Pumpking on hard mode. Can ony be attached by breeding now."
+  },
+  {
+    "name": "Menacing Spirit",
+    "icon": "Menacing Spirit.png",
+    "breed": true,
+    "description": "Exclusive to Halloween (2022). Attached to all party members defeating Pumpking on hard mode. Can ony be attached by breeding now."
+  },
+  {
+    "name": "Paper Lantern",
+    "icon": "Paper Lantern.png",
+    "description": "Exclusive to Lunar New Year (2019). Found in Lucky Red Envelope (2019)."
+  },
+  {
+    "name": "Phantom",
+    "icon": "Phantom.png",
+    "breed": true,
+    "description": "Exclusive to Halloween (2023). Attached to all party members defeating Pumpking on hard mode. Can ony be attached by breeding now."
+  },
+  {
+    "name": "Present",
+    "icon": "Present.png",
+    "description": "Exclusive to Christmas (2018). Found in Santa's Present (2018) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Pumpcat",
+    "icon": "Pumpcat.png",
+    "breed": true,
+    "description": "Exclusive to Halloween (2020). Attached to all party members defeating Pumpking on hard mode. Can only be attached by breeding now."
+  },
+  {
+    "name": "Pumpkid's Delight",
+    "icon": "Pumpkid's Delight.png",
+    "description": "Seasonal Halloween item first introduced in 2018. Can be found in each year's Pumpking Goodie Bag."
+  },
+  {
+    "name": "Pumpkid's Treat",
+    "icon": "Pumpkid's Treat.png",
+    "breed": true,
+    "description": "Exclusive to Halloween (2019). Attached to all party members defeating Pumpking on hard mode. Can only be attached by breeding now."
+  },
+  {
+    "name": "Pungeont Stench",
+    "icon": "Purgent Stench.png",
+    "description": "Exclusive to Halloween (2019). Found in Pumpking Goodie Bag (2019) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Red Dragon",
+    "icon": "Red Dragon.png",
+    "description": "Exclusive to Lunar New Year 2022. Found in Lucky Red Envelope (2022)."
+  },
+  {
+    "name": "Rising Star",
+    "icon": "Rising Star.png",
+    "description": "Seasonal Christmas item first introduced in 2018. Purchasable from the gift shop for 250RP during each Christmas event."
+  },
+  {
+    "name": "Secret",
+    "icon": "Secret.png",
+    "description": "First released in 2022. Found on every 1/16 shinies found via single encounters. Cannot be obtained by hatching a shiny. A shiny Pokémon cannot have both the Shiny and the Secret Shiny Particle. Breeding Pokémon with the Shiny and the Secret Shiny particle will grant the egg to have the Secret Shiny particle."
+  },
+  {
+    "name": "Shiny",
+    "icon": "Shiny.png",
+    "description": "Unique to shiny Pokémon. All shinies come with this particle pre-attached. It cannot be obtained on non-shinies through any method."
+  },
+  {
+    "name": "Shiny Dark Crystal",
+    "icon": "Shiny Dark Crystal.png",
+    "description": "Exclusive to Halloween (2024). Found in Pumpking Goodie Bags (2024)."
+  },
+  {
+    "name": "Shiny Kanto Friends",
+    "icon": "Shiny Kanto Friends.png",
+    "broken": true,
+    "description": "Exclusive to 10th Year Anniversary (2022). Found in Golden Anniversary Chest."
+  },
+  {
+    "name": "Shiny Menacing Spirit",
+    "icon": "Shiny Menacing Spirit.png",
+    "description": "Exclusive to Halloween (2022). Found in Pumpking Goodie Bags (2022)."
+  },
+  {
+    "name": "Shiny Phantom",
+    "icon": "Shiny Phantom.png",
+    "description": "Exclusive to Halloween (2023). Found in Pumpking Goodie Bags (2023)."
+  },
+  {
+    "name": "Snowflake",
+    "icon": "Snowflake.png",
+    "description": "Exclusive to Christmas (2018). Found in Santa's Present (2018) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Spider's Web",
+    "icon": "Spider's Web.png",
+    "broken": true,
+    "description": "Exclusive to Halloween (2020). Found in the Pumpking Goodie Bag (2020) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Spinning Scythe",
+    "icon": "Spinning Scythe.png",
+    "description": "Exclusive to Halloween (2020). Found in the Pumpking Goodie Bag (2020) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Spirit of Spring",
+    "icon": "Spirit of Spring.png",
+    "description": "Seasonal Lunar New Year particle first introduced in 2023. Pre-attached to special Zodiac themed Alpha Pokemon and Shaymin found during the event. Also found in Lucky Red Envelope (2023)."
+  },
+  {
+    "name": "The Eye",
+    "icon": "the eye.png",
+    "description": "Exclusive to Halloween (2018). Found in Pumpking Goodie Bag (2018) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "White Kitty",
+    "icon": "White Kitty.png",
+    "description": "Permanent gift shop item first introduced in 2020, purchasable for 200RP."
+  },
+  {
+    "name": "Witch's Haze",
+    "icon": "Witch's Haze.png",
+    "description": "Exclusive to Halloween (2019). Found in Pumpking Goodie Bag (2019) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Witch's Cat",
+    "icon": "Witch's Cat.png",
+    "description": "Seasonal Halloween item first introduced in 2020. Purchasable from the gift shop for 250RP during each Halloween event."
+  },
+  {
+    "name": "Xmas Decorating",
+    "icon": "Xmas Decorations.png",
+    "description": "Exclusive to Christmas (2022). Found in Santa's Present (2022) and pre-attached to special swarms found during the event."
+  },
+  {
+    "name": "Zodiac",
+    "icon": "Zodiac.png",
+    "description": "Exclusive to Lunar New Year (2021). Found in Red Envelope (2021) and Lucky Red Envelope (2021)."
+  },
+  {
+    "name": "Zombie Grip",
+    "icon": "Zombie Grip.png",
+    "description": "Exclusive to Halloween (2020). Found in the Pumpking Goodie Bag (2020) and pre-attached to special swarms found during the event."
+  }
+]

@@ -36,6 +36,7 @@ const NAV_ITEMS = [
       { to: '/random-pokemon-generator/', label: 'Random Pokemon Generator' },
       { to: '/shiny-odds/', label: 'Shiny Odds' },
       { to: '/sprite-recolour/', label: 'Sprite Recolour' },
+      { to: '/particle-viewer/', label: 'Particle Viewer' },
     ]
   },
   { to: '/themes/', label: 'Themes' },
