@@ -110,12 +110,22 @@
  
  .videoPlayer {
   background: rgba(8, 13, 28, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
   overflow: hidden;
-  min-height: 260px;
   padding: 20px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.videoPlayer::after {
+  content: '';
+  display: block;
+  padding-top: 56.25%;
+}
+
+.videoPlayer > * {
+  position: absolute;
+  inset: 20px;
 }
 
 .brokenNotice {
@@ -124,12 +134,30 @@
   text-align: center;
   max-width: 680px;
   line-height: 1.6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .videoPlayer video {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.hiddenPreloadVideos {
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.hiddenPreloadVideo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .videoFrameFooter {

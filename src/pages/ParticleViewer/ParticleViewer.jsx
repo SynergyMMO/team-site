@@ -16,19 +16,74 @@ export default function ParticleViewer() {
   const [playbackSpeed, setPlaybackSpeed] = useState(1)
   const videoRef = useRef(null)
 
+  const getParticleVideoUrl = (name) =>
+    getAssetUrl(`images/particles/${name}.mp4`)
+
+  const getAdjacentVideoUrls = () => {
+    if (!selectedParticle) {
+      return []
+    }
+
+    const currentIndex = particlesData.findIndex(
+      (particle) => particle.name === selectedParticle.name,
+    )
+    const prevIndex = currentIndex === 0 ? particlesData.length - 1 : currentIndex - 1
+    const nextIndex = currentIndex === particlesData.length - 1 ? 0 : currentIndex + 1
+
+    return [
+      getParticleVideoUrl(particlesData[prevIndex].name),
+      getParticleVideoUrl(particlesData[nextIndex].name),
+    ]
+  }
+
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.playbackRate = playbackSpeed
     }
-  }, [playbackSpeed, selectedParticle])
+  }, [playbackSpeed])
+
+  useEffect(() => {
+    if (!videoRef.current) {
+      return
+    }
+
+    videoRef.current.pause()
+    videoRef.current.currentTime = 0
+    videoRef.current.load()
+
+    const playPromise = videoRef.current.play()
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {})
+    }
+  }, [selectedParticle])
+
+  useEffect(() => {
+    const preloadSources = getAdjacentVideoUrls()
+    if (preloadSources.length === 0) {
+      return
+    }
+
+    const links = preloadSources.map((href) => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'video'
+      link.href = href
+      link.type = 'video/mp4'
+      document.head.appendChild(link)
+      return link
+    })
+
+    return () => {
+      links.forEach((link) => {
+        if (link.parentNode) {
+          link.parentNode.removeChild(link)
+        }
+      })
+    }
+  }, [selectedParticle])
 
   const handlePlayVideo = (particle) => {
     setSelectedParticle(particle)
-    // Reset video and play
-    if (videoRef.current) {
-      videoRef.current.load()
-      videoRef.current.play()
-    }
   }
 
   return (
@@ -103,22 +158,34 @@ export default function ParticleViewer() {
                       This particle is currently broken in game and does not display correctly.
                     </div>
                   ) : (
-                    <video
-                      ref={videoRef}
-                      key={selectedParticle.name}
-                      width="100%"
-                      height="auto"
-                      controls
-                      autoPlay
-                      muted
-                      loop
-                    >
-                      <source
-                        src={getAssetUrl(`images/particles/${selectedParticle.name}.mp4`)}
-                        type="video/mp4"
-                      />
-                      Your browser does not support the video tag.
-                    </video>
+                    <>
+                      <video
+                        ref={videoRef}
+                        src={getParticleVideoUrl(selectedParticle.name)}
+                        width="100%"
+                        height="auto"
+                        controls
+                        autoPlay
+                        muted
+                        loop
+                        preload="auto"
+                        playsInline
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                      <div className={styles.hiddenPreloadVideos} aria-hidden="true">
+                        {getAdjacentVideoUrls().map((href) => (
+                          <video
+                            key={href}
+                            src={href}
+                            muted
+                            preload="auto"
+                            playsInline
+                            className={styles.hiddenPreloadVideo}
+                          />
+                        ))}
+                      </div>
+                    </>
                   )}
                 </div>
                 <div className={styles.videoFrameFooter}>
