@@ -57,6 +57,7 @@
 
 .bounty-card-inner {
   width: 100%;
+  min-height: 240px;
   padding: 24px 18px 18px 18px;
   display: flex;
   flex-direction: column;
@@ -71,6 +72,18 @@
   opacity: 0.6;
 }
 
+.bounty-pokemon-sprite-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  max-width: 220px;
+  margin-bottom: 12px;
+  min-height: 88px;
+}
+
 .bounty-pokemon-sprite {
   width: 80px;
   height: 80px;
@@ -78,6 +91,12 @@
   margin-bottom: 12px;
   border-radius: 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bounty-pokemon-sprite-grid .bounty-pokemon-sprite {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0;
 }
 
 .bounty-pokemon-sprite:hover {
