@@ -63,17 +63,35 @@ function getCategoryOverride(lineIds) {
 }
 
 function formatPokemonDisplayName(name) {
+  if (!name && name !== 0) return '';
+  if (Array.isArray(name)) {
+    return name.map((item) => formatPokemonDisplayName(item)).join(', ');
+  }
   return String(name)
     .split('-')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join('-');
 }
 
+function bountyPokemonList(bounty) {
+  if (!bounty) return [];
+  const raw = bounty.pokemon;
+  if (Array.isArray(raw)) return raw.filter(Boolean).map(String);
+  if (!raw && raw !== 0) return [];
+  return String(raw)
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function normalizeBounties(rawData, month, year, monthName) {
   const active = [];
 
   const addBounty = (bounty, sourceKey = '') => {
-    if (!bounty || !bounty.pokemon) return;
+    const pokemonList = bountyPokemonList(bounty);
+    if (!bounty || pokemonList.length === 0) return;
+
+    const singleBounty = { ...bounty, pokemon: pokemonList.length === 1 ? pokemonList[0] : pokemonList };
 
     const bountyType = String(bounty.type || sourceKey || '').toLowerCase();
     const isPermanent =
@@ -87,13 +105,14 @@ function normalizeBounties(rawData, month, year, monthName) {
 
     if (isClaimed) return;
 
+    const normalized = { ...singleBounty };
     if (isPermanent) {
-      active.push({ ...bounty, bountyType: 'permanent' });
+      active.push({ ...normalized, bountyType: 'permanent' });
       return;
     }
 
     if (isCurrentMonth && isCurrentYear) {
-      active.push({ ...bounty, bountyType: 'monthly' });
+      active.push({ ...normalized, bountyType: 'monthly' });
     }
   };
 
@@ -240,9 +259,12 @@ export default function DexHelper() {
   const bountyByPokemon = useMemo(() => {
     const lookup = new Map();
     active.forEach((bounty) => {
-      const key = normalizePokemonName(bounty.pokemon || '');
-      if (!key || lookup.has(key)) return;
-      lookup.set(key, bounty);
+      const pokemonNames = Array.isArray(bounty.pokemon) ? bounty.pokemon : [bounty.pokemon];
+      pokemonNames.forEach((pokemon) => {
+        const key = normalizePokemonName(pokemon || '');
+        if (!key || lookup.has(key)) return;
+        lookup.set(key, bounty);
+      });
     });
     return lookup;
   }, [active]);

@@ -46,6 +46,19 @@ function sortCategoryNames(categories) {
   });
 }
 
+function parsePokemonInput(value) {
+  if (value == null) return [];
+  const text = String(value).trim();
+  if (!text) return [];
+  return text.split(',').map((item) => item.trim()).filter(Boolean);
+}
+
+function formatPokemonList(value) {
+  if (!value && value !== 0) return '';
+  if (Array.isArray(value)) return value.filter(Boolean).join(', ');
+  return String(value).trim();
+}
+
 export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutating }) {
   const currentMonth = new Date().toLocaleString("default", { month: "long" });
   const [editingBounty, setEditingBounty] = useState(null);
@@ -111,6 +124,9 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
     const bountyData = { ...form };
     const normalizedMonth = toCategoryLabel(bountyData.month) || currentMonth;
 
+    const pokemonList = parsePokemonInput(bountyData.pokemon);
+    bountyData.pokemon = pokemonList.length === 1 ? pokemonList[0] : pokemonList;
+
     if (bountyData.perm) {
       bountyData.month = "";
       bountyData.perm = true;
@@ -163,7 +179,7 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
     setForm({
       title: bounty.title || "",
       month: category === "Perm" ? "" : (toCategoryLabel(bounty.month) || category),
-      pokemon: bounty.pokemon || "",
+      pokemon: formatPokemonList(bounty.pokemon),
       host: bounty.host || "",
       reward: bounty.reward || "",
       description: bounty.description || "",
@@ -233,7 +249,7 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
         <td>{b.id}</td>
         <td>{b.title}</td>
         {!isPerm && <td>{toCategoryLabel(b.month) || category}</td>}
-        <td>{b.pokemon}</td>
+        <td title={formatPokemonList(b.pokemon)}>{formatPokemonList(b.pokemon)}</td>
         <td>{b.host}</td>
         <td>{b.reward}</td>
         <td title={b.description}>{truncate(b.description)}</td>
@@ -255,8 +271,15 @@ export default function BountiesTab({ bounties, onAdd, onEdit, onDelete, isMutat
         <input name="title" value={form.title} onChange={handleChange} className={styles.adminInput} required />
         <label>Month (leave blank if perm):</label>
         <input name="month" value={form.month} onChange={handleChange} className={styles.adminInput} disabled={form.perm} />
-        <label>Pokemon:</label>
-        <input name="pokemon" value={form.pokemon} onChange={handleChange} className={styles.adminInput} required />
+        <label>Pokemon (comma-separated for multiple):</label>
+        <input
+          name="pokemon"
+          value={form.pokemon}
+          onChange={handleChange}
+          className={styles.adminInput}
+          placeholder="e.g. pikachu, raichu"
+          required
+        />
         <label>Host:</label>
         <input name="host" value={form.host} onChange={handleChange} className={styles.adminInput} required />
         <label>Reward:</label>
