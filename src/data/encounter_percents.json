@@ -1,45 +1,45 @@
 {
   "Kanto": {
     "Route 17": {
-      "credit": "pupsil",
+      "credit": "pupsil, Dellwina",
       "variation": "Lures",
-      "total": 1000,
+      "total": 1100,
       "data": [
         {
           "pokemon": "Raticate",
-          "encounters": 205
+          "encounters": 233
         },
         {
           "pokemon": "Grimer",
-          "encounters": 200
+          "encounters": 212
         },
         {
           "pokemon": "Fearow",
-          "encounters": 122
+          "encounters": 137
         },
         {
           "pokemon": "Doduo",
-          "encounters": 94
+          "encounters": 101
         },
         {
           "pokemon": "Ponyta",
-          "encounters": 84
+          "encounters": 93
         },
         {
           "pokemon": "Slugma",
-          "encounters": 68
+          "encounters": 77
         },
         {
           "pokemon": "Eevee",
-          "encounters": 51
+          "encounters": 55
         },
         {
           "pokemon": "Psyduck",
-          "encounters": 54
+          "encounters": 59
         },
         {
           "pokemon": "Spearow",
-          "encounters": 48
+          "encounters": 52
         },
         {
           "pokemon": "Golduck",
@@ -47,7 +47,7 @@
         },
         {
           "pokemon": "Rattata",
-          "encounters": 37
+          "encounters": 44
         }
       ],
       "encounterCategory": "single"
@@ -232,53 +232,53 @@
     },
     "Five Isle Meadow - Lures": {
       "route": "Five Isle Meadow",
-      "credit": "SheepieNei, Rizz",
+      "credit": "SheepieNei, Rizz, Hyper",
       "variation": "Lures",
-      "total": 32973,
+      "total": 49058,
       "data": [
         {
           "pokemon": "Pidgeotto",
-          "encounters": 8908
+          "encounters": 13546
         },
         {
           "pokemon": "Pidgey",
-          "encounters": 5589
+          "encounters": 7816
         },
         {
           "pokemon": "Meowth",
-          "encounters": 3527
+          "encounters": 5309
         },
         {
           "pokemon": "Persian",
-          "encounters": 3330
+          "encounters": 5129
         },
         {
           "pokemon": "Furret",
-          "encounters": 2368
+          "encounters": 3518
         },
         {
           "pokemon": "Sentret",
-          "encounters": 2362
+          "encounters": 3467
         },
         {
           "pokemon": "Psyduck",
-          "encounters": 2132
+          "encounters": 3229
         },
         {
           "pokemon": "Slowpoke",
-          "encounters": 1382
+          "encounters": 1989
         },
         {
           "pokemon": "Hoppip",
-          "encounters": 1312
+          "encounters": 2006
         },
         {
           "pokemon": "Togetic",
-          "encounters": 1072
+          "encounters": 1626
         },
         {
           "pokemon": "Skiploom",
-          "encounters": 991
+          "encounters": 1423
         }
       ],
       "encounterCategory": "single"
@@ -1276,67 +1276,6 @@
         }
       ]
     },
-    "Safari Zone - Area 1 - No Lure": {
-      "route": "Safari Zone - Area 1",
-      "credit": "Raveninha",
-      "variation": "No Lure",
-      "encounterCategory": "single",
-      "total": 1112,
-      "data": [
-        {
-          "pokemon": "Nidorina",
-          "encounters": 43
-        },
-        {
-          "pokemon": "Venonat",
-          "encounters": 80
-        },
-        {
-          "pokemon": "Chansey",
-          "encounters": 29
-        },
-        {
-          "pokemon": "Tangela",
-          "encounters": 80
-        },
-        {
-          "pokemon": "Scyther",
-          "encounters": 37
-        },
-        {
-          "pokemon": "Nidorino",
-          "encounters": 49
-        },
-        {
-          "pokemon": "Exeggcute",
-          "encounters": 105
-        },
-        {
-          "pokemon": "Pinsir",
-          "encounters": 52
-        },
-        {
-          "pokemon": "Nidoran F",
-          "encounters": 131
-        },
-        {
-          "pokemon": "Rhyhorn",
-          "encounters": 163
-        },
-        {
-          "pokemon": "Parasect",
-          "encounters": 151
-        },
-        {
-          "pokemon": "Nidoran M",
-          "encounters": 151
-        },
-        {
-          "pokemon": "Paras",
-          "encounters": 41
-        }
-      ]
-    },
     "Five Isle Meadow - Premium Lure Fishing": {
       "route": "Five Isle Meadow",
       "credit": "Mysto",
@@ -1526,46 +1465,182 @@
     },
     "Five Isle Meadow - Chum": {
       "route": "Five Isle Meadow",
-      "credit": "Mysto",
+      "credit": "Mysto, Dellwina",
       "variation": "Chum",
       "encounterCategory": "fish",
-      "total": 242,
+      "total": 901,
       "data": [
         {
           "pokemon": "Horsea",
-          "encounters": 64
+          "encounters": 240
         },
         {
           "pokemon": "Krabby",
-          "encounters": 63
+          "encounters": 240
         },
         {
-          "pokemon": "Psyduck",
-          "encounters": 12
+          "pokemon": "Gyarados",
+          "encounters": 93
         },
         {
-          "pokemon": "Slowpoke",
-          "encounters": 16
-        },
-        {
-          "pokemon": "Kingler",
-          "encounters": 6
+          "pokemon": "Qwilfish",
+          "encounters": 115
         },
         {
           "pokemon": "Remoraid",
           "encounters": 22
         },
         {
-          "pokemon": "Gyarados",
-          "encounters": 27
+          "pokemon": "Slowpoke",
+          "encounters": 62
+        },
+        {
+          "pokemon": "Psyduck",
+          "encounters": 53
         },
         {
           "pokemon": "Seadra",
-          "encounters": 9
+          "encounters": 40
         },
         {
-          "pokemon": "Qwilfish",
-          "encounters": 23
+          "pokemon": "Kingler",
+          "encounters": 36
+        }
+      ]
+    },
+    "Route 23 - Horde": {
+      "route": "Route 23",
+      "credit": "Katastrophe",
+      "variation": "Horde",
+      "encounterCategory": "horde",
+      "total": 1000,
+      "data": [
+        {
+          "pokemon": "Arbok",
+          "encounters": 565
+        },
+        {
+          "pokemon": "Primeape",
+          "encounters": 435
+        }
+      ]
+    },
+    "Route 7 - Horde / Night": {
+      "route": "Route 7",
+      "credit": "FlareBlitzz",
+      "variation": "Horde / Night",
+      "encounterCategory": "horde",
+      "total": 2304,
+      "data": [
+        {
+          "pokemon": "Rattata",
+          "encounters": 1140
+        },
+        {
+          "pokemon": "Houndour",
+          "encounters": 1164
+        }
+      ]
+    },
+    "Safari Zone - Area 1 / No Lure": {
+      "route": "Safari Zone",
+      "credit": "Raveninha",
+      "variation": "Area 1 / No Lure",
+      "encounterCategory": "single",
+      "total": 1112,
+      "data": [
+        {
+          "pokemon": "Nidorina",
+          "encounters": 43
+        },
+        {
+          "pokemon": "Venonat",
+          "encounters": 80
+        },
+        {
+          "pokemon": "Chansey",
+          "encounters": 29
+        },
+        {
+          "pokemon": "Tangela",
+          "encounters": 80
+        },
+        {
+          "pokemon": "Scyther",
+          "encounters": 37
+        },
+        {
+          "pokemon": "Nidorino",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Exeggcute",
+          "encounters": 105
+        },
+        {
+          "pokemon": "Pinsir",
+          "encounters": 52
+        },
+        {
+          "pokemon": "Nidoran F",
+          "encounters": 131
+        },
+        {
+          "pokemon": "Rhyhorn",
+          "encounters": 163
+        },
+        {
+          "pokemon": "Parasect",
+          "encounters": 151
+        },
+        {
+          "pokemon": "Nidoran M",
+          "encounters": 151
+        },
+        {
+          "pokemon": "Paras",
+          "encounters": 41
+        }
+      ]
+    },
+    "Safari Zone - Area 1 / Level 27 Repel Trick": {
+      "route": "Safari Zone",
+      "credit": "Boopy",
+      "variation": "Area 1 / Level 27 Repel Trick",
+      "encounterCategory": "repel-trick",
+      "total": 1036,
+      "data": [
+        {
+          "pokemon": "Rhyhorn",
+          "encounters": 208
+        },
+        {
+          "pokemon": "Exeggcute",
+          "encounters": 176
+        },
+        {
+          "pokemon": "Parasect",
+          "encounters": 130
+        },
+        {
+          "pokemon": "Nidorina",
+          "encounters": 127
+        },
+        {
+          "pokemon": "Nidorino",
+          "encounters": 119
+        },
+        {
+          "pokemon": "Tangela",
+          "encounters": 103
+        },
+        {
+          "pokemon": "Pinsir",
+          "encounters": 88
+        },
+        {
+          "pokemon": "Scyther",
+          "encounters": 85
         }
       ]
     }
@@ -1687,43 +1762,43 @@
       "route": "Route 34",
       "credit": "Hyper, MrBlueStacks, TFastest, BaldBabyBat",
       "variation": "Lures",
-      "total": 8389,
+      "total": 13979,
       "data": [
         {
           "pokemon": "Drowzee",
-          "encounters": 2976
+          "encounters": 4971
         },
         {
           "pokemon": "Rattata",
-          "encounters": 1453
+          "encounters": 2428
         },
         {
           "pokemon": "Snubbull",
-          "encounters": 944
+          "encounters": 1543
         },
         {
           "pokemon": "Abra",
-          "encounters": 791
+          "encounters": 1311
         },
         {
           "pokemon": "Pidgey",
-          "encounters": 761
+          "encounters": 1310
         },
         {
           "pokemon": "Jigglypuff",
-          "encounters": 451
+          "encounters": 751
         },
         {
           "pokemon": "Ditto",
-          "encounters": 398
+          "encounters": 668
         },
         {
           "pokemon": "Togepi",
-          "encounters": 298
+          "encounters": 504
         },
         {
           "pokemon": "Hoothoot",
-          "encounters": 317
+          "encounters": 493
         }
       ],
       "encounterCategory": "single"
@@ -1834,57 +1909,57 @@
     },
     "Route 37 - Lures": {
       "route": "Route 37",
-      "credit": "DexHunterZoro",
+      "credit": "DexHunterZoro, SheepieNei",
       "variation": "Lures",
-      "total": 500,
+      "total": 1097,
       "data": [
         {
           "pokemon": "Stantler",
-          "encounters": 227
+          "encounters": 467
         },
         {
           "pokemon": "Hoothoot",
-          "encounters": 42
+          "encounters": 88
         },
         {
           "pokemon": "Vulpix",
-          "encounters": 75
+          "encounters": 138
         },
         {
           "pokemon": "Spinarak",
-          "encounters": 12
+          "encounters": 29
         },
         {
           "pokemon": "Scyther",
-          "encounters": 20
+          "encounters": 40
         },
         {
           "pokemon": "Ariados",
-          "encounters": 7
+          "encounters": 15
         },
         {
           "pokemon": "Growlithe",
-          "encounters": 58
+          "encounters": 108
         },
         {
           "pokemon": "Noctowl",
-          "encounters": 4
+          "encounters": 11
         },
         {
           "pokemon": "Pidgeotto",
-          "encounters": 12
+          "encounters": 34
         },
         {
           "pokemon": "Pidgey",
-          "encounters": 39
+          "encounters": 151
         },
         {
           "pokemon": "Ledyba",
-          "encounters": 3
+          "encounters": 11
         },
         {
           "pokemon": "Ledian",
-          "encounters": 1
+          "encounters": 5
         }
       ],
       "encounterCategory": "single"
@@ -1989,38 +2064,38 @@
     },
     "Route 32 - Lures": {
       "route": "Route 32",
-      "credit": "Hyper, ZackTheAce",
+      "credit": "Hyper, ZackTheAce, SheepieNei, FlappinShad",
       "variation": "Lures",
       "encounterCategory": "single",
-      "total": 670,
+      "total": 1426,
       "data": [
         {
           "pokemon": "Rattata",
-          "encounters": 168
+          "encounters": 325
         },
         {
           "pokemon": "Mareep",
-          "encounters": 134
+          "encounters": 286
         },
         {
           "pokemon": "Bellsprout",
-          "encounters": 112
+          "encounters": 249
         },
         {
           "pokemon": "Ekans",
-          "encounters": 114
+          "encounters": 283
         },
         {
           "pokemon": "Hoppip",
-          "encounters": 47
+          "encounters": 116
         },
         {
           "pokemon": "Pidgey",
-          "encounters": 40
+          "encounters": 75
         },
         {
           "pokemon": "Totodile",
-          "encounters": 32
+          "encounters": 56
         },
         {
           "pokemon": "Hoothoot",
@@ -2032,7 +2107,7 @@
         },
         {
           "pokemon": "Zubat",
-          "encounters": 3
+          "encounters": 16
         },
         {
           "pokemon": "Wooper",
@@ -2045,31 +2120,31 @@
       "credit": "KaiDono, Hyper",
       "variation": "Headbutt",
       "encounterCategory": "headbutt",
-      "total": 677,
+      "total": 715,
       "data": [
         {
           "pokemon": "Spearow",
-          "encounters": 150
+          "encounters": 167
         },
         {
           "pokemon": "Exeggcute",
-          "encounters": 152
+          "encounters": 159
         },
         {
           "pokemon": "Pidgey",
-          "encounters": 140
+          "encounters": 146
         },
         {
           "pokemon": "Murkrow",
-          "encounters": 97
+          "encounters": 99
         },
         {
           "pokemon": "Heracross",
-          "encounters": 76
+          "encounters": 80
         },
         {
           "pokemon": "Pineco",
-          "encounters": 62
+          "encounters": 64
         }
       ]
     },
@@ -2078,23 +2153,23 @@
       "credit": "KaiDono, Hyper",
       "variation": "Headbutt",
       "encounterCategory": "headbutt",
-      "total": 386,
+      "total": 411,
       "data": [
         {
           "pokemon": "Pidgey",
-          "encounters": 153
+          "encounters": 165
         },
         {
           "pokemon": "Exeggcute",
-          "encounters": 115
+          "encounters": 123
         },
         {
           "pokemon": "Hoothoot",
-          "encounters": 90
+          "encounters": 94
         },
         {
           "pokemon": "Pineco",
-          "encounters": 28
+          "encounters": 29
         }
       ]
     },
@@ -2103,23 +2178,23 @@
       "credit": "KaiDono, Faia, Hyper",
       "variation": "Headbutt",
       "encounterCategory": "headbutt",
-      "total": 359,
+      "total": 380,
       "data": [
         {
           "pokemon": "Pidgey",
-          "encounters": 115
+          "encounters": 124
         },
         {
           "pokemon": "Exeggcute",
-          "encounters": 113
+          "encounters": 121
         },
         {
           "pokemon": "Hoothoot",
-          "encounters": 86
+          "encounters": 87
         },
         {
           "pokemon": "Pineco",
-          "encounters": 45
+          "encounters": 48
         }
       ]
     },
@@ -2154,38 +2229,38 @@
     },
     "Route 28 - Lures": {
       "route": "Route 28",
-      "credit": "KaiDono",
+      "credit": "KaiDono, SheepieNei",
       "variation": "Lures",
       "encounterCategory": "single",
-      "total": 708,
+      "total": 1026,
       "data": [
         {
           "pokemon": "Rapidash",
-          "encounters": 191
+          "encounters": 296
         },
         {
           "pokemon": "Tangela",
-          "encounters": 174
+          "encounters": 257
         },
         {
           "pokemon": "Ursaring",
-          "encounters": 105
+          "encounters": 136
         },
         {
           "pokemon": "Donphan",
-          "encounters": 90
+          "encounters": 128
         },
         {
           "pokemon": "Arbok",
-          "encounters": 54
+          "encounters": 72
         },
         {
           "pokemon": "Dodrio",
-          "encounters": 50
+          "encounters": 80
         },
         {
           "pokemon": "Tangrowth",
-          "encounters": 36
+          "encounters": 49
         },
         {
           "pokemon": "Poliwhirl",
@@ -2944,7 +3019,7 @@
     },
     "New Bark Town - Chum Fishing / Lures": {
       "route": "New Bark Town",
-      "credit": "Katastrophe",
+      "credit": "Katastrophe, Sweden",
       "variation": "Chum Fishing / Lures",
       "encounterCategory": "fish",
       "total": 461,
@@ -2968,6 +3043,113 @@
         {
           "pokemon": "Lanturn",
           "encounters": 15
+        }
+      ]
+    },
+    "Route 36 - Lures": {
+      "route": "Route 36",
+      "credit": "SheepieNei",
+      "variation": "Lures",
+      "encounterCategory": "single",
+      "total": 630,
+      "data": [
+        {
+          "pokemon": "Vulpix",
+          "encounters": 119
+        },
+        {
+          "pokemon": "Nidoran M",
+          "encounters": 93
+        },
+        {
+          "pokemon": "Nidoran F",
+          "encounters": 86
+        },
+        {
+          "pokemon": "Growlithe",
+          "encounters": 78
+        },
+        {
+          "pokemon": "Bellsprout",
+          "encounters": 63
+        },
+        {
+          "pokemon": "Pidgey",
+          "encounters": 48
+        },
+        {
+          "pokemon": "Ledyba",
+          "encounters": 31
+        },
+        {
+          "pokemon": "Hoothoot",
+          "encounters": 29
+        },
+        {
+          "pokemon": "Stantler",
+          "encounters": 24
+        },
+        {
+          "pokemon": "Spinarak",
+          "encounters": 22
+        },
+        {
+          "pokemon": "Umbreon",
+          "encounters": 19
+        },
+        {
+          "pokemon": "Gastly",
+          "encounters": 18
+        }
+      ]
+    },
+    "Route 33 - Lures": {
+      "route": "Route 33",
+      "credit": "SheepieNei",
+      "variation": "Lures",
+      "encounterCategory": "single",
+      "total": 1036,
+      "data": [
+        {
+          "pokemon": "Hoppip",
+          "encounters": 263
+        },
+        {
+          "pokemon": "Rattata",
+          "encounters": 258
+        },
+        {
+          "pokemon": "Ekans",
+          "encounters": 174
+        },
+        {
+          "pokemon": "Spearow",
+          "encounters": 128
+        },
+        {
+          "pokemon": "Zubat",
+          "encounters": 94
+        },
+        {
+          "pokemon": "Geodude",
+          "encounters": 88
+        },
+        {
+          "pokemon": "Cyndaquil",
+          "encounters": 31
+        }
+      ]
+    },
+    "Route 15 - Horde": {
+      "route": "Route 15",
+      "credit": "Mysto",
+      "variation": "Horde",
+      "encounterCategory": "horde",
+      "total": 30000,
+      "data": [
+        {
+          "pokemon": "Nidorino",
+          "encounters": 30000
         }
       ]
     }
@@ -3516,46 +3698,46 @@
     },
     "Safari Zone - Area 1": {
       "route": "Safari Zone",
-      "credit": "Garrett, England",
+      "credit": "Garrett, England, ElTryhard",
       "variation": "Area 1",
       "encounterCategory": "single",
-      "total": 2028,
+      "total": 8987,
       "data": [
         {
           "pokemon": "Girafarig",
-          "encounters": 303
+          "encounters": 1343
         },
         {
           "pokemon": "Pikachu",
-          "encounters": 305
+          "encounters": 1289
         },
         {
           "pokemon": "Doduo",
-          "encounters": 290
+          "encounters": 1197
         },
         {
           "pokemon": "Psyduck",
-          "encounters": 235
+          "encounters": 999
         },
         {
           "pokemon": "Wobbuffet",
-          "encounters": 200
+          "encounters": 892
         },
         {
           "pokemon": "Oddish",
-          "encounters": 196
+          "encounters": 940
         },
         {
           "pokemon": "Castform",
-          "encounters": 185
+          "encounters": 916
         },
         {
           "pokemon": "Natu",
-          "encounters": 160
+          "encounters": 781
         },
         {
           "pokemon": "Gloom",
-          "encounters": 154
+          "encounters": 630
         }
       ]
     },
@@ -3710,6 +3892,72 @@
         {
           "pokemon": "Absol",
           "encounters": 1
+        }
+      ]
+    },
+    "Route 117 - Night / Horde": {
+      "route": "Route 117",
+      "credit": "Mysto",
+      "variation": "Night / Horde",
+      "encounterCategory": "horde",
+      "total": 10898,
+      "data": [
+        {
+          "pokemon": "Oddish",
+          "encounters": 5519
+        },
+        {
+          "pokemon": "Illumise",
+          "encounters": 2607
+        },
+        {
+          "pokemon": "Volbeat",
+          "encounters": 2772
+        }
+      ]
+    },
+    "Route 114 - Lures": {
+      "route": "Route 114",
+      "credit": "FlappinShad",
+      "variation": "Lures",
+      "encounterCategory": "single",
+      "total": 1019,
+      "data": [
+        {
+          "pokemon": "Swablu",
+          "encounters": 218
+        },
+        {
+          "pokemon": "Nuzleaf",
+          "encounters": 52
+        },
+        {
+          "pokemon": "Lombre",
+          "encounters": 49
+        },
+        {
+          "pokemon": "Surskit",
+          "encounters": 47
+        },
+        {
+          "pokemon": "Seviper",
+          "encounters": 140
+        },
+        {
+          "pokemon": "Combusken",
+          "encounters": 30
+        },
+        {
+          "pokemon": "Seedot",
+          "encounters": 163
+        },
+        {
+          "pokemon": "Lotad",
+          "encounters": 164
+        },
+        {
+          "pokemon": "Zangoose",
+          "encounters": 156
         }
       ]
     }
@@ -5046,51 +5294,51 @@
       "credit": "FlareBlitzz",
       "variation": "Lures / Night",
       "encounterCategory": "single",
-      "total": 1238,
+      "total": 1620,
       "data": [
         {
           "pokemon": "Ponyta",
-          "encounters": 153
+          "encounters": 196
         },
         {
           "pokemon": "Geodude",
-          "encounters": 225
+          "encounters": 288
         },
         {
           "pokemon": "Staravia",
-          "encounters": 112
+          "encounters": 146
         },
         {
           "pokemon": "Kricketune",
-          "encounters": 321
+          "encounters": 408
         },
         {
           "pokemon": "Roselia",
-          "encounters": 56
+          "encounters": 80
         },
         {
           "pokemon": "Hoothoot",
-          "encounters": 110
+          "encounters": 153
         },
         {
           "pokemon": "Noctowl",
-          "encounters": 56
+          "encounters": 74
         },
         {
           "pokemon": "Scyther",
-          "encounters": 61
+          "encounters": 79
         },
         {
           "pokemon": "Mr Mime",
-          "encounters": 51
+          "encounters": 68
         },
         {
           "pokemon": "Sudowoodo",
-          "encounters": 52
+          "encounters": 73
         },
         {
           "pokemon": "Breloom",
-          "encounters": 41
+          "encounters": 55
         }
       ]
     },
@@ -5136,6 +5384,121 @@
         {
           "pokemon": "Breloom",
           "encounters": 207
+        }
+      ]
+    },
+    "Route 203 - Premium Max Lures": {
+      "route": "Route 203",
+      "credit": "Dellwina",
+      "variation": "Premium Max Lures",
+      "encounterCategory": "single",
+      "total": 225,
+      "data": [
+        {
+          "pokemon": "Bidoof",
+          "encounters": 30
+        },
+        {
+          "pokemon": "Starly",
+          "encounters": 60
+        },
+        {
+          "pokemon": "Abra",
+          "encounters": 32
+        },
+        {
+          "pokemon": "Eevee",
+          "encounters": 22
+        },
+        {
+          "pokemon": "Shinx",
+          "encounters": 40
+        },
+        {
+          "pokemon": "Kricketot",
+          "encounters": 22
+        },
+        {
+          "pokemon": "Zubat",
+          "encounters": 19
+        }
+      ]
+    },
+    "Route 203 - Lures": {
+      "route": "Route 203",
+      "credit": "Dellwina",
+      "variation": "Lures",
+      "encounterCategory": "single",
+      "total": 200,
+      "data": [
+        {
+          "pokemon": "Starly",
+          "encounters": 69
+        },
+        {
+          "pokemon": "Abra",
+          "encounters": 24
+        },
+        {
+          "pokemon": "Bidoof",
+          "encounters": 51
+        },
+        {
+          "pokemon": "Shinx",
+          "encounters": 48
+        },
+        {
+          "pokemon": "Eevee",
+          "encounters": 8
+        }
+      ]
+    },
+    "Route 217 - Lures": {
+      "route": "Route 217",
+      "credit": "SheepieNei",
+      "variation": "Lures",
+      "encounterCategory": "single",
+      "total": 138,
+      "data": [
+        {
+          "pokemon": "Meditite",
+          "encounters": 24
+        },
+        {
+          "pokemon": "Swinub",
+          "encounters": 23
+        },
+        {
+          "pokemon": "Snover",
+          "encounters": 22
+        },
+        {
+          "pokemon": "Machoke",
+          "encounters": 15
+        },
+        {
+          "pokemon": "Zubat",
+          "encounters": 15
+        },
+        {
+          "pokemon": "Noctowl",
+          "encounters": 12
+        },
+        {
+          "pokemon": "Sneasel",
+          "encounters": 11
+        },
+        {
+          "pokemon": "Glaceon",
+          "encounters": 6
+        },
+        {
+          "pokemon": "Medicham",
+          "encounters": 5
+        },
+        {
+          "pokemon": "Snorunt",
+          "encounters": 5
         }
       ]
     }
@@ -5766,6 +6129,86 @@
         {
           "pokemon": "Remoraid",
           "encounters": 344
+        }
+      ]
+    },
+    "Twist Mountain - First Room / Horde": {
+      "route": "Twist Mountain",
+      "credit": "Mysto",
+      "variation": "First Room / Horde",
+      "encounterCategory": "horde",
+      "total": 55000,
+      "data": [
+        {
+          "pokemon": "Gurdurr",
+          "encounters": 55000
+        }
+      ]
+    },
+    "Lostlorn Forest - Horde / Night / Normal Grass": {
+      "route": "Lostlorn Forest",
+      "credit": "FlareBlitzz",
+      "variation": "Horde / Night / Normal Grass",
+      "encounterCategory": "horde",
+      "total": 2787,
+      "data": [
+        {
+          "pokemon": "Venipede",
+          "encounters": 2635
+        },
+        {
+          "pokemon": "Zorua",
+          "encounters": 152
+        }
+      ]
+    },
+    "Lostlorn Forest - Horde / Morning / Normal": {
+      "route": "Lostlorn Forest",
+      "credit": "FlareBlitzz",
+      "variation": "Horde / Morning / Normal",
+      "encounterCategory": "horde",
+      "total": 2145,
+      "data": [
+        {
+          "pokemon": "Cottonee",
+          "encounters": 639
+        },
+        {
+          "pokemon": "Venipede",
+          "encounters": 852
+        },
+        {
+          "pokemon": "Petilil",
+          "encounters": 544
+        },
+        {
+          "pokemon": "Zorua",
+          "encounters": 110
+        }
+      ]
+    },
+    "Lostlorn Forest - Horde / Day / Normal": {
+      "route": "Lostlorn Forest",
+      "credit": "FlareBlitzz",
+      "variation": "Horde / Day / Normal",
+      "encounterCategory": "horde",
+      "total": 3609,
+      "data": [
+        {
+          "pokemon": "Cottonee",
+          "encounters": 976
+        },
+        {
+          "pokemon": "Venipede",
+          "encounters": 1462
+        },
+        {
+          "pokemon": "Petilil",
+          "encounters": 986
+        },
+        {
+          "pokemon": "Zorua",
+          "encounters": 185
         }
       ]
     }
