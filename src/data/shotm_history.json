@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T00:30:17.745Z",
+  "generatedAt": "2026-07-02T00:59:08.947Z",
   "source": "https://adminpage.hypersmmo.workers.dev/admin/database",
   "months": {
     "0025-08": {
@@ -51500,7 +51500,7 @@
           }
         },
         "Ultrazipper": {
-          "points": 33,
+          "points": 27,
           "shinies": {
             "40": {
               "Pokemon": "Houndour",
@@ -51559,34 +51559,6 @@
               "Reaction Link": ""
             },
             "42": {
-              "Pokemon": "Petilil",
-              "Secret Shiny": "No",
-              "Egg": "No",
-              "Safari": "No",
-              "Fossil": "No",
-              "Fishing": "No",
-              "Swarm": "No",
-              "Headbutt": "No",
-              "Alpha": "No",
-              "Event": "No",
-              "MysteriousBall": "No",
-              "Honey Tree": "No",
-              "Sold": "No",
-              "Favourite": "No",
-              "Reaction": "No",
-              "Legendary": "No",
-              "Reaction Link": "",
-              "ivs": "",
-              "nature": "",
-              "location": "",
-              "encounter_method": "",
-              "encounter_count": "",
-              "nickname": "",
-              "Month": "June",
-              "Year": "2026",
-              "date_caught": null
-            },
-            "43": {
               "Pokemon": "Petilil",
               "Secret Shiny": "No",
               "Egg": "No",
@@ -52993,16 +52965,6 @@
           ]
         },
         {
-          "player": "Ultrazipper",
-          "points": 33,
-          "shinyIds": [
-            "40",
-            "41",
-            "42",
-            "43"
-          ]
-        },
-        {
           "player": "RedWoodGamer",
           "points": 30,
           "shinyIds": [
@@ -53016,6 +52978,15 @@
             "13",
             "14",
             "15"
+          ]
+        },
+        {
+          "player": "Ultrazipper",
+          "points": 27,
+          "shinyIds": [
+            "40",
+            "41",
+            "42"
           ]
         },
         {

@@ -298,7 +298,7 @@ export default function BountiesPage() {
                           >
                             <Link to={`/pokemon/${primaryPokemon || ''}/`} className={styles['bounty-card-inner']}>
                               <PokemonSprite name={b.pokemon} />
-                              <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
+                              <div className={styles['bounty-title']}>{Array.isArray(b.pokemon) && b.pokemon.length > 1 ? b.title : formatPokemonName(b.pokemon)}</div>
                               <div className={styles['bounty-host']}>Host: {b.host}</div>
                               <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
                               <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
@@ -323,7 +323,7 @@ export default function BountiesPage() {
                           >
                             <Link to={`/pokemon/${primaryPokemon || ''}/`} className={styles['bounty-card-inner']}>
                               <PokemonSprite name={b.pokemon} />
-                              <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
+                              <div className={styles['bounty-title']}>{Array.isArray(b.pokemon) && b.pokemon.length > 1 ? b.title : formatPokemonName(b.pokemon)}</div>
                               <div className={styles['bounty-host']}>Host: {b.host}</div>
                               <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
                               <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
@@ -363,7 +363,7 @@ export default function BountiesPage() {
                         >
                           <Link to={`/pokemon/${primaryPokemon || ''}/`} className={styles['bounty-card-inner']}>
                             <PokemonSprite name={b.pokemon} />
-                            <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
+                            <div className={styles['bounty-title']}>{Array.isArray(b.pokemon) && b.pokemon.length > 1 ? b.title : formatPokemonName(b.pokemon)}</div>
                             <div className={styles['bounty-host']}>Host: {b.host}</div>
                             <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
                             <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
@@ -390,7 +390,7 @@ export default function BountiesPage() {
                         >
                           <Link to={`/pokemon/${primaryPokemon || ''}/`} className={styles['bounty-card-inner']}>
                             <PokemonSprite name={b.pokemon} />
-                            <div className={styles['bounty-title']}>{formatPokemonName(b.pokemon)}</div>
+                            <div className={styles['bounty-title']}>{Array.isArray(b.pokemon) && b.pokemon.length > 1 ? b.title : formatPokemonName(b.pokemon)}</div>
                             <div className={styles['bounty-host']}>Host: {b.host}</div>
                             <div className={styles['bounty-reward']}>Reward: {b.reward}</div>
                             <div className={styles['bounty-description']} dangerouslySetInnerHTML={{ __html: b.description ? b.description.replace(/\n/g, '<br>') : '' }} />
