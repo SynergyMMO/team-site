@@ -2093,7 +2093,6 @@ export default function CatchingCalculator() {
                   />
                   <div>
                     <h3>{formatPokemonDisplayName(result.pokemonName)}</h3>
-                    <p>Encounter: {getDisplayPercentLabel(selectedRouteEntry, result.pokemonName)}</p>
                     <p>Estimated level: {result.level}</p>
                     <p>Catch rate: {result.catchRate}</p>
                   </div>
