@@ -37,6 +37,7 @@ const RegionMaps = lazy(() => import('./pages/RegionMaps/RegionMaps'))
 const RouteFinder = lazy(() => import('./pages/RouteFinder/RouteFinder'))
 const PlayerCardGenerator = lazy(() => import('./pages/PlayerCardGenerator/PlayerCardGenerator'))
 const EggMoveCalculator = lazy(() => import('./pages/EggMoveCalculator/EggMoveCalculator'))
+const CatchingCalculator = lazy(() => import('./pages/CatchingCalculator/CatchingCalculator'))
 
 const BountiesPage = lazy(() => import('./pages/Bounties/BountiesPage'));
 const SpriteRecolour = lazy(() => import('./pages/SpriteRecolour/SpriteRecolour'));
@@ -122,6 +123,7 @@ export default function App() {
             <Route path="/counter-generator" element={<CounterGenerator />} />
             <Route path="/player-card-generator" element={<PlayerCardGenerator />} />
             <Route path="/egg-move-calculator" element={<EggMoveCalculator />} />
+            <Route path="/catching-calculator" element={<CatchingCalculator />} />
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />
             <Route path="/shiny-odds" element={<ShinyOdds />} />
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />
