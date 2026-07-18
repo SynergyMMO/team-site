@@ -52,8 +52,11 @@ const MONTH_INDEX = {
 const BALLS = Array.isArray(catchCalculatorConfig?.balls)
   ? catchCalculatorConfig.balls.filter((ball) => ball?.enabled !== false)
   : []
+const MIN_BEST_OVERALL_CHANCE = Number(catchCalculatorConfig?.thresholds?.minBestOverallChance) || 85
+const FALLBACK_BEST_OVERALL_CHANCE = Number(catchCalculatorConfig?.thresholds?.fallbackBestOverallChance) || 70
 const MIN_CHEAPEST_CHANCE = Number(catchCalculatorConfig?.thresholds?.minCheapestChance) || 75
 const SIMILAR_CATCH_GAP_PERCENT = Number(catchCalculatorConfig?.thresholds?.similarCatchGapPercent) || 3
+const LURE_ENCOUNTER_RATE_PERCENT = 4
 const DUSK_BALL_INDOOR_KEYWORDS = Array.isArray(catchCalculatorConfig?.duskBall?.indoorKeywords)
   ? catchCalculatorConfig.duskBall.indoorKeywords
   : []
@@ -477,35 +480,6 @@ const METHOD_PROFILES = [
   { id: 'sleep100', hpPercent: 100, statusMod: 2, turns: 1, label: '100% HP + Sleep' },
   { id: 'sleep1', hpPercent: 1, statusMod: 2, turns: 2, label: '1% HP + Sleep' },
 ]
-const POKEDEX_BALL_COST_FACTORS = {
-  'poke-ball': 1,
-  'great-ball': 1.5,
-  'ultra-ball': 2,
-  'quick-ball': 2.25,
-  'dusk-ball': 2.5,
-}
-const POKEDEX_METHODS = [
-  { ballId: 'poke-ball', ballRate: 1, hpPercent: 100, turns: 0, statusMod: 1, methodLabel: '100% HP' },
-  { ballId: 'poke-ball', ballRate: 1, hpPercent: 1, turns: 1, statusMod: 1, methodLabel: '1% HP' },
-  { ballId: 'poke-ball', ballRate: 1, hpPercent: 100, turns: 1, statusMod: 2, methodLabel: '100% HP + Sleep' },
-  { ballId: 'poke-ball', ballRate: 1, hpPercent: 1, turns: 2, statusMod: 2, methodLabel: '1% HP + Sleep' },
-  { ballId: 'great-ball', ballRate: 1.5, hpPercent: 100, turns: 0, statusMod: 1, methodLabel: '100% HP' },
-  { ballId: 'great-ball', ballRate: 1.5, hpPercent: 1, turns: 1, statusMod: 1, methodLabel: '1% HP' },
-  { ballId: 'great-ball', ballRate: 1.5, hpPercent: 100, turns: 1, statusMod: 2, methodLabel: '100% HP + Sleep' },
-  { ballId: 'great-ball', ballRate: 1.5, hpPercent: 1, turns: 2, statusMod: 2, methodLabel: '1% HP + Sleep' },
-  { ballId: 'ultra-ball', ballRate: 2, hpPercent: 100, turns: 0, statusMod: 1, methodLabel: '100% HP' },
-  { ballId: 'ultra-ball', ballRate: 2, hpPercent: 1, turns: 1, statusMod: 1, methodLabel: '1% HP' },
-  { ballId: 'ultra-ball', ballRate: 2, hpPercent: 100, turns: 1, statusMod: 2, methodLabel: '100% HP + Sleep' },
-  { ballId: 'ultra-ball', ballRate: 2, hpPercent: 1, turns: 2, statusMod: 2, methodLabel: '1% HP + Sleep' },
-  { ballId: 'quick-ball', ballRate: 5, hpPercent: 100, turns: 0, statusMod: 1, methodLabel: '100% HP (Turn 1)' },
-  { ballId: 'quick-ball', ballRate: 1, hpPercent: 1, turns: 1, statusMod: 1, methodLabel: '1% HP' },
-  { ballId: 'quick-ball', ballRate: 1, hpPercent: 100, turns: 1, statusMod: 2, methodLabel: '100% HP + Sleep' },
-  { ballId: 'quick-ball', ballRate: 1, hpPercent: 1, turns: 2, statusMod: 2, methodLabel: '1% HP + Sleep' },
-  { ballId: 'dusk-ball', ballRate: 2.5, hpPercent: 100, turns: 0, statusMod: 1, methodLabel: '100% HP' },
-  { ballId: 'dusk-ball', ballRate: 2.5, hpPercent: 1, turns: 1, statusMod: 1, methodLabel: '1% HP' },
-  { ballId: 'dusk-ball', ballRate: 2.5, hpPercent: 100, turns: 1, statusMod: 2, methodLabel: '100% HP + Sleep' },
-  { ballId: 'dusk-ball', ballRate: 2.5, hpPercent: 1, turns: 2, statusMod: 2, methodLabel: '1% HP + Sleep' },
-]
 
 function toStarLabel(scoreOutOf100) {
   const stars = Math.max(1, Math.min(5, Math.round(scoreOutOf100 / 20)))
@@ -826,50 +800,28 @@ function getGenderLabel(genderRatios) {
   return 'mixed'
 }
 
-function getBestOverallDexStyle(candidates, catchRate) {
-  if (!Array.isArray(candidates) || !candidates.length || !Number.isFinite(catchRate)) return null
+function getBestOverallCandidate(candidates) {
+  if (!Array.isArray(candidates) || !candidates.length) return null
 
-  const availableByBallId = new Map(candidates.map((candidate) => [candidate.ballId, candidate]))
+  const primaryPool = candidates.filter((candidate) => candidate.chance >= MIN_BEST_OVERALL_CHANCE)
+  const fallbackPool = candidates.filter((candidate) => candidate.chance >= FALLBACK_BEST_OVERALL_CHANCE)
+  const pool = primaryPool.length
+    ? primaryPool
+    : (fallbackPool.length ? fallbackPool : candidates)
 
-  let best = null
-  let bestScore = -Infinity
+  return [...pool].sort((a, b) => {
+    if (b.efficiency !== a.efficiency) return b.efficiency - a.efficiency
+    if (b.chance !== a.chance) return b.chance - a.chance
+    return a.expectedCost - b.expectedCost
+  })[0] || null
+}
 
-  POKEDEX_METHODS.forEach((method) => {
-    const baseCandidate = availableByBallId.get(method.ballId)
-    if (!baseCandidate || !baseCandidate.available) return
-
-    const costFactor = POKEDEX_BALL_COST_FACTORS[method.ballId]
-    if (!Number.isFinite(costFactor)) return
-
-    const details = calculateCatchChanceDetails(catchRate, method.ballRate, method.hpPercent, method.statusMod)
-    const chance = details.chance
-    if (!Number.isFinite(chance) || chance <= 0) return
-
-    const score = chance / (method.turns + costFactor)
-    if (score <= bestScore) return
-
-    const expectedThrows = 100 / chance
-    const ballPrice = Number.isFinite(baseCandidate.price) ? baseCandidate.price : 500
-    bestScore = score
-    best = {
-      ...baseCandidate,
-      multiplier: method.ballRate,
-      chance,
-      turns: method.turns,
-      expectedThrows,
-      expectedCost: expectedThrows * ballPrice,
-      expectedTurnsToSuccess: expectedThrows * method.turns,
-      catchValue: details.value,
-      rawCatchValue: details.rawValue,
-      hpMultiplier: details.hpMultiplier,
-      hpPercent: method.hpPercent,
-      statusMod: method.statusMod,
-      methodLabel: method.methodLabel,
-      dexScore: score,
-    }
-  })
-
-  return best
+function isLureEncounterContext(encounterContext) {
+  const rarityTypes = Array.isArray(encounterContext?.rarityTypes) ? encounterContext.rarityTypes : []
+  const encounterTypes = Array.isArray(encounterContext?.encounterTypes) ? encounterContext.encounterTypes : []
+  const hasLureRarity = rarityTypes.some((entry) => normalizeKey(entry) === 'lure')
+  const hasLureType = encounterTypes.some((entry) => normalizeKey(entry).includes('lure'))
+  return hasLureRarity || hasLureType
 }
 
 function getBallCandidate(ball, context) {
@@ -954,11 +906,14 @@ function getBallCandidate(ball, context) {
       availabilityNote = 'Assumes opening throw with Turn 1 bonus active.'
       break
     case 'dusk-ball':
-      if (!isNight) {
+      if (!isNight && !isBuilding) {
         available = false
-        availabilityNote = 'Requires in-game night or Force Night Time.'
+        availabilityNote = 'Requires in-game night, Force Night Time, or an indoor/cave encounter.'
       } else {
         multiplier = 2.5
+        availabilityNote = isNight
+          ? 'Night-time bonus active.'
+          : 'Indoor/cave bonus active.'
       }
       break
     case 'luxury-ball':
@@ -1132,6 +1087,7 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
   if (!Number.isFinite(catchRate)) return null
 
   const encounterContext = getEncounterContext(routeEntry, pokemonName, routeEncounterIndex)
+  const isLureEncounter = isLureEncounterContext(encounterContext)
   const level = Number.isFinite(options.customLevel) ? options.customLevel : encounterContext.level
   const types = Array.isArray(pokemon.types) ? pokemon.types : []
   const speed = getSpeedStat(pokemon)
@@ -1190,6 +1146,8 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
       genderRatios,
       eggGroups: pokemon.egg_groups || [],
       catchRate,
+      isLureEncounter,
+      scoreEncounterPercent: isLureEncounter ? LURE_ENCOUNTER_RATE_PERCENT : 0,
     }
   }
 
@@ -1201,7 +1159,7 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
   const fastest = [...available].sort((a, b) => a.expectedTurnsToSuccess - b.expectedTurnsToSuccess || b.chance - a.chance)[0]
   const highestCatch = [...available].sort((a, b) => b.chance - a.chance || a.expectedCost - b.expectedCost)[0]
 
-  const bestOverall = getBestOverallDexStyle(available, catchRate) || highestCatch
+  const bestOverall = getBestOverallCandidate(available) || highestCatch
 
   let selected = bestOverall
   if (options.priority === PRIORITY_CHEAPEST && cheapest) selected = cheapest
@@ -1235,21 +1193,51 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
     genderRatios,
     eggGroups: pokemon.egg_groups || [],
     catchRate,
+    isLureEncounter,
+    scoreEncounterPercent: isLureEncounter ? LURE_ENCOUNTER_RATE_PERCENT : 0,
   }
 }
 
 function routeScore(parts) {
-  const chanceScore = Math.min(100, parts.avgChance)
-  const turnsScore = Math.max(0, 100 - (parts.avgTurns - 1) * 22)
-  const costScore = Math.max(0, 100 - (parts.avgCost / 25))
-  const encounterScore = Math.min(100, parts.avgEncounterPercent * 2.5)
+  return getRouteScoreBreakdown(parts).baseScore
+}
 
-  return (
-    (costScore * 0.34)
-    + (chanceScore * 0.28)
-    + (turnsScore * 0.2)
-    + (encounterScore * 0.18)
-  )
+function getRouteScoreBreakdown(parts) {
+  const avgChance = Number(parts?.avgChance) || 0
+  const avgTurns = Number(parts?.avgTurns) || 0
+  const avgCost = Number(parts?.avgCost) || 0
+  const avgEncounterPercent = Number(parts?.avgEncounterPercent) || 0
+
+  const chanceScore = Math.min(100, avgChance)
+  const turnsScore = Math.max(0, 100 - (avgTurns - 1) * 22)
+  const costScore = Math.max(0, 100 - (avgCost / 25))
+  const encounterScore = Math.min(100, avgEncounterPercent * 2.5)
+  const encounterIncluded = avgEncounterPercent > 0
+
+  const costContribution = costScore * 0.34
+  const chanceContribution = chanceScore * 0.28
+  const turnsContribution = turnsScore * 0.2
+  const encounterContribution = encounterIncluded ? encounterScore * 0.18 : 0
+  const weightedSum = costContribution + chanceContribution + turnsContribution + encounterContribution
+  const activeWeight = encounterIncluded ? 1 : 0.82
+  const baseScore = activeWeight > 0 ? Math.min(100, weightedSum / activeWeight) : 0
+
+  return {
+    avgChance,
+    avgTurns,
+    avgCost,
+    avgEncounterPercent,
+    encounterIncluded,
+    costScore,
+    chanceScore,
+    turnsScore,
+    encounterScore,
+    costContribution,
+    chanceContribution,
+    turnsContribution,
+    encounterContribution,
+    baseScore,
+  }
 }
 
 function getGenderWeight(genderRatios, genderPriority) {
@@ -1313,7 +1301,7 @@ function buildRouteRanking({
       acc.avgCost += rec.avgCost * w
       acc.avgTurns += rec.avgTurns * w
       acc.avgChance += rec.avgChance * w
-      acc.avgEncounterPercent += rec.encounterPercent * w
+      acc.avgEncounterPercent += (Number(rec.scoreEncounterPercent) || 0) * w
       acc.genderWeight += genderWeight * w
       return acc
     }, {
@@ -1324,9 +1312,12 @@ function buildRouteRanking({
       genderWeight: 1,
     })
 
-    let score = routeScore(weighted)
+    const scoreBreakdown = getRouteScoreBreakdown(weighted)
+    let score = scoreBreakdown.baseScore
+    let genderMultiplier = 1
     if (mode === MODE_EGG) {
-      score *= weighted.genderWeight
+      genderMultiplier = weighted.genderWeight
+      score *= genderMultiplier
       score = Math.min(100, score)
     }
 
@@ -1335,6 +1326,11 @@ function buildRouteRanking({
       recommendations,
       score,
       summary: weighted,
+      scoreBreakdown: {
+        ...scoreBreakdown,
+        genderMultiplier,
+        finalScore: score,
+      },
     }
   })
 
@@ -1397,7 +1393,7 @@ function buildSpecificPokemonSelection({
           avgCost: recommendation.avgCost,
           avgTurns: recommendation.avgTurns,
           avgChance: recommendation.avgChance,
-          avgEncounterPercent: 100,
+          avgEncounterPercent: recommendation.scoreEncounterPercent || 0,
         }),
       }
     })
@@ -2218,11 +2214,35 @@ export default function CatchingCalculator() {
             <div className={styles.routeRankList}>
               {visibleRankedRoutes.map((entry, index) => {
                 const topRec = entry.recommendations[0]
+                const starLabel = toStarLabel(entry.score)
+                const breakdown = entry.scoreBreakdown || getRouteScoreBreakdown(entry.summary)
                 return (
                   <article key={entry.routeEntry.id} className={styles.routeRankCard}>
                     <div className={styles.routeRankHeader}>
                       <h3>{index + 1}. {entry.routeEntry.region} - {entry.routeEntry.displayName}</h3>
-                      <span>{toStarLabel(entry.score)}</span>
+                      <div className={styles.routeScoreTooltip}>
+                        <span className={styles.routeRankStars} tabIndex={0} aria-label={`Route rating ${starLabel}. Hover for score details.`}>
+                          {starLabel}
+                        </span>
+                        <div className={styles.routeScoreTooltipPanel} role="tooltip">
+                          <p><strong>Route rating:</strong> {entry.score.toFixed(1)}/100 ({starLabel})</p>
+                          <p>
+                            <strong>Formula:</strong>{' '}
+                            {breakdown.encounterIncluded
+                              ? '34% cost + 28% catch + 20% turns + 18% encounter (Lure = fixed 4%).'
+                              : 'Cost, catch, and turns only (encounter excluded for non-Lure).'}
+                          </p>
+                          <p>Cost: {breakdown.costScore.toFixed(1)} × 34% = {breakdown.costContribution.toFixed(1)}</p>
+                          <p>Catch: {breakdown.chanceScore.toFixed(1)} × 28% = {breakdown.chanceContribution.toFixed(1)}</p>
+                          <p>Turns: {breakdown.turnsScore.toFixed(1)} × 20% = {breakdown.turnsContribution.toFixed(1)}</p>
+                          {breakdown.encounterIncluded && (
+                            <p>Encounter (Lure fixed 4%): {breakdown.encounterScore.toFixed(1)} × 18% = {breakdown.encounterContribution.toFixed(1)}</p>
+                          )}
+                          {breakdown.genderMultiplier > 1 && (
+                            <p>Egg-group gender bonus: ×{breakdown.genderMultiplier.toFixed(2)} applied to base score.</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <div className={styles.routeSummaryGrid}>
                       <p>Efficiency: <strong>{entry.score.toFixed(1)}/100</strong></p>
