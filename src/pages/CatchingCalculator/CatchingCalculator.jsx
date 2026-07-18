@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useInGameClock } from '../../hooks/useInGameClock'
+import { useOfficialEvents } from '../../hooks/useOfficialEvents'
 import { getLocalPokemonGif, normalizePokemonName, onGifError } from '../../utils/pokemon'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import generationData from '../../data/generation.json'
@@ -14,6 +15,7 @@ const MODE_ROUTE = 'route'
 const MODE_POKEMON = 'pokemon'
 const MODE_EGG = 'egg'
 const MODE_SPECIFIC = 'specific'
+const MODE_CATCH_EVENTS = 'catchEvents'
 
 const METHOD_NORMAL = 'normal'
 const METHOD_FISHING = 'fishing'
@@ -27,6 +29,25 @@ const PRIORITY_HIGHEST = 'highestCatch'
 const GENDER_MALE = 'male'
 const GENDER_FEMALE = 'female'
 const GENDER_IGNORE = 'ignore'
+const CATCH_EVENT_REGEX = /\bcatch(?:ing)?\b/i
+const CATCH_EVENT_TITLE_BLACKLIST = [
+  'Seasonal PVE - Hidden Treasures - Main Thread',
+]
+
+const MONTH_INDEX = {
+  january: 0,
+  february: 1,
+  march: 2,
+  april: 3,
+  may: 4,
+  june: 5,
+  july: 6,
+  august: 7,
+  september: 8,
+  october: 9,
+  november: 10,
+  december: 11,
+}
 
 const BALLS = Array.isArray(catchCalculatorConfig?.balls)
   ? catchCalculatorConfig.balls.filter((ball) => ball?.enabled !== false)
@@ -81,6 +102,226 @@ function titleCase(value) {
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
+}
+
+function toValidDate(year, month, day) {
+  const date = new Date(year, month, day)
+  return (date.getFullYear() === year && date.getMonth() === month && date.getDate() === day) ? date : null
+}
+
+function extractEventDate(title, now) {
+  const dayMonthPattern = /\((?:[A-Za-z]+(?:,\s*|\s+))?(\d{1,2})(?:st|nd|rd|th)?(?:,\s*|\s+)([A-Za-z]+)\)/i
+  const monthDayPattern = /\((?:[A-Za-z]+(?:,\s*|\s+))?([A-Za-z]+)(?:,\s*|\s+)(\d{1,2})(?:st|nd|rd|th)?\)/i
+
+  let day = null
+  let monthName = null
+  const dayMonthMatch = String(title || '').match(dayMonthPattern)
+  if (dayMonthMatch) {
+    day = Number(dayMonthMatch[1])
+    monthName = dayMonthMatch[2]
+  } else {
+    const monthDayMatch = String(title || '').match(monthDayPattern)
+    if (monthDayMatch) {
+      monthName = monthDayMatch[1]
+      day = Number(monthDayMatch[2])
+    }
+  }
+
+  if (!day || !monthName) return null
+  const month = MONTH_INDEX[String(monthName).toLowerCase()]
+  if (month === undefined) return null
+
+  let year = now.getFullYear()
+  if (now.getMonth() === 11 && month < now.getMonth()) year += 1
+  return toValidDate(year, month, day)
+}
+
+function extractUtcTime(description) {
+  let utcTimeMatch = String(description || '').match(/(\d{1,2}):(\d{2})\s*UTC\b/i)
+  if (utcTimeMatch) {
+    return { hours: Number(utcTimeMatch[1]), minutes: Number(utcTimeMatch[2]) }
+  }
+
+  utcTimeMatch = String(description || '').match(/(\d{1,2})\s*(AM|PM)\s*UTC\b/i)
+  if (utcTimeMatch) {
+    let hours = Number(utcTimeMatch[1])
+    const isPM = utcTimeMatch[2].toUpperCase() === 'PM'
+    if (isPM && hours < 12) hours += 12
+    if (!isPM && hours === 12) hours = 0
+    return { hours, minutes: 0 }
+  }
+
+  return null
+}
+
+function formatEventLocalStart(eventDate, utcTime) {
+  if (!eventDate || !utcTime) return 'Start time unavailable'
+
+  const utcDate = new Date(Date.UTC(
+    eventDate.getFullYear(),
+    eventDate.getMonth(),
+    eventDate.getDate(),
+    utcTime.hours,
+    utcTime.minutes
+  ))
+
+  return new Intl.DateTimeFormat(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(utcDate)
+}
+
+function isCatchEventEnded(eventDate, utcTime, nowMs = Date.now()) {
+  if (!eventDate) return false
+
+  if (utcTime) {
+    const eventDateTime = new Date(Date.UTC(
+      eventDate.getFullYear(),
+      eventDate.getMonth(),
+      eventDate.getDate(),
+      utcTime.hours,
+      utcTime.minutes
+    ))
+
+    return (nowMs - eventDateTime.getTime()) >= (60 * 60 * 1000)
+  }
+
+  const dayEnd = new Date(eventDate)
+  dayEnd.setHours(23, 59, 59, 999)
+  return nowMs > dayEnd.getTime()
+}
+
+function extractCatchEventValidEntries(description) {
+  if (typeof document === 'undefined') return []
+
+  function parseBonusValue(value) {
+    const match = String(value || '').match(/[+-]?\d+(?:\.\d+)?/)
+    if (!match) return 0
+    const parsed = Number(match[0])
+    return Number.isFinite(parsed) ? parsed : 0
+  }
+
+  function canonicalFromText(rawValue) {
+    const text = String(rawValue || '').replace(/\s+/g, ' ').trim()
+    if (!text) return null
+
+    let canonical = getCanonicalPokemonName(text)
+    if (canonical) return canonical
+
+    const tokenized = text.split(/[^a-zA-Z0-9'.-]+/).filter(Boolean)
+    for (let i = 0; i < tokenized.length; i += 1) {
+      canonical = getCanonicalPokemonName(tokenized[i])
+      if (canonical) return canonical
+
+      if (i < tokenized.length - 1) {
+        canonical = getCanonicalPokemonName(`${tokenized[i]} ${tokenized[i + 1]}`)
+        if (canonical) return canonical
+      }
+    }
+
+    return null
+  }
+
+  function canonicalFromImage(row) {
+    const images = Array.from(row.querySelectorAll('img'))
+    const removableSuffixes = new Set(['f', 'm', 'male', 'female', 'east', 'west', 'shiny', 'normal'])
+
+    for (const image of images) {
+      const sources = [image.getAttribute('src') || '', image.getAttribute('alt') || '']
+
+      for (const source of sources) {
+        const lastSegment = String(source).split('/').pop() || ''
+        const baseName = lastSegment.split('?')[0].replace(/\.[a-z0-9]+$/i, '')
+        if (!baseName) continue
+
+        const parts = baseName.toLowerCase().split('-').filter(Boolean)
+        let candidate = getCanonicalPokemonName(parts.join(' '))
+        if (candidate) return candidate
+
+        while (parts.length > 1 && removableSuffixes.has(parts[parts.length - 1])) {
+          parts.pop()
+          candidate = getCanonicalPokemonName(parts.join(' '))
+          if (candidate) return candidate
+        }
+      }
+    }
+
+    return null
+  }
+
+  const tempDiv = document.createElement('div')
+  tempDiv.innerHTML = String(description || '')
+  const tables = Array.from(tempDiv.querySelectorAll('table'))
+  const seen = new Set()
+  const entries = []
+
+  tables.forEach((table) => {
+    const rows = Array.from(table.querySelectorAll('tr'))
+    if (!rows.length) return
+
+    const headerRow = rows.find((row) => row.querySelectorAll('th').length > 0)
+    const headers = headerRow
+      ? Array.from(headerRow.querySelectorAll('th')).map((header) => normalizeKey(header.textContent || ''))
+      : []
+    const pokemonColFromHeader = headers.findIndex((header) => header.includes('pokemon'))
+    const bonusColFromHeader = headers.findIndex((header) => header.includes('bonus'))
+
+    rows.forEach((row) => {
+      const cells = Array.from(row.querySelectorAll('td'))
+      if (!cells.length) return
+
+      let pokemonCol = pokemonColFromHeader
+      let pokemonName = null
+
+      if (pokemonCol > -1 && pokemonCol < cells.length) {
+        pokemonName = canonicalFromText(cells[pokemonCol]?.textContent)
+      }
+
+      if (!pokemonName) {
+        for (let index = 0; index < cells.length; index += 1) {
+          const candidate = canonicalFromText(cells[index]?.textContent)
+          if (candidate) {
+            pokemonName = candidate
+            pokemonCol = index
+            break
+          }
+        }
+      }
+
+      if (!pokemonName) {
+        pokemonName = canonicalFromImage(row)
+      }
+
+      if (!pokemonName) return
+
+      const key = normalizeKey(pokemonName)
+      if (!key || seen.has(key)) return
+
+      let bonusValue = 0
+      if (bonusColFromHeader > -1 && bonusColFromHeader < cells.length) {
+        bonusValue = parseBonusValue(cells[bonusColFromHeader]?.textContent)
+      } else if (pokemonCol > -1 && pokemonCol + 1 < cells.length) {
+        bonusValue = parseBonusValue(cells[pokemonCol + 1]?.textContent)
+      }
+
+      entries.push({ pokemonName, bonus: bonusValue })
+
+      seen.add(key)
+    })
+  })
+
+  return entries
+}
+
+function isBlacklistedCatchEventTitle(title) {
+  const normalizedTitle = normalizeKey(String(title || '').replace(/\([^)]*\)/g, ' '))
+  return CATCH_EVENT_TITLE_BLACKLIST.some((entry) => {
+    const normalizedEntry = normalizeKey(entry)
+    return normalizedTitle.includes(normalizedEntry)
+  })
 }
 
 function formatPokemonDisplayName(value) {
@@ -1189,6 +1430,7 @@ function buildComparisonRows(result, priority) {
 
 export default function CatchingCalculator() {
   const { period } = useInGameClock()
+  const { data: officialEventsData, isLoading: isOfficialEventsLoading } = useOfficialEvents()
 
   const [mode, setMode] = useState(MODE_ROUTE)
   const [selectedRoute, setSelectedRoute] = useState('')
@@ -1203,6 +1445,7 @@ export default function CatchingCalculator() {
   const [specificAlpha, setSpecificAlpha] = useState(false)
   const [activeBreakdownKey, setActiveBreakdownKey] = useState('')
   const [showMoreCount, setShowMoreCount] = useState(1)
+  const [enabledCatchEventLink, setEnabledCatchEventLink] = useState('')
 
   const [apricornEnabled, setApricornEnabled] = useState(() => new Set())
   const [ironmanMode, setIronmanMode] = useState(false)
@@ -1222,6 +1465,56 @@ export default function CatchingCalculator() {
   const routeEncounterIndex = useMemo(() => buildRouteEncounterIndex(), [])
 
   const allRoutes = useMemo(() => buildAllRouteUniverse(routeEncounterMethod), [routeEncounterMethod])
+
+  const officialCatchEvents = useMemo(() => {
+    const now = new Date()
+    const nowMs = Date.now()
+    const rows = Array.isArray(officialEventsData) ? officialEventsData : []
+
+    return rows
+      .map((item, index) => {
+        if (!CATCH_EVENT_REGEX.test(item?.description || '')) return null
+        if (isBlacklistedCatchEventTitle(item?.title || '')) return null
+        const eventDate = extractEventDate(item?.title, now)
+        const utcTime = extractUtcTime(item?.description)
+
+        return {
+          id: item?.link || `${item?.title || 'event'}-${index}`,
+          title: item?.title || 'Untitled Event',
+          link: item?.link || '',
+          eventDate,
+          utcTime,
+          localStartLabel: formatEventLocalStart(eventDate, utcTime),
+          validEntries: extractCatchEventValidEntries(item?.description || ''),
+        }
+      })
+      .filter((event) => event && !isCatchEventEnded(event.eventDate, event.utcTime, nowMs))
+      .sort((a, b) => {
+        const aStamp = a.eventDate ? a.eventDate.getTime() : Number.MAX_SAFE_INTEGER
+        const bStamp = b.eventDate ? b.eventDate.getTime() : Number.MAX_SAFE_INTEGER
+        if (aStamp !== bStamp) return aStamp - bStamp
+        return a.title.localeCompare(b.title)
+      })
+  }, [officialEventsData])
+
+  const enabledOfficialCatchEvent = useMemo(
+    () => officialCatchEvents.find((event) => event.id === enabledCatchEventLink) || null,
+    [officialCatchEvents, enabledCatchEventLink]
+  )
+
+  const catchEventEntries = useMemo(() => {
+    const validRows = Array.isArray(enabledOfficialCatchEvent?.validEntries)
+      ? enabledOfficialCatchEvent.validEntries
+      : []
+
+    return validRows
+      .map((entry, index) => ({
+        id: `${normalizeKey(entry?.pokemonName || `entry-${index}`)}-${index}`,
+        pokemonName: String(entry?.pokemonName || '').trim(),
+        bonus: Number(entry?.bonus) || 0,
+      }))
+      .filter((entry) => entry.pokemonName)
+  }, [enabledOfficialCatchEvent])
 
   const pokemonNames = useMemo(
     () => POKEMON_VALUES
@@ -1399,6 +1692,39 @@ export default function CatchingCalculator() {
     return ranked
   }, [mode, pokemonSearch, eggGroupSearch, allRoutes, options, routeEncounterIndex, period])
 
+  const catchEventRecommendations = useMemo(() => {
+    if (!catchEventEntries.length) return []
+
+    return catchEventEntries.map((entry) => {
+      const canonicalName = getCanonicalPokemonName(entry.pokemonName)
+      if (!canonicalName) {
+        return {
+          ...entry,
+          canonicalName: null,
+          result: null,
+        }
+      }
+
+      const syntheticRoute = {
+        id: `event-entry-${normalizePokemonName(canonicalName)}`,
+        region: 'Catch Event',
+        routeName: enabledOfficialCatchEvent?.title || 'Event Location',
+        displayName: enabledOfficialCatchEvent?.title || 'Catch Event',
+        variation: 'Event Entry',
+        encounterCategory: METHOD_NORMAL,
+        pokemonPercents: new Map([[normalizePokemonName(canonicalName), { percent: 100, label: '100.0%' }]]),
+      }
+
+      const result = buildPokemonRecommendation(canonicalName, syntheticRoute, options, routeEncounterIndex, period)
+
+      return {
+        ...entry,
+        canonicalName,
+        result,
+      }
+    })
+  }, [catchEventEntries, enabledOfficialCatchEvent, options, routeEncounterIndex, period])
+
   const visibleRankedRoutes = rankedRoutes.slice(0, showMoreCount)
   const activeRouteBreakdown = useMemo(() => {
     if (!activeBreakdownKey) return null
@@ -1467,6 +1793,16 @@ export default function CatchingCalculator() {
           >
             Specific Mon Search
           </button>
+          <button
+            type="button"
+            className={`${styles.modeTab} ${mode === MODE_CATCH_EVENTS ? styles.modeTabActive : ''}`}
+            onClick={() => {
+              setMode(MODE_CATCH_EVENTS)
+              setShowMoreCount(1)
+            }}
+          >
+            Catch Events
+          </button>
         </div>
 
         <div className={styles.controlGrid}>
@@ -1485,9 +1821,6 @@ export default function CatchingCalculator() {
                   <option key={route.id} value={route.label} />
                 ))}
               </datalist>
-              <span className={styles.selectionHint}>
-                Select one of the suggested routes to load calculations.
-              </span>
             </label>
           )}
 
@@ -1573,9 +1906,6 @@ export default function CatchingCalculator() {
                     <option key={`specific-${route.id}`} value={route.label} />
                   ))}
                 </datalist>
-                <span className={styles.selectionHint}>
-                  Leave blank to auto-pick the best route for this Pokemon.
-                </span>
               </label>
 
               <label className={styles.controlField}>
@@ -1626,6 +1956,18 @@ export default function CatchingCalculator() {
             </select>
           </label>
         </div>
+
+        {mode === MODE_SPECIFIC && (
+          <p className={styles.controlGridNote}>
+            Leave Route Location blank to auto-pick the best route for this Pokemon.
+          </p>
+        )}
+
+        {mode === MODE_ROUTE && (
+          <p className={styles.controlGridNote}>
+            Select one of the suggested routes to load calculations.
+          </p>
+        )}
 
         <div className={styles.toggleGrid}>
           <label><input type="checkbox" checked={ironmanMode} onChange={(e) => setIronmanMode(e.target.checked)} /> Ironman Mode (cost-first, apricorn disabled)</label>
@@ -2017,6 +2359,106 @@ export default function CatchingCalculator() {
             </article>
           ) : (
             <p className={styles.routeMeta}>Select a valid Pokemon to run specific analysis. Route is optional.</p>
+          )}
+        </section>
+      )}
+
+      {mode === MODE_CATCH_EVENTS && (
+        <section className={styles.resultsSection}>
+          <h2>Catch Events</h2>
+          <p className={styles.routeMeta}>
+            Select a PvE catch event from Official Event Calendar. Only ongoing/upcoming events are listed. Valid entries are read directly from each event table.
+          </p>
+
+          {isOfficialEventsLoading && (
+            <p className={styles.routeMeta}>Loading Official Event Calendar catch events...</p>
+          )}
+
+          {!isOfficialEventsLoading && officialCatchEvents.length === 0 && (
+            <p className={styles.routeMeta}>No PvE catch events found in Official Event Calendar right now.</p>
+          )}
+
+          {officialCatchEvents.length > 0 && (
+            <div className={styles.catchEventList}>
+              {officialCatchEvents.map((event) => {
+                const isEnabled = enabledCatchEventLink === event.id
+                return (
+                  <article
+                    key={event.id}
+                    className={`${styles.catchEventCard} ${isEnabled ? styles.catchEventCardActive : ''}`}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setEnabledCatchEventLink(event.id)}
+                    onKeyDown={(eventKey) => {
+                      if (eventKey.key === 'Enter' || eventKey.key === ' ') {
+                        eventKey.preventDefault()
+                        setEnabledCatchEventLink(event.id)
+                      }
+                    }}
+                  >
+                    <div>
+                      <h3>{event.title}</h3>
+                      <p>{event.localStartLabel}</p>
+                      {event.link && (
+                        <a href={event.link} target="_blank" rel="noopener noreferrer" className={styles.catchEventLink}>
+                          View forum event
+                        </a>
+                      )}
+                    </div>
+                    <p className={styles.routeMeta}>{isEnabled ? 'Selected' : 'Click to select event'}</p>
+                  </article>
+                )
+              })}
+            </div>
+          )}
+
+          {enabledOfficialCatchEvent && (
+            <article className={styles.catchEventResultsCard}>
+              <h3>Enabled: {enabledOfficialCatchEvent.title}</h3>
+
+              {catchEventRecommendations.length === 0 ? (
+                <p className={styles.routeMeta}>No accepted entries were found in this event table.</p>
+              ) : (
+                <div className={styles.catchEventTableWrap}>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Sprite</th>
+                        <th>Pokemon</th>
+                        <th>Bonus</th>
+                        <th>Best Ball</th>
+                        <th>Best Catch Rate</th>
+                            <th>Turns</th>
+                            <th>Setup</th>
+                        <th>Expected Cost</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {catchEventRecommendations.map((entry) => (
+                        <tr key={entry.id}>
+                          <td>
+                            <img
+                              src={getLocalPokemonGif(entry.canonicalName || entry.pokemonName)}
+                              alt={formatPokemonDisplayName(entry.pokemonName)}
+                              onError={onGifError(entry.canonicalName || entry.pokemonName, false)}
+                              loading="lazy"
+                              className={styles.catchEventPokemonGif}
+                            />
+                          </td>
+                          <td>{formatPokemonDisplayName(entry.pokemonName)}</td>
+                              <td className={entry.bonus > 0 ? styles.positiveBonus : ''}>{entry.bonus}</td>
+                          <td>{entry.result?.selected?.ball || 'Unavailable'}</td>
+                          <td>{entry.result?.selected ? formatPercent(entry.result.selected.chance) : 'N/A'}</td>
+                              <td>{entry.result?.selected ? formatTurnSummary(entry.result.selected.turns) : 'N/A'}</td>
+                              <td>{entry.result?.selected?.methodLabel || 'N/A'}</td>
+                          <td>{entry.result?.selected ? formatMoney(entry.result.selected.expectedCost) : 'N/A'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </article>
           )}
         </section>
       )}

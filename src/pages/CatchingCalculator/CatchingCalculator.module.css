@@ -17,12 +17,17 @@
 
 .modeTabs {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: stretch;
   gap: 8px;
   margin-bottom: 14px;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .modeTab {
+  flex: 1 0 0;
+  min-width: 170px;
   border: 1px solid rgba(155, 89, 182, 0.35);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.04);
@@ -31,6 +36,12 @@
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .modeTab:hover {
@@ -69,6 +80,13 @@
   font-size: 0.78rem;
   letter-spacing: normal;
   text-transform: none;
+  font-weight: 500;
+}
+
+.controlGridNote {
+  margin: 10px 0 0;
+  color: #bcaed0;
+  font-size: 0.82rem;
   font-weight: 500;
 }
 
@@ -364,7 +382,6 @@
 }
 
 .showBreakdownButton {
-  margin-top: 10px;
   border: 1px solid rgba(155, 89, 182, 0.52);
   border-radius: 8px;
   background: rgba(155, 89, 182, 0.22);
@@ -564,6 +581,14 @@
   font-size: 0.9rem;
 }
 
+.inlineList li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
 .showMoreButton {
   justify-self: start;
   border: 1px solid rgba(155, 89, 182, 0.52);
@@ -578,6 +603,115 @@
 
 .showMoreButton:hover {
   filter: brightness(1.08);
+}
+
+.catchEventList {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.catchEventCard {
+  border: 1px solid rgba(155, 89, 182, 0.28);
+  border-radius: 12px;
+  background: rgba(28, 14, 45, 0.82);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.catchEventCard:hover,
+.catchEventCard:focus-visible {
+  border-color: rgba(140, 199, 255, 0.5);
+  box-shadow: 0 0 0 1px rgba(140, 199, 255, 0.28);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.catchEventCardActive {
+  border-color: rgba(140, 199, 255, 0.6);
+  box-shadow: 0 0 0 1px rgba(140, 199, 255, 0.35);
+}
+
+.catchEventCard h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 0.98rem;
+}
+
+.catchEventCard p {
+  margin: 6px 0 0;
+  color: #c9bbd8;
+  font-size: 0.86rem;
+}
+
+.catchEventLink {
+  display: inline-block;
+  margin-top: 6px;
+  color: #9fd7ff;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.catchEventLink:hover {
+  text-decoration: underline;
+}
+
+.catchEventResultsCard {
+  margin-top: 14px;
+  border: 1px solid rgba(140, 199, 255, 0.34);
+  border-radius: 12px;
+  background: rgba(17, 24, 44, 0.88);
+  padding: 12px;
+}
+
+.catchEventResultsCard h3 {
+  margin: 0 0 8px;
+  color: #fff;
+}
+
+.catchEventTableWrap {
+  margin-top: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.catchEventTableWrap table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 680px;
+}
+
+.catchEventTableWrap th,
+.catchEventTableWrap td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 9px;
+  text-align: left;
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
+.catchEventTableWrap th {
+  background: rgba(74, 144, 226, 0.25);
+  color: #fff;
+}
+
+.catchEventPokemonGif {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.positiveBonus {
+  color: #7cfc00;
+  font-weight: 700;
 }
 
 @media (max-width: 700px) {
