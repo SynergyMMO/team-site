@@ -25,6 +25,27 @@
   scrollbar-width: thin;
 }
 
+.infoDropdown {
+  margin: 0 auto 20px;
+  border: 1px solid rgba(115, 214, 196, 0.35);
+  border-radius: 8px;
+  background: rgba(6, 18, 26, 0.86);
+  overflow: hidden;
+}
+.infoDropdown summary {
+  padding: 14px 18px;
+  color: #bdeee4;
+  cursor: pointer;
+  font-weight: 800;
+  list-style-position: inside;
+}
+
+.infoDropdown p {
+  margin: 0;
+  padding: 0 18px 16px;
+  color: #e4f7fb;
+  line-height: 1.6;
+}
 .modeTab {
   flex: 1 0 0;
   min-width: 170px;

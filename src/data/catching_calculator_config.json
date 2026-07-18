@@ -4,7 +4,8 @@
     "fallbackBestOverallChance": 70,
     "minCheapestChance": 65,
     "minQuickBallChance": 90,
-    "similarCatchGapPercent": 3
+    "similarCatchGapPercent": 3,
+    "timer_ball_min_ball_%": 50
   },
   "search": {
     "routeSuggestionMinChars": 2,

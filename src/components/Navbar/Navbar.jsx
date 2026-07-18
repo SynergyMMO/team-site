@@ -26,11 +26,11 @@ const NAV_ITEMS = [
   { to: '/region-maps/', label: 'Region Maps' },
   { to: '/route-finder/', label: 'Route Finder' },
   { to: '/official-event-calendar/', label: 'Official Event Calendar' },
+  { to: '/catching-calculator/', label: 'Catching Calculator' },
   {
     label: 'Tools',
     submenu: [
       { to: '/LnyCatchCalc/', label: 'LNY Pokemon Catch Calculators' },
-      { to: '/catching-calculator/', label: 'Catching Calculator' },
       { to: '/counter-generator/', label: 'Counter Generator' },
       { to: '/egg-move-calculator/', label: 'Egg Move Calculator' },
       { to: '/player-card-generator/', label: 'Player Card Generator' },

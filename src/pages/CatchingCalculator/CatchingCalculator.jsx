@@ -17,6 +17,7 @@ const MODE_EGG = 'egg'
 const MODE_SPECIFIC = 'specific'
 const MODE_CATCH_EVENTS = 'catchEvents'
 
+const INFO_DROPDOWN_CLOSED_KEY = 'catchcalculatorInfoClosed'
 const METHOD_NORMAL = 'normal'
 const METHOD_FISHING = 'fishing'
 const METHOD_SURFING = 'surfing'
@@ -56,6 +57,7 @@ const MIN_BEST_OVERALL_CHANCE = Number(catchCalculatorConfig?.thresholds?.minBes
 const FALLBACK_BEST_OVERALL_CHANCE = Number(catchCalculatorConfig?.thresholds?.fallbackBestOverallChance) || 70
 const MIN_CHEAPEST_CHANCE = Number(catchCalculatorConfig?.thresholds?.minCheapestChance) || 75
 const SIMILAR_CATCH_GAP_PERCENT = Number(catchCalculatorConfig?.thresholds?.similarCatchGapPercent) || 3
+const TIMER_BALL_MIN_BALL_PERCENT = Number(catchCalculatorConfig?.thresholds?.['timer_ball_min_ball_%']) || 50
 const LURE_ENCOUNTER_RATE_PERCENT = 4
 const DUSK_BALL_INDOOR_KEYWORDS = Array.isArray(catchCalculatorConfig?.duskBall?.indoorKeywords)
   ? catchCalculatorConfig.duskBall.indoorKeywords
@@ -75,6 +77,29 @@ const MAX_SUGGESTIONS = Number(catchCalculatorConfig?.search?.maxSuggestions) ||
 const POKEMON_VALUES = Object.values(pokemonData)
 const POKEMON_NAME_BY_SLUG = POKEMON_VALUES.reduce((acc, pokemon) => {
   acc[normalizePokemonName(pokemon.name)] = pokemon.name
+  return acc
+}, {})
+const POKEMON_ENCOUNTER_FALLBACK_BY_NAME = POKEMON_VALUES.reduce((acc, pokemon) => {
+  const encounters = Array.isArray(pokemon?.location_area_encounters) ? pokemon.location_area_encounters : []
+  const summary = {
+    levels: [],
+    encounterTypes: new Set(),
+    rarityTypes: new Set(),
+    times: new Set(),
+  }
+
+  encounters.forEach((encounter) => {
+    const minLevel = Number(encounter?.min_level)
+    const maxLevel = Number(encounter?.max_level)
+    if (Number.isFinite(minLevel)) summary.levels.push(minLevel)
+    if (Number.isFinite(maxLevel)) summary.levels.push(maxLevel)
+
+    summary.encounterTypes.add(String(encounter?.type || ''))
+    summary.rarityTypes.add(String(encounter?.rarity || ''))
+    summary.times.add(String(encounter?.time || 'ALL'))
+  })
+
+  acc[pokemon.name] = summary
   return acc
 }, {})
 const SAFARI_CATCH_DATA_BY_SLUG = Object.values(safariData || {}).reduce((acc, region) => {
@@ -317,6 +342,72 @@ function extractCatchEventValidEntries(description) {
   })
 
   return entries
+}
+
+function extractCatchEventLocation(description) {
+  if (typeof document === 'undefined') return ''
+
+  function cleanCandidate(value) {
+    let text = String(value || '').replace(/\s+/g, ' ').trim()
+    if (!text) return ''
+
+    text = text.replace(/^[:\-\|\s]+/, '').trim()
+    text = text.replace(/\(catching is allowed[^)]*\)/ig, '').trim()
+
+    const sectionMarker = /\b(?:date|time|duration|scoring|pokemon accepted as valid entries|nature bonus|nature translation|rules and registration|participating staff)\b/i
+    const markerIndex = text.search(sectionMarker)
+    if (markerIndex > 0) {
+      text = text.slice(0, markerIndex).trim()
+    }
+
+    if (text.length > 120) return ''
+    if (/^(?:all\s+pok[eé]mon|evolved or unevolved|you must be the ot|in the event of a tie|any player with access|you must link your entry)\b/i.test(text)) {
+      return ''
+    }
+
+    return text
+  }
+
+  function extractFromLabel(text) {
+    const source = String(text || '').replace(/\r/g, '')
+    if (!source) return ''
+
+    const labeledMatch = source.match(/(?:^|\n)\s*(?:location|route)\s*:\s*([^\n]+)/i)
+    if (!labeledMatch?.[1]) return ''
+
+    return cleanCandidate(labeledMatch[1])
+  }
+
+  const tempDiv = document.createElement('div')
+  tempDiv.innerHTML = String(description || '')
+
+  const markerElements = Array.from(tempDiv.querySelectorAll('strong, b, span'))
+  for (const marker of markerElements) {
+    const markerText = normalizeKey(marker.textContent || '')
+    if (markerText !== 'location' && markerText !== 'location:' && markerText !== 'route' && markerText !== 'route:') continue
+
+    const block = marker.closest('p, div, li, td, th')
+    const nextBlockText = cleanCandidate(block?.nextElementSibling?.textContent)
+    if (nextBlockText) return nextBlockText
+
+    const siblingText = cleanCandidate(marker.nextSibling?.textContent)
+    if (siblingText) return siblingText
+
+    const nextElementText = cleanCandidate(marker.nextElementSibling?.textContent)
+    if (nextElementText) return nextElementText
+
+    const parent = marker.parentElement
+    if (parent) {
+      const parentText = extractFromLabel(parent.textContent)
+      if (parentText) return parentText
+    }
+  }
+
+  const plainText = String(tempDiv.textContent || '').replace(/\r/g, '')
+  const fromPlainText = extractFromLabel(plainText)
+  if (fromPlainText) return fromPlainText
+
+  return ''
 }
 
 function isBlacklistedCatchEventTitle(title) {
@@ -597,6 +688,19 @@ function getRouteMatchKey(regionName, routeName) {
   return `${normalizeKey(regionName)}::${normalizeKey(routeName)}`
 }
 
+function findEncounterByRouteName(routeEncounterIndex, routeName, pokemonName) {
+  const normalizedRouteName = normalizeKey(routeName)
+  if (!normalizedRouteName || !routeEncounterIndex) return null
+
+  for (const [key, pokemonMap] of routeEncounterIndex.entries()) {
+    if (!String(key).endsWith(`::${normalizedRouteName}`)) continue
+    const encounter = pokemonMap?.get(pokemonName)
+    if (encounter) return encounter
+  }
+
+  return null
+}
+
 function isEggGroupExcludedRoute(routeEntry) {
   const routeText = normalizeKey(`${routeEntry?.region || ''} ${routeEntry?.routeName || ''} ${routeEntry?.displayName || ''}`)
   return EGG_GROUP_EXCLUDED_ROUTE_KEYWORDS.some((keyword) => routeText.includes(normalizeKey(keyword)))
@@ -704,6 +808,8 @@ function getEncounterContext(routeEntry, pokemonName, routeEncounterIndex) {
   const key = getRouteMatchKey(routeEntry.region, routeEntry.routeName)
   const pokemonMap = routeEncounterIndex.get(key)
   const encounter = pokemonMap?.get(pokemonName)
+    || findEncounterByRouteName(routeEncounterIndex, routeEntry.routeName, pokemonName)
+    || POKEMON_ENCOUNTER_FALLBACK_BY_NAME[pokemonName]
   const variationCategory = getVariationCategory(routeEntry)
 
   const encounterTypes = Array.from(encounter?.encounterTypes || [])
@@ -1085,7 +1191,7 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
     ? Number(safariCatchData?.catchRate)
     : (options.alphaMode ? 10 : getCatchRateByName(pokemonName))
   if (!Number.isFinite(catchRate)) return null
-
+  
   const encounterContext = getEncounterContext(routeEntry, pokemonName, routeEncounterIndex)
   const isLureEncounter = isLureEncounterContext(encounterContext)
   const level = Number.isFinite(options.customLevel) ? options.customLevel : encounterContext.level
@@ -1095,13 +1201,12 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
   const hasMoon = hasMoonStoneEvolution(pokemon)
   const hasFriendship = hasFriendshipEvolution(pokemon)
   const genderRatios = getGenderRatios(pokemon)
-  const isNight = options.forceNight || period === 'Night'
+  const isNight = Boolean(options.forceNight)
   const isWater = encounterContext.variationCategory === 'fishing'
     || encounterContext.variationCategory === 'water'
     || encounterContext.encounterTypes.some((entry) => isWaterMethod(entry))
   const isBuilding = options.forceIndoor || isBuildingRoute(routeEntry.routeName)
   const finalIsWater = options.forceWater || isWater
-
   const calcContext = {
     catchRate,
     level,
@@ -1124,7 +1229,15 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
 
   const candidates = BALLS.map((ball) => getBallCandidate(ball, calcContext))
 
-  const available = candidates.filter((candidate) => candidate.available)
+  const baseAvailable = candidates.filter((candidate) => candidate.available)
+  const shouldSuppressTimerBall = baseAvailable.some((candidate) => {
+    if (candidate.ballId === 'timer-ball') return false
+    return candidate.chance >= TIMER_BALL_MIN_BALL_PERCENT
+  })
+
+  const available = shouldSuppressTimerBall
+    ? baseAvailable.filter((candidate) => candidate.ballId !== 'timer-ball')
+    : baseAvailable
   if (!available.length) {
     return {
       pokemonName,
@@ -1354,6 +1467,18 @@ function buildRouteRanking({
     })
 }
 
+  const handleInfoDropdownToggle = (event) => {
+    const isOpen = event.currentTarget.open
+    setIsInfoDropdownOpen(isOpen)
+
+    if (typeof window === 'undefined') return
+    if (isOpen) {
+      window.localStorage.removeItem(INFO_DROPDOWN_CLOSED_KEY)
+    } else {
+      window.localStorage.setItem(INFO_DROPDOWN_CLOSED_KEY, 'true')
+    }
+  }
+
 function buildSpecificPokemonSelection({
   routes,
   pokemonName,
@@ -1428,6 +1553,7 @@ export default function CatchingCalculator() {
   const { period } = useInGameClock()
   const { data: officialEventsData, isLoading: isOfficialEventsLoading } = useOfficialEvents()
 
+  const [isInfoDropdownOpen, setIsInfoDropdownOpen] = useState(() => getInitialInfoDropdownOpen())
   const [mode, setMode] = useState(MODE_ROUTE)
   const [selectedRoute, setSelectedRoute] = useState('')
   const [routeEncounterMethod, setRouteEncounterMethod] = useState(METHOD_NORMAL)
@@ -1446,8 +1572,11 @@ export default function CatchingCalculator() {
   const [apricornEnabled, setApricornEnabled] = useState(() => new Set())
   const [ironmanMode, setIronmanMode] = useState(false)
   const [forceNight, setForceNight] = useState(false)
+  const [forceDayTimeOverride, setForceDayTimeOverride] = useState(false)
   const [priority, setPriority] = useState(PRIORITY_OVERALL)
   const [genderPriority, setGenderPriority] = useState(GENDER_MALE)
+
+  const effectiveForceNight = forceNight || (period === 'Night' && !forceDayTimeOverride)
 
   const enableAllApricornBalls = () => setApricornEnabled(createApricornSelection(APRICORN_BALL_IDS))
   const disableAllApricornBalls = () => setApricornEnabled(createApricornSelection([]))
@@ -1457,7 +1586,10 @@ export default function CatchingCalculator() {
     description: 'Plan the fastest and most cost-efficient catch strategy by route, Pokemon, or egg group in PokeMMO.',
     canonicalPath: '/catching-calculator/',
   })
-
+  function getInitialInfoDropdownOpen() {
+  if (typeof window === 'undefined') return true
+  return window.localStorage.getItem(INFO_DROPDOWN_CLOSED_KEY) !== 'true'
+}
   const routeEncounterIndex = useMemo(() => buildRouteEncounterIndex(), [])
 
   const allRoutes = useMemo(() => buildAllRouteUniverse(routeEncounterMethod), [routeEncounterMethod])
@@ -1478,6 +1610,7 @@ export default function CatchingCalculator() {
           id: item?.link || `${item?.title || 'event'}-${index}`,
           title: item?.title || 'Untitled Event',
           link: item?.link || '',
+          location: extractCatchEventLocation(item?.description || ''),
           eventDate,
           utcTime,
           localStartLabel: formatEventLocalStart(eventDate, utcTime),
@@ -1535,13 +1668,13 @@ export default function CatchingCalculator() {
     priority,
     genderPriority,
     ironmanMode,
-    forceNight,
+    forceNight: effectiveForceNight,
   }), [
     apricornEnabled,
     priority,
     genderPriority,
     ironmanMode,
-    forceNight,
+    effectiveForceNight,
   ])
 
   useEffect(() => {
@@ -1549,6 +1682,12 @@ export default function CatchingCalculator() {
       setPriority(PRIORITY_HIGHEST)
     }
   }, [specificAlpha, priority])
+
+  useEffect(() => {
+    if (period !== 'Night' && forceDayTimeOverride) {
+      setForceDayTimeOverride(false)
+    }
+  }, [period, forceDayTimeOverride])
 
   useEffect(() => {
     if (!specificRouteId) return
@@ -1657,6 +1796,17 @@ export default function CatchingCalculator() {
     }
   }
 
+  function handleForceDuskToggle(nextChecked) {
+    if (nextChecked) {
+      setForceNight(true)
+      setForceDayTimeOverride(false)
+      return
+    }
+
+    setForceNight(false)
+    setForceDayTimeOverride(period === 'Night')
+  }
+
   const routeRecommendations = useMemo(() => {
     if (!selectedRouteEntry) return []
 
@@ -1704,8 +1854,8 @@ export default function CatchingCalculator() {
       const syntheticRoute = {
         id: `event-entry-${normalizePokemonName(canonicalName)}`,
         region: 'Catch Event',
-        routeName: enabledOfficialCatchEvent?.title || 'Event Location',
-        displayName: enabledOfficialCatchEvent?.title || 'Catch Event',
+        routeName: enabledOfficialCatchEvent?.location || enabledOfficialCatchEvent?.title || 'Event Location',
+        displayName: enabledOfficialCatchEvent?.location || enabledOfficialCatchEvent?.title || 'Catch Event',
         variation: 'Event Entry',
         encounterCategory: METHOD_NORMAL,
         pokemonPercents: new Map([[normalizePokemonName(canonicalName), { percent: 100, label: '100.0%' }]]),
@@ -1746,6 +1896,16 @@ export default function CatchingCalculator() {
   return (
     <div className={styles.page}>
       <h1 className="page-title">Catching Calculator</h1>
+
+      <details className={styles.infoDropdown} open={isInfoDropdownOpen} onToggle={handleInfoDropdownToggle}>
+        <summary>Work In Progress</summary>
+        <p>
+            This is currently work in progress, it uses the Catch %, Ball cost, and Turn Time to calculate the best ball, I have tested a few routes and pokemon and think its good enough to be released, although I am sure there may be some mistakes lurking, if you find any catch %s that are just wrong, please contact oHypers on discord.
+        </p>
+        <p>
+            Until I am confident with the calculations, take this page with a grain of salt. Regardless, I am sure this page can still be useful!
+        </p>
+        </details>
 
       <section className={styles.controlsCard}>
         <div className={styles.modeTabs} role="tablist" aria-label="Search mode">
@@ -1967,7 +2127,7 @@ export default function CatchingCalculator() {
 
         <div className={styles.toggleGrid}>
           <label><input type="checkbox" checked={ironmanMode} onChange={(e) => setIronmanMode(e.target.checked)} /> Ironman Mode (cost-first, apricorn disabled)</label>
-          <label><input type="checkbox" checked={forceNight} onChange={(e) => setForceNight(e.target.checked)} /> Force Night Time (Dusk Ball override)</label>
+          <label><input type="checkbox" checked={effectiveForceNight} onChange={(e) => handleForceDuskToggle(e.target.checked)} /> Force Dusk Ball</label>
           <details className={styles.apricornDropdown}>
             <summary className={styles.apricornDropdownSummary}>
               Apricorn Balls
@@ -2016,7 +2176,7 @@ export default function CatchingCalculator() {
         </div>
 
         <p className={styles.helperText}>
-          Current in-game period: <strong>{period}</strong>.  Quick Ball is only considered at 90%+ turn-1 chance, Timer Balls are the last resort, Dusk Balls only considered if currently night or if forced.
+          Current in-game period: <strong>{period}</strong>. Quick Ball is only considered at 90%+ turn-1 chance, Timer Balls are the last resort. At night, Force Dusk Ball auto-enables; unchecking it treats the calculator as daytime.
         </p>
       </section>
 
@@ -2433,7 +2593,8 @@ export default function CatchingCalculator() {
 
           {enabledOfficialCatchEvent && (
             <article className={styles.catchEventResultsCard}>
-              <h3>Enabled: {enabledOfficialCatchEvent.title}</h3>
+              <h3>{enabledOfficialCatchEvent.title}</h3>
+              <p className={styles.routeMeta}>Route: {enabledOfficialCatchEvent.location || 'Unknown'}</p>
 
               {catchEventRecommendations.length === 0 ? (
                 <p className={styles.routeMeta}>No accepted entries were found in this event table.</p>
