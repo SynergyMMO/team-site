@@ -61,6 +61,36 @@ window.addEventListener('vite:preloadError', () => {
   }
 })
 
+// Recover once when lazy imports fail due to stale chunk URLs after deploy.
+const CHUNK_RELOAD_KEY = 'chunk-reload'
+const didAttemptChunkReload = () => sessionStorage.getItem(CHUNK_RELOAD_KEY) === '1'
+const attemptChunkReload = () => {
+  if (didAttemptChunkReload()) {
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY)
+    return
+  }
+  sessionStorage.setItem(CHUNK_RELOAD_KEY, '1')
+  window.location.reload()
+}
+
+const isDynamicImportFetchError = (value) => {
+  const message = String(value ?? '')
+  return message.includes('Failed to fetch dynamically imported module')
+    || message.includes('Importing a module script failed')
+}
+
+window.addEventListener('unhandledrejection', (event) => {
+  if (isDynamicImportFetchError(event.reason?.message || event.reason)) {
+    attemptChunkReload()
+  }
+})
+
+window.addEventListener('error', (event) => {
+  if (isDynamicImportFetchError(event.message)) {
+    attemptChunkReload()
+  }
+})
+
 // Register service worker for caching (production only)
 if (!import.meta.env.DEV && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
