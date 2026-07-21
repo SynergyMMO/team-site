@@ -34,7 +34,6 @@ const CATCH_EVENT_REGEX = /\bcatch(?:ing)?\b/i
 const CATCH_EVENT_TITLE_BLACKLIST = [
   'Seasonal PVE - Hidden Treasures - Main Thread',
 ]
-
 const MONTH_INDEX = {
   january: 0,
   february: 1,
@@ -49,7 +48,6 @@ const MONTH_INDEX = {
   november: 10,
   december: 11,
 }
-
 const BALLS = Array.isArray(catchCalculatorConfig?.balls)
   ? catchCalculatorConfig.balls.filter((ball) => ball?.enabled !== false)
   : []
@@ -446,13 +444,18 @@ function formatTurnSummary(value) {
 function getTurnSetupLabel(methodLabel) {
   switch (methodLabel) {
     case '1% HP':
-      return '1hp'
-    case '100% HP + Sleep':
-      return 'full hp, sleep'
+      return '1 HP'
+
     case '1% HP + Sleep':
-      return '1hp, sleep'
+      return '1 HP / Sleep'
+
+    case '100% HP':
     case '100% HP (Turn 1)':
-      return 'turn 1'
+      return 'Full HP'
+
+    case '100% HP + Sleep':
+      return 'Full HP / Sleep'
+
     default:
       return ''
   }
@@ -804,17 +807,21 @@ function estimateEncounterLevel(entry) {
   return Math.max(1, Math.round(total / levels.length))
 }
 
-function getEncounterContext(routeEntry, pokemonName, routeEncounterIndex) {
+function getEncounterContext(routeEntry, pokemonName, routeEncounterIndex, pokemon) {
   const key = getRouteMatchKey(routeEntry.region, routeEntry.routeName)
   const pokemonMap = routeEncounterIndex.get(key)
+
   const encounter = pokemonMap?.get(pokemonName)
     || findEncounterByRouteName(routeEncounterIndex, routeEntry.routeName, pokemonName)
     || POKEMON_ENCOUNTER_FALLBACK_BY_NAME[pokemonName]
+
   const variationCategory = getVariationCategory(routeEntry)
 
   const encounterTypes = Array.from(encounter?.encounterTypes || [])
   const rarityTypes = Array.from(encounter?.rarityTypes || [])
   const times = Array.from(encounter?.times || [])
+
+  const types = pokemonData[pokemonName].types
 
   return {
     level: estimateEncounterLevel(encounter),
@@ -822,6 +829,7 @@ function getEncounterContext(routeEntry, pokemonName, routeEncounterIndex) {
     rarityTypes,
     times,
     variationCategory,
+    types,
   }
 }
 
@@ -1195,13 +1203,14 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
   const encounterContext = getEncounterContext(routeEntry, pokemonName, routeEncounterIndex)
   const isLureEncounter = isLureEncounterContext(encounterContext)
   const level = Number.isFinite(options.customLevel) ? options.customLevel : encounterContext.level
-  const types = Array.isArray(pokemon.types) ? pokemon.types : []
   const speed = getSpeedStat(pokemon)
   const weightKg = getWeightKg(pokemon)
   const hasMoon = hasMoonStoneEvolution(pokemon)
   const hasFriendship = hasFriendshipEvolution(pokemon)
   const genderRatios = getGenderRatios(pokemon)
   const isNight = Boolean(options.forceNight)
+  const types = pokemon?.types || []
+  const isGhost = types.includes("ghost")
   const isWater = encounterContext.variationCategory === 'fishing'
     || encounterContext.variationCategory === 'water'
     || encounterContext.encounterTypes.some((entry) => isWaterMethod(entry))
@@ -1244,6 +1253,8 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
       routeName: routeEntry.displayName,
       level,
       encounterPercent: routeEntry.pokemonPercents.get(normalizePokemonName(pokemonName))?.percent || 0,
+      types,
+      isGhost,
       bestOverall: null,
       cheapest: null,
       fastest: null,
@@ -1305,6 +1316,8 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
     explanation,
     genderRatios,
     eggGroups: pokemon.egg_groups || [],
+    types,
+    isGhost,
     catchRate,
     isLureEncounter,
     scoreEncounterPercent: isLureEncounter ? LURE_ENCOUNTER_RATE_PERCENT : 0,
@@ -2258,9 +2271,24 @@ export default function CatchingCalculator() {
                   <>
                     <section className={styles.featuredRecommendation}>
                       <div className={styles.featuredRecommendationHeader}>
-                        <span className={styles.featuredRecommendationLabel}>{selectedPriorityLabel}:</span>
-                        <strong className={styles.featuredRecommendationChoice}>{result.selected.ball} <span>{formatPercent(result.selected.chance)}</span></strong>
+                    <strong className={styles.featuredRecommendationTitle}>
+                    <span className={styles.featuredRecommendationPriority}>
+                      {selectedPriorityLabel}:
+                    </span>
+                    <span className={styles.featuredRecommendationMethod}>
+                      {result.selected.methodLabel}
+                    </span>
+                  </strong>
+                       <strong className={styles.featuredRecommendationChoice}>
+                          <div>{result.selected.ball}</div>
+                          <span>{formatPercent(result.selected.chance)}</span>
+                        </strong>
                       </div>
+                      {result.isGhost && (
+                        <div className={styles.soakNote}>
+                          ⚠️ Requires <strong>Soak</strong> before using <strong>False Swipe</strong>.
+                        </div>
+                      )}
                       <div className={styles.featuredRecommendationStats}>
                         <div>
                           <span>Expected Cost</span>
