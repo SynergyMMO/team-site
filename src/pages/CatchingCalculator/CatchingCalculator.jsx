@@ -570,9 +570,9 @@ const MIN_QUICK_BALL_CHANCE = Number(catchCalculatorConfig?.thresholds?.minQuick
 const TIMER_TARGET_TURN = Number(catchCalculatorConfig?.assumptions?.timerTargetTurn) || 11
 const METHOD_PROFILES = [
   { id: 'normal100', hpPercent: 100, statusMod: 1, turns: 0, label: '100% HP' },
-  { id: 'normal1', hpPercent: 1, statusMod: 1, turns: 1, label: '1% HP' },
+  { id: 'normal1', hpPercent: 1, statusMod: 1, turns: 1, label: '1 HP' },
   { id: 'sleep100', hpPercent: 100, statusMod: 2, turns: 1, label: '100% HP + Sleep' },
-  { id: 'sleep1', hpPercent: 1, statusMod: 2, turns: 2, label: '1% HP + Sleep' },
+  { id: 'sleep1', hpPercent: 1, statusMod: 2, turns: 2, label: '1 HP + Sleep' },
 ]
 
 function toStarLabel(scoreOutOf100) {

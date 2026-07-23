@@ -5,10 +5,13 @@ import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import oswCaughtData from '../../data/osw-caught.json'
 import oswEncounterMethods from '../../data/osw-encounter-methods.json'
+import oswEncounterTiers from '../../data/osw-encounter-tiers.json'
 import { getLocalPokemonGif, normalizePokemonName, onGifError } from '../../utils/pokemon'
 import styles from './OfficialShinyWarsPlanner.module.css'
 
-const TIER_ORDER = [6, 5, 4, 3, 2, 1, 0]
+
+const methodJsonUsed = false
+const TIER_ORDER = [7, 6, 5, 4, 3, 2, 1, 0]
 const VIEW_TABS = [
   { id: 'grid', label: 'Tier Grid' },
   { id: 'caught', label: 'Caught Shinies' },
@@ -99,23 +102,73 @@ function getBasePokemonNames() {
 
   return baseNames
 }
+function buildEvolutionFamilyLookup() {
+  const lookup = new Map()
+
+  Object.values(generationData).forEach(generationLines => {
+    generationLines.forEach(line => {
+      if (!Array.isArray(line) || line.length === 0) return
+
+      const evolutionFamily = line
+        .map(name => normalizePokemonName(String(name)))
+        .filter(Boolean)
+
+      evolutionFamily.forEach(pokemonName => {
+        lookup.set(pokemonName, evolutionFamily)
+      })
+    })
+  })
+
+  return lookup
+}
+
+const EVOLUTION_FAMILY_BY_POKEMON = buildEvolutionFamilyLookup()
 
 function isOfficialTier(pokemon) {
   const tier = Number(pokemon?.shiny_tier)
   return TIER_ORDER.includes(tier)
 }
 
-function getDisplayPokemon(name) {
+function getDisplayPokemon(name, points = null, tier = null) {
   const pokemon = pokemonData[name]
+
   return {
     id: name,
     name: formatPokemonName(name),
-    points: Number(pokemon?.shiny_points) || 0,
-    tier: Number(pokemon?.shiny_tier),
+    points: points !== null
+      ? Number(points)
+      : Number(pokemon?.shiny_points) || 0,
+    tier: tier !== null
+      ? Number(tier)
+      : Number(pokemon?.shiny_tier),
   }
 }
+function buildTierColumnsFromTierJson() {
+  const columns = TIER_ORDER.reduce((tiers, tier) => {
+    tiers[tier] = []
+    return tiers
+  }, {})
 
-function buildTierColumns() {
+  TIER_ORDER.forEach(tier => {
+    const tierData = oswEncounterTiers[`tier_${tier}`]
+
+    if (!tierData) return
+
+    const points = Number(tierData.points) || 0
+
+    columns[tier] = (tierData.pokemon || [])
+      .map(name => {
+        const id = normalizePokemonName(String(name))
+        if (!id) return null
+
+        return getDisplayPokemon(id, points, tier)
+      })
+      .filter(Boolean)
+  })
+
+  return columns
+}
+function buildTierColumnsFromPokemonData() {
   const columns = TIER_ORDER.reduce((tiers, tier) => {
     tiers[tier] = []
     return tiers
@@ -124,6 +177,7 @@ function buildTierColumns() {
   getBasePokemonNames().forEach(name => {
     const pokemon = pokemonData[name]
     const tier = Number(pokemon?.shiny_tier)
+
     if (!TIER_ORDER.includes(tier)) return
 
     columns[tier].push(getDisplayPokemon(name))
@@ -136,11 +190,26 @@ function buildTierColumns() {
   return columns
 }
 
+function buildTierColumns() {
+  if (!methodJsonUsed) {
+    return buildTierColumnsFromTierJson()
+  }
+
+  return buildTierColumnsFromPokemonData()
+}
+
 function filterTierColumnsByMethod(tierColumns, activeMethod) {
+  if (!methodJsonUsed) {
+    return tierColumns
+  }
+
   if (activeMethod === 'all') return tierColumns
 
   return TIER_ORDER.reduce((columns, tier) => {
-    columns[tier] = tierColumns[tier].filter(pokemon => OSW_METHODS_BY_POKEMON.get(pokemon.id)?.has(activeMethod))
+    columns[tier] = tierColumns[tier].filter(
+      pokemon => OSW_METHODS_BY_POKEMON.get(pokemon.id)?.has(activeMethod)
+    )
+
     return columns
   }, {})
 }
@@ -187,7 +256,17 @@ function getCaughtPokemon(teamData) {
 function getCaughtSet(teamData) {
   const caught = new Set()
 
-  getCaughtEntries(teamData).forEach(entry => caught.add(entry.id))
+  getCaughtEntries(teamData).forEach(entry => {
+    const evolutionFamily = EVOLUTION_FAMILY_BY_POKEMON.get(entry.id)
+
+    if (evolutionFamily) {
+      evolutionFamily.forEach(pokemonId => {
+        caught.add(pokemonId)
+      })
+    } else {
+      caught.add(entry.id)
+    }
+  })
 
   return caught
 }
@@ -274,9 +353,13 @@ export default function OfficialShinyWarsPlanner() {
           ))}
         </div>
       </header>
-
-      {activeView === 'grid' && (
-        <div className={styles.gridFilters} role="tablist" aria-label="Official Shiny Wars encounter method filters">
+      
+      {activeView === 'grid' && methodJsonUsed && (
+        <div
+          className={styles.gridFilters}
+          role="tablist"
+          aria-label="Official Shiny Wars encounter method filters"
+        >
           {GRID_FILTER_TABS.map(tab => (
             <button
               key={tab.id}
