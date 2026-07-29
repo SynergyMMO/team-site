@@ -320,6 +320,27 @@ export default function Pokedex() {
     return normalized !== '--' && normalized !== '---' && normalized !== 'n/a' && normalized !== 'none'
   }
 
+  const normalizeHordePercent = (rarityValue, encounter = {}) => {
+    const text = String(rarityValue || '').trim()
+    if (!text) return text
+
+    const isHorde = encounter.is_horde_3x || encounter.is_horde_5x
+    if (!isHorde) return text
+
+    const match = text.match(/^(\d+(?:\.\d+)?)%$/)
+    if (!match) return text
+
+    const value = Number(match[1])
+    if (!Number.isFinite(value) || value > 5) return text
+
+    const normalized = (value / 5) * 100
+    const normalizedText = Number.isInteger(normalized)
+      ? String(normalized)
+      : normalized.toFixed(1).replace(/\.0$/, '')
+
+    return `${normalizedText}%`
+  }
+
   const getEncounterRarityDisplay = (matchingEncounters) => {
     const periodValues = {
       Morning: new Set(),
@@ -328,9 +349,9 @@ export default function Pokedex() {
     }
 
     matchingEncounters.forEach(encounter => {
-      if (isMeaningfulRarity(encounter.rarity_morning)) periodValues.Morning.add(String(encounter.rarity_morning).trim())
-      if (isMeaningfulRarity(encounter.rarity_day)) periodValues.Day.add(String(encounter.rarity_day).trim())
-      if (isMeaningfulRarity(encounter.rarity_night)) periodValues.Night.add(String(encounter.rarity_night).trim())
+      if (isMeaningfulRarity(encounter.rarity_morning)) periodValues.Morning.add(normalizeHordePercent(encounter.rarity_morning, encounter))
+      if (isMeaningfulRarity(encounter.rarity_day)) periodValues.Day.add(normalizeHordePercent(encounter.rarity_day, encounter))
+      if (isMeaningfulRarity(encounter.rarity_night)) periodValues.Night.add(normalizeHordePercent(encounter.rarity_night, encounter))
     })
 
     const parts = []
@@ -1081,7 +1102,7 @@ const rarityOptions = useMemo(() => {
                 <select
                   value={selectedSeason}
                   onChange={(e) => setSelectedSeason(e.target.value)}
-                  className={styles.filterEssentialSelect}
+                  className={`${styles.filterEssentialSelect} ${styles.seasonSelect}`}
                 >
                   <option value="">All Seasons</option>
                   <option value="Spring">Spring</option>
@@ -1769,6 +1790,7 @@ const rarityOptions = useMemo(() => {
                     <button
                       key={season}
                       type="button"
+                      data-season={season.toLowerCase()}
                       className={`${styles.routeSeasonButton} ${(season === 'All' ? selectedSeason === '' : selectedSeason === season) ? styles.routeSeasonButtonActive : ''}`}
                       onClick={() => setSelectedSeason(season === 'All' ? '' : season)}
                       aria-pressed={season === 'All' ? selectedSeason === '' : selectedSeason === season}
@@ -1891,21 +1913,7 @@ const rarityOptions = useMemo(() => {
                                   )}
 
                                   {pokemonData.encounterRarityDisplay && (
-                                    <div style={{
-                                      position: 'absolute',
-                                      top: '-18px',
-                                      left: '50%',
-                                      transform: 'translateX(-50%)',
-                                      fontSize: '0.62rem',
-                                      fontWeight: '700',
-                                      whiteSpace: 'nowrap',
-                                      color: 'rgba(255, 255, 255, 0.92)',
-                                      backgroundColor: 'rgba(10, 12, 24, 0.88)',
-                                      border: '1px solid rgba(125, 190, 255, 0.45)',
-                                      borderRadius: '4px',
-                                      padding: '2px 6px',
-                                      zIndex: 3
-                                    }}>
+                                    <div className={styles.encounterOddsBadge}>
                                       {pokemonData.encounterRarityDisplay}
                                     </div>
                                   )}

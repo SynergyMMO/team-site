@@ -220,6 +220,7 @@ function normalizeHordePercent(rarityValue, location = {}) {
 
   const value = Number(match[1])
   if (!Number.isFinite(value)) return text
+  if (value > 5) return text
 
   const normalized = (value / 5) * 100
   const normalizedText = Number.isInteger(normalized)
