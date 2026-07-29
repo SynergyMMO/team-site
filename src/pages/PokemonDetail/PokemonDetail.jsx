@@ -13,24 +13,24 @@ import abilitiesData from '../../data/pokemmo_data/abilities-data.json'
 import safariData from '../../data/safari_zones.json'
 
 const TYPE_COLORS = {
-  normal: '#A8A878',
-  fire: '#F08030',
-  water: '#6890F0',
-  electric: '#F8D030',
-  grass: '#78C850',
-  ice: '#98D8D8',
-  fighting: '#C03028',
-  poison: '#A040A0',
-  ground: '#E0C068',
-  flying: '#A890F0',
-  psychic: '#F85888',
-  bug: '#A8B820',
-  rock: '#B8A038',
-  ghost: '#705898',
-  dragon: '#7038F8',
-  dark: '#705848',
-  steel: '#B8B8D0',
-  fairy: '#EE99AC',
+  NORMAL: '#A8A878',
+  FIRE: '#F08030',
+  WATER: '#6890F0',
+  ELECTRIC: '#F8D030',
+  GRASS: '#78C850',
+  ICE: '#98D8D8',
+  FIGHTING : '#C03028',
+  POISON: '#A040A0',
+  GROUND: '#E0C068',
+  FLYING: '#A890F0',
+  PSYCHIC: '#F85888',
+  BUG: '#A8B820',
+  ROCK: '#B8A038',
+  GHOST: '#705898',
+  DRAGON: '#7038F8',
+  DARK: '#705848',
+  STEEL: '#B8B8D0',
+  FAIRY: '#EE99AC',
 }
 
 const TIER_COLORS = {
@@ -178,6 +178,55 @@ function formatEncounterTime(time) {
     .replace(/SEASON1/g, 'Spring')
     .replace(/SEASON2/g, 'Autumn')
     .replace(/SEASON3/g, 'Winter')
+}
+
+function getGenderDistribution(genderRate, eggGroups = []) {
+  const numericRate = Number(genderRate)
+  const isGenderless = Number.isFinite(numericRate)
+    && numericRate >= 255
+    && eggGroups.some(group => String(group || '').toLowerCase() === 'genderless')
+
+  if (!Number.isFinite(numericRate) || numericRate < 0 || isGenderless) {
+    return {
+      isGenderless: true,
+      malePercent: 0,
+      femalePercent: 0
+    }
+  }
+
+  const clampedFemaleThreshold = Math.max(0, Math.min(255, Math.floor(numericRate)))
+  const femalePercentRaw = (clampedFemaleThreshold / 255) * 100
+  const malePercentRaw = ((255 - clampedFemaleThreshold) / 255) * 100
+
+  // The game ratio uses a threshold out of 255; show percentages floored to 1 decimal.
+  const toFlooredOneDecimal = (value) => Math.floor(value * 10) / 10
+
+  return {
+    isGenderless: false,
+    malePercent: toFlooredOneDecimal(malePercentRaw),
+    femalePercent: toFlooredOneDecimal(femalePercentRaw)
+  }
+}
+
+function normalizeHordePercent(rarityValue, location = {}) {
+  const text = String(rarityValue || '').trim()
+  if (!text) return text
+
+  const isHorde = location.is_horde_3x || location.is_horde_5x
+  if (!isHorde) return text
+
+  const match = text.match(/^(\d+(?:\.\d+)?)%$/)
+  if (!match) return text
+
+  const value = Number(match[1])
+  if (!Number.isFinite(value)) return text
+
+  const normalized = (value / 5) * 100
+  const normalizedText = Number.isInteger(normalized)
+    ? String(normalized)
+    : normalized.toFixed(1).replace(/\.0$/, '')
+
+  return `${normalizedText}%`
 }
 
 /**
@@ -1042,6 +1091,7 @@ useDocumentHead({
     : { url: pokemon.sprite, label: pokemon.displayName, type: 'png', backUrl: pokemon.sprite }
   const currentSpriteUrl = showBack ? (currentSprite?.backUrl || currentSprite?.url) : currentSprite?.url
   const isSpriteLoaded = loadedSpriteUrl === currentSpriteUrl
+  const genderDistribution = getGenderDistribution(pokemon.genderRate, pokemon.eggGroups)
   
   const handlePrevious = () => {
     if (prevPokemon) {
@@ -1290,7 +1340,7 @@ useDocumentHead({
             {pokemon.genderRate !== undefined && (
               <div className={styles.basicInfoGenderSection}>
                 <span className={styles.basicInfoGenderLabel}>Gender Ratio</span>
-                {pokemon.genderRate === -1 ? (
+                {genderDistribution.isGenderless ? (
                   <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.95rem' }}>Genderless</div>
                 ) : (
                   <div className={styles.basicInfoGender}>
@@ -1300,12 +1350,12 @@ useDocumentHead({
                         <div 
                           className={styles.basicInfoGenderFill} 
                           style={{
-                            width: `${(8 - pokemon.genderRate) / 8 * 100}%`,
+                            width: `${genderDistribution.malePercent}%`,
                             backgroundColor: '#667eea'
                           }}
                         />
                       </div>
-                      <span className={styles.basicInfoGenderPercent}>{((8 - pokemon.genderRate) / 8 * 100).toFixed(1)}%</span>
+                      <span className={styles.basicInfoGenderPercent}>{genderDistribution.malePercent.toFixed(1)}%</span>
                     </div>
                     <div className={styles.basicInfoGenderRow}>
                       <span className={styles.basicInfoGenderLabel2}>♀ Female</span>
@@ -1313,12 +1363,12 @@ useDocumentHead({
                         <div 
                           className={styles.basicInfoGenderFill} 
                           style={{
-                            width: `${pokemon.genderRate / 8 * 100}%`,
+                            width: `${genderDistribution.femalePercent}%`,
                             backgroundColor: '#f085b3'
                           }}
                         />
                       </div>
-                      <span className={styles.basicInfoGenderPercent}>{(pokemon.genderRate / 8 * 100).toFixed(1)}%</span>
+                      <span className={styles.basicInfoGenderPercent}>{genderDistribution.femalePercent.toFixed(1)}%</span>
                     </div>
                   </div>
                 )}
@@ -1376,63 +1426,82 @@ useDocumentHead({
           </div>
 
           {/* Abilities */}
-          <div className={styles.infoCard}>
-            <h2 className={styles.cardTitle}>Abilities</h2>
-            <div className={styles.abilityContainer}>
-              {pokemon.abilities.normal.length > 0 && (
-                <div>
-                  <h3 className={styles.abilitySubtitle}>Normal Abilities</h3>
-                  <ul className={styles.abilityList}>
-                    {pokemon.abilities.normal.map(ability => {
-                      const abilityInfo = getAbilityInfo(ability)
-                      const displayName = ability.replace('-', ' ')
-                      return (
-                        <li
-                          key={ability}
-                          className={styles.abilityItem}
-                          onMouseEnter={() => setHoveredAbility(ability)}
-                          onMouseLeave={() => setHoveredAbility(null)}
-                        >
-                          {displayName}
-                          {hoveredAbility === ability && abilityInfo && (
-                            <div className={styles.abilityTooltip}>
-                              {abilityInfo.effect}
-                            </div>
-                          )}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              )}
-              {pokemon.abilities.hidden.length > 0 && (
-                <div>
-                  <h3 className={styles.abilitySubtitle}>Hidden Ability</h3>
-                  <ul className={styles.abilityList}>
-                    {pokemon.abilities.hidden.map(ability => {
-                      const abilityInfo = getAbilityInfo(ability)
-                      const displayName = ability.replace('-', ' ')
-                      return (
-                        <li
-                          key={ability}
-                          className={`${styles.hiddenAbility} ${styles.abilityItem}`}
-                          onMouseEnter={() => setHoveredAbility(ability)}
-                          onMouseLeave={() => setHoveredAbility(null)}
-                        >
-                          {displayName} ✨
-                          {hoveredAbility === ability && abilityInfo && (
-                            <div className={styles.abilityTooltip}>
-                              {abilityInfo.effect}
-                            </div>
-                          )}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              )}
-            </div>
+
+        <div className={styles.infoCard}> <h2 className={styles.cardTitle}>Abilities</h2>
+
+        <div className={styles.abilityContainer}>
+
+        {/* Normal Abilities */}
+        {pokemon.abilities?.normal?.length > 0 && (
+          <div>
+            <h3 className={styles.abilitySubtitle}>Abilities</h3>
+
+            <ul className={styles.abilityList}>
+              {pokemon.abilities.normal.map((ability, index) => {
+                const abilityName = ability || ''
+                const abilityInfo = getAbilityInfo(abilityName)
+
+                const displayName = abilityName
+                  .replace(/-/g, ' ')
+                  .replace(/\b\w/g, char => char.toUpperCase())
+
+                return (
+                  <li
+                    key={`normal-${abilityName}-${index}`}
+                    className={styles.abilityItem}
+                    onMouseEnter={() => setHoveredAbility(abilityName)}
+                    onMouseLeave={() => setHoveredAbility(null)}
+                  >
+                    {displayName}
+
+                    {hoveredAbility === abilityName && abilityInfo && (
+                      <div className={styles.abilityTooltip}>
+                        {abilityInfo.effect}
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
           </div>
+        )}
+
+        {/* Hidden Ability */}
+        {pokemon.abilities?.hidden?.length > 0 && (
+          <div>
+            <h3 className={styles.abilitySubtitle}>Hidden Ability</h3>
+
+            <ul className={styles.abilityList}>
+              {pokemon.abilities.hidden.map((ability, index) => {
+                const abilityName = ability || ''
+                const abilityInfo = getAbilityInfo(abilityName)
+
+                const displayName = abilityName
+                  .replace(/-/g, ' ')
+                  .replace(/\b\w/g, char => char.toUpperCase())
+
+                return (
+                  <li
+                    key={`hidden-${abilityName}-${index}`}
+                    className={`${styles.hiddenAbility} ${styles.abilityItem}`}
+                    onMouseEnter={() => setHoveredAbility(abilityName)}
+                    onMouseLeave={() => setHoveredAbility(null)}
+                  >
+                    {displayName} ✨
+
+                    {hoveredAbility === abilityName && abilityInfo && (
+                      <div className={styles.abilityTooltip}>
+                        {abilityInfo.effect}
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )}
+
+        </div> </div>
 
           {/* Stats */}
           <div className={styles.infoCard}>
@@ -1792,118 +1861,297 @@ useDocumentHead({
       </section>
 
       {/* Locations */}
-      {((pokemon?.locations && pokemon.locations.length > 0) || safariLocations.length > 0) && (() => {
-        // Define rarity order
-        const rarityOrder = {
-          'Horde': 0,
-          'Very Common': 1,
-          'Common': 2,
-          'Uncommon': 3,
-          'Fishing': 4,
-          'Rare': 5,
-          'Very Rare': 6,
-          'Lure': 7
-        }
-        
-        // Get encounter icon based on rarity and location type (habitat)
-        const getEncounterIcon = (rarity, habitat) => {
-          if (rarity === 'Lure') {
-            return '/images/lure.png'
+{((pokemon?.locations && pokemon.locations.length > 0) || safariLocations.length > 0) && (() => {
+// Define rarity order
+const rarityOrder = {
+'Horde': 0,
+'Very Common': 1,
+'Common': 2,
+'Uncommon': 3,
+'Fishing': 4,
+'Rare': 5,
+'Very Rare': 6,
+'Lure': 7,
+'Unknown': 999
+}
+
+// Get the highest priority rarity from the three time periods
+const getHighestRarity = (location) => {
+const rarities = [
+location.rarity_morning,
+location.rarity_day,
+location.rarity_night
+].filter(Boolean)
+
+if (rarities.length === 0) {
+  return 'Unknown'
+}
+
+return rarities.reduce((highest, current) => {
+  const highestOrder = rarityOrder[highest] ?? 999
+  const currentOrder = rarityOrder[current] ?? 999
+
+  return currentOrder < highestOrder ? current : highest
+}, rarities[0])
+
+}
+
+// Get encounter icon based on rarity and location type
+const getEncounterIcon = (location) => {
+const rarities = [
+location.rarity_morning,
+location.rarity_day,
+location.rarity_night
+]
+
+// Horde icons take priority
+if (location.is_horde_5x) {
+  return '/5xhorde.png'
+}
+
+if (location.is_horde_3x) {
+  return '/3xhorde.png'
+}
+
+// Check for lure
+if (rarities.includes('Lure')) {
+  return '/images/lure.png'
+}
+
+// Check habitat for fishing rods
+const habitat = location.type || ''
+
+if (habitat.includes('Super Rod')) {
+  return '/images/super_rod.png'
+}
+
+if (habitat.includes('Good Rod')) {
+  return '/images/good_rod.png'
+}
+
+if (habitat.includes('Old Rod')) {
+  return '/images/old_rod.png'
+}
+
+if (habitat.includes('Fishing')) {
+  return '/images/super_rod.png'
+}
+
+return null
+
+
+}
+
+// Sort locations
+// Priority:
+// 1. 5x Horde
+// 2. 3x Horde
+// 3. Normal encounters sorted by rarity
+const sortedLocations = [...(pokemon?.locations || [])].sort((a, b) => {
+// Horde priority
+const getHordePriority = (location) => {
+if (location.is_horde_5x) return 0
+if (location.is_horde_3x) return 1
+return 2
+}
+
+
+const hordePriorityA = getHordePriority(a)
+const hordePriorityB = getHordePriority(b)
+
+if (hordePriorityA !== hordePriorityB) {
+  return hordePriorityA - hordePriorityB
+}
+
+// If both are the same horde type, sort by rarity
+const rarityA = rarityOrder[getHighestRarity(a)] ?? 999
+const rarityB = rarityOrder[getHighestRarity(b)] ?? 999
+
+return rarityA - rarityB
+
+
+})
+
+return ( <section className={styles.infoCard}> <h2 className={styles.cardTitle}>Locations</h2>
+
+
+  <div className={styles.locationsContainer}>
+
+    {/* Regular Locations */}
+    {sortedLocations.map((location, index) => {
+      const encounterIcon = getEncounterIcon(location)
+
+      return (
+        <button
+          key={index}
+          className={styles.locationCard}
+          onClick={() =>
+            navigate(
+              `/pokedex/?location=${encodeURIComponent(
+                `${location.location_name_full} - ${location.region_name}`
+              )}`
+            )
           }
-          if (rarity === 'Horde') {
-            return '/images/horde.png'
-          }
-          // Check habitat for fishing rods or fishing generic
-          if (habitat) {
-            if (habitat.includes('Super Rod')) {
-              return '/images/super_rod.png'
-            }
-            if (habitat.includes('Good Rod')) {
-              return '/images/good_rod.png'
-            }
-            if (habitat.includes('Old Rod')) {
-              return '/images/old_rod.png'
-            }
-            if (habitat.includes('Fishing')) {
-              return '/images/super_rod.png'
-            }
-          }
-          return null
-        }
-        
-        // Sort locations by rarity
-        const sortedLocations = [...(pokemon?.locations || [])].sort((a, b) => {
-          const rarityA = rarityOrder[a.rarity] ?? 999
-          const rarityB = rarityOrder[b.rarity] ?? 999
-          return rarityA - rarityB
-        })
-        
-        return (
-          <section className={styles.infoCard}>
-            <h2 className={styles.cardTitle}>Locations</h2>
-            <div className={styles.locationsContainer}>
-              {sortedLocations.map((location, index) => {
-                const encounterIcon = getEncounterIcon(location.rarity, location.type)
-                return (
-                  <button
-                    key={index}
-                    className={styles.locationCard}
-                    onClick={() => navigate(`/pokedex/?location=${encodeURIComponent(`${location.location} - ${location.region_name}`)}`)}
-                    title={`Search for Pokémon at ${location.location}`}
-                  >
-                    <div className={styles.locationHeader}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <h3 className={styles.locationName}>{location.location}</h3>
-                        {encounterIcon && <img style={{ width: '24px', height: '24px', marginLeft: 'auto' }} src={encounterIcon} alt={location.rarity} title={location.rarity} />}
-                      </div>
-                      <span className={styles.locationRegion}>{location.region_name}</span>
-                    </div>
-                    <div className={styles.locationDetails}>
-                      <span className={styles.locationDetail}>
-                        <strong>Level:</strong> {location.min_level === location.max_level ? location.min_level : `${location.min_level}-${location.max_level}`}
-                      </span>
-                      <span className={styles.locationDetail}>
-                        <strong>Rarity:</strong> {location.rarity}
-                      </span>
-                      <span className={styles.locationDetail}>
-                        <strong>Time:</strong> {formatEncounterTime(location.time)}
-                      </span>
-                      {location.type && (
-                        <span className={styles.locationDetail}>
-                          <strong>Habitat:</strong> {location.type}
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                )
-              })}
-              {safariLocations.map((safariLoc, index) => (
-                <button
-                  key={`safari-${index}`}
-                  className={`${styles.locationCard} ${styles.safariLocationCard}`}
-                  onClick={() => navigate('/safari-zones/', { state: { region: safariLoc.region.toLowerCase(), area: safariLoc.area } })}
-                  title={`${safariLoc.region} Safari Zone`}
-                >
-                  <div className={styles.locationHeader}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <h3 className={styles.locationName}>Safari Zone</h3>
-                    </div>
-                    <span className={`${styles.locationRegion} ${styles.safariRegionBadge}`}>{safariLoc.region}</span>
-                  </div>
-                  <div className={styles.locationDetails}>
-                    <span className={styles.locationDetail}>
-                      <strong>Area:</strong> {safariLoc.area}
-                    </span>
-                    <span className={styles.locationDetail}>
-                      <strong>Encounter:</strong> {safariLoc.encounterType.charAt(0).toUpperCase() + safariLoc.encounterType.slice(1)}
-                    </span>
-                  </div>
-                </button>
-              ))}
+          title={`Search for Pokémon at ${location.location_name_full}`}
+        >
+          <div className={styles.locationHeader}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              <h3 className={styles.locationName}>
+                {location.location_name_full}
+              </h3>
+
+              {encounterIcon && (
+                <img
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    marginLeft: 'auto'
+                  }}
+                  src={encounterIcon}
+                  alt="Encounter type"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null
+                    event.currentTarget.src = '/images/horde.png'
+                  }}
+                />
+              )}
             </div>
-          </section>
-        )
-      })()}
+
+            <span className={styles.locationRegion}>
+              {location.region_name}
+            </span>
+          </div>
+
+          <div className={styles.locationDetails}>
+
+            {/* Level */}
+            <span className={styles.locationDetail}>
+              <strong>Level:</strong>{' '}
+              {location.min_level === location.max_level
+                ? location.min_level
+                : `${location.min_level}-${location.max_level}`}
+            </span>
+
+            {/* Season */}
+            <span className={styles.locationDetail}>
+              <strong>Season:</strong>{' '}
+              {location.season || 'Any'}
+            </span>
+
+           {/* Morning Rarity */}
+              {location.rarity_morning &&
+              location.rarity_morning !== '--' &&
+              location.rarity_morning !== 'Unknown' && (
+              <span className={styles.locationDetail}>
+              <strong>Morning:</strong>{' '}
+              {normalizeHordePercent(location.rarity_morning, location)}
+              </span>
+              )}
+
+              {/* Day Rarity */}
+              {location.rarity_day &&
+              location.rarity_day !== '--' &&
+              location.rarity_day !== 'Unknown' && (
+              <span className={styles.locationDetail}>
+              <strong>Day:</strong>{' '}
+              {normalizeHordePercent(location.rarity_day, location)}
+              </span>
+              )}
+
+              {/* Night Rarity */}
+              {location.rarity_night &&
+              location.rarity_night !== '--' &&
+              location.rarity_night !== 'Unknown' && (
+              <span className={styles.locationDetail}>
+              <strong>Night:</strong>{' '}
+              {normalizeHordePercent(location.rarity_night, location)}
+              </span>
+              )}
+
+            {/* Horde Information */}
+            {(location.is_horde_3x || location.is_horde_5x) && (
+              <span className={styles.locationDetail}>
+                <strong>Horde:</strong>{' '}
+                {location.is_horde_5x
+                  ? '5x Horde'
+                  : '3x Horde'}
+              </span>
+            )}
+
+            {/* Habitat */}
+            {location.type && (
+              <span className={styles.locationDetail}>
+                <strong>Habitat:</strong>{' '}
+                {location.type}
+              </span>
+            )}
+
+          </div>
+        </button>
+      )
+    })}
+
+    {/* Safari Zone Locations */}
+    {safariLocations.map((safariLoc, index) => (
+      <button
+        key={`safari-${index}`}
+        className={`${styles.locationCard} ${styles.safariLocationCard}`}
+        onClick={() =>
+          navigate('/safari-zones/', {
+            state: {
+              region: safariLoc.region.toLowerCase(),
+              area: safariLoc.area
+            }
+          })
+        }
+        title={`${safariLoc.region} Safari Zone`}
+      >
+        <div className={styles.locationHeader}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}
+          >
+            <h3 className={styles.locationName}>
+              Safari Zone
+            </h3>
+          </div>
+
+          <span
+            className={`${styles.locationRegion} ${styles.safariRegionBadge}`}
+          >
+            {safariLoc.region}
+          </span>
+        </div>
+
+        <div className={styles.locationDetails}>
+          <span className={styles.locationDetail}>
+            <strong>Area:</strong>{' '}
+            {safariLoc.area}
+          </span>
+
+          <span className={styles.locationDetail}>
+            <strong>Encounter:</strong>{' '}
+            {safariLoc.encounterType.charAt(0).toUpperCase() +
+              safariLoc.encounterType.slice(1)}
+          </span>
+        </div>
+      </button>
+    ))}
+
+  </div>
+</section>
+)
+})()}
+
 
       {/* Moves */}
       <section className={styles.infoCard} key={`moves-${pokemonName}`}>

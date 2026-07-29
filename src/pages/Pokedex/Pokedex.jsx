@@ -2,7 +2,6 @@ import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
-import { useEncounterPercents } from '../../hooks/useEncounterPercents'
 import { useInGameClock } from '../../hooks/useInGameClock'
 import { useTierData } from '../../hooks/useTierData'
 import SearchBar from '../../components/SearchBar/SearchBar'
@@ -23,12 +22,6 @@ import { API } from '../../api/endpoints'
 import alteringCaveData from '../../data/altering_cave_rotations.json'
 import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
-import {
-  flattenEncounterRoutes,
-  getPokemonEncounterPercentLabel,
-  getRouteEncounterPercentData,
-  shouldShowPokemonEncounterPercent,
-} from '../../utils/routeEncounterPercents'
 import styles from './Pokedex.module.css'
 
 function parseLocationSearch(value) {
@@ -50,6 +43,14 @@ function isAlteringCaveSearch(value) {
   return String(value || '').toLowerCase().replace(/-/g, ' ').includes('altering cave')
 }
 
+function normalizeLocationValue(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/-/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 export default function Pokedex() {
   const breadcrumbs = [
     { name: 'Home', url: '/' },
@@ -66,7 +67,6 @@ export default function Pokedex() {
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const { data, isLoading } = useDatabase()
-  const { data: encounterPercents = {} } = useEncounterPercents()
   const { tierPokemon, tierLookup } = useTierData()
   useInGameClock(DAY_OFFSET, IN_GAME_DAYS)
   const [mode, setMode] = useState(() => searchParams.get('mode') || 'shiny')
@@ -99,9 +99,12 @@ export default function Pokedex() {
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
   const [locationSuggestions, setLocationSuggestions] = useState([])
+  const [selectedSeason, setSelectedSeason] = useState(() => {
+    const season = searchParams.get('season') || ''
+    return ['Spring', 'Summer', 'Autumn', 'Winter'].includes(season) ? season : ''
+  })
   const infoBoxRef = useRef(null)
   const filterPanelRef = useRef(null)
-  const encounterRoutes = useMemo(() => flattenEncounterRoutes(encounterPercents), [encounterPercents])
   const searchTerm = search.trim().toLowerCase()
   const formatRarityKey = (value) => value.toLowerCase().trim().replace(/\s+/g, '_')
   const formatRarityLabel = (value) => {
@@ -116,6 +119,56 @@ export default function Pokedex() {
     darmanitan: 'darmanitan-standard'
   }
 
+  const getEncounterLocationName = (encounter = {}) => {
+    return encounter.location_name_full || encounter.location_name || encounter.location || ''
+  }
+
+  const getEncounterRarityTokens = (encounter = {}) => {
+    return [
+      encounter.rarity,
+      encounter.rarity_morning,
+      encounter.rarity_day,
+      encounter.rarity_night
+    ]
+      .filter(Boolean)
+      .map(value => String(value).toLowerCase())
+  }
+
+  const isHordeEncounter = (encounter = {}) => {
+    const rarityTokens = getEncounterRarityTokens(encounter)
+    return encounter.is_horde_3x === true || encounter.is_horde_5x === true || rarityTokens.includes('horde')
+  }
+
+  const isLureEncounter = (encounter = {}) => {
+    const type = String(encounter.type || '').toLowerCase()
+    const rarityTokens = getEncounterRarityTokens(encounter)
+    return type === 'lure' || rarityTokens.includes('lure')
+  }
+
+  const isFishingEncounter = (encounter = {}) => {
+    const type = String(encounter.type || '').toLowerCase()
+    return type.includes('rod') || type.includes('fishing')
+  }
+
+  const isHeadbuttEncounter = (encounter = {}) => {
+    const type = String(encounter.type || '').toLowerCase()
+    return type === 'headbutt'
+  }
+
+  const isSpecialEncounter = (encounter = {}) => {
+    const type = String(encounter.type || '').toLowerCase()
+    const rarityTokens = getEncounterRarityTokens(encounter)
+    return type.includes('special') || rarityTokens.includes('special')
+  }
+
+  const isSingleEncounter = (encounter = {}) => {
+    return !isHordeEncounter(encounter)
+      && !isLureEncounter(encounter)
+      && !isFishingEncounter(encounter)
+      && !isHeadbuttEncounter(encounter)
+      && !isSpecialEncounter(encounter)
+  }
+
   const formatEggGroupName = (group) => {
     if (!group) return ""
     const lowerGroup = group.toLowerCase()
@@ -125,39 +178,121 @@ export default function Pokedex() {
     return group.charAt(0).toUpperCase() + group.slice(1).replace('-', ' ')
   }
 
-  const getEncounterTypeForPokemon = (pokemonName, locationSearch) => {
+  const normalizeEncounterSeason = (seasonValue) => {
+    const season = String(seasonValue || '').trim().toLowerCase()
+    if (season === 'spring') return 'Spring'
+    if (season === 'summer') return 'Summer'
+    if (season === 'autumn' || season === 'fall') return 'Autumn'
+    if (season === 'winter') return 'Winter'
+    if (season === 'any') return 'Any'
+    return ''
+  }
+
+  const matchesSelectedSeason = (encounter, selectedSeason) => {
+    const normalizedEncounterSeason = normalizeEncounterSeason(encounter.season)
+    const normalizedSelectedSeason = normalizeEncounterSeason(selectedSeason)
+
+    if (!normalizedSelectedSeason) return true
+    if (!normalizedEncounterSeason || normalizedEncounterSeason === 'Any') return true
+    return normalizedEncounterSeason === normalizedSelectedSeason
+  }
+
+  const pokemonSpawnsInSelectedSeason = (pokemonDetails, selectedSeason) => {
+    const normalizedSelectedSeason = normalizeEncounterSeason(selectedSeason)
+    if (!normalizedSelectedSeason) return true
+
+    const encounters = pokemonDetails?.location_area_encounters || []
+    if (encounters.length === 0) return false
+
+    return encounters.some(encounter => matchesSelectedSeason(encounter, normalizedSelectedSeason))
+  }
+
+  const getFilteredEncountersForPokemon = (pokemonDetails = {}, locationFilter = '', selectedSeason = '') => {
+    const encounters = pokemonDetails.location_area_encounters || []
+    const normalizedLocationSearch = normalizeLocationValue(locationFilter)
+
+    return encounters.filter(encounter => {
+      if (!matchesSelectedSeason(encounter, selectedSeason)) return false
+
+      if (!normalizedLocationSearch) return true
+
+      if (!encounter.region_name) return false
+      const locationName = getEncounterLocationName(encounter)
+      if (!locationName) return false
+      const locationText = normalizeLocationValue(`${locationName} ${encounter.region_name}`)
+      return locationText.includes(normalizedLocationSearch)
+    })
+  }
+
+  const getRaritySetFromEncounters = (encounters = []) => {
+    const raritySet = new Set()
+
+    encounters.forEach(encounter => {
+      const rawType = (encounter.type || '').toLowerCase()
+
+      if (rawType.includes('rod') || rawType.includes('fishing')) {
+        raritySet.add('Fishing')
+      }
+
+      const rarities = [
+        encounter.rarity,
+        encounter.rarity_morning,
+        encounter.rarity_day,
+        encounter.rarity_night
+      ]
+
+      if (rarities.some(rarity => String(rarity || '').toLowerCase() === 'lure')) {
+        raritySet.add('Lure')
+      }
+
+      if (rawType.includes('headbutt')) {
+        raritySet.add('Headbutt')
+      }
+
+      if (encounter.is_horde_5x === true) {
+        raritySet.add('Horde 5x')
+      }
+
+      if (encounter.is_horde_3x === true) {
+        raritySet.add('Horde 3x')
+      }
+    })
+
+    return raritySet
+  }
+
+  const getEncounterTypeForPokemon = (pokemonName, locationSearch, selectedSeason) => {
     const lookupName = nameAliasMap[pokemonName] || pokemonName
     const pokemonDetails = pokemonData[lookupName] || {}
     const encounters = pokemonDetails.location_area_encounters || []
-    const normalizedSearch = locationSearch.toLowerCase().replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
+    const normalizedSearch = normalizeLocationValue(locationSearch)
     
     const matchingEncounters = encounters.filter(encounter => {
-      if (!encounter.location || !encounter.region_name) return false
-      const locationText = `${encounter.location} ${encounter.region_name}`.toLowerCase()
-      return locationText.includes(normalizedSearch)
+      if (!encounter.region_name) return false
+      const locationName = getEncounterLocationName(encounter)
+      if (!locationName) return false
+      const locationText = normalizeLocationValue(`${locationName} ${encounter.region_name}`)
+      return locationText.includes(normalizedSearch) && matchesSelectedSeason(encounter, selectedSeason)
     })
 
     const encounterTypes = new Set()
     matchingEncounters.forEach(encounter => {
-      const type = (encounter.type || '').toLowerCase()
-      const rarity = (encounter.rarity || '').toLowerCase()
-      
-      if (rarity === 'horde') {
+      if (isHordeEncounter(encounter)) {
         encounterTypes.add('Horde')
       }
-      if (rarity === 'lure' || type === 'lure') {
+      if (isLureEncounter(encounter)) {
         encounterTypes.add('Lure Encounters')
       }
-      if (['very common', 'common', 'uncommon', 'rare', 'very rare'].includes(rarity) && !type.includes('rod') && !type.includes('fishing') && type !== 'headbutt') {
+      if (isSingleEncounter(encounter)) {
         encounterTypes.add('Singles')
       }
-      if (type.includes('rod') || type.includes('fishing')) {
+      if (isFishingEncounter(encounter)) {
         encounterTypes.add('Fishing Encounters')
       }
-      if (type === 'headbutt') {
+      if (isHeadbuttEncounter(encounter)) {
         encounterTypes.add('Headbutt')
       }
-      if (type.includes('special') || rarity === 'special') {
+      if (isSpecialEncounter(encounter)) {
         encounterTypes.add('Special')
       }
     })
@@ -178,61 +313,59 @@ export default function Pokedex() {
     return descriptions[type] || ''
   }
 
-  const convertTimeString = (timeStr) => {
-    if (!timeStr) return timeStr
-    
-    return timeStr
-      .replace(/SEASON0/g, 'Summer')
-      .replace(/SEASON1/g, 'Spring')
-      .replace(/SEASON2/g, 'Autumn')
-      .replace(/SEASON3/g, 'Winter')
+  const isMeaningfulRarity = (value) => {
+    const text = String(value || '').trim()
+    if (!text) return false
+    const normalized = text.toLowerCase()
+    return normalized !== '--' && normalized !== '---' && normalized !== 'n/a' && normalized !== 'none'
   }
 
-  const getEncounterDetailsForPokemon = (pokemonName, locationSearch, encounterType) => {
+  const getEncounterRarityDisplay = (matchingEncounters) => {
+    const periodValues = {
+      Morning: new Set(),
+      Day: new Set(),
+      Night: new Set()
+    }
+
+    matchingEncounters.forEach(encounter => {
+      if (isMeaningfulRarity(encounter.rarity_morning)) periodValues.Morning.add(String(encounter.rarity_morning).trim())
+      if (isMeaningfulRarity(encounter.rarity_day)) periodValues.Day.add(String(encounter.rarity_day).trim())
+      if (isMeaningfulRarity(encounter.rarity_night)) periodValues.Night.add(String(encounter.rarity_night).trim())
+    })
+
+    const parts = []
+    if (periodValues.Morning.size > 0) parts.push(`M ${Array.from(periodValues.Morning).join('/')}`)
+    if (periodValues.Day.size > 0) parts.push(`D ${Array.from(periodValues.Day).join('/')}`)
+    if (periodValues.Night.size > 0) parts.push(`N ${Array.from(periodValues.Night).join('/')}`)
+    return parts.join(' • ')
+  }
+
+  const getEncounterDetailsForPokemon = (pokemonName, locationSearch, encounterType, selectedSeason) => {
     const lookupName = nameAliasMap[pokemonName] || pokemonName
     const pokemonDetails = pokemonData[lookupName] || {}
     const encounters = pokemonDetails.location_area_encounters || []
-    const normalizedSearch = locationSearch.toLowerCase().replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
+    const normalizedSearch = normalizeLocationValue(locationSearch)
     
     let matchingEncounters = encounters.filter(encounter => {
-      if (!encounter.location || !encounter.region_name) return false
-      const locationText = `${encounter.location} ${encounter.region_name}`.toLowerCase()
-      return locationText.includes(normalizedSearch)
+      if (!encounter.region_name) return false
+      const locationName = getEncounterLocationName(encounter)
+      if (!locationName) return false
+      const locationText = normalizeLocationValue(`${locationName} ${encounter.region_name}`)
+      return locationText.includes(normalizedSearch) && matchesSelectedSeason(encounter, selectedSeason)
     })
 
     if (encounterType === 'Horde') {
-      matchingEncounters = matchingEncounters.filter(e => (e.rarity || '').toLowerCase() === 'horde')
+      matchingEncounters = matchingEncounters.filter(e => isHordeEncounter(e))
     } else if (encounterType === 'Lure Encounters') {
-      matchingEncounters = matchingEncounters.filter(e => {
-        const rarity = (e.rarity || '').toLowerCase()
-        const type = (e.type || '').toLowerCase()
-        return rarity === 'lure' || type === 'lure'
-      })
+      matchingEncounters = matchingEncounters.filter(e => isLureEncounter(e))
     } else if (encounterType === 'Singles') {
-      matchingEncounters = matchingEncounters.filter(e => {
-        const rarity = (e.rarity || '').toLowerCase()
-        const type = (e.type || '').toLowerCase()
-        return ['very common', 'common', 'uncommon', 'rare', 'very rare'].includes(rarity)
-          && !type.includes('rod')
-          && !type.includes('fishing')
-          && type !== 'headbutt'
-      })
+      matchingEncounters = matchingEncounters.filter(e => isSingleEncounter(e))
     } else if (encounterType === 'Fishing Encounters') {
-      matchingEncounters = matchingEncounters.filter(e => {
-        const type = (e.type || '').toLowerCase()
-        return type.includes('rod') || type.includes('fishing')
-      })
+      matchingEncounters = matchingEncounters.filter(e => isFishingEncounter(e))
     } else if (encounterType === 'Headbutt') {
-      matchingEncounters = matchingEncounters.filter(e => {
-        const type = (e.type || '').toLowerCase()
-        return type === 'headbutt'
-      })
+      matchingEncounters = matchingEncounters.filter(e => isHeadbuttEncounter(e))
     } else if (encounterType === 'Special') {
-      matchingEncounters = matchingEncounters.filter(e => {
-        const rarity = (e.rarity || '').toLowerCase()
-        const type = (e.type || '').toLowerCase()
-        return type.includes('special') || rarity === 'special'
-      })
+      matchingEncounters = matchingEncounters.filter(e => isSpecialEncounter(e))
     }
 
     const rarities = new Set()
@@ -248,7 +381,7 @@ export default function Pokedex() {
     const rodOrder = ['super rod', 'good rod', 'old rod']
     
     matchingEncounters.forEach(encounter => {
-      const rarity = (encounter.rarity || '').toLowerCase()
+      const rarity = String(encounter.rarity || '').toLowerCase().trim()
       const type = (encounter.type || '').toLowerCase()
       const region = (encounter.region_name || '').toLowerCase()
       
@@ -312,23 +445,13 @@ export default function Pokedex() {
       grassTypes.push(rodLabel)
     }
     
-    let time = 'ALL'
-    const timeValues = new Set()
-    matchingEncounters.forEach(encounter => {
-      if (encounter.time && encounter.time !== 'ALL') {
-        timeValues.add(encounter.time)
-      }
-    })
+    const encounterRarityDisplay = getEncounterRarityDisplay(matchingEncounters)
 
-    if (timeValues.size > 0) {
-      time = Array.from(timeValues)[0]
-    }
-    
     return {
       rarities: Array.from(rarities),
       primaryRarity,
       grassTypes,
-      time,
+      encounterRarityDisplay,
       dangerousWarnings: getDangerousPokemonWarnings(pokemonDetails, matchingEncounters)
     }
   }
@@ -345,44 +468,96 @@ export default function Pokedex() {
   }
 
   const locationIndex = useMemo(() => {
-    const index = new Map()
-    Object.entries(pokemonData).forEach(([key, details]) => {
-      const encounters = details.location_area_encounters || []
-      const locationText = encounters
-        .map(loc => [loc.location, loc.region_name, loc.type].filter(Boolean).join(' '))
-        .join(' ')
-        .toLowerCase()
-      const raritySet = new Set()
-      encounters.forEach(encounter => {
-        const rawType = (encounter.type || '').toLowerCase()
-        const rawRarity = encounter.rarity || ''
-        if (rawRarity) raritySet.add(formatRarityKey(rawRarity))
-        if (rawType.includes('rod')) raritySet.add('fishing')
-        if(rawType.includes(`fossil`)) raritySet.add('Fossil')
-        if(rawType.includes(`headbutt`)) raritySet.add('Headbutt')
+  const index = new Map()
+
+  Object.entries(pokemonData).forEach(([key, details]) => {
+    const encounters = details.location_area_encounters || []
+
+    const locationSearchTargets = encounters
+      .map(encounter => {
+        const locationName = getEncounterLocationName(encounter)
+        if (!locationName || !encounter.region_name) return ''
+        return normalizeLocationValue(`${locationName} ${encounter.region_name}`)
       })
-      if (locationText || raritySet.size) {
-        index.set(key, {
-          locationText,
-          raritySet
-        })
+      .filter(Boolean)
+
+    const locationText = locationSearchTargets.join(' ')
+
+    const raritySet = new Set()
+
+    encounters.forEach(encounter => {
+      const rawType = (encounter.type || '').toLowerCase()
+
+      // Fishing
+      if (rawType.includes('rod')) {
+        raritySet.add('Fishing')
+      }
+
+      // Lure
+      const rarities = [
+        encounter.rarity_morning,
+        encounter.rarity_day,
+        encounter.rarity_night
+      ]
+
+      if (rarities.some(rarity => rarity === 'Lure')) {
+        raritySet.add('Lure')
+      }
+
+      // Headbutt
+      if (rawType.includes('headbutt')) {
+        raritySet.add('Headbutt')
+      }
+
+      // Horde 5x
+      if (encounter.is_horde_5x === true) {
+        raritySet.add('Horde 5x')
+      }
+
+      // Horde 3x
+      if (encounter.is_horde_3x === true) {
+        raritySet.add('Horde 3x')
       }
     })
-    return index
-  }, [])
-  const rarityOptions = useMemo(() => {
-    const options = new Set()
-    locationIndex.forEach(entry => {
-      if (!entry) return
-      entry.raritySet.forEach(value => options.add(value))
+
+    if (locationText || raritySet.size) {
+      index.set(key, {
+        locationText,
+        locationSearchTargets,
+        raritySet
+      })
+    }
+  })
+
+  return index
+}, [pokemonData])
+
+const rarityOptions = useMemo(() => {
+  const options = new Set()
+
+  locationIndex.forEach(entry => {
+    if (!entry || !entry.raritySet) return
+
+    entry.raritySet.forEach(value => {
+      options.add(value)
     })
-    const sorted = Array.from(options).sort((a, b) => {
-      if (a === 'fishing') return 1
-      if (b === 'fishing') return -1
-      return a.localeCompare(b)
-    })
-    return ['all', ...sorted]
-  }, [locationIndex])
+  })
+
+  const sorted = Array.from(options).sort((a, b) => {
+    const order = [
+      'Fishing',
+      'Lure',
+      'Headbutt',
+      'Horde 5x',
+      'Horde 3x'
+    ]
+
+    return order.indexOf(a) - order.indexOf(b)
+  })
+
+  return ['all', ...sorted]
+}, [locationIndex])
+
   const tierOptions = useMemo(() => {
     const tiers = Object.keys(tierPokemon || {})
     const sorted = tiers.sort((a, b) => {
@@ -464,8 +639,9 @@ export default function Pokedex() {
     Object.entries(pokemonData).forEach(([_, details]) => {
       const encounters = details.location_area_encounters || []
       encounters.forEach(encounter => {
-        if (encounter.location && encounter.region_name) {
-          const locationText = `${encounter.location} - ${encounter.region_name}`
+        const locationName = getEncounterLocationName(encounter)
+        if (locationName && encounter.region_name) {
+          const locationText = `${locationName} - ${encounter.region_name}`
           options.add(locationText)
         }
       })
@@ -551,11 +727,12 @@ export default function Pokedex() {
     if (statMinimums.spAtk && statMinimums.spAtk !== '0') next.set('spa', statMinimums.spAtk)
     if (statMinimums.spDef && statMinimums.spDef !== '0') next.set('spd', statMinimums.spDef)
     if (statMinimums.speed && statMinimums.speed !== '0') next.set('spe', statMinimums.speed)
+    if (selectedSeason) next.set('season', selectedSeason)
     if (mode !== 'shiny') next.set('mode', mode)
     if (hideComplete) next.set('hideComplete', '1')
     if (synergyDataToggle) next.set('synergy', '1')
     setSearchParams(next, { replace: true })
-  }, [search, locationSearch, abilitySearch, selectedRarities, selectedTiers, selectedEggGroups, eggGroupMatchMode, selectedTypes, filterAlpha, movesToFilterBy, statMinimums, mode, hideComplete, synergyDataToggle, setSearchParams])
+  }, [search, locationSearch, abilitySearch, selectedRarities, selectedTiers, selectedEggGroups, eggGroupMatchMode, selectedTypes, filterAlpha, movesToFilterBy, statMinimums, selectedSeason, mode, hideComplete, synergyDataToggle, setSearchParams])
 
   useEffect(() => {
     const handleResize = () => {
@@ -656,7 +833,8 @@ export default function Pokedex() {
       movesToFilterBy.some(m => m.trim()) ||
       abilitySearch.trim() ||
       Object.values(statMinimums).some(v => v && v !== '0') ||
-      locationSearch.trim()
+      locationSearch.trim() ||
+      selectedSeason
     )
   }
 
@@ -672,8 +850,9 @@ export default function Pokedex() {
     if (filterAlpha) count++
     if (movesToFilterBy.some(m => m.trim())) count++
     if (Object.values(statMinimums).some(v => v && v !== '0')) count++
+    if (selectedSeason) count++
     return count
-  }, [searchTerm, locationSearch, selectedRarities, selectedTiers, selectedEggGroups, selectedTypes, abilitySearch, filterAlpha, movesToFilterBy, statMinimums])
+  }, [searchTerm, locationSearch, selectedRarities, selectedTiers, selectedEggGroups, selectedTypes, abilitySearch, filterAlpha, movesToFilterBy, statMinimums, selectedSeason])
 
   const shouldHideUnobtainable = () => {
     if (selectedEggGroups.some(group => group.toLowerCase() === 'legendary')) {
@@ -683,35 +862,37 @@ export default function Pokedex() {
   }
 
   const matchesStatSearch = (pokemonDetails, hideUnobtainable = true) => {
-    if (hideUnobtainable && pokemonDetails.obtainable === false) return false
-
-    const statsArray = pokemonDetails.stats || []
-    const statsMap = {}
-    statsArray.forEach(stat => {
-      statsMap[stat.stat_name] = stat.base_stat
-    })
-
-    const statNameMap = {
-      'hp': 'hp',
-      'attack': 'attack',
-      'defense': 'defense',
-      'spAtk': 'special-attack',
-      'spDef': 'special-defense',
-      'speed': 'speed'
-    }
-
-    for (const [statKey, minValue] of Object.entries(statMinimums)) {
-      if (minValue === '' || minValue === '0') continue
-      
-      const minimum = parseInt(minValue, 10)
-      if (!Number.isFinite(minimum)) continue
-      
-      const pokemonStat = statsMap[statNameMap[statKey]] || 0
-      if (pokemonStat < minimum) return false
-    }
-    
-    return true
+  if (hideUnobtainable && pokemonDetails.obtainable === false) {
+    return false
   }
+
+  const stats = pokemonDetails.stats || {}
+
+  const statNameMap = {
+    hp: 'hp',
+    attack: 'attack',
+    defense: 'defense',
+    spAtk: 'special-attack',
+    spDef: 'special-defense',
+    speed: 'speed'
+  }
+
+  for (const [statKey, minValue] of Object.entries(statMinimums)) {
+    if (minValue === '' || minValue === '0') continue
+
+    const minimum = parseInt(minValue, 10)
+    if (!Number.isFinite(minimum)) continue
+
+    const statName = statNameMap[statKey]
+    const pokemonStat = Number(stats[statName]) || 0
+
+    if (pokemonStat < minimum) {
+      return false
+    }
+  }
+
+  return true
+}
 
   const clearAllFilters = () => {
     setSearch('')
@@ -726,6 +907,7 @@ export default function Pokedex() {
     setLocationSearch('')
     setLocationSearchInput('')
     setLocationSuggestions([])
+    setSelectedSeason('')
     setStatMinimums({
       hp: '',
       attack: '',
@@ -893,6 +1075,22 @@ export default function Pokedex() {
 
             {/* MID ROW: Tiers + Egg Groups + Ability/Alpha */}
             <div className={styles.filterMidRow}>
+              {/* Season */}
+              <div className={styles.filterSection}>
+                <h4 className={styles.filterSectionTitle}>Season</h4>
+                <select
+                  value={selectedSeason}
+                  onChange={(e) => setSelectedSeason(e.target.value)}
+                  className={styles.filterEssentialSelect}
+                >
+                  <option value="">All Seasons</option>
+                  <option value="Spring">Spring</option>
+                  <option value="Summer">Summer</option>
+                  <option value="Autumn">Autumn</option>
+                  <option value="Winter">Winter</option>
+                </select>
+              </div>
+
               {/* Tiers */}
               <div className={styles.filterSection}>
                 <h4 className={styles.filterSectionTitle}>Tiers</h4>
@@ -1163,6 +1361,9 @@ export default function Pokedex() {
               if (isLegendaryOrMythical) return
             }
 
+            const matchingEncounters = getFilteredEncountersForPokemon(pokemonDetails, locationSearch, selectedSeason)
+            if (selectedSeason && matchingEncounters.length === 0) return
+
             const isComplete = mode === 'shiny' ? speciesCompleteSet.has(lowerName) : globalShinies.has(lowerName)
             
             if (searchTerm) {
@@ -1172,12 +1373,11 @@ export default function Pokedex() {
               if (!matchesSearch) return
             }
             if (locationSearch.trim()) {
-              const locationText = locationEntry?.locationText || ''
-              const normalizedSearch = locationSearch.toLowerCase().replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
-              if (!locationText.includes(normalizedSearch)) return
+              if (matchingEncounters.length === 0) return
             }
             if (selectedRarities.length > 0) {
-              const matchesRarity = selectedRarities.some(value => locationEntry.raritySet.has(value))
+              const filteredRaritySet = getRaritySetFromEncounters(matchingEncounters)
+              const matchesRarity = selectedRarities.some(value => filteredRaritySet.has(value))
               if (!matchesRarity) return
             }
             if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return
@@ -1312,6 +1512,9 @@ export default function Pokedex() {
                   if (isLegendaryOrMythical) return
                 }
 
+                const matchingEncounters = getFilteredEncountersForPokemon(pokemonDetails, locationSearch, selectedSeason)
+                if (selectedSeason && matchingEncounters.length === 0) return
+
                 const isComplete = mode === 'shiny' ? globalShinies.has(lowerName) : globalShinies.has(lowerName)
                 if (hideComplete && isComplete) return
                 if (searchTerm) {
@@ -1319,12 +1522,11 @@ export default function Pokedex() {
                   if (!matchesSearch) return
                 }
                 
-                const locationText = locationEntry?.locationText || ''
-                const normalizedSearch = locationSearch.toLowerCase().replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
-                if (!locationText.includes(normalizedSearch)) return
+                if (locationSearch.trim() && matchingEncounters.length === 0) return
                 
                 if (selectedRarities.length > 0) {
-                  const matchesRarity = selectedRarities.some(value => locationEntry.raritySet.has(value))
+                  const filteredRaritySet = getRaritySetFromEncounters(matchingEncounters)
+                  const matchesRarity = selectedRarities.some(value => filteredRaritySet.has(value))
                   if (!matchesRarity) return
                 }
                 if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return
@@ -1367,7 +1569,7 @@ export default function Pokedex() {
                 
                 if (!matchesStatSearch(pokemonDetails, shouldHideUnobtainable())) return
 
-                const encounterTypes = getEncounterTypeForPokemon(normalized, locationSearch)
+                const encounterTypes = getEncounterTypeForPokemon(normalized, locationSearch, selectedSeason)
                 encounterTypes.forEach(type => {
                   let targetType = type
                   if (type === 'Singles') {
@@ -1379,13 +1581,13 @@ export default function Pokedex() {
                   if (!encounterTypeMap[targetType]) {
                     encounterTypeMap[targetType] = []
                   }
-                  const details = getEncounterDetailsForPokemon(normalized, locationSearch, type)
+                  const details = getEncounterDetailsForPokemon(normalized, locationSearch, type, selectedSeason)
                   encounterTypeMap[targetType].push({
                     name: pokemon,
                     rarities: details.rarities,
                     primaryRarity: details.primaryRarity,
                     grassTypes: details.grassTypes,
-                    time: details.time,
+                    encounterRarityDisplay: details.encounterRarityDisplay,
                     dangerousWarnings: details.dangerousWarnings
                   })
                 })
@@ -1393,7 +1595,6 @@ export default function Pokedex() {
             })
 
             const { routeName, regionName } = parseLocationSearch(locationSearch)
-            const routePercentData = getRouteEncounterPercentData(encounterRoutes, regionName, { name: routeName })
             const rotationState = getAlteringCaveRotationState()
 
             if (isAlteringCaveSearch(locationSearch)) {
@@ -1408,6 +1609,8 @@ export default function Pokedex() {
                 const pokemonEggGroups = eggGroupIndex.get(lookupName) || []
 
                 if (synergyDataToggle && (details.is_legendary || details.is_mythical)) return false
+
+                if (!pokemonSpawnsInSelectedSeason(details, selectedSeason)) return false
 
                 const lowerName = pokemon.name.toLowerCase()
                 const isComplete = globalShinies.has(lowerName)
@@ -1561,12 +1764,24 @@ export default function Pokedex() {
               <div key="route-header" style={{ marginBottom: '20px', paddingBottom: '12px', borderBottom: '2px solid rgba(102, 126, 234, 0.5)' }}>
                 <h1 style={{ fontSize: '1.5rem', color: '#ea66cd', margin: '0 0 4px 0' }}>{routeName}</h1>
                 <p style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.6)', margin: '0' }}>{regionName}</p>
+                <div className={styles.routeSeasonPicker}>
+                  {['All', 'Spring', 'Summer', 'Autumn', 'Winter'].map(season => (
+                    <button
+                      key={season}
+                      type="button"
+                      className={`${styles.routeSeasonButton} ${(season === 'All' ? selectedSeason === '' : selectedSeason === season) ? styles.routeSeasonButtonActive : ''}`}
+                      onClick={() => setSelectedSeason(season === 'All' ? '' : season)}
+                      aria-pressed={season === 'All' ? selectedSeason === '' : selectedSeason === season}
+                    >
+                      {season}
+                    </button>
+                  ))}
+                </div>
               </div>,
               ...encounterTypeOrder
                 .filter(type => encounterTypeMap[type] && encounterTypeMap[type].length > 0)
                 .map(type => {
                   let pokemonList = encounterTypeMap[type]
-                  const showPercentForType = shouldShowPokemonEncounterPercent(routePercentData, type)
                 if (type === 'Singles' || type === 'Rares') {
                   const rarityOrder = ['very common', 'common', 'uncommon', 'rare', 'very rare']
                   pokemonList = [...pokemonList].sort((a, b) => {
@@ -1588,231 +1803,175 @@ export default function Pokedex() {
                   </div>
                   <div className={styles.locationGrid}>
                     {pokemonList.map((pokemonData, idx) => {
-                      const pokemon = pokemonData.name
-                      const normalized = normalizePokemonName(pokemon)
-                      const lowerName = pokemon.toLowerCase()
-                      const isComplete = globalShinies.has(lowerName)
-                      const percentLabel = showPercentForType
-                        ? getPokemonEncounterPercentLabel(routePercentData, pokemon)
-                        : ''
-                      
-                      const showRarityInfo = type === 'Singles' || type === 'Rares'
-                      const primaryRarity = pokemonData.rarities && pokemonData.rarities[0]
-                      const hasMultipleGrassTypes = pokemonData.grassTypes && pokemonData.grassTypes.length > 1
-                      const dangerousWarnings = pokemonData.dangerousWarnings || []
-                      const dangerousWarningTitle = formatDangerousPokemonWarningTitle(dangerousWarnings)
-                      
-                      const getTimeBasedStyle = () => {
-                        if (!pokemonData.time || pokemonData.time === 'ALL') {
-                          return {}
-                        }
-                        
-                        const baseTime = pokemonData.time.split('/').slice(0, 2).join('/')
-                        if (baseTime.toLowerCase().includes('night')) {
-                          return {
-                            backgroundColor: 'rgba(44, 62, 80, 0.15)',
-                            borderRadius: '4px',
-                            padding: '2px'
-                          }
-                        } else if (baseTime.toLowerCase().includes('day') || baseTime.toLowerCase().includes('morning')) {
-                          return {
-                            backgroundColor: 'rgba(255, 215, 0, 0.08)',
-                            borderRadius: '4px',
-                            padding: '2px'
-                          }
-                        }
-                        return {}
-                      }
+                              const pokemon = pokemonData.name
+                              const normalized = normalizePokemonName(pokemon)
+                              const lowerName = pokemon.toLowerCase()
+                              const isComplete = globalShinies.has(lowerName)
 
-                      return (
-                        <div
-                          key={`${type}-${pokemon}-${idx}`}
-                          className={styles.locationPokemonItem}
-                          style={{ position: 'relative', display: 'inline-block', ...getTimeBasedStyle() }}
-                        >
-                          {percentLabel && (
-                            <span className={styles.locationPercentBadge}>{percentLabel}</span>
-                          )}
+                              const showRarityInfo = type === 'Singles' || type === 'Rares'
+                              const primaryRarity = pokemonData.rarities && pokemonData.rarities[0]
+                              const hasMultipleGrassTypes = pokemonData.grassTypes && pokemonData.grassTypes.length > 1
+                              const dangerousWarnings = pokemonData.dangerousWarnings || []
+                              const dangerousWarningTitle = formatDangerousPokemonWarningTitle(dangerousWarnings)
 
-                          {dangerousWarnings.length > 0 && (
-                            <span className={styles.dangerousPokemonBadge}>
-                              {dangerousWarnings.length === 1 ? dangerousWarnings[0].name : `${dangerousWarnings.length} Warnings`}
-                            </span>
-                          )}
-
-                          {hasMultipleGrassTypes && (
-                            <div style={{
-                              position: 'absolute',
-                              top: '-2px',
-                              left: '50%',
-                              transform: 'translateX(-50%)',
-                              width: '1px',
-                              height: '54px',
-                              background: 'linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.3))',
-                              zIndex: 0
-                            }} />
-                          )}
-                          
-                          {(pokemonData.grassTypes && pokemonData.grassTypes.length > 0 || (showRarityInfo && primaryRarity)) && (
-                            <div style={{
-                              position: 'absolute',
-                              top: '100%',
-                              marginTop: '4px',
-                              left: '50%',
-                              transform: 'translateX(-50%)',
-                              whiteSpace: 'nowrap',
-                              fontSize: '0.78rem',
-                              color: 'rgba(255, 255, 255, 0.8)',
-                              textAlign: 'center',
-                              width: '75px',
-                              paddingLeft: '4px',
-                              paddingRight: '4px'
-                            }}>
-                              {showRarityInfo && primaryRarity && (
-                                <div style={{
-                                  color: getRarityColor(primaryRarity),
-                                  fontWeight: 'bold',
-                                  fontSize: '0.78rem'
-                                }}>
-                                  {primaryRarity.replace(/\b\w/g, l => l.toUpperCase())}
-                                </div>
-                              )}
-                              {(pokemonData.grassTypes || []).map((grassType, gIdx) => {
-                                let color = '#90EE90' // Default to light green
-                                let fontSize = '0.78rem'
-                                
-                                if (grassType === 'Dark Grass') color = '#FFB6C1'
-                                else if (grassType === 'Both Grass') { color = '#87CEEB'; fontSize = '0.85rem' }
-                                else if (grassType === 'Pheno') color = '#DDA0DD'
-                                else if (grassType === 'Water') color = '#4DA6FF'
-                                else if (grassType === 'Super Rod') color = '#FF8C00'
-                                else if (grassType === 'Good Rod') color = '#20B2AA'
-                                else if (grassType === 'Old Rod') color = '#D3D3D3'
-                                else if (grassType === 'Headbutt') color = '#FFB347' // Pastel Orange
-                                else if (grassType === 'Rock Smash') color = '#C0C0C0' // Silver
-                                
-                                return (
-                                  <div key={gIdx} style={{
-                                    color,
-                                    fontWeight: 'bold',
-                                    fontSize
-                                  }}>
-                                    {grassType}
-                                  </div>
-                                )
-                              })}
-                            </div>
-                          )}
-                          
-                          <div 
-                            className={styles.pokemonContainer}
-                            onClick={() => navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}/`)}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}/`)
-                              }
-                            }}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <img
-                              src={API.pokemonSprite(normalized)}
-                              alt={pokemon}
-                              className={`${styles.pokemon} ${
-                                synergyDataToggle
-                                  ? (isComplete ? styles.complete : styles.incomplete)
-                                  : styles.complete
-                              }`}
-                              width="50"
-                              height="50"
-                              loading="lazy"
-                              onError={onGifError(normalized)}
-                              data-dangerous-warning={dangerousWarningTitle}
-                              style={{ position: 'relative', zIndex: 1 }}
-                            />
-                          </div>
-                          
-                          {pokemonData.time && pokemonData.time !== 'ALL' && (
-                            (() => {
-                              const displayTime = convertTimeString(pokemonData.time)
-                              const visibleGrassTypes = (pokemonData.grassTypes || []).length
-                              const rarityLineCount = (showRarityInfo && primaryRarity) ? 1 : 0
-                              const grassTypeHeight = (visibleGrassTypes + rarityLineCount) > 0 ? (visibleGrassTypes + rarityLineCount) * 18 : 0
-                              const bottomPosition = -(22 + grassTypeHeight + 8)
-                              let backgroundColor = '#FFD700'
-                              let textColor = '#000'
-
-                              if (pokemonData.time.toLowerCase().includes('night')) {
-                                backgroundColor = '#2c3e50'
-                                textColor = '#e0e0e0'
-                              } else if (pokemonData.time.toLowerCase().includes('day') || pokemonData.time.toLowerCase().includes('morning')) {
-                                backgroundColor = '#FFD700'
-                                textColor = '#000'
-                              }
-                              
                               return (
-                                <div style={{
-                                  position: 'absolute',
-                                  bottom: `${bottomPosition}px`,
-                                  left: '50%',
-                                  transform: 'translateX(-50%)',
-                                  fontSize: '0.65rem',
-                                  fontWeight: 'bold',
-                                  color: textColor,
-                                  backgroundColor: backgroundColor,
-                                  padding: '4px 8px',
-                                  borderRadius: '4px',
-                                  border: '1px solid rgba(0,0,0,0.3)',
-                                  boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
-                                  zIndex: 2,
-                                  width: 'auto',
-                                  whiteSpace: 'normal',
-                                  textAlign: 'center',
-                                  minWidth: '55px',
-                                  maxWidth: '110px',
-                                  lineHeight: '1.2'
-                                }}>
-                                  {displayTime}
+                                <div
+                                  key={`${type}-${pokemon}-${idx}`}
+                                  className={styles.locationPokemonItem}
+                                  style={{ position: 'relative', display: 'inline-block' }}
+                                >
+                                  {dangerousWarnings.length > 0 && (
+                                    <span className={styles.dangerousPokemonBadge}>
+                                      {dangerousWarnings.length === 1 ? dangerousWarnings[0].name : `${dangerousWarnings.length} Warnings`}
+                                    </span>
+                                  )}
+
+                                  {hasMultipleGrassTypes && (
+                                    <div style={{
+                                      position: 'absolute',
+                                      top: '-2px',
+                                      left: '50%',
+                                      transform: 'translateX(-50%)',
+                                      width: '1px',
+                                      height: '54px',
+                                      background: 'linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.3))',
+                                      zIndex: 0
+                                    }} />
+                                  )}
+
+                                  {(pokemonData.grassTypes && pokemonData.grassTypes.length > 0 || (showRarityInfo && primaryRarity)) && (
+                                    <div style={{
+                                      position: 'absolute',
+                                      top: '100%',
+                                      marginTop: '4px',
+                                      left: '50%',
+                                      transform: 'translateX(-50%)',
+                                      whiteSpace: 'nowrap',
+                                      fontSize: '0.78rem',
+                                      color: 'rgba(255, 255, 255, 0.8)',
+                                      textAlign: 'center',
+                                      width: '75px',
+                                      paddingLeft: '4px',
+                                      paddingRight: '4px'
+                                    }}>
+                                      {showRarityInfo && primaryRarity && (
+                                        <div style={{
+                                          color: getRarityColor(primaryRarity),
+                                          fontWeight: 'bold',
+                                          fontSize: '0.78rem'
+                                        }}>
+                                          {primaryRarity.replace(/\b\w/g, l => l.toUpperCase())}
+                                        </div>
+                                      )}
+                                      {(pokemonData.grassTypes || []).map((grassType, gIdx) => {
+                                        let color = '#90EE90'
+                                        let fontSize = '0.78rem'
+
+                                        if (grassType === 'Dark Grass') color = '#FFB6C1'
+                                        else if (grassType === 'Both Grass') { color = '#87CEEB'; fontSize = '0.85rem' }
+                                        else if (grassType === 'Pheno') color = '#DDA0DD'
+                                        else if (grassType === 'Water') color = '#4DA6FF'
+                                        else if (grassType === 'Super Rod') color = '#FF8C00'
+                                        else if (grassType === 'Good Rod') color = '#20B2AA'
+                                        else if (grassType === 'Old Rod') color = '#D3D3D3'
+                                        else if (grassType === 'Headbutt') color = '#FFB347'
+                                        else if (grassType === 'Rock Smash') color = '#C0C0C0'
+
+                                        return (
+                                          <div key={gIdx} style={{
+                                            color,
+                                            fontWeight: 'bold',
+                                            fontSize
+                                          }}>
+                                            {grassType}
+                                          </div>
+                                        )
+                                      })}
+                                    </div>
+                                  )}
+
+                                  {pokemonData.encounterRarityDisplay && (
+                                    <div style={{
+                                      position: 'absolute',
+                                      top: '-18px',
+                                      left: '50%',
+                                      transform: 'translateX(-50%)',
+                                      fontSize: '0.62rem',
+                                      fontWeight: '700',
+                                      whiteSpace: 'nowrap',
+                                      color: 'rgba(255, 255, 255, 0.92)',
+                                      backgroundColor: 'rgba(10, 12, 24, 0.88)',
+                                      border: '1px solid rgba(125, 190, 255, 0.45)',
+                                      borderRadius: '4px',
+                                      padding: '2px 6px',
+                                      zIndex: 3
+                                    }}>
+                                      {pokemonData.encounterRarityDisplay}
+                                    </div>
+                                  )}
+
+                                  <div
+                                    className={styles.pokemonContainer}
+                                    onClick={() => navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}/`)}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' || e.key === ' ') {
+                                        navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}/`)
+                                      }
+                                    }}
+                                    style={{ cursor: 'pointer' }}
+                                  >
+                                    <img
+                                      src={API.pokemonSprite(normalized)}
+                                      alt={pokemon}
+                                      className={`${styles.pokemon} ${
+                                        synergyDataToggle
+                                          ? (isComplete ? styles.complete : styles.incomplete)
+                                          : styles.complete
+                                      }`}
+                                      width="50"
+                                      height="50"
+                                      loading="lazy"
+                                      onError={onGifError(normalized)}
+                                      data-dangerous-warning={dangerousWarningTitle}
+                                      style={{ position: 'relative', zIndex: 1 }}
+                                    />
+                                  </div>
+
+                                  {pokemonData.grassTypes && pokemonData.grassTypes.some(gt => gt.includes('Rod')) && (
+                                    (() => {
+                                      const rodType = pokemonData.grassTypes.find(gt => gt.includes('Rod'))
+                                      const rodImageMap = {
+                                        'Super Rod': 'super_rod.png',
+                                        'Good Rod': 'good_rod.png',
+                                        'Old Rod': 'old_rod.png'
+                                      }
+                                      const imageName = rodImageMap[rodType]
+                                      return imageName ? (
+                                        <img
+                                          src={`/images/${imageName}`}
+                                          alt={rodType}
+                                          style={{
+                                            position: 'absolute',
+                                            bottom: '0',
+                                            right: '0',
+                                            width: '24px',
+                                            height: '24px',
+                                            objectFit: 'contain',
+                                            zIndex: 3,
+                                            backgroundColor: 'rgba(0,0,0,0.3)',
+                                            borderRadius: '2px',
+                                            padding: '2px'
+                                          }}
+                                          onError={(e) => { e.target.style.display = 'none' }}
+                                        />
+                                      ) : null
+                                    })()
+                                  )}
                                 </div>
                               )
-                            })()
-                          )}
-                          
-                          
-                          {pokemonData.grassTypes && pokemonData.grassTypes.some(gt => gt.includes('Rod')) && (
-                            (() => {
-                              const rodType = pokemonData.grassTypes.find(gt => gt.includes('Rod'))
-                              const rodImageMap = {
-                                'Super Rod': 'super_rod.png',
-                                'Good Rod': 'good_rod.png',
-                                'Old Rod': 'old_rod.png'
-                              }
-                              const imageName = rodImageMap[rodType]
-                              return imageName ? (
-                                <img
-                                  src={`/images/${imageName}`}
-                                  alt={rodType}
-                                  style={{
-                                    position: 'absolute',
-                                    bottom: '0',
-                                    right: '0',
-                                    width: '24px',
-                                    height: '24px',
-                                    objectFit: 'contain',
-                                    zIndex: 3,
-                                    backgroundColor: 'rgba(0,0,0,0.3)',
-                                    borderRadius: '2px',
-                                    padding: '2px'
-                                  }}
-                                  onError={(e) => { e.target.style.display = 'none' }}
-                                />
-                              ) : null
-                            })()
-                          )}
-                        </div>
-                      )
-                    })}
+                            })}
                   </div>
                 </div>
               )
@@ -1860,6 +2019,9 @@ export default function Pokedex() {
                 if (isLegendaryOrMythical) return false
               }
 
+              const matchingEncounters = getFilteredEncountersForPokemon(pokemonDetails, locationSearch, selectedSeason)
+              if (selectedSeason && matchingEncounters.length === 0) return false
+
               const isComplete = mode === 'shiny' ? speciesCompleteSet.has(lowerName) : globalShinies.has(lowerName)
               if (hideComplete && isComplete) return false
               if (searchTerm) {
@@ -1870,7 +2032,8 @@ export default function Pokedex() {
               }
               if (filterAlpha && pokemonDetails.alpha !== 'yes') return false
               if (selectedRarities.length > 0) {
-                const matchesRarity = selectedRarities.some(value => locationEntry.raritySet.has(value))
+                const filteredRaritySet = getRaritySetFromEncounters(matchingEncounters)
+                const matchesRarity = selectedRarities.some(value => filteredRaritySet.has(value))
                 if (!matchesRarity) return false
               }
               if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return false

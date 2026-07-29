@@ -19,6 +19,61 @@ function normalize(value) {
   return String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '')
 }
 
+const POKEMON_ENTRIES = Object.entries(pokemonData)
+
+const POKEMON_KEY_BY_NORMALIZED_NAME = (() => {
+  const map = new Map()
+
+  POKEMON_ENTRIES.forEach(([key, pokemon]) => {
+    map.set(normalize(key), key)
+    map.set(normalize(pokemon?.name), key)
+  })
+
+  return map
+})()
+
+function resolvePokemonKey(name) {
+  if (!name) return null
+  if (pokemonData[name]) return name
+  return POKEMON_KEY_BY_NORMALIZED_NAME.get(normalize(name)) || null
+}
+
+const EVOLUTION_RELATIONS = (() => {
+  const parentByKey = new Map()
+
+  POKEMON_ENTRIES.forEach(([key, pokemon]) => {
+    const parentName = pokemon?.evolves_from_species?.name
+    const parentKey = resolvePokemonKey(parentName)
+    if (parentKey) parentByKey.set(key, parentKey)
+  })
+
+  // Fallback for datasets that only include forward evolutions.
+  POKEMON_ENTRIES.forEach(([key, pokemon]) => {
+    ;(pokemon?.evolutions || []).forEach((evo) => {
+      const childKey = resolvePokemonKey(evo?.name)
+      if (childKey && !parentByKey.has(childKey)) {
+        parentByKey.set(childKey, key)
+      }
+    })
+  })
+
+  const childrenByKey = new Map()
+  POKEMON_ENTRIES.forEach(([key]) => childrenByKey.set(key, []))
+
+  parentByKey.forEach((parent, child) => {
+    if (!childrenByKey.has(parent)) childrenByKey.set(parent, [])
+    childrenByKey.get(parent).push(child)
+  })
+
+  return { parentByKey, childrenByKey }
+})()
+
+function getPokemonKey(pokemon, fallbackKey = null) {
+  if (fallbackKey) return fallbackKey
+  const namedKey = resolvePokemonKey(pokemon?.name)
+  return namedKey
+}
+
 function formatEggGroup(group) {
   const lower = String(group || '').toLowerCase()
   if (lower === 'watera') return 'Water A'
@@ -43,8 +98,14 @@ function isEggMove(move) {
 }
 
 function canBreed(pokemon) {
-  const groups = pokemon?.egg_groups || []
-  return groups.length > 0 && !groups.includes('no-eggs') && !groups.includes('ditto')
+  const groups = (pokemon?.egg_groups || []).map((group) => String(group || '').toLowerCase())
+  return (
+    groups.length > 0 &&
+    !groups.includes('no-eggs') &&
+    !groups.includes('cannot-breed') &&
+    !groups.includes('undiscovered') &&
+    !groups.includes('ditto')
+  )
 }
 
 function sharedEggGroups(a, b) {
@@ -79,19 +140,46 @@ function findShortestDepth(targetKey, moveName, naturalSources, neighbors) {
 
   return Infinity
 }
-function collectChainNames(chain, names = []) {
-  if (!chain?.species?.name) return names
-  names.push(chain.species.name)
-  ;(chain.evolves_to || []).forEach((next) => collectChainNames(next, names))
+function getFamilyNames(pokemon, fallbackKey = null) {
+  const key = getPokemonKey(pokemon, fallbackKey)
+  if (!key) return []
+
+  const base = getBaseFamilyName(pokemon, key)
+  if (!base) return [key]
+
+  const names = []
+  const seen = new Set()
+  const queue = [base]
+
+  while (queue.length) {
+    const current = queue.shift()
+    if (!current || seen.has(current)) continue
+    seen.add(current)
+    names.push(current)
+
+    ;(EVOLUTION_RELATIONS.childrenByKey.get(current) || []).forEach((child) => {
+      if (!seen.has(child)) queue.push(child)
+    })
+  }
+
   return names
 }
 
-function getFamilyNames(pokemon) {
-  return collectChainNames(pokemon?.evolution_chain?.chain, [])
-}
+function getBaseFamilyName(pokemon, fallbackKey = null) {
+  const key = getPokemonKey(pokemon, fallbackKey)
+  if (!key) return null
 
-function getBaseFamilyName(pokemon) {
-  return pokemon?.evolution_chain?.chain?.species?.name || null
+  let base = key
+  const seen = new Set([base])
+
+  while (EVOLUTION_RELATIONS.parentByKey.has(base)) {
+    const parent = EVOLUTION_RELATIONS.parentByKey.get(base)
+    if (!parent || seen.has(parent)) break
+    seen.add(parent)
+    base = parent
+  }
+
+  return base
 }
 
 function getMoveMethods(pokemon, moveName) {
@@ -138,7 +226,7 @@ function sortByName(a, b) {
 function buildPokemonList() {
   return Object.entries(pokemonData)
     .map(([key, pokemon]) => {
-      const eggMoves = (pokemon?.moves || []).filter(isEggMove)
+      const eggMoves = buildEggMoveOptions(pokemon, key)
       if (eggMoves.length === 0) return null
 
       return {
@@ -151,13 +239,19 @@ function buildPokemonList() {
     .sort(sortByName)
 }
 
-function buildEggMoveOptions(pokemon) {
+function buildEggMoveOptions(pokemon, pokemonKey = null) {
+  const familyNames = getFamilyNames(pokemon, pokemonKey)
+  const candidateKeys = familyNames.length > 0 ? familyNames : [getPokemonKey(pokemon, pokemonKey)].filter(Boolean)
   const moveMap = new Map()
-  ;(pokemon?.moves || []).forEach((move) => {
-    if (isEggMove(move)) {
-      moveMap.set(getMoveKey(move), move.name)
-    }
+
+  candidateKeys.forEach((key) => {
+    ;(pokemonData[key]?.moves || []).forEach((move) => {
+      if (isEggMove(move)) {
+        moveMap.set(getMoveKey(move), move.name)
+      }
+    })
   })
+
   return Array.from(moveMap.values()).sort((a, b) => a.localeCompare(b))
 }
 
@@ -165,7 +259,7 @@ function findTargetReceiver(targetKey, moveName) {
   const target = pokemonData[targetKey]
   if (!target) return null
 
-  const baseName = getBaseFamilyName(target)
+  const baseName = getBaseFamilyName(target, targetKey)
   // If the base form can learn the move as an egg move, use it as the receiver
   if (baseName && hasEggMove(pokemonData[baseName], moveName)) {
     return {
@@ -174,7 +268,7 @@ function findTargetReceiver(targetKey, moveName) {
     }
   }
   // Otherwise, find the lowest evolution in the family that can learn the move
-  const familyNames = getFamilyNames(target)
+  const familyNames = getFamilyNames(target, targetKey)
   const uniqueFamilyNames = Array.from(new Set([baseName, ...familyNames, targetKey].filter(Boolean)))
   const lowestReceiver = uniqueFamilyNames.find((name) => hasEggMove(pokemonData[name], moveName))
   if (!lowestReceiver) return null
@@ -195,14 +289,14 @@ function buildTransferGraph(moveName) {
   entries.forEach(({ key, pokemon }) => {
     const method = getNaturalMoveMethod(pokemon, moveName)
     if (!method) return
-    const baseName = getBaseFamilyName(pokemon)
+    const baseName = getBaseFamilyName(pokemon, key)
     if (!baseName) return
     // If base can learn, only allow base
     if (getNaturalMoveMethod(pokemonData[baseName], moveName)) {
       familyLowestSources.set(baseName, { key: baseName, pokemon: pokemonData[baseName], method: getNaturalMoveMethod(pokemonData[baseName], moveName) })
     } else {
       // Otherwise, find the lowest in the family that can learn it naturally
-      const familyNames = getFamilyNames(pokemon)
+      const familyNames = getFamilyNames(pokemon, key)
       const uniqueFamilyNames = Array.from(new Set([baseName, ...familyNames, key].filter(Boolean)))
       const lowest = uniqueFamilyNames.find((name) => {
       const method = getNaturalMoveMethod(pokemonData[name], moveName)
@@ -218,14 +312,14 @@ function buildTransferGraph(moveName) {
   const familyLowestReceivers = new Map()
   entries.forEach(({ key, pokemon }) => {
     if (!hasEggMove(pokemon, moveName)) return
-    const baseName = getBaseFamilyName(pokemon)
+    const baseName = getBaseFamilyName(pokemon, key)
     if (!baseName) return
     // If base can learn, only allow base
     if (hasEggMove(pokemonData[baseName], moveName)) {
       familyLowestReceivers.set(baseName, baseName)
     } else {
       // Otherwise, find the lowest in the family that can learn it
-      const familyNames = getFamilyNames(pokemon)
+      const familyNames = getFamilyNames(pokemon, key)
       const uniqueFamilyNames = Array.from(new Set([baseName, ...familyNames, key].filter(Boolean)))
       const lowest = uniqueFamilyNames.find((name) => hasEggMove(pokemonData[name], moveName))
       if (lowest) familyLowestReceivers.set(baseName, lowest)
@@ -315,8 +409,8 @@ function findMoveChains(targetKey, moveName) {
         // Only allow the receiver to be the base or lowest evolution that can learn the move
         if (edge.to === receiver.key) return true
         // Prevent showing chains to higher evolutions in the same family
-        const receiverBase = getBaseFamilyName(pokemonData[receiver.key])
-        const edgeBase = getBaseFamilyName(pokemonData[edge.to])
+        const receiverBase = getBaseFamilyName(pokemonData[receiver.key], receiver.key)
+        const edgeBase = getBaseFamilyName(pokemonData[edge.to], edge.to)
         return edgeBase !== receiverBase
       })
       .sort((a, b) => {
@@ -370,7 +464,7 @@ export default function EggMoveCalculator() {
   const defaultPokemon = pokemonData.blastoise ? 'blastoise' : pokemonList[0]?.key || ''
   const [selectedPokemon, setSelectedPokemon] = useState(defaultPokemon)
   const selectedData = pokemonData[selectedPokemon]
-  const eggMoves = useMemo(() => buildEggMoveOptions(selectedData), [selectedData])
+  const eggMoves = useMemo(() => buildEggMoveOptions(selectedData, selectedPokemon), [selectedData, selectedPokemon])
   const defaultMove = eggMoves.includes('Water Spout') ? 'Water Spout' : eggMoves[0] || ''
   const [selectedMove, setSelectedMove] = useState(defaultMove)
 
@@ -413,7 +507,7 @@ export default function EggMoveCalculator() {
                   className={styles.searchResultItem}
                   onClick={() => {
                     const nextPokemon = pokemon.key
-                    const nextMoves = buildEggMoveOptions(pokemonData[nextPokemon])
+                    const nextMoves = buildEggMoveOptions(pokemonData[nextPokemon], nextPokemon)
 
                     setSelectedPokemon(nextPokemon)
                     setSelectedMove(

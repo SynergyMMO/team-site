@@ -93,8 +93,7 @@ const POKEMON_ENCOUNTER_FALLBACK_BY_NAME = POKEMON_VALUES.reduce((acc, pokemon) 
     if (Number.isFinite(maxLevel)) summary.levels.push(maxLevel)
 
     summary.encounterTypes.add(String(encounter?.type || ''))
-    summary.rarityTypes.add(String(encounter?.rarity || ''))
-    summary.times.add(String(encounter?.time || 'ALL'))
+    addEncounterRarityAndTimes(summary, encounter)
   })
 
   acc[pokemon.name] = summary
@@ -128,6 +127,40 @@ function titleCase(value) {
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
+}
+
+function getEncounterLocationName(encounter) {
+  return titleCase(String(
+    encounter?.location
+      || encounter?.location_name_full
+      || encounter?.location_name
+      || ''
+  ))
+}
+
+function addEncounterRarityAndTimes(summary, encounter) {
+  const legacyRarity = String(encounter?.rarity || '').trim()
+  if (legacyRarity) {
+    summary.rarityTypes.add(legacyRarity)
+  }
+
+  const legacyTime = String(encounter?.time || '').trim()
+  if (legacyTime) {
+    summary.times.add(legacyTime)
+  }
+
+  ;['morning', 'day', 'night'].forEach((period) => {
+    const value = String(encounter?.[`rarity_${period}`] || '').trim()
+    if (!value) return
+    if (normalizeKey(value) === 'none') return
+
+    summary.rarityTypes.add(value)
+    summary.times.add(period.toUpperCase())
+  })
+
+  if (!summary.times.size) {
+    summary.times.add('ALL')
+  }
 }
 
 function toValidDate(year, month, day) {
@@ -581,26 +614,40 @@ function toStarLabel(scoreOutOf100) {
 }
 
 function getSpeedStat(pokemon) {
+  if (pokemon?.stats && !Array.isArray(pokemon.stats)) {
+    return Number(pokemon.stats.speed) || 0
+  }
+
   const stats = Array.isArray(pokemon?.stats) ? pokemon.stats : []
   const speed = stats.find((entry) => String(entry?.stat_name).toLowerCase() === 'speed')
   return Number(speed?.base_stat) || 0
 }
 
 function getWeightKg(pokemon) {
-  const rawValue = Number(pokemon?.weight ?? pokemon?.weightKg ?? pokemon?.weight_kg)
-  if (Number.isFinite(rawValue) && rawValue > 0) {
-    return rawValue > 200 ? rawValue / 10 : rawValue
+  const rawKg = Number(pokemon?.weightKg ?? pokemon?.weight_kg)
+  if (Number.isFinite(rawKg) && rawKg > 0) {
+    return rawKg
   }
+
+  const rawWeight = Number(pokemon?.weight)
+  if (Number.isFinite(rawWeight) && rawWeight > 0) {
+    // PokeAPI-style weight is in hectograms; preserve decimal kg values if already provided.
+    return Number.isInteger(rawWeight) ? (rawWeight / 10) : rawWeight
+  }
+
   return 5
 }
 
 function getGenderRatios(pokemon) {
-  const rawRate = Number(pokemon?.gender_rate)
-  if (!Number.isFinite(rawRate) || rawRate < 0) {
+  const rawRate = Number(pokemon?.gender_rate ?? pokemon?.gender_ratio)
+  if (!Number.isFinite(rawRate) || rawRate < 0 || rawRate === 255) {
     return { male: 0.5, female: 0.5, genderless: true }
   }
 
-  const female = Math.max(0, Math.min(1, rawRate / 8))
+  const femaleRatio = rawRate <= 8
+    ? (rawRate / 8)
+    : (rawRate / 254)
+  const female = Math.max(0, Math.min(1, femaleRatio))
   const male = 1 - female
   return { male, female, genderless: false }
 }
@@ -613,6 +660,14 @@ function traverseEvolutionChain(node, visit) {
 }
 
 function hasMoonStoneEvolution(pokemon) {
+  const evolutions = Array.isArray(pokemon?.evolutions) ? pokemon.evolutions : []
+  const foundInEvolutions = evolutions.some((evolution) => {
+    if (normalizeKey(evolution?.type) !== 'item') return false
+    const itemName = normalizeKey(evolution?.item_name)
+    return itemName.includes('moon') || Number(evolution?.val) === 5081
+  })
+  if (foundInEvolutions) return true
+
   const chainRoot = pokemon?.evolution_chain?.chain
   let found = false
 
@@ -630,6 +685,13 @@ function hasMoonStoneEvolution(pokemon) {
 }
 
 function hasFriendshipEvolution(pokemon) {
+  const evolutions = Array.isArray(pokemon?.evolutions) ? pokemon.evolutions : []
+  const foundInEvolutions = evolutions.some((evolution) => {
+    const type = normalizeKey(evolution?.type)
+    return type.includes('happiness') || type.includes('friendship')
+  })
+  if (foundInEvolutions) return true
+
   const chainRoot = pokemon?.evolution_chain?.chain
   let found = false
 
@@ -719,7 +781,7 @@ function buildRouteEncounterIndex() {
     const encounters = Array.isArray(pokemon?.location_area_encounters) ? pokemon.location_area_encounters : []
     encounters.forEach((encounter) => {
       const regionName = titleCase(String(encounter?.region_name || ''))
-      const routeName = titleCase(String(encounter?.location || ''))
+      const routeName = getEncounterLocationName(encounter)
       if (!regionName || !routeName) return
 
       const key = getRouteMatchKey(regionName, routeName)
@@ -742,8 +804,7 @@ function buildRouteEncounterIndex() {
       if (Number.isFinite(maxLevel)) current.levels.push(maxLevel)
 
       current.encounterTypes.add(String(encounter?.type || ''))
-      current.rarityTypes.add(String(encounter?.rarity || ''))
-      current.times.add(String(encounter?.time || 'ALL'))
+      addEncounterRarityAndTimes(current, encounter)
 
       pokemonMap.set(pokemonName, current)
     })
@@ -765,7 +826,7 @@ function buildAllRouteUniverse(encounterMethod) {
       if (isSpecialEncounterType(encounterType) && pokemonSlug !== 'feebas') return
 
       const region = titleCase(String(encounter?.region_name || '').trim())
-      const routeName = titleCase(String(encounter?.location || '').trim())
+      const routeName = getEncounterLocationName(encounter)
       if (!region || !routeName) return
 
       const key = `${region}::${routeName}`
@@ -821,7 +882,9 @@ function getEncounterContext(routeEntry, pokemonName, routeEncounterIndex, pokem
   const rarityTypes = Array.from(encounter?.rarityTypes || [])
   const times = Array.from(encounter?.times || [])
 
-  const types = pokemonData[pokemonName].types
+  const types = Array.isArray(pokemon?.types)
+    ? pokemon.types
+    : (Array.isArray(pokemonData[pokemonName]?.types) ? pokemonData[pokemonName].types : [])
 
   return {
     level: estimateEncounterLevel(encounter),
@@ -1210,7 +1273,7 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
   const genderRatios = getGenderRatios(pokemon)
   const isNight = Boolean(options.forceNight)
   const types = pokemon?.types || []
-  const isGhost = types.includes("ghost")
+  const isGhost = types.some((type) => String(type).toLowerCase() === 'ghost')
   const isWater = encounterContext.variationCategory === 'fishing'
     || encounterContext.variationCategory === 'water'
     || encounterContext.encounterTypes.some((entry) => isWaterMethod(entry))
