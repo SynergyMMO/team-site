@@ -23,6 +23,7 @@ function InGameClockDisplay() {
         <div className={styles.clockTime}>{timeStr}</div>
         <div className={styles.clockDetails}>
           <span className={styles.clockDay}>{state.day}</span>
+          <span className={styles.clockDay}>{state.season}</span>
           <span className={`${styles.clockPeriod} ${styles[`period${state.period}`]}`}>{state.period}</span>
           <span className={styles.clockCountdown}>{countdownStr} until next period</span>
         </div>

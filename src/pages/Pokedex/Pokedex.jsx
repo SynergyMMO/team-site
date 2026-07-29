@@ -1081,7 +1081,7 @@ const rarityOptions = useMemo(() => {
                 <select
                   value={selectedSeason}
                   onChange={(e) => setSelectedSeason(e.target.value)}
-                  className={styles.filterEssentialSelect}
+                  className={`${styles.filterEssentialSelect} ${styles.seasonSelect}`}
                 >
                   <option value="">All Seasons</option>
                   <option value="Spring">Spring</option>
@@ -1769,6 +1769,7 @@ const rarityOptions = useMemo(() => {
                     <button
                       key={season}
                       type="button"
+                      data-season={season.toLowerCase()}
                       className={`${styles.routeSeasonButton} ${(season === 'All' ? selectedSeason === '' : selectedSeason === season) ? styles.routeSeasonButtonActive : ''}`}
                       onClick={() => setSelectedSeason(season === 'All' ? '' : season)}
                       aria-pressed={season === 'All' ? selectedSeason === '' : selectedSeason === season}

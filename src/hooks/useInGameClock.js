@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 
+const SEASONS_BY_MONTH = ['Spring', 'Summer', 'Autumn', 'Winter'];
+
 // Core in-game clock logic as a pure function
 function getInGameState(DAY_OFFSET = 0, IN_GAME_DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']) {
   const now = Date.now();
   const utcMinutes = now / 60000;
+  const currentUtcDate = new Date(now);
 
   const utcMidnight = Math.floor(utcMinutes / 1440) * 1440;
   const minsSinceMidnight = utcMinutes - utcMidnight;
@@ -26,12 +29,15 @@ function getInGameState(DAY_OFFSET = 0, IN_GAME_DAYS = ['Sunday','Monday','Tuesd
 
   const inGameDay = Math.floor(utcMinutes / 360);
   const dayIndex = (inGameDay + DAY_OFFSET) % 7;
+  const monthIndex = currentUtcDate.getUTCMonth();
+  const season = SEASONS_BY_MONTH[monthIndex % 4];
 
   return {
     hours,
     mins,
     period,
     day: IN_GAME_DAYS[dayIndex],
+    season,
     realMinsLeft,
   };
 }
