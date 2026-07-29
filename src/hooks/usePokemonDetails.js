@@ -261,38 +261,71 @@ export function usePokemonDetails(pokemonName) {
         return 'unknown'
       }
       
-      // Extract stats from the new stats object structure
-        const getStatValue = (statName, defaultValue = 50) => {
-        return pokemon.stats?.[statName] ?? defaultValue
+      // Resolve the base (default) Pokemon entry for inheriting missing fields on forms
+      const resolveBasePokemon = () => {
+        if (pokemon.is_default !== false) return null
+        if (Array.isArray(pokemon.varieties)) {
+          const defaultVariety = pokemon.varieties.find(v => v.is_default)
+          if (defaultVariety) {
+            const baseKey = normalizeSpeciesKey(defaultVariety.name)
+            return pokemonData[baseKey] || null
+          }
         }
+        return null
+      }
+      const basePokemon = resolveBasePokemon()
 
-        // Extract EV yields from the new yields object
-        const getEVYields = () => {
+      // Extract stats — handles both object format (base) and array format (form)
+      const getStatValue = (statName, defaultValue = 50) => {
+        if (pokemon.stats) {
+          // Base format: { hp: 50, attack: 65, ... }
+          if (!Array.isArray(pokemon.stats)) {
+            return pokemon.stats[statName] ?? defaultValue
+          }
+          // Form format: [{ stat_name: "hp", base_stat: 50 }, ...]
+          const apiNameMap = {
+            hp: 'hp',
+            attack: 'attack',
+            defense: 'defense',
+            sp_attack: 'special-attack',
+            sp_defense: 'special-defense',
+            speed: 'speed'
+          }
+          const apiName = apiNameMap[statName] || statName
+          const entry = pokemon.stats.find(s => s.stat_name === apiName)
+          if (entry) return entry.base_stat
+        }
+        return defaultValue
+      }
+
+      // Extract EV yields, falling back to base Pokemon if form lacks them
+      const getEVYields = () => {
         const evMap = {
-        ev_hp: 'HP',
-        ev_attack: 'ATK',
-        ev_defense: 'DEF',
-        ev_sp_attack: 'SP.ATK',
-        ev_sp_defense: 'SP.DEF',
-        ev_speed: 'SPE'
+          ev_hp: 'HP',
+          ev_attack: 'ATK',
+          ev_defense: 'DEF',
+          ev_sp_attack: 'SP.ATK',
+          ev_sp_defense: 'SP.DEF',
+          ev_speed: 'SPE'
         }
 
         const evYields = []
+        const yieldsSource = pokemon.yields || (basePokemon && basePokemon.yields)
 
-        if (pokemon.yields) {
-        Object.entries(evMap).forEach(([key, statName]) => {
-        const value = pokemon.yields[key]
-
-          if (value && value > 0) {
-            evYields.push({
-              stat: statName,
-              value: value
-            })
-          }
-        })}
+        if (yieldsSource) {
+          Object.entries(evMap).forEach(([key, statName]) => {
+            const value = yieldsSource[key]
+            if (value && value > 0) {
+              evYields.push({
+                stat: statName,
+                value: value
+              })
+            }
+          })
+        }
 
         return evYields
-        }
+      }
 
       
       // Format moves with learning methods
@@ -315,38 +348,46 @@ export function usePokemonDetails(pokemonName) {
       
       // Extract abilities with normal and hidden separation
       const abilities = {
-      normal: [],
-      hidden: []
+        normal: [],
+        hidden: []
       }
 
       if (Array.isArray(pokemon.abilities)) {
-      const seenAbilities = new Set()
+        // Detect format: form entries use { ability_name, is_hidden }, base uses { name }
+        const isFormFormat = pokemon.abilities.length > 0 && pokemon.abilities[0].ability_name !== undefined
 
-      // Remove duplicate abilities while preserving their original order
-      const uniqueAbilities = pokemon.abilities.filter(ability => {
-      const abilityName = ability.name || ''
+        if (isFormFormat) {
+          // Form format: [{ ability_name: "levitate", is_hidden: false, slot: 1 }, ...]
+          const seenAbilities = new Set()
+          pokemon.abilities.forEach(ability => {
+            const name = ability.ability_name || ''
+            if (!name || name === '--' || seenAbilities.has(name)) return
+            seenAbilities.add(name)
+            const formatted = name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+            if (ability.is_hidden) {
+              abilities.hidden.push(formatted)
+            } else {
+              abilities.normal.push(formatted)
+            }
+          })
+        } else {
+          // Base format: [{ name: "Chlorophyll" }, ...] — last unique is hidden
+          const seenAbilities = new Set()
+          const uniqueAbilities = pokemon.abilities.filter(ability => {
+            const abilityName = ability.name || ''
+            if (!abilityName || abilityName === '--' || seenAbilities.has(abilityName)) return false
+            seenAbilities.add(abilityName)
+            return true
+          })
 
-      if (!abilityName || seenAbilities.has(abilityName)) {
-        return false
-      }
-
-      seenAbilities.add(abilityName)
-      return true
-
-      })
-
-      // The last unique ability is the hidden ability
-      if (uniqueAbilities.length > 0) {
-      const hiddenAbility = uniqueAbilities[uniqueAbilities.length - 1]
-
-      abilities.hidden.push(hiddenAbility.name)
-
-      // All other unique abilities are normal abilities
-      uniqueAbilities.slice(0, -1).forEach(ability => {
-        abilities.normal.push(ability.name)
-      })
-
-      }
+          if (uniqueAbilities.length > 0) {
+            const hiddenAbility = uniqueAbilities[uniqueAbilities.length - 1]
+            abilities.hidden.push(hiddenAbility.name)
+            uniqueAbilities.slice(0, -1).forEach(ability => {
+              abilities.normal.push(ability.name)
+            })
+          }
+        }
       }
       
       // Get the correct ID for this Pokemon
@@ -429,8 +470,8 @@ export function usePokemonDetails(pokemonName) {
         id: pokedexId,
         name: pokemon.name,
         displayName: displayNameMap[normalizedName] || pokemonName,
-        height: pokemon.height || 0,
-        weight: pokemon.weight || 0,
+        height: pokemon.height || (basePokemon && basePokemon.height) || 0,
+        weight: pokemon.weight || (basePokemon && basePokemon.weight) || 0,
         types: (pokemon.types || []).filter(Boolean),
         abilities: abilities,
         stats: {
@@ -451,7 +492,11 @@ export function usePokemonDetails(pokemonName) {
         eggGroups: (pokemon.egg_groups || []).filter(Boolean),
         catchRate: pokemon.capture_rate || 0,
         hatchCounter: pokemon.hatch_counter || 0,
-        genderRate: pokemon.gender_ratio !== undefined ? pokemon.gender_ratio : 255,
+        genderRate: pokemon.gender_ratio !== undefined
+          ? pokemon.gender_ratio
+          : pokemon.gender_rate !== undefined
+            ? (pokemon.gender_rate === -1 ? 255 : Math.round(pokemon.gender_rate * (254 / 8)))
+            : (basePokemon && basePokemon.gender_ratio !== undefined ? basePokemon.gender_ratio : 255),
         isLegendary: pokemon.is_legendary || false,
         isMythical: pokemon.is_mythical || false,
         growthRate: pokemon.growth_rate || 'medium',
