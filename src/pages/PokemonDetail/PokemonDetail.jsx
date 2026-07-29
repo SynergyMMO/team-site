@@ -1376,34 +1376,41 @@ useDocumentHead({
           </div>
 
           {/* Abilities */}
-          <div className={styles.infoCard}>
-            <h2 className={styles.cardTitle}>Abilities</h2>
-            <div className={styles.abilityContainer}>
-              {pokemon.abilities.normal.length > 0 && (
-                <div>
-                  <h3 className={styles.abilitySubtitle}>Normal Abilities</h3>
-                  <ul className={styles.abilityList}>
-                    {pokemon.abilities.normal.map(ability => {
-                      const abilityInfo = getAbilityInfo(ability)
-                      const displayName = ability.replace('-', ' ')
-                      return (
-                        <li
-                          key={ability}
-                          className={styles.abilityItem}
-                          onMouseEnter={() => setHoveredAbility(ability)}
-                          onMouseLeave={() => setHoveredAbility(null)}
-                        >
-                          {displayName}
-                          {hoveredAbility === ability && abilityInfo && (
-                            <div className={styles.abilityTooltip}>
-                              {abilityInfo.effect}
-                            </div>
-                          )}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
+<div className={styles.infoCard}>
+  <h2 className={styles.cardTitle}>Abilities</h2>
+  <div className={styles.abilityContainer}>
+    {pokemon.abilities && pokemon.abilities.length > 0 && (
+      <div>
+        <h3 className={styles.abilitySubtitle}>Abilities</h3>
+
+        <ul className={styles.abilityList}>
+          {pokemon.abilities.map((ability, index) => {
+            const abilityName = ability?.name || ''
+            const abilityInfo = getAbilityInfo(abilityName)
+
+            const displayName = abilityName
+              .replace(/-/g, ' ')
+              .replace(/\b\w/g, char => char.toUpperCase())
+
+            return (
+              <li
+                key={ability.id ?? `${abilityName}-${index}`}
+                className={styles.abilityItem}
+                onMouseEnter={() => setHoveredAbility(abilityName)}
+                onMouseLeave={() => setHoveredAbility(null)}
+              >
+                {displayName}
+
+                {hoveredAbility === abilityName && abilityInfo && (
+                  <div className={styles.abilityTooltip}>
+                    {abilityInfo.effect}
+                  </div>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      </div>
               )}
               {pokemon.abilities.hidden.length > 0 && (
                 <div>
@@ -1848,12 +1855,12 @@ useDocumentHead({
                   <button
                     key={index}
                     className={styles.locationCard}
-                    onClick={() => navigate(`/pokedex/?location=${encodeURIComponent(`${location.location} - ${location.region_name}`)}`)}
-                    title={`Search for Pokémon at ${location.location}`}
+                    onClick={() => navigate(`/pokedex/?location=${encodeURIComponent(`${location.location_name_full} - ${location.region_name}`)}`)}
+                    title={`Search for Pokémon at ${location.location_name_full}`}
                   >
                     <div className={styles.locationHeader}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <h3 className={styles.locationName}>{location.location}</h3>
+                        <h3 className={styles.locationName}>{location.location_name_full}</h3>
                         {encounterIcon && <img style={{ width: '24px', height: '24px', marginLeft: 'auto' }} src={encounterIcon} alt={location.rarity} title={location.rarity} />}
                       </div>
                       <span className={styles.locationRegion}>{location.region_name}</span>
@@ -1863,7 +1870,7 @@ useDocumentHead({
                         <strong>Level:</strong> {location.min_level === location.max_level ? location.min_level : `${location.min_level}-${location.max_level}`}
                       </span>
                       <span className={styles.locationDetail}>
-                        <strong>Rarity:</strong> {location.rarity}
+                        <strong>Rarity:</strong> {location.rarity_morning || location.rarity_day || location.rarity_night}
                       </span>
                       <span className={styles.locationDetail}>
                         <strong>Time:</strong> {formatEncounterTime(location.time)}

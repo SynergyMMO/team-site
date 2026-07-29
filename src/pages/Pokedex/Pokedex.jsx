@@ -683,35 +683,37 @@ export default function Pokedex() {
   }
 
   const matchesStatSearch = (pokemonDetails, hideUnobtainable = true) => {
-    if (hideUnobtainable && pokemonDetails.obtainable === false) return false
-
-    const statsArray = pokemonDetails.stats || []
-    const statsMap = {}
-    statsArray.forEach(stat => {
-      statsMap[stat.stat_name] = stat.base_stat
-    })
-
-    const statNameMap = {
-      'hp': 'hp',
-      'attack': 'attack',
-      'defense': 'defense',
-      'spAtk': 'special-attack',
-      'spDef': 'special-defense',
-      'speed': 'speed'
-    }
-
-    for (const [statKey, minValue] of Object.entries(statMinimums)) {
-      if (minValue === '' || minValue === '0') continue
-      
-      const minimum = parseInt(minValue, 10)
-      if (!Number.isFinite(minimum)) continue
-      
-      const pokemonStat = statsMap[statNameMap[statKey]] || 0
-      if (pokemonStat < minimum) return false
-    }
-    
-    return true
+  if (hideUnobtainable && pokemonDetails.obtainable === false) {
+    return false
   }
+
+  const stats = pokemonDetails.stats || {}
+
+  const statNameMap = {
+    hp: 'hp',
+    attack: 'attack',
+    defense: 'defense',
+    spAtk: 'special-attack',
+    spDef: 'special-defense',
+    speed: 'speed'
+  }
+
+  for (const [statKey, minValue] of Object.entries(statMinimums)) {
+    if (minValue === '' || minValue === '0') continue
+
+    const minimum = parseInt(minValue, 10)
+    if (!Number.isFinite(minimum)) continue
+
+    const statName = statNameMap[statKey]
+    const pokemonStat = Number(stats[statName]) || 0
+
+    if (pokemonStat < minimum) {
+      return false
+    }
+  }
+
+  return true
+}
 
   const clearAllFilters = () => {
     setSearch('')
