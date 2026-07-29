@@ -317,50 +317,54 @@ function formatEvolutionDetails(details) {
   
   const parts = []
   
-  if (detail.trigger?.name) {
-    const triggerMap = {
-      'level-up': 'Level Up',
-      'use-item': 'Use Item',
-      'trade': 'Trade',
-      'shedding': 'Shedding',
-      'spin': 'Spin',
-      'tower-of-darkness': 'Tower of Darkness',
-      'tower-of-waters': 'Tower of Waters'
-    }
-    parts.push(triggerMap[detail.trigger.name] || detail.trigger.name)
-  }
-  
-  if (detail.min_level) {
-    parts.push(`at Level ${detail.min_level}`)
-  }
-  
-  if (detail.item?.name) {
-    const itemName = detail.item.name
-    const stoneMatch = itemName.match(/^Stone \((.+)\)$/)
-    const formattedItem = stoneMatch ? `${stoneMatch[1]} Stone` : itemName.replace('-', ' ')
-    parts.push(`with ${formattedItem}`)
+  // Format item name from JSON data (e.g. "Stone (Moon)" → "Moon Stone")
+  const formatItemName = (raw) => {
+    const trimmed = raw.trim()
+    const stoneMatch = trimmed.match(/^Stone \((.+)\)$/)
+    if (stoneMatch) return `${stoneMatch[1]} Stone`
+    // Strip parenthetical tags like (EVO), (ATK), (Steel), (DEF)
+    return trimmed.replace(/\s*\([^)]*\)/g, '').trim()
   }
 
-  if (detail.held_item?.name) {
-    // Strip parenthetical tags like (EVO), (ATK), (Steel), (DEF) from trade item names
-    const heldName = detail.held_item.name.replace(/\s*\([^)]*\)/g, '').trim()
-    parts.push(`holding ${heldName}`)
+  // For use-item evolutions, produce "Use Moon Stone" instead of "Use Item with Moon Stone"
+  if (detail.trigger?.name === 'use-item' && detail.item?.name) {
+    parts.push(`Use ${formatItemName(detail.item.name)}`)
+  } else {
+    if (detail.trigger?.name) {
+      const triggerMap = {
+        'level-up': 'Level Up',
+        'trade': 'Trade',
+        'shedding': 'Shedding',
+        'spin': 'Spin',
+        'tower-of-darkness': 'Tower of Darkness',
+        'tower-of-waters': 'Tower of Waters'
+      }
+      parts.push(triggerMap[detail.trigger.name] || detail.trigger.name)
+    }
+
+    if (detail.min_level) {
+      parts.push(`at Level ${detail.min_level}`)
+    }
+
+    if (detail.held_item?.name) {
+      parts.push(`holding ${formatItemName(detail.held_item.name)}`)
+    }
   }
-  
+
   if (detail.known_move) {
     parts.push(`knows ${detail.known_move}`)
   }
-  
+
   if (detail.min_happiness) {
-    parts.push(`with ${detail.min_happiness} happiness`)
+    parts.push(`Happiness`)
   }
-  
+
   if (detail.min_affection) {
     parts.push(`with ${detail.min_affection} affection`)
   }
-  
+
   if (detail.time_of_day && detail.time_of_day.length > 0) {
-    parts.push(`at ${detail.time_of_day}`)
+    parts.push(`(${detail.time_of_day})`)
   }
   
   return parts.length > 0 ? parts.join(' ') : 'Unknown'
