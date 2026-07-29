@@ -866,6 +866,48 @@
   padding: 0;
 }
 
+.seasonSection {
+  width: min(1080px, 100%);
+  margin: 0 auto 18px;
+  padding: 0 0 6px;
+  border: 1px solid rgba(127, 95, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(18, 16, 34, 0.42);
+}
+
+.seasonToggleButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(35, 24, 58, 0.65);
+  color: rgba(255, 255, 255, 0.92);
+  border: none;
+  border-bottom: 1px solid rgba(127, 95, 255, 0.25);
+  padding: 10px 14px;
+  border-radius: 10px 10px 0 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.seasonToggleButton:hover {
+  background: rgba(55, 34, 86, 0.72);
+}
+
+.seasonToggleButton span:first-child {
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.seasonToggleButton span:last-child {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
 @media (max-width: 900px) {
   .generationSection {
     margin: 32px 0;
@@ -930,6 +972,39 @@
   height: 2px;
   background: linear-gradient(90deg, transparent, rgba(127, 95, 255, 0.4), transparent);
   border-radius: 1px;
+}
+
+.routeSeasonPicker {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.routeSeasonButton {
+  border: 1px solid rgba(127, 95, 255, 0.4);
+  background: rgba(20, 10, 35, 0.65);
+  color: rgba(255, 255, 255, 0.86);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.routeSeasonButton:hover {
+  background: rgba(58, 36, 92, 0.75);
+  border-color: rgba(150, 120, 255, 0.7);
+}
+
+.routeSeasonButtonActive {
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.9), rgba(127, 95, 255, 0.9));
+  border-color: rgba(176, 221, 255, 0.95);
+  color: #ffffff;
 }
 
 .locationSearchInput {

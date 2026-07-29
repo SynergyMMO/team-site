@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
-import { useEncounterPercents } from '../../hooks/useEncounterPercents'
 import regionMapsData from '../../data/region_maps'
 import styles from './RegionMaps.module.css'
 import MapFilters from './components/MapFilters'
@@ -14,7 +13,6 @@ import {
   getSpawnTypes,
   toggleValue,
 } from './components/mapHelpers'
-import { flattenEncounterRoutes } from '../../utils/routeEncounterPercents'
 
 const defaultRegionList = regionMapsData.regions
 const allRegionList = regionMapsData.allRegions || regionMapsData.regions
@@ -94,7 +92,6 @@ function normalizeRegionMaps(region) {
 }
 
 export default function RegionMaps() {
-  const { data: encounterPercents = {} } = useEncounterPercents()
   const [showAllRegions, setShowAllRegions] = useState(false)
   const regionList = showAllRegions ? allRegionList : defaultRegionList
   const [activeRegionId, setActiveRegionId] = useState(defaultRegionList[0].id)
@@ -102,7 +99,6 @@ export default function RegionMaps() {
   const [selectedAreaId, setSelectedAreaId] = useState(null)
   const [debugMode, setDebugMode] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const encounterRoutes = useMemo(() => flattenEncounterRoutes(encounterPercents), [encounterPercents])
 
   useDocumentHead({
     title: 'Interactive Region Maps - Pokemon Routes, Spawns, and POIs',
@@ -245,8 +241,6 @@ export default function RegionMaps() {
             onChangeDebugMode={setDebugMode}
           />
           <RouteDetailsPanel
-            encounterRoutes={encounterRoutes}
-            regionName={activeRegion.name}
             selectedArea={selectedArea}
             filteredSpawns={selectedAreaFilteredSpawns}
             matchingAreas={visibleAreas}

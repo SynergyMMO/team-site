@@ -2,6 +2,140 @@ import { useState, useEffect } from 'react'
 import pokemonData from '../data/pokemmo_data/pokemon-data.json'
 import spriteDataMap from '../data/pokemmo_data/pokemon-sprites.json'
 
+const DEFAULT_POKEMON_BY_ID = new Map()
+
+Object.entries(pokemonData).forEach(([key, value]) => {
+  if (!value || typeof value !== 'object') return
+  if (!Number.isFinite(value.id)) return
+
+  const isDefault = value.is_default !== false
+  if (isDefault || !DEFAULT_POKEMON_BY_ID.has(value.id)) {
+    DEFAULT_POKEMON_BY_ID.set(value.id, key)
+  }
+})
+
+function normalizeSpeciesKey(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[.']/g, '')
+}
+
+function resolveEvolutionTargetKey(evolution = {}) {
+  if (Number.isFinite(evolution.id) && DEFAULT_POKEMON_BY_ID.has(evolution.id)) {
+    return DEFAULT_POKEMON_BY_ID.get(evolution.id)
+  }
+
+  const normalized = normalizeSpeciesKey(evolution.name)
+  if (pokemonData[normalized]) {
+    return normalized
+  }
+
+  return null
+}
+
+function mapEvolutionDetail(evolution = {}) {
+  const type = String(evolution.type || '').toUpperCase()
+  const value = evolution.val
+  const detail = {}
+
+  switch (type) {
+    case 'LEVEL':
+    case 'LEVEL_FEMALE':
+    case 'LEVEL_MALE':
+      detail.trigger = { name: 'level-up' }
+      if (Number.isFinite(value)) detail.min_level = value
+      break
+    case 'ITEM':
+    case 'ITEM_FEMALE':
+    case 'ITEM_MALE':
+      detail.trigger = { name: 'use-item' }
+      if (value) detail.item = { name: String(value) }
+      break
+    case 'TRADE':
+    case 'TRADE_FOR_OPPOSITE':
+      detail.trigger = { name: 'trade' }
+      break
+    case 'TRADE_WITH_ITEM':
+      detail.trigger = { name: 'trade' }
+      if (value) detail.held_item = { name: String(value) }
+      break
+    case 'HAPPINESS':
+    case 'HAPPINESS_DAY':
+    case 'HAPPINESS_NIGHT':
+      detail.trigger = { name: 'level-up' }
+      detail.min_happiness = 220
+      if (type === 'HAPPINESS_DAY') detail.time_of_day = 'day'
+      if (type === 'HAPPINESS_NIGHT') detail.time_of_day = 'night'
+      break
+    case 'LEVEL_WITH_MONSTER':
+    case 'LEVEL_WITH_SKILL':
+      detail.trigger = { name: 'level-up' }
+      if (Number.isFinite(value)) detail.min_level = value
+      break
+    default:
+      detail.trigger = { name: type.toLowerCase().replace(/_/g, '-') || 'level-up' }
+      if (Number.isFinite(value)) detail.min_level = value
+      break
+  }
+
+  return detail
+}
+
+function buildEvolutionChainFromData(speciesKey) {
+  if (!speciesKey || !pokemonData[speciesKey]) {
+    return null
+  }
+
+  const visitedRoots = new Set()
+  let rootKey = speciesKey
+
+  while (pokemonData[rootKey]?.evolves_from_species?.name) {
+    if (visitedRoots.has(rootKey)) break
+    visitedRoots.add(rootKey)
+
+    const previousKey = normalizeSpeciesKey(pokemonData[rootKey].evolves_from_species.name)
+    if (!pokemonData[previousKey]) break
+    rootKey = previousKey
+  }
+
+  const recursionGuard = new Set()
+  const buildNode = (nodeKey, evolutionDetail = null) => {
+    if (!pokemonData[nodeKey] || recursionGuard.has(nodeKey)) {
+      return null
+    }
+
+    recursionGuard.add(nodeKey)
+    const nodePokemon = pokemonData[nodeKey]
+
+    const node = {
+      species: { name: nodeKey },
+      evolution_details: evolutionDetail ? [evolutionDetail] : [],
+      evolves_to: []
+    }
+
+    const nextEvolutions = Array.isArray(nodePokemon.evolutions) ? nodePokemon.evolutions : []
+    node.evolves_to = nextEvolutions
+      .map((evolution) => {
+        const targetKey = resolveEvolutionTargetKey(evolution)
+        if (!targetKey) return null
+        return buildNode(targetKey, mapEvolutionDetail(evolution))
+      })
+      .filter(Boolean)
+
+    recursionGuard.delete(nodeKey)
+    return node
+  }
+
+  const rootNode = buildNode(rootKey)
+  if (!rootNode) return null
+
+  return {
+    chain: rootNode
+  }
+}
+
 /**
  * Hook to fetch detailed Pokémon information from local JSON files
  * Includes stats, abilities, moves, type, egg groups, locations, etc.
@@ -317,7 +451,7 @@ export function usePokemonDetails(pokemonName) {
         cries: pokemon.cries || { latest: '', legacy: '' },
         nameTranslations: pokemon.name_translations || {},
         varieties: pokemon.varieties || [],
-        evolution_chain: pokemon.evolution_chain || null
+        evolution_chain: pokemon.evolution_chain || buildEvolutionChainFromData(lookupName)
       }
       
       setData(formattedData)

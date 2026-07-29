@@ -1,6 +1,5 @@
 import styles from '../RegionMaps.module.css'
 import { getLocalPokemonGif, onGifError } from '../../../utils/pokemon'
-import { getPokemonEncounterPercentLabel, getRouteEncounterPercentData } from '../../../utils/routeEncounterPercents'
 import { getSpawnRarityValues } from './mapHelpers'
 
 const SPAWN_CATEGORIES = [
@@ -131,8 +130,7 @@ function formatEncounterSummary(spawn) {
   return [methodSummary, levelSummary, raritySummary].filter(Boolean).join(' - ')
 }
 
-function SpawnRow({ spawn, routePercentData }) {
-  const percentLabel = getPokemonEncounterPercentLabel(routePercentData, spawn.name)
+function SpawnRow({ spawn }) {
   const availabilityTags = getSpawnAvailabilityTags(spawn)
 
   return (
@@ -148,7 +146,6 @@ function SpawnRow({ spawn, routePercentData }) {
       </span>
       <span className={styles.spawnName}>
         {spawn.name}
-        {percentLabel && <span className={styles.spawnPercent}>{percentLabel}</span>}
         {availabilityTags.map((tag) => (
           <span key={tag} className={styles.spawnAvailabilityTag}>{tag}</span>
         ))}
@@ -188,8 +185,6 @@ function MatchingRouteList({ matchingAreas, selectedAreaId, onSelectArea }) {
 }
 
 export default function RouteDetailsPanel({
-  encounterRoutes,
-  regionName,
   selectedArea,
   filteredSpawns,
   matchingAreas = [],
@@ -210,7 +205,6 @@ export default function RouteDetailsPanel({
   }
 
   const spawnCategories = groupSpawnsByCategory(filteredSpawns)
-  const routePercentData = getRouteEncounterPercentData(encounterRoutes, regionName, selectedArea)
 
   return (
     <section className={styles.panelCard}>
@@ -229,7 +223,6 @@ export default function RouteDetailsPanel({
                   <SpawnRow
                     key={`${selectedArea.id}-${category.key}-${spawn.name}`}
                     spawn={spawn}
-                    routePercentData={routePercentData}
                   />
                 ))}
               </ul>

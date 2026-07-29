@@ -180,6 +180,55 @@ function formatEncounterTime(time) {
     .replace(/SEASON3/g, 'Winter')
 }
 
+function getGenderDistribution(genderRate, eggGroups = []) {
+  const numericRate = Number(genderRate)
+  const isGenderless = Number.isFinite(numericRate)
+    && numericRate >= 255
+    && eggGroups.some(group => String(group || '').toLowerCase() === 'genderless')
+
+  if (!Number.isFinite(numericRate) || numericRate < 0 || isGenderless) {
+    return {
+      isGenderless: true,
+      malePercent: 0,
+      femalePercent: 0
+    }
+  }
+
+  const clampedFemaleThreshold = Math.max(0, Math.min(255, Math.floor(numericRate)))
+  const femalePercentRaw = (clampedFemaleThreshold / 255) * 100
+  const malePercentRaw = ((255 - clampedFemaleThreshold) / 255) * 100
+
+  // The game ratio uses a threshold out of 255; show percentages floored to 1 decimal.
+  const toFlooredOneDecimal = (value) => Math.floor(value * 10) / 10
+
+  return {
+    isGenderless: false,
+    malePercent: toFlooredOneDecimal(malePercentRaw),
+    femalePercent: toFlooredOneDecimal(femalePercentRaw)
+  }
+}
+
+function normalizeHordePercent(rarityValue, location = {}) {
+  const text = String(rarityValue || '').trim()
+  if (!text) return text
+
+  const isHorde = location.is_horde_3x || location.is_horde_5x
+  if (!isHorde) return text
+
+  const match = text.match(/^(\d+(?:\.\d+)?)%$/)
+  if (!match) return text
+
+  const value = Number(match[1])
+  if (!Number.isFinite(value)) return text
+
+  const normalized = (value / 5) * 100
+  const normalizedText = Number.isInteger(normalized)
+    ? String(normalized)
+    : normalized.toFixed(1).replace(/\.0$/, '')
+
+  return `${normalizedText}%`
+}
+
 /**
  * Calculate combined type effectiveness for Pokemon with one or more types
  * Handles stacking weaknesses (2x + 2x = 4x), canceling resistances, and immunities
@@ -1042,6 +1091,7 @@ useDocumentHead({
     : { url: pokemon.sprite, label: pokemon.displayName, type: 'png', backUrl: pokemon.sprite }
   const currentSpriteUrl = showBack ? (currentSprite?.backUrl || currentSprite?.url) : currentSprite?.url
   const isSpriteLoaded = loadedSpriteUrl === currentSpriteUrl
+  const genderDistribution = getGenderDistribution(pokemon.genderRate, pokemon.eggGroups)
   
   const handlePrevious = () => {
     if (prevPokemon) {
@@ -1290,7 +1340,7 @@ useDocumentHead({
             {pokemon.genderRate !== undefined && (
               <div className={styles.basicInfoGenderSection}>
                 <span className={styles.basicInfoGenderLabel}>Gender Ratio</span>
-                {pokemon.genderRate === -1 ? (
+                {genderDistribution.isGenderless ? (
                   <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.95rem' }}>Genderless</div>
                 ) : (
                   <div className={styles.basicInfoGender}>
@@ -1300,12 +1350,12 @@ useDocumentHead({
                         <div 
                           className={styles.basicInfoGenderFill} 
                           style={{
-                            width: `${(8 - pokemon.genderRate) / 8 * 100}%`,
+                            width: `${genderDistribution.malePercent}%`,
                             backgroundColor: '#667eea'
                           }}
                         />
                       </div>
-                      <span className={styles.basicInfoGenderPercent}>{((8 - pokemon.genderRate) / 8 * 100).toFixed(1)}%</span>
+                      <span className={styles.basicInfoGenderPercent}>{genderDistribution.malePercent.toFixed(1)}%</span>
                     </div>
                     <div className={styles.basicInfoGenderRow}>
                       <span className={styles.basicInfoGenderLabel2}>♀ Female</span>
@@ -1313,12 +1363,12 @@ useDocumentHead({
                         <div 
                           className={styles.basicInfoGenderFill} 
                           style={{
-                            width: `${pokemon.genderRate / 8 * 100}%`,
+                            width: `${genderDistribution.femalePercent}%`,
                             backgroundColor: '#f085b3'
                           }}
                         />
                       </div>
-                      <span className={styles.basicInfoGenderPercent}>{(pokemon.genderRate / 8 * 100).toFixed(1)}%</span>
+                      <span className={styles.basicInfoGenderPercent}>{genderDistribution.femalePercent.toFixed(1)}%</span>
                     </div>
                   </div>
                 )}
@@ -1856,11 +1906,11 @@ location.rarity_night
 
 // Horde icons take priority
 if (location.is_horde_5x) {
-  return '/images/horde.png'
+  return '/5xhorde.png'
 }
 
 if (location.is_horde_3x) {
-  return '/images/horde.png'
+  return '/3xhorde.png'
 }
 
 // Check for lure
@@ -1965,6 +2015,10 @@ return ( <section className={styles.infoCard}> <h2 className={styles.cardTitle}>
                   }}
                   src={encounterIcon}
                   alt="Encounter type"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null
+                    event.currentTarget.src = '/images/horde.png'
+                  }}
                 />
               )}
             </div>
@@ -1996,7 +2050,7 @@ return ( <section className={styles.infoCard}> <h2 className={styles.cardTitle}>
               location.rarity_morning !== 'Unknown' && (
               <span className={styles.locationDetail}>
               <strong>Morning:</strong>{' '}
-              {location.rarity_morning}
+              {normalizeHordePercent(location.rarity_morning, location)}
               </span>
               )}
 
@@ -2006,7 +2060,7 @@ return ( <section className={styles.infoCard}> <h2 className={styles.cardTitle}>
               location.rarity_day !== 'Unknown' && (
               <span className={styles.locationDetail}>
               <strong>Day:</strong>{' '}
-              {location.rarity_day}
+              {normalizeHordePercent(location.rarity_day, location)}
               </span>
               )}
 
@@ -2016,7 +2070,7 @@ return ( <section className={styles.infoCard}> <h2 className={styles.cardTitle}>
               location.rarity_night !== 'Unknown' && (
               <span className={styles.locationDetail}>
               <strong>Night:</strong>{' '}
-              {location.rarity_night}
+              {normalizeHordePercent(location.rarity_night, location)}
               </span>
               )}
 
