@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
 const sourceConfigPath = path.join(rootDir, 'src/data/region_maps.json')
-const pokemonDataPath = path.join(rootDir, 'src/data/pokemmo_data/pokemon-data.json')
+const monstersDataPath = path.join(rootDir, 'src/data/pokemmo_data/new_data/monsters.json')
 const outputDir = path.join(rootDir, 'src/data/region_maps')
 
 const regionIds = ['kanto', 'johto', 'hoenn', 'sinnoh', 'unova']
@@ -72,39 +72,113 @@ function normalizeRegion(region) {
   }
 }
 
-function getPokemonArray(rawPokemonData) {
-  return Array.isArray(rawPokemonData) ? rawPokemonData : Object.values(rawPokemonData)
+const SEASON_MAP = {
+  Spring: 'SEASON0',
+  Summer: 'SEASON1',
+  Autumn: 'SEASON2',
+  Winter: 'SEASON3',
 }
 
-function getPokemonDisplayName(pokemon) {
-  return pokemon.displayName || titleCaseName(pokemon.name)
+function rarityPercentToLabel(rarityStr) {
+  if (!rarityStr || rarityStr === '--') return null
+  if (rarityStr === 'Lure') return 'Lure'
+  if (rarityStr === 'Special') return 'Special'
+
+  const pct = parseFloat(rarityStr)
+  if (Number.isNaN(pct)) return rarityStr
+
+  if (pct >= 20) return 'Very Common'
+  if (pct >= 10) return 'Common'
+  if (pct >= 5) return 'Uncommon'
+  if (pct >= 2) return 'Rare'
+  return 'Very Rare'
 }
 
-function getEncounterBuckets(pokemonData) {
+function buildTimeString(times, seasonCode) {
+  let base
+  if (times.length === 3) {
+    base = 'ALL'
+  } else {
+    base = times.join('/')
+  }
+  return seasonCode ? `${base}/${seasonCode}` : base
+}
+
+function buildEncounterEntries(encounter) {
+  const method = encounter.is_horde_3x
+    ? 'Horde (3x)'
+    : encounter.is_horde_5x
+      ? 'Horde (5x)'
+      : encounter.type
+
+  const isHorde = encounter.is_horde_3x || encounter.is_horde_5x
+  const seasonCode = SEASON_MAP[encounter.season] || null
+
+  const morningRarity = rarityPercentToLabel(encounter.rarity_morning)
+  const dayRarity = rarityPercentToLabel(encounter.rarity_day)
+  const nightRarity = rarityPercentToLabel(encounter.rarity_night)
+
+  const timeRarityMap = {}
+  if (morningRarity) timeRarityMap.Morning = morningRarity
+  if (dayRarity) timeRarityMap.Day = dayRarity
+  if (nightRarity) timeRarityMap.Night = nightRarity
+
+  const times = Object.keys(timeRarityMap)
+  if (times.length === 0) return []
+
+  // Group times by their rarity label
+  const byRarity = new Map()
+  for (const [time, rarity] of Object.entries(timeRarityMap)) {
+    if (!byRarity.has(rarity)) byRarity.set(rarity, [])
+    byRarity.get(rarity).push(time)
+  }
+
+  const entries = []
+  for (const [rarity, groupTimes] of byRarity) {
+    const finalRarity = isHorde ? 'Horde' : rarity
+    entries.push({
+      method,
+      minLevel: encounter.min_level,
+      maxLevel: encounter.max_level,
+      rarity: finalRarity,
+      time: buildTimeString(groupTimes, seasonCode),
+    })
+  }
+
+  return entries
+}
+
+function getEncounterBuckets(monstersData) {
   const buckets = new Map()
   const allByRegion = new Map()
 
-  for (const pokemon of pokemonData) {
-    for (const encounter of pokemon.location_area_encounters || []) {
-      const regionName = encounter.region_name
-      if (!regionName) continue
+  for (const pokemon of monstersData) {
+    const types = [...new Set((pokemon.types || []).map((t) => t.toLowerCase()))]
+    const name = pokemon.name
 
-      const normalized = normalizeLocation(encounter.location)
+    for (const encounter of pokemon.locations || []) {
+      const rawRegion = encounter.region_name
+      if (!rawRegion) continue
+
+      // Strip brackets: "[ Kanto ]" → "Kanto"
+      const regionName = rawRegion.replace(/^\[\s*|\s*\]$/g, '').trim()
+      const locationName = encounter.location_name
+      const normalized = normalizeLocation(locationName)
       if (!normalized) continue
+
+      const entries = buildEncounterEntries(encounter)
+      if (entries.length === 0) continue
+
+      const allRarities = [...new Set(entries.map((e) => e.rarity))]
+      const allMethods = [...new Set(entries.map((e) => e.method))]
 
       const spawn = {
         id: pokemon.id,
-        name: getPokemonDisplayName(pokemon),
-        types: pokemon.types || [],
-        rarities: [encounter.rarity],
-        methods: [encounter.type],
-        encounters: [{
-          method: encounter.type,
-          minLevel: encounter.min_level,
-          maxLevel: encounter.max_level,
-          rarity: encounter.rarity,
-          time: encounter.time,
-        }],
+        name,
+        types,
+        rarities: allRarities,
+        methods: allMethods,
+        encounters: entries,
       }
 
       const regionKey = regionName.toLowerCase()
@@ -115,8 +189,8 @@ function getEncounterBuckets(pokemonData) {
       if (!allByRegion.has(regionKey)) allByRegion.set(regionKey, new Map())
       if (!allByRegion.get(regionKey).has(normalized)) {
         allByRegion.get(regionKey).set(normalized, {
-          name: titleCaseName(encounter.location),
-          sourceLocation: encounter.location,
+          name: locationName,
+          sourceLocation: locationName,
           normalizedLocation: normalized,
           spawns: new Map(),
         })
@@ -239,8 +313,8 @@ function readSourceConfig() {
 }
 
 const sourceConfig = readSourceConfig()
-const pokemonData = getPokemonArray(JSON.parse(fs.readFileSync(pokemonDataPath, 'utf8')))
-const encounterBuckets = getEncounterBuckets(pokemonData)
+const monstersData = JSON.parse(fs.readFileSync(monstersDataPath, 'utf8'))
+const encounterBuckets = getEncounterBuckets(monstersData)
 
 fs.mkdirSync(outputDir, { recursive: true })
 
