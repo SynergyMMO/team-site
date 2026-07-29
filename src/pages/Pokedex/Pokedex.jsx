@@ -132,8 +132,8 @@ export default function Pokedex() {
     const normalizedSearch = locationSearch.toLowerCase().replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
     
     const matchingEncounters = encounters.filter(encounter => {
-      if (!encounter.location || !encounter.region_name) return false
-      const locationText = `${encounter.location} ${encounter.region_name}`.toLowerCase()
+      if (!encounter.location_name_full || !encounter.region_name) return false
+      const locationText = `${encounter.location_name_full} ${encounter.region_name}`.toLowerCase()
       return locationText.includes(normalizedSearch)
     })
 
@@ -345,44 +345,98 @@ export default function Pokedex() {
   }
 
   const locationIndex = useMemo(() => {
-    const index = new Map()
-    Object.entries(pokemonData).forEach(([key, details]) => {
-      const encounters = details.location_area_encounters || []
-      const locationText = encounters
-        .map(loc => [loc.location, loc.region_name, loc.type].filter(Boolean).join(' '))
+  const index = new Map()
+
+  Object.entries(pokemonData).forEach(([key, details]) => {
+    const encounters = details.location_area_encounters || []
+
+    const locationText = encounters
+      .map(loc => [
+        loc.location_name_full,
+        loc.location_name,
+        loc.region_name,
+        loc.type
+      ]
+        .filter(Boolean)
         .join(' ')
-        .toLowerCase()
-      const raritySet = new Set()
-      encounters.forEach(encounter => {
-        const rawType = (encounter.type || '').toLowerCase()
-        const rawRarity = encounter.rarity || ''
-        if (rawRarity) raritySet.add(formatRarityKey(rawRarity))
-        if (rawType.includes('rod')) raritySet.add('fishing')
-        if(rawType.includes(`fossil`)) raritySet.add('Fossil')
-        if(rawType.includes(`headbutt`)) raritySet.add('Headbutt')
-      })
-      if (locationText || raritySet.size) {
-        index.set(key, {
-          locationText,
-          raritySet
-        })
+      )
+      .join(' ')
+      .toLowerCase()
+
+    const raritySet = new Set()
+
+    encounters.forEach(encounter => {
+      const rawType = (encounter.type || '').toLowerCase()
+
+      // Fishing
+      if (rawType.includes('rod')) {
+        raritySet.add('Fishing')
+      }
+
+      // Lure
+      const rarities = [
+        encounter.rarity_morning,
+        encounter.rarity_day,
+        encounter.rarity_night
+      ]
+
+      if (rarities.some(rarity => rarity === 'Lure')) {
+        raritySet.add('Lure')
+      }
+
+      // Headbutt
+      if (rawType.includes('headbutt')) {
+        raritySet.add('Headbutt')
+      }
+
+      // Horde 5x
+      if (encounter.is_horde_5x === true) {
+        raritySet.add('Horde 5x')
+      }
+
+      // Horde 3x
+      if (encounter.is_horde_3x === true) {
+        raritySet.add('Horde 3x')
       }
     })
-    return index
-  }, [])
-  const rarityOptions = useMemo(() => {
-    const options = new Set()
-    locationIndex.forEach(entry => {
-      if (!entry) return
-      entry.raritySet.forEach(value => options.add(value))
+
+    if (locationText || raritySet.size) {
+      index.set(key, {
+        locationText,
+        raritySet
+      })
+    }
+  })
+
+  return index
+}, [pokemonData])
+
+const rarityOptions = useMemo(() => {
+  const options = new Set()
+
+  locationIndex.forEach(entry => {
+    if (!entry || !entry.raritySet) return
+
+    entry.raritySet.forEach(value => {
+      options.add(value)
     })
-    const sorted = Array.from(options).sort((a, b) => {
-      if (a === 'fishing') return 1
-      if (b === 'fishing') return -1
-      return a.localeCompare(b)
-    })
-    return ['all', ...sorted]
-  }, [locationIndex])
+  })
+
+  const sorted = Array.from(options).sort((a, b) => {
+    const order = [
+      'Fishing',
+      'Lure',
+      'Headbutt',
+      'Horde 5x',
+      'Horde 3x'
+    ]
+
+    return order.indexOf(a) - order.indexOf(b)
+  })
+
+  return ['all', ...sorted]
+}, [locationIndex])
+
   const tierOptions = useMemo(() => {
     const tiers = Object.keys(tierPokemon || {})
     const sorted = tiers.sort((a, b) => {
@@ -464,8 +518,8 @@ export default function Pokedex() {
     Object.entries(pokemonData).forEach(([_, details]) => {
       const encounters = details.location_area_encounters || []
       encounters.forEach(encounter => {
-        if (encounter.location && encounter.region_name) {
-          const locationText = `${encounter.location} - ${encounter.region_name}`
+        if (encounter.location_name_full && encounter.region_name) {
+          const locationText = `${encounter.location_name_full} - ${encounter.region_name}`
           options.add(locationText)
         }
       })

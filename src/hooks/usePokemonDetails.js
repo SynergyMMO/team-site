@@ -117,40 +117,39 @@ export function usePokemonDetails(pokemonName) {
         return 'unknown'
       }
       
-      // Extract stats with fallback values
-      const getStatValue = (statName, defaultValue = 50) => {
-        try {
-          const stat = pokemon.stats?.find(s => s.stat_name === statName)
-          return stat?.base_stat || defaultValue
-        } catch (e) {
-          return defaultValue
+      // Extract stats from the new stats object structure
+        const getStatValue = (statName, defaultValue = 50) => {
+        return pokemon.stats?.[statName] ?? defaultValue
         }
-      }
 
-      // Extract EV yields from stats
-      const getEVYields = () => {
+        // Extract EV yields from the new yields object
+        const getEVYields = () => {
         const evMap = {
-          'hp': 'HP',
-          'attack': 'ATK',
-          'defense': 'DEF',
-          'special-attack': 'SP.ATK',
-          'special-defense': 'SP.DEF',
-          'speed': 'SPE'
+        ev_hp: 'HP',
+        ev_attack: 'ATK',
+        ev_defense: 'DEF',
+        ev_sp_attack: 'SP.ATK',
+        ev_sp_defense: 'SP.DEF',
+        ev_speed: 'SPE'
         }
-        
+
         const evYields = []
-        if (Array.isArray(pokemon.stats)) {
-          pokemon.stats.forEach(stat => {
-            if (stat.effort && stat.effort > 0) {
-              evYields.push({
-                stat: evMap[stat.stat_name] || stat.stat_name,
-                value: stat.effort
-              })
-            }
-          })
-        }
+
+        if (pokemon.yields) {
+        Object.entries(evMap).forEach(([key, statName]) => {
+        const value = pokemon.yields[key]
+
+          if (value && value > 0) {
+            evYields.push({
+              stat: statName,
+              value: value
+            })
+          }
+        })}
+
         return evYields
-      }
+        }
+
       
       // Format moves with learning methods
       const formattedMoves = (pokemon.moves || [])
@@ -172,19 +171,38 @@ export function usePokemonDetails(pokemonName) {
       
       // Extract abilities with normal and hidden separation
       const abilities = {
-        normal: [],
-        hidden: []
+      normal: [],
+      hidden: []
       }
-      
+
       if (Array.isArray(pokemon.abilities)) {
-        pokemon.abilities.forEach(ability => {
-          const abilityName = ability.ability_name
-          if (ability.is_hidden) {
-            abilities.hidden.push(abilityName)
-          } else {
-            abilities.normal.push(abilityName)
-          }
-        })
+      const seenAbilities = new Set()
+
+      // Remove duplicate abilities while preserving their original order
+      const uniqueAbilities = pokemon.abilities.filter(ability => {
+      const abilityName = ability.name || ''
+
+      if (!abilityName || seenAbilities.has(abilityName)) {
+        return false
+      }
+
+      seenAbilities.add(abilityName)
+      return true
+
+      })
+
+      // The last unique ability is the hidden ability
+      if (uniqueAbilities.length > 0) {
+      const hiddenAbility = uniqueAbilities[uniqueAbilities.length - 1]
+
+      abilities.hidden.push(hiddenAbility.name)
+
+      // All other unique abilities are normal abilities
+      uniqueAbilities.slice(0, -1).forEach(ability => {
+        abilities.normal.push(ability.name)
+      })
+
+      }
       }
       
       // Get the correct ID for this Pokemon
@@ -196,20 +214,38 @@ export function usePokemonDetails(pokemonName) {
           pokedexId = defaultVariety.id
         }
       }
-      
       // Format location data from pokemon's location_area_encounters
       const locations = (pokemon.location_area_encounters || []).map(loc => ({
         pokemon: normalizedName,
         pokemon_id: pokedexId,
+
+        // Location information
         type: loc.type || '',
-        region_id: loc.region_id,
+        region_id: loc.region_id ?? null,
         region_name: loc.region_name || '',
-        location: loc.location || '',
-        min_level: loc.min_level || 0,
-        max_level: loc.max_level || 0,
-        rarity: loc.rarity || 'Unknown',
-        time: loc.time || 'ALL'
+        location_name: loc.location_name || '',
+        location_name_full: loc.location_name_full || loc.location_name || '',
+
+        // Level information
+        min_level: loc.min_level ?? 0,
+        max_level: loc.max_level ?? 0,
+
+        // Season
+        season: loc.season || 'Any',
+
+        // Rarity by time of day
+        rarity_morning: loc.rarity_morning || 'Unknown',
+        rarity_day: loc.rarity_day || 'Unknown',
+        rarity_night: loc.rarity_night || 'Unknown',
+
+        // Horde information
+        is_horde_3x: loc.is_horde_3x ?? false,
+        is_horde_5x: loc.is_horde_5x ?? false,
+
+        // Rarity flags
+        rarity_flags: loc.rarity_flags ?? 0
       }))
+
       
       // Get generation based on Pokemon ID, with special handling for Rotom
       const getGeneration = (id, name) => {
@@ -248,16 +284,16 @@ export function usePokemonDetails(pokemonName) {
         id: pokedexId,
         name: pokemon.name,
         displayName: displayNameMap[normalizedName] || pokemonName,
-        height: 0.7, // Default fallback - height not in data
-        weight: 5, // Default fallback - weight not in data
+        height: pokemon.height || 0,
+        weight: pokemon.weight || 0,
         types: (pokemon.types || []).filter(Boolean),
         abilities: abilities,
         stats: {
           hp: getStatValue('hp'),
           attack: getStatValue('attack'),
           defense: getStatValue('defense'),
-          spAtk: getStatValue('special-attack'),
-          spDef: getStatValue('special-defense'),
+          spAtk: getStatValue('sp_attack'),
+          spDef: getStatValue('sp_defense'),
           speed: getStatValue('speed'),
         },
         evYields: getEVYields(),
@@ -270,7 +306,7 @@ export function usePokemonDetails(pokemonName) {
         eggGroups: (pokemon.egg_groups || []).filter(Boolean),
         catchRate: pokemon.capture_rate || 0,
         hatchCounter: pokemon.hatch_counter || 0,
-        genderRate: pokemon.gender_rate !== undefined ? pokemon.gender_rate : 1,
+        genderRate: pokemon.gender_ratio !== undefined ? pokemon.gender_ratio : 255,
         isLegendary: pokemon.is_legendary || false,
         isMythical: pokemon.is_mythical || false,
         growthRate: pokemon.growth_rate || 'medium',
