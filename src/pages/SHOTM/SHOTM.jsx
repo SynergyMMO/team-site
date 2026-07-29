@@ -75,8 +75,13 @@ export default function SHOTM() {
   const { data, isLoading } = useDatabase()
   const { tierPoints, tierLookup } = useTierData()
   const selectedMonthKey = getMonthKey(currentMonth, currentYear)
+  const pausedMonthKeys = useMemo(
+    () => new Set(shotmHistory.pausedMonths || []),
+    []
+  )
   const selectedIsCurrent = isCurrentMonth(currentMonth, currentYear)
-  const selectedHistory = !selectedIsCurrent
+  const selectedIsPaused = pausedMonthKeys.has(selectedMonthKey)
+  const selectedHistory = (!selectedIsCurrent || selectedIsPaused)
     ? shotmHistory.months?.[selectedMonthKey]
     : null
   // Only include months from January 2026 onward
@@ -110,7 +115,7 @@ export default function SHOTM() {
   // Filter SHOTM data for current month
   const shotmData = useMemo(() => {
     if (selectedHistory) return selectedHistory.players || {}
-    if (!selectedIsCurrent) return {}
+    if (!selectedIsCurrent || selectedIsPaused) return {}
     if (!data) return {}
     const result = {}
     Object.entries(data).forEach(([player, playerData]) => {
@@ -127,7 +132,7 @@ export default function SHOTM() {
       result[player] = { shinies: monthShinies, points: totalPoints }
     })
     return result
-  }, [data, currentMonth, currentYear, tierPoints, tierLookup, selectedHistory, selectedIsCurrent])
+  }, [data, currentMonth, currentYear, tierPoints, tierLookup, selectedHistory, selectedIsCurrent, selectedIsPaused])
 
   const rankings = useMemo(
     () => {
@@ -191,7 +196,7 @@ export default function SHOTM() {
   if (getMonthKey(currentMonth, currentYear) < MIN_MONTH_KEY) {
     return <div className="message">No data available before January 2026.</div>;
   }
-  if (selectedIsCurrent && isLoading) return <div className="message">Loading...</div>
+  if (selectedIsCurrent && !selectedIsPaused && isLoading) return <div className="message">Loading...</div>
 
   return (
     <div>
