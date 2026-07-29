@@ -400,36 +400,66 @@ export function usePokemonDetails(pokemonName) {
         }
       }
       // Format location data from pokemon's location_area_encounters
-      const locations = (pokemon.location_area_encounters || []).map(loc => ({
-        pokemon: normalizedName,
-        pokemon_id: pokedexId,
+      // Handles both base format (location_name, rarity_morning/day/night) and
+      // form format (location, rarity, time)
+      const locations = (pokemon.location_area_encounters || []).map(loc => {
+        // Detect form format by checking for 'location' field without 'location_name'
+        const isFormFormat = loc.location !== undefined && loc.location_name === undefined
 
-        // Location information
-        type: loc.type || '',
-        region_id: loc.region_id ?? null,
-        region_name: loc.region_name || '',
-        location_name: loc.location_name || '',
-        location_name_full: loc.location_name_full || loc.location_name || '',
+        const locationName = isFormFormat ? loc.location : (loc.location_name || '')
+        const locationNameFull = isFormFormat ? loc.location : (loc.location_name_full || loc.location_name || '')
 
-        // Level information
-        min_level: loc.min_level ?? 0,
-        max_level: loc.max_level ?? 0,
+        // Form format uses a single 'rarity' string; map it to all three time slots
+        let rarityMorning, rarityDay, rarityNight
+        let isHorde3x = false
+        let isHorde5x = false
 
-        // Season
-        season: loc.season || 'Any',
+        if (isFormFormat) {
+          const rarity = loc.rarity || 'Unknown'
+          // Detect horde from rarity string
+          if (rarity === 'Horde') {
+            isHorde5x = true
+            rarityMorning = 'Horde'
+            rarityDay = 'Horde'
+            rarityNight = 'Horde'
+          } else {
+            rarityMorning = rarity
+            rarityDay = rarity
+            rarityNight = rarity
+          }
+        } else {
+          rarityMorning = loc.rarity_morning || 'Unknown'
+          rarityDay = loc.rarity_day || 'Unknown'
+          rarityNight = loc.rarity_night || 'Unknown'
+          isHorde3x = loc.is_horde_3x ?? false
+          isHorde5x = loc.is_horde_5x ?? false
+        }
 
-        // Rarity by time of day
-        rarity_morning: loc.rarity_morning || 'Unknown',
-        rarity_day: loc.rarity_day || 'Unknown',
-        rarity_night: loc.rarity_night || 'Unknown',
+        return {
+          pokemon: normalizedName,
+          pokemon_id: pokedexId,
 
-        // Horde information
-        is_horde_3x: loc.is_horde_3x ?? false,
-        is_horde_5x: loc.is_horde_5x ?? false,
+          type: loc.type || '',
+          region_id: loc.region_id ?? null,
+          region_name: loc.region_name || '',
+          location_name: locationName,
+          location_name_full: locationNameFull,
 
-        // Rarity flags
-        rarity_flags: loc.rarity_flags ?? 0
-      }))
+          min_level: loc.min_level ?? 0,
+          max_level: loc.max_level ?? 0,
+
+          season: loc.season || 'Any',
+
+          rarity_morning: rarityMorning,
+          rarity_day: rarityDay,
+          rarity_night: rarityNight,
+
+          is_horde_3x: isHorde3x,
+          is_horde_5x: isHorde5x,
+
+          rarity_flags: loc.rarity_flags ?? 0
+        }
+      })
 
       
       // Get generation based on Pokemon ID, with special handling for Rotom
