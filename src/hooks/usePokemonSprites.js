@@ -1,6 +1,14 @@
 import { useMemo } from 'react'
 import spritesData from '../data/pokemmo_data/pokemon-sprites.json'
 
+function normalizeSpeciesKey(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[.'’]/g, '')
+}
+
 /**
  * Hook to get available sprites for a Pokemon organized by generation
  * Returns an object with generations as keys and arrays of sprites as values
@@ -10,7 +18,7 @@ export function usePokemonSprites(pokemonName) {
   return useMemo(() => {
     if (!pokemonName) return {}
 
-    const pokemonLower = pokemonName.toLowerCase()
+    const pokemonLower = normalizeSpeciesKey(pokemonName)
     const aliasMap = {
       wormadam: 'wormadam-plant',
       'gastrodon-west': 'gastrodon',

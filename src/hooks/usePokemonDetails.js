@@ -19,7 +19,7 @@ function normalizeSpeciesKey(value) {
     .trim()
     .toLowerCase()
     .replace(/\s+/g, '-')
-    .replace(/[.']/g, '')
+    .replace(/[.'’]/g, '')
 }
 
 function resolveEvolutionTargetKey(evolution = {}) {
@@ -159,8 +159,8 @@ export function usePokemonDetails(pokemonName) {
       setIsLoading(true)
       setError(null)
       
-      // Normalize the name for lookup
-      const normalizedName = pokemonName.toLowerCase().trim()
+      // Normalize the name for lookup so punctuation variants resolve (e.g. Farfetch'd)
+      const normalizedName = normalizeSpeciesKey(pokemonName)
       const aliasMap = {
         darmanitan: 'darmanitan-standard',
         wormadam: 'wormadam-plant',
@@ -399,13 +399,14 @@ export function usePokemonDetails(pokemonName) {
       // Get sprite from new JSON structure with animated sprites as priority
       let sprite = null
       const spriteData = spriteDataMap[lookupName]
+      const sprites = spriteData?.sprites
       if (spriteData) {
         // Try animated Gen V sprites first
-        sprite = spriteData.versions?.['generation-v']?.['black-white']?.animated?.front_default
+        sprite = sprites?.versions?.['generation-v']?.['black-white']?.animated?.front_default
           // Fall back to official artwork
-          || spriteData.other?.['official-artwork']?.front_default
+          || sprites?.other?.['official-artwork']?.front_default
           // Finally use the basic front_default
-          || spriteData.front_default
+          || sprites?.front_default
       }
       
       // Last resort fallback
