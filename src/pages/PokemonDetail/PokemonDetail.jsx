@@ -335,11 +335,16 @@ function formatEvolutionDetails(details) {
   }
   
   if (detail.item?.name) {
-    parts.push(`with ${detail.item.name.replace('-', ' ')}`)
+    const itemName = detail.item.name
+    const stoneMatch = itemName.match(/^Stone \((.+)\)$/)
+    const formattedItem = stoneMatch ? `${stoneMatch[1]} Stone` : itemName.replace('-', ' ')
+    parts.push(`with ${formattedItem}`)
   }
-  
+
   if (detail.held_item?.name) {
-    parts.push(`holding ${detail.held_item.name.replace('-', ' ')}`)
+    // Strip parenthetical tags like (EVO), (ATK), (Steel), (DEF) from trade item names
+    const heldName = detail.held_item.name.replace(/\s*\([^)]*\)/g, '').trim()
+    parts.push(`holding ${heldName}`)
   }
   
   if (detail.known_move) {

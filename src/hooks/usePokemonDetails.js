@@ -51,7 +51,8 @@ function mapEvolutionDetail(evolution = {}) {
     case 'ITEM_FEMALE':
     case 'ITEM_MALE':
       detail.trigger = { name: 'use-item' }
-      if (value) detail.item = { name: String(value) }
+      if (evolution.item_name) detail.item = { name: evolution.item_name }
+      else if (value) detail.item = { name: String(value) }
       break
     case 'TRADE':
     case 'TRADE_FOR_OPPOSITE':
@@ -59,7 +60,8 @@ function mapEvolutionDetail(evolution = {}) {
       break
     case 'TRADE_WITH_ITEM':
       detail.trigger = { name: 'trade' }
-      if (value) detail.held_item = { name: String(value) }
+      if (evolution.item_name) detail.held_item = { name: evolution.item_name }
+      else if (value) detail.held_item = { name: String(value) }
       break
     case 'HAPPINESS':
     case 'HAPPINESS_DAY':
@@ -68,6 +70,14 @@ function mapEvolutionDetail(evolution = {}) {
       detail.min_happiness = 220
       if (type === 'HAPPINESS_DAY') detail.time_of_day = 'day'
       if (type === 'HAPPINESS_NIGHT') detail.time_of_day = 'night'
+      break
+    case 'LEVEL_ITEM_DAY':
+    case 'LEVEL_ITEM_NIGHT':
+      detail.trigger = { name: 'level-up' }
+      if (evolution.item_name) detail.held_item = { name: evolution.item_name }
+      else if (value) detail.held_item = { name: String(value) }
+      if (type === 'LEVEL_ITEM_DAY') detail.time_of_day = 'day'
+      if (type === 'LEVEL_ITEM_NIGHT') detail.time_of_day = 'night'
       break
     case 'LEVEL_WITH_MONSTER':
     case 'LEVEL_WITH_SKILL':
