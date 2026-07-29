@@ -163,6 +163,10 @@ export default function Home() {
         <h2>Changelog</h2>
         <div className={styles.changelog}>
           <div className={styles.changelogEntry}>
+            <h3>July 29, 2026</h3>
+            <ul>
+              <li><strong>Shiny Wars 2026</strong> - Added new encounter data, updated dex, updated tiers and points</li>
+            </ul>
             <h3>April 20, 2026</h3>
             <ul>
               <li><strong>Route Finder</strong> - Added a new tool for finding PokeMMO routes and location details</li>
