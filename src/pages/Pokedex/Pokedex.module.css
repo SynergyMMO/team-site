@@ -2499,6 +2499,43 @@
   color: rgba(226, 232, 240, 0.78);
 }
 
+.encounterOddsBadge {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translate(-50%, 4px);
+  width: max-content;
+  min-width: 136px;
+  max-width: 220px;
+  box-sizing: border-box;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65);
+  background-color: rgba(8, 12, 22, 0.94);
+  border: 1px solid rgba(138, 204, 255, 0.72);
+  border-radius: 6px;
+  padding: 3px 8px;
+  z-index: 22;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0.16s;
+}
+
+.locationPokemonItem:hover .encounterOddsBadge,
+.locationPokemonItem:focus-within .encounterOddsBadge {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition-delay: 0s;
+}
+
 @media (max-width: 700px) {
   .alteringCaveHeader,
   .alteringCaveCurrentSection,
