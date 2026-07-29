@@ -448,7 +448,12 @@ export function usePokemonDetails(pokemonName) {
           min_level: loc.min_level ?? 0,
           max_level: loc.max_level ?? 0,
 
-          season: loc.season || 'Any',
+          season: loc.season || (() => {
+            // Infer season from form name for seasonal Pokemon (e.g. deerling-autumn)
+            const seasonMatch = lookupName.match(/-(spring|summer|autumn|winter)$/)
+            if (seasonMatch) return seasonMatch[1].charAt(0).toUpperCase() + seasonMatch[1].slice(1)
+            return 'Any'
+          })(),
 
           rarity_morning: rarityMorning,
           rarity_day: rarityDay,
