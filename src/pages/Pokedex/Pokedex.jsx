@@ -643,7 +643,7 @@ const rarityOptions = useMemo(() => {
     Object.entries(pokemonData).forEach(([key, details]) => {
       const abilities = details.abilities || []
       if (abilities.length > 0) {
-        const abilityNames = abilities.map(a => a.ability_name).filter(Boolean)
+        const abilityNames = abilities.map(a => a.name).filter(Boolean)
         if (abilityNames.length > 0) {
           index.set(key, abilityNames)
         }
@@ -899,8 +899,8 @@ const rarityOptions = useMemo(() => {
     hp: 'hp',
     attack: 'attack',
     defense: 'defense',
-    spAtk: 'special-attack',
-    spDef: 'special-defense',
+    spAtk: 'sp_attack',
+    spDef: 'sp_defense',
     speed: 'speed'
   }
 
@@ -1199,7 +1199,7 @@ const rarityOptions = useMemo(() => {
                     onChange={(e) => setFilterAlpha(e.target.checked)}
                     className={styles.filterAlphaCheckbox}
                   />
-                  <span>Alpha Only</span>
+                  <span>Hidden Ability Only</span>
                 </label>
               </div>
             </div>
@@ -1435,7 +1435,7 @@ const rarityOptions = useMemo(() => {
             }
             if (abilitySearch.trim()) {
               const pokemonAbilitiesRaw = pokemonDetails.abilities || []
-              const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.ability_name).filter(Boolean)
+              const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.name).filter(Boolean)
               const searchNormalized = abilitySearch.toLowerCase().replace(/[\s-]/g, '')
               const matchesAbility = pokemonAbilityNames.some(pokemonAbility => {
                 const abilityNormalized = pokemonAbility.toLowerCase().replace(/[\s-]/g, '')
@@ -1586,7 +1586,7 @@ const rarityOptions = useMemo(() => {
                 
                 if (abilitySearch.trim()) {
                   const pokemonAbilitiesRaw = pokemonDetails.abilities || []
-                  const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.ability_name).filter(Boolean)
+                  const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.name).filter(Boolean)
                   const searchLower = abilitySearch.toLowerCase()
                   const matchesAbility = pokemonAbilityNames.some(pokemonAbility => 
                     pokemonAbility.toLowerCase().includes(searchLower)
@@ -1691,7 +1691,7 @@ const rarityOptions = useMemo(() => {
 
                 if (abilitySearch.trim()) {
                   const pokemonAbilitiesRaw = details.abilities || []
-                  const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.ability_name).filter(Boolean)
+                  const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.name).filter(Boolean)
                   const searchLower = abilitySearch.toLowerCase()
                   const matchesAbility = pokemonAbilityNames.some(ability =>
                     ability.toLowerCase().includes(searchLower)
@@ -2088,7 +2088,7 @@ const rarityOptions = useMemo(() => {
               }
               if (abilitySearch.trim()) {
                 const pokemonAbilitiesRaw = pokemonDetails.abilities || []
-                const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.ability_name).filter(Boolean)
+                const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.name).filter(Boolean)
                 const searchLower = abilitySearch.toLowerCase()
                 const matchesAbility = pokemonAbilityNames.some(pokemonAbility => 
                   pokemonAbility.toLowerCase().includes(searchLower)
