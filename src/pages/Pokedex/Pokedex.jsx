@@ -51,6 +51,10 @@ function normalizeLocationValue(value) {
     .trim()
 }
 
+function normalizePokemonType(value) {
+  return String(value || '').trim().toUpperCase()
+}
+
 export default function Pokedex() {
   const breadcrumbs = [
     { name: 'Home', url: '/' },
@@ -76,7 +80,9 @@ export default function Pokedex() {
   const [selectedTiers, setSelectedTiers] = useState(() => searchParams.getAll('tier'))
   const [selectedEggGroups, setSelectedEggGroups] = useState(() => searchParams.getAll('egg'))
   const [eggGroupMatchMode, setEggGroupMatchMode] = useState(() => searchParams.get('eggMode') || 'any')
-  const [selectedTypes, setSelectedTypes] = useState(() => searchParams.getAll('type'))
+  const [selectedTypes, setSelectedTypes] = useState(() =>
+    Array.from(new Set(searchParams.getAll('type').map(normalizePokemonType).filter(Boolean)))
+  )
   const [filterAlpha, setFilterAlpha] = useState(() => searchParams.get('alpha') === '1')
   const [movesToFilterBy, setMovesToFilterBy] = useState(() => {
     const moves = searchParams.getAll('move')
@@ -615,7 +621,7 @@ const rarityOptions = useMemo(() => {
   const typeIndex = useMemo(() => {
     const index = new Map()
     Object.entries(pokemonData).forEach(([key, details]) => {
-      const types = details.types || []
+      const types = Array.from(new Set((details.types || []).map(normalizePokemonType).filter(Boolean)))
       if (types.length > 0) {
         index.set(key, types)
       }
@@ -1080,7 +1086,7 @@ const rarityOptions = useMemo(() => {
                 {typeOptions.filter(o => o !== 'all').map(option => (
                   <button
                     key={option}
-                    className={`${styles.filterTypeLabel} ${styles[`type-${option}`]} ${selectedTypes.includes(option) ? styles.typeActive : ''}`}
+                    className={`${styles.filterTypeLabel} ${styles[`type-${option.toLowerCase()}`]} ${selectedTypes.includes(option) ? styles.typeActive : ''}`}
                     onClick={(e) => {
                       e.preventDefault()
                       setSelectedTypes(prev =>
@@ -1412,7 +1418,7 @@ const rarityOptions = useMemo(() => {
               if (!matchesAllGroups) return
             }
             if (selectedTypes.length > 0) {
-              const pokemonTypes = pokemonDetails.types || []
+              const pokemonTypes = (pokemonDetails.types || []).map(normalizePokemonType)
               const matchesType = selectedTypes.every(type => pokemonTypes.includes(type))
               if (!matchesType) return
             }
@@ -1561,7 +1567,7 @@ const rarityOptions = useMemo(() => {
                   if (!matchesAllGroups) return
                 }
                 if (selectedTypes.length > 0) {
-                  const pokemonTypes = pokemonDetails.types || []
+                  const pokemonTypes = (pokemonDetails.types || []).map(normalizePokemonType)
                   const matchesType = selectedTypes.every(type => pokemonTypes.includes(type))
                   if (!matchesType) return
                 }
@@ -1666,7 +1672,7 @@ const rarityOptions = useMemo(() => {
                 }
 
                 if (selectedTypes.length > 0) {
-                  const pokemonTypes = details.types || []
+                  const pokemonTypes = (details.types || []).map(normalizePokemonType)
                   const matchesType = selectedTypes.every(type => pokemonTypes.includes(type))
                   if (!matchesType) return false
                 }
@@ -2065,7 +2071,7 @@ const rarityOptions = useMemo(() => {
                 }
               }
               if (selectedTypes.length > 0) {
-                const pokemonTypes = pokemonDetails.types || []
+                const pokemonTypes = (pokemonDetails.types || []).map(normalizePokemonType)
                 const matchesType = selectedTypes.every(type => pokemonTypes.includes(type))
                 if (!matchesType) return false
               }
