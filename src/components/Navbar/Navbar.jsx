@@ -26,6 +26,7 @@ const NAV_ITEMS = [
   { to: '/region-maps/', label: 'Region Maps' },
   { to: '/official-event-calendar/', label: 'Official Event Calendar' },
   { to: '/catching-calculator/', label: 'Catching Calculator' },
+  { to: '/hunt-planner/', label: 'Hunt Planner' },
   {
     label: 'Tools',
     submenu: [

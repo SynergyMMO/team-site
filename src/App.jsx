@@ -33,7 +33,7 @@ const OfficialEventCalendar = lazy(() => import('./pages/OfficialEventCalendar/O
 const OfficialShinyWarsPlanner = lazy(() => import('./pages/OfficialShinyWarsPlanner/OfficialShinyWarsPlanner'))
 const TeamStatistics = lazy(() => import('./pages/TeamStatistics/TeamStatistics'))
 const RegionMaps = lazy(() => import('./pages/RegionMaps/RegionMaps'))
-const RouteFinder = lazy(() => import('./pages/RouteFinder/RouteFinder'))
+const HuntPlanner = lazy(() => import('./pages/RouteFinder/RouteFinder'))
 const PlayerCardGenerator = lazy(() => import('./pages/PlayerCardGenerator/PlayerCardGenerator'))
 const EggMoveCalculator = lazy(() => import('./pages/EggMoveCalculator/EggMoveCalculator'))
 const CatchingCalculator = lazy(() => import('./pages/CatchingCalculator/CatchingCalculator'))
@@ -114,7 +114,8 @@ export default function App() {
             <Route path="/official-event-calendar" element={<OfficialEventCalendar />} />
             <Route path="/official-shiny-wars-planner" element={<OfficialShinyWarsPlanner />} />
             <Route path="/region-maps" element={<RegionMaps />} />
-            <Route path="/route-finder" element={<RouteFinder />} />
+            <Route path="/hunt-planner" element={<HuntPlanner />} />
+            <Route path="/route-finder" element={<HuntPlanner />} />
             <Route path="/team-statistics" element={<TeamStatistics />} />
             <Route path="/event/:slug" element={<EventsDetail />} />
             <Route path="/trophy/:trophySlug" element={<TrophyPage />} />

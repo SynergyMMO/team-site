@@ -30,7 +30,7 @@ const staticRoutes = [
   { path: '/official-event-calendar/', changefreq: 'daily', priority: '0.65' },
   { path: '/official-shiny-wars-planner/', changefreq: 'daily', priority: '0.7' },
   { path: '/region-maps/', changefreq: 'weekly', priority: '0.65' },
-  { path: '/route-finder/', changefreq: 'weekly', priority: '0.65' },
+  { path: '/hunt-planner/', changefreq: 'weekly', priority: '0.65' },
   { path: '/altering-cave-rotations/', changefreq: 'daily', priority: '0.65' },
   { path: '/resources/', changefreq: 'monthly', priority: '0.6' },
   { path: '/shiny-war-2025/', changefreq: 'weekly', priority: '0.7' },
