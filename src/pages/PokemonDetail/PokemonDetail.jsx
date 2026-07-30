@@ -1872,38 +1872,23 @@ useDocumentHead({
 
       {/* Locations */}
 {((pokemon?.locations && pokemon.locations.length > 0) || safariLocations.length > 0) && (() => {
-// Define rarity order
-const rarityOrder = {
-'Horde': 0,
-'Very Common': 1,
-'Common': 2,
-'Uncommon': 3,
-'Fishing': 4,
-'Rare': 5,
-'Very Rare': 6,
-'Lure': 7,
-'Unknown': 999
+const parseEncounterPercent = (rarityValue, location) => {
+const normalized = normalizeHordePercent(rarityValue, location)
+const match = String(normalized || '').trim().match(/^(\d+(?:\.\d+)?)%$/)
+if (!match) return -1
+
+const value = Number(match[1])
+return Number.isFinite(value) ? value : -1
 }
 
-// Get the highest priority rarity from the three time periods
-const getHighestRarity = (location) => {
-const rarities = [
-location.rarity_morning,
-location.rarity_day,
-location.rarity_night
-].filter(Boolean)
+const getHighestEncounterPercent = (location) => {
+const percents = [
+  parseEncounterPercent(location.rarity_morning, location),
+  parseEncounterPercent(location.rarity_day, location),
+  parseEncounterPercent(location.rarity_night, location)
+]
 
-if (rarities.length === 0) {
-  return 'Unknown'
-}
-
-return rarities.reduce((highest, current) => {
-  const highestOrder = rarityOrder[highest] ?? 999
-  const currentOrder = rarityOrder[current] ?? 999
-
-  return currentOrder < highestOrder ? current : highest
-}, rarities[0])
-
+return Math.max(...percents)
 }
 
 // Get encounter icon based on rarity and location type
@@ -1956,7 +1941,7 @@ return null
 // Priority:
 // 1. 5x Horde
 // 2. 3x Horde
-// 3. Normal encounters sorted by rarity
+// 3. Encounter % (most common first)
 const sortedLocations = [...(pokemon?.locations || [])].sort((a, b) => {
 // Horde priority
 const getHordePriority = (location) => {
@@ -1973,11 +1958,15 @@ if (hordePriorityA !== hordePriorityB) {
   return hordePriorityA - hordePriorityB
 }
 
-// If both are the same horde type, sort by rarity
-const rarityA = rarityOrder[getHighestRarity(a)] ?? 999
-const rarityB = rarityOrder[getHighestRarity(b)] ?? 999
+// If both are the same horde type, sort by encounter % descending.
+const encounterPercentA = getHighestEncounterPercent(a)
+const encounterPercentB = getHighestEncounterPercent(b)
 
-return rarityA - rarityB
+if (encounterPercentA !== encounterPercentB) {
+  return encounterPercentB - encounterPercentA
+}
+
+return String(a.location_name_full || '').localeCompare(String(b.location_name_full || ''))
 
 
 })
