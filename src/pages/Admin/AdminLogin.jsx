@@ -30,7 +30,10 @@ export default function AdminLogin() {
       const data = await res.json()
 
       if (data.authorized) {
-        login(name, password)
+        login(name, password, {
+          isFullAdmin: data.isFullAdmin,
+          allowedTabs: data.allowedTabs,
+        })
         navigate('/admin/panel')
       } else {
         setMessage(data.message || 'Invalid credentials')

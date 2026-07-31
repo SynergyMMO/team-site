@@ -33,7 +33,9 @@
     "mapeditor": "node scripts/mapEditorServer.mjs",
     "encountereditor": "node scripts/encounterPercentsEditorServer.mjs",
     "routefinderreward": "node scripts/pickRouteFinderRewardWinner.mjs",
-    "sendBountiesToDiscord": "node scripts/sendBountiesToDiscord.js"
+    "sendBountiesToDiscord": "node scripts/sendBountiesToDiscord.js",
+    "osw:push": "node scripts/pushOswPlannerToCloudflare.mjs",
+    "osw:pull": "node scripts/pullOswPlannerFromCloudflare.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",

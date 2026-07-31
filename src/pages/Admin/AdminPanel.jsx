@@ -15,27 +15,42 @@ import AdvancedJsonTab from './components/AdvancedJsonTab'
 import ThemesTab from './components/ThemesTab'
 import Toast from './components/Toast'
 import BountiesTab from './components/BountiesTab'
+import OswPlannerTab from './components/OswPlannerTab'
+import AccessControlTab from './components/AccessControlTab'
 import styles from './Admin.module.css'
 
 export default function AdminPanel() {
   const { auth } = useAdmin()
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('add')
+  const [activeTab, setActiveTab] = useState('osw')
   const { toast, show: showToast, dismiss: dismissToast } = useToast()
 
   const db = useAdminDB(auth)
   const events = db.events || []
   const hasFetched = useRef(false)
+  const allowedTabs = auth?.isFullAdmin
+    ? ['add', 'edit', 'current_members', 'streamers', 'events', 'osw', 'bounties', 'themes', 'log', 'json', 'access']
+    : (Array.isArray(auth?.allowedTabs) && auth.allowedTabs.length > 0 ? auth.allowedTabs : ['osw'])
 
   useEffect(() => {
     if (!auth) { navigate('/admin'); return }
     if (hasFetched.current) return
     hasFetched.current = true
-    db.loadDatabase().catch(err => showToast('Error loading database: ' + err.message, 'error'))
-    db.loadEvents().catch(err => showToast('Error loading events: ' + err.message, 'error'))
-    db.loadThemes().catch(err => showToast('Error loading themes: ' + err.message, 'error'))
-    db.loadBounties?.().catch(err => showToast('Error loading bounties: ' + err.message, 'error'))
+    db.loadOswPlanner?.().catch(err => showToast('Error loading OSW planner: ' + err.message, 'error'))
+    if (auth.isFullAdmin) {
+      db.loadDatabase().catch(err => showToast('Error loading database: ' + err.message, 'error'))
+      db.loadEvents().catch(err => showToast('Error loading events: ' + err.message, 'error'))
+      db.loadThemes().catch(err => showToast('Error loading themes: ' + err.message, 'error'))
+      db.loadBounties?.().catch(err => showToast('Error loading bounties: ' + err.message, 'error'))
+      db.loadAdminAccessConfig?.().catch(err => showToast('Error loading access config: ' + err.message, 'error'))
+    }
   }, [auth])
+
+  useEffect(() => {
+    if (!allowedTabs.includes(activeTab)) {
+      setActiveTab(allowedTabs[0] || 'osw')
+    }
+  }, [activeTab, allowedTabs])
 
   function withToast(fn, successMsg) {
     return async (...args) => {
@@ -70,7 +85,7 @@ export default function AdminPanel() {
   return (
     <div className={styles.panel}>
       <h1>Admin Panel</h1>
-      <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+      <TabBar activeTab={activeTab} onTabChange={setActiveTab} visibleTabs={allowedTabs} />
 
       {db.isMutating && (
         <div className={styles.loadingOverlay} style={{ padding: '12px 0' }}>
@@ -79,7 +94,7 @@ export default function AdminPanel() {
         </div>
       )}
 
-      {activeTab === 'add' && (
+      {allowedTabs.includes('add') && activeTab === 'add' && (
         <AddPokemonTab
           db={db.database}
           playerNames={db.playerNames}
@@ -100,7 +115,7 @@ export default function AdminPanel() {
         />
       )}
 
-      {activeTab === 'edit' && (
+      {allowedTabs.includes('edit') && activeTab === 'edit' && (
         <EditPlayerTab
           playerNames={db.playerNames}
           getPlayerShinies={db.getPlayerShinies}
@@ -113,9 +128,9 @@ export default function AdminPanel() {
         />
       )}
 
-      {activeTab === 'current_members' && <CurrentMembers auth={auth} />}
+      {allowedTabs.includes('current_members') && activeTab === 'current_members' && <CurrentMembers auth={auth} />}
 
-      {activeTab === 'streamers' && (
+      {allowedTabs.includes('streamers') && activeTab === 'streamers' && (
         <StreamersTab
           streamersDB={db.streamersDB}
           onAdd={withToast(db.addStreamer, 'Streamer added!')}
@@ -125,7 +140,7 @@ export default function AdminPanel() {
         />
       )}
 
-      {activeTab === 'events' && (
+      {allowedTabs.includes('events') && activeTab === 'events' && (
         <EventsTab
           eventDB={db.eventDB}           
           onCreate={db.addEvent}    
@@ -135,7 +150,7 @@ export default function AdminPanel() {
         />
       )}
 
-      {activeTab === 'themes' && (
+      {allowedTabs.includes('themes') && activeTab === 'themes' && (
         <ThemesTab
           themesDB={db.themesDB}
           onSave={withToast(db.saveTheme, 'Theme saved!')}
@@ -143,7 +158,18 @@ export default function AdminPanel() {
           isMutating={db.isMutating}
         />
       )}
-      {activeTab === 'bounties' && (
+
+      {allowedTabs.includes('osw') && activeTab === 'osw' && (
+        <OswPlannerTab
+          oswPlannerData={db.oswPlannerData || {}}
+          allPokemonNames={db.allPokemonNames}
+          onAdd={withToast(db.addOswPlannerShiny, 'OSW planner shiny added!')}
+          onRemove={withToast(db.removeOswPlannerShiny, 'OSW planner shiny removed!')}
+          isMutating={db.isMutating}
+        />
+      )}
+
+      {allowedTabs.includes('bounties') && activeTab === 'bounties' && (
         <BountiesTab
           bounties={db.bounties || []}
           onAdd={withToast(db.addBounty, 'Bounty added!')}
@@ -153,15 +179,25 @@ export default function AdminPanel() {
         />
       )}
 
-      {activeTab === 'log' && <AdminLogTab logData={db.logData} members={db.members} />}
+      {allowedTabs.includes('log') && activeTab === 'log' && <AdminLogTab logData={db.logData} members={db.members} />}
 
-      {activeTab === 'json' && (
+      {allowedTabs.includes('json') && activeTab === 'json' && (
         <AdvancedJsonTab
           database={db.database}
           streamersDB={db.streamersDB}
           eventsDB={db.eventDB}
           onUpdateDatabase={withToast(db.updateFullDatabase, 'Database updated!')}
           onUpdateStreamers={withToast(db.updateFullStreamers, 'Streamers updated!')}
+          isMutating={db.isMutating}
+        />
+      )}
+
+      {allowedTabs.includes('access') && activeTab === 'access' && (
+        <AccessControlTab
+          config={db.adminAccessConfig}
+          availableUsers={db.availableAdminUsers}
+          allTabs={db.allAdminTabs}
+          onSave={withToast(db.saveAdminAccessConfig, 'Access rules saved!')}
           isMutating={db.isMutating}
         />
       )}

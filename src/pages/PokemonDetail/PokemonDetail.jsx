@@ -1950,12 +1950,21 @@ if (location.is_horde_3x) return 1
 return 2
 }
 
+const isHeadbuttEncounter = (location) => String(location.type || '').toLowerCase().includes('headbutt')
+
 
 const hordePriorityA = getHordePriority(a)
 const hordePriorityB = getHordePriority(b)
 
 if (hordePriorityA !== hordePriorityB) {
   return hordePriorityA - hordePriorityB
+}
+
+const headbuttPriorityA = isHeadbuttEncounter(a) ? 1 : 0
+const headbuttPriorityB = isHeadbuttEncounter(b) ? 1 : 0
+
+if (headbuttPriorityA !== headbuttPriorityB) {
+  return headbuttPriorityA - headbuttPriorityB
 }
 
 // If both are the same horde type, sort by encounter % descending.

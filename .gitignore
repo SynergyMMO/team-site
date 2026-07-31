@@ -56,3 +56,15 @@ scripts/sendBountiesToDiscord.js
 
 scripts/encounterPercentsEditorServer.mjs
 *.md
+
+reports/good_single_shiny_spots_tier0to3.json
+
+reports/tier0to3_seasonal_over30.json
+
+scripts/generatePotentialRepelTrick.mjs
+
+src/data/potential_repel_trick.json
+
+public/reports/potential_repel_trick.pdf
+
+scripts/generateSeasonalLists.cjs

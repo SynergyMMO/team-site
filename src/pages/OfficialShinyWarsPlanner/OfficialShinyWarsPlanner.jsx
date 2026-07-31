@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
+import { API } from '../../api/endpoints'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import generationData from '../../data/generation.json'
 import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
@@ -30,6 +32,22 @@ const OSW_METHOD_KEYS = {
   single_encounter_only: 'Single Encounter',
   fishing: 'Fishing',
   fossils: 'Fossils',
+}
+const OSW_REMOTE_QUERY_KEY = ['osw-planner-data']
+
+function isValidOswCaughtData(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return false
+
+  return Object.values(data).some(team => {
+    if (!team || typeof team !== 'object') return false
+    return TIER_ORDER.some(tier => Array.isArray(team[`Tier ${tier}`]))
+  })
+}
+
+function normalizeOswCaughtPayload(payload) {
+  if (isValidOswCaughtData(payload)) return payload
+  if (isValidOswCaughtData(payload?.data)) return payload.data
+  return null
 }
 
 function buildOswMethodLookup() {
@@ -291,14 +309,47 @@ function getTeamSummary(tierColumns, caughtSet) {
 }
 
 export default function OfficialShinyWarsPlanner() {
-  const teams = Object.entries(oswCaughtData).map(([id, team]) => ({
-    id,
-    label: team.name || id,
-    data: team,
-  }))
-  const [activeTeamId, setActiveTeamId] = useState(teams[0]?.id || '')
+  const [activeTeamId, setActiveTeamId] = useState('')
   const [activeView, setActiveView] = useState('grid')
   const [activeGridFilter, setActiveGridFilter] = useState('all')
+
+  const {
+    data: oswRemotePayload,
+    isLoading: isOswRemoteLoading,
+    isError: isOswRemoteError,
+    error: oswRemoteError,
+  } = useQuery({
+    queryKey: OSW_REMOTE_QUERY_KEY,
+    queryFn: async () => {
+      const response = await fetch(API.oswPlannerData)
+      if (!response.ok) throw new Error(`Failed to fetch remote planner data: ${response.status}`)
+      return response.json()
+    },
+    staleTime: 60 * 1000,
+    retry: 1,
+  })
+
+  const remoteCaughtData = useMemo(
+    () => normalizeOswCaughtPayload(oswRemotePayload),
+    [oswRemotePayload]
+  )
+  const plannerData = remoteCaughtData || oswCaughtData
+  const teams = useMemo(() => (
+    Object.entries(plannerData).map(([id, team]) => ({
+      id,
+      label: team.name || id,
+      data: team,
+    }))
+  ), [plannerData])
+
+  useEffect(() => {
+    if (!teams.length) return
+
+    const teamExists = teams.some(team => team.id === activeTeamId)
+    if (!teamExists) {
+      setActiveTeamId(teams[0].id)
+    }
+  }, [teams, activeTeamId])
 
   useDocumentHead({
     title: 'Official Shiny Wars Planner - Team Synergy',
@@ -311,7 +362,7 @@ export default function OfficialShinyWarsPlanner() {
     () => filterTierColumnsByMethod(tierColumns, activeGridFilter),
     [tierColumns, activeGridFilter]
   )
-  const activeTeam = teams.find(team => team.id === activeTeamId) || teams[0]
+  const activeTeam = teams.find(team => team.id === activeTeamId) || teams[0] || { label: 'Team', data: {} }
   const caughtSet = useMemo(() => getCaughtSet(activeTeam?.data), [activeTeam])
   const summary = useMemo(() => getTeamSummary(tierColumns, caughtSet), [tierColumns, caughtSet])
   const caughtPokemon = useMemo(() => getCaughtPokemon(activeTeam?.data), [activeTeam])
@@ -325,10 +376,10 @@ export default function OfficialShinyWarsPlanner() {
             <button
               key={team.id}
               type="button"
-              className={`${styles.tab} ${team.id === activeTeam.id ? styles.activeTab : ''}`}
+              className={`${styles.tab} ${team.id === activeTeam?.id ? styles.activeTab : ''}`}
               onClick={() => setActiveTeamId(team.id)}
               role="tab"
-              aria-selected={team.id === activeTeam.id}
+              aria-selected={team.id === activeTeam?.id}
             >
               {team.label}
             </button>

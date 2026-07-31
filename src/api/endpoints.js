@@ -12,6 +12,8 @@ export const API = {
   streamers: `${WORKER_BASE}/streamers`,
   events: `${WORKER_BASE}/events`,
   adminCheck: `${WORKER_BASE}/check`,
+  adminAccessConfig: `${WORKER_BASE}/access-config`,
+  updateAdminAccessConfig: `${WORKER_BASE}/update-access-config`,
   updateDatabase: `${WORKER_BASE}/update-database`,
   updateStreamers: `${WORKER_BASE}/update-streamers`,
   bounties: `${WORKER_BASE}/bounties`,       
@@ -24,4 +26,6 @@ export const API = {
   officialEvents: OFFICIAL_EVENTS,
   routeFinderSubmission: ROUTE_FINDER_WORKER,
   encounterPercents: `${ROUTE_FINDER_WORKER}/encounter-percents`,
+  oswPlannerData: `${WORKER_BASE}/osw-planner`,
+  updateOswPlannerData: `${WORKER_BASE}/update-osw-planner`,
 };

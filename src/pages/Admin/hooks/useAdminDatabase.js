@@ -1,6 +1,7 @@
  import { useState, useCallback, useRef, useMemo } from 'react';
 import { API } from '../../../api/endpoints';
 import generationData from '../../../data/generation.json';
+import oswCaughtData from '../../../data/osw-caught.json';
 
 
 
@@ -86,6 +87,16 @@ function normalizeBountiesData(input) {
   return grouped;
 }
 
+function normalizeOswPlannerData(input) {
+  return input && typeof input === 'object' && !Array.isArray(input)
+    ? input
+    : {};
+}
+
+function hasOswTeams(input) {
+  return Object.keys(normalizeOswPlannerData(input)).length > 0;
+}
+
 // ---------------- HOOK ----------------
 export default function useAdminDB(auth) {
   // --- Database / Streamers / Events / Log / Bounties ---
@@ -94,6 +105,10 @@ export default function useAdminDB(auth) {
   const [eventDB, setEventDB] = useState([]);
   const [themesDB, setThemesDB] = useState({});
   const [logData, setLogData] = useState([]);
+  const [oswPlannerData, setOswPlannerData] = useState(() => deepClone(oswCaughtData));
+  const [adminAccessConfig, setAdminAccessConfig] = useState({ fullAccessUsers: [], restrictedTabs: ['osw'] });
+  const [availableAdminUsers, setAvailableAdminUsers] = useState([]);
+  const [allAdminTabs, setAllAdminTabs] = useState(['osw']);
   // Bounties are stored by dynamic category key (month names + Perm)
   const [bounties, setBounties] = useState({ Perm: [] });
   const [isLoading, setIsLoading] = useState(false);
@@ -704,6 +719,158 @@ const deleteBounty = useCallback(async (id) => {
   return await saveBounties(updated, 'Delete bounty');
 }, [bounties, saveBounties]);
 
+  // ---------------- OSW PLANNER CRUD ----------------
+  const loadOswPlanner = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(API.oswPlannerData, { method: 'GET' });
+      if (!res.ok) {
+        const fallbackData = deepClone(oswCaughtData);
+        setOswPlannerData(fallbackData);
+        return fallbackData;
+      }
+
+      const data = await res.json();
+      const safeData = normalizeOswPlannerData(data);
+      const nextData = hasOswTeams(safeData)
+        ? safeData
+        : deepClone(oswCaughtData);
+
+      setOswPlannerData(nextData);
+      return nextData;
+    } catch {
+      const fallbackData = deepClone(oswCaughtData);
+      setOswPlannerData(fallbackData);
+      return fallbackData;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const saveOswPlanner = useCallback(async (nextData, action = 'Updated OSW planner data') => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    setIsMutating(true);
+    try {
+      const safeData = nextData && typeof nextData === 'object' && !Array.isArray(nextData) ? nextData : {};
+      const result = await postData(API.updateOswPlannerData, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        data: safeData,
+        action,
+      });
+      if (result.success) {
+        setOswPlannerData(safeData);
+        await logAdminAction(action);
+        return { success: true };
+      }
+      return { success: false, error: 'Server rejected update' };
+    } finally {
+      setIsMutating(false);
+    }
+  }, [auth, postData, logAdminAction]);
+
+  const loadAdminAccessConfig = useCallback(async () => {
+    if (!auth) return null;
+    setIsLoading(true);
+    try {
+      const result = await postData(API.adminAccessConfig, {
+        username: auth.name || auth.username,
+        password: auth.password,
+      });
+
+      if (result?.config) {
+        setAdminAccessConfig(result.config);
+        setAvailableAdminUsers(Array.isArray(result.availableUsers) ? result.availableUsers : []);
+        setAllAdminTabs(Array.isArray(result.allTabs) ? result.allTabs : ['osw']);
+        return result;
+      }
+
+      return result;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [auth, postData]);
+
+  const saveAdminAccessConfig = useCallback(async (nextConfig) => {
+    if (!auth) return { success: false, error: 'Unauthorized' };
+    setIsMutating(true);
+    try {
+      const result = await postData(API.updateAdminAccessConfig, {
+        username: auth.name || auth.username,
+        password: auth.password,
+        data: nextConfig,
+        action: 'Updated admin access config',
+      });
+      if (result.success) {
+        setAdminAccessConfig(result.config || nextConfig);
+        await logAdminAction('Updated admin access config');
+        return { success: true };
+      }
+      return { success: false, error: result?.error || 'Server rejected update' };
+    } finally {
+      setIsMutating(false);
+    }
+  }, [auth, postData, logAdminAction]);
+
+  const addOswPlannerShiny = useCallback(async ({ teamId, tier, player, pokemon }) => {
+    if (!teamId) return { success: false, error: 'Team is required' };
+    if (!pokemon || !String(pokemon).trim()) return { success: false, error: 'Pokemon is required' };
+
+    const normalizedTier = Number(tier);
+    if (!Number.isFinite(normalizedTier) || normalizedTier < 0 || normalizedTier > 7) {
+      return { success: false, error: 'Tier must be between 0 and 7' };
+    }
+
+    const tierKey = `Tier ${normalizedTier}`;
+    const nextData = deepClone(oswPlannerData || {});
+
+    if (!nextData[teamId]) {
+      nextData[teamId] = {
+        name: teamId,
+      };
+    }
+
+    if (!Array.isArray(nextData[teamId][tierKey])) {
+      nextData[teamId][tierKey] = [];
+    }
+
+    nextData[teamId][tierKey].push([String(player || '').trim(), String(pokemon).trim()]);
+
+    return saveOswPlanner(
+      nextData,
+      `Added OSW planner shiny: ${pokemon} (${teamId}, ${tierKey})`
+    );
+  }, [oswPlannerData, saveOswPlanner]);
+
+  const removeOswPlannerShiny = useCallback(async ({ teamId, tier, index }) => {
+    if (!teamId) return { success: false, error: 'Team is required' };
+
+    const normalizedTier = Number(tier);
+    if (!Number.isFinite(normalizedTier) || normalizedTier < 0 || normalizedTier > 7) {
+      return { success: false, error: 'Tier must be between 0 and 7' };
+    }
+
+    const tierKey = `Tier ${normalizedTier}`;
+    const nextData = deepClone(oswPlannerData || {});
+    const tierList = nextData?.[teamId]?.[tierKey];
+
+    if (!Array.isArray(tierList) || index < 0 || index >= tierList.length) {
+      return { success: false, error: 'Entry not found' };
+    }
+
+    const removedEntry = tierList[index];
+    tierList.splice(index, 1);
+
+    const removedPokemon = Array.isArray(removedEntry)
+      ? removedEntry[1]
+      : (removedEntry?.pokemon || removedEntry?.Pokemon || removedEntry?.name || removedEntry?.Name || 'entry');
+
+    return saveOswPlanner(
+      nextData,
+      `Removed OSW planner shiny: ${removedPokemon} (${teamId}, ${tierKey})`
+    );
+  }, [oswPlannerData, saveOswPlanner]);
+
 
   // ---------------- RETURN ----------------
   return {
@@ -726,5 +893,11 @@ const deleteBounty = useCallback(async (id) => {
 
     // Bounties
     bounties, loadBounties, addBounty, editBounty, deleteBounty,
+
+    // OSW Planner
+    oswPlannerData, loadOswPlanner, saveOswPlanner, addOswPlannerShiny, removeOswPlannerShiny,
+
+    // Access Control
+    adminAccessConfig, availableAdminUsers, allAdminTabs, loadAdminAccessConfig, saveAdminAccessConfig,
   };
 }

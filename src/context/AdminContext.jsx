@@ -5,8 +5,13 @@ const AdminContext = createContext(null)
 export function AdminProvider({ children }) {
   const [auth, setAuth] = useState(null)
 
-  const login = useCallback((name, password) => {
-    setAuth({ name, password })
+  const login = useCallback((name, password, access = {}) => {
+    setAuth({
+      name,
+      password,
+      isFullAdmin: Boolean(access.isFullAdmin),
+      allowedTabs: Array.isArray(access.allowedTabs) ? access.allowedTabs : ['osw'],
+    })
   }, [])
 
   const logout = useCallback(() => {
