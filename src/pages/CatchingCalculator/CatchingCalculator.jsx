@@ -1332,6 +1332,7 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
       explanation: 'No available balls with current filter settings.',
       genderRatios,
       eggGroups: pokemon.egg_groups || [],
+      encounterTypes: encounterContext.encounterTypes,
       catchRate,
       isLureEncounter,
       scoreEncounterPercent: isLureEncounter ? LURE_ENCOUNTER_RATE_PERCENT : 0,
@@ -1379,12 +1380,13 @@ function buildPokemonRecommendation(pokemonName, routeEntry, options, routeEncou
     explanation,
     genderRatios,
     eggGroups: pokemon.egg_groups || [],
+    encounterTypes: encounterContext.encounterTypes,
     types,
     isGhost,
     catchRate,
     isLureEncounter,
     scoreEncounterPercent: isLureEncounter ? LURE_ENCOUNTER_RATE_PERCENT : 0,
-  }
+    }
 }
 
 function routeScore(parts) {
@@ -1469,6 +1471,10 @@ function buildRouteRanking({
           return pokemonTargets.has(normalizeKey(result.pokemonName))
         }
         if (mode === MODE_EGG) {
+          const encounterTypes = Array.isArray(result.encounterTypes) ? result.encounterTypes : []
+          if (encounterTypes.some((entry) => normalizeKey(entry) === 'rocks')) {
+            return false
+          }
           return (result.eggGroups || []).some((group) => normalizeKey(group) === normalizedEggGroupTarget)
         }
         return true
