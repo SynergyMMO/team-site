@@ -156,6 +156,11 @@ export default function Pokedex() {
     return type.includes('rod') || type.includes('fishing')
   }
 
+  const isWaterEncounter = (encounter = {}) => {
+    const type = String(encounter.type || '').toLowerCase().trim()
+    return type === 'water'
+  }
+
   const isHeadbuttEncounter = (encounter = {}) => {
     const type = String(encounter.type || '').toLowerCase()
     return type === 'headbutt'
@@ -284,13 +289,13 @@ export default function Pokedex() {
     const encounterTypes = new Set()
     matchingEncounters.forEach(encounter => {
       if (isHordeEncounter(encounter)) {
-        encounterTypes.add('Horde')
+        encounterTypes.add(isWaterEncounter(encounter) ? 'Water Hordes' : 'Grass Hordes')
       }
       if (isLureEncounter(encounter)) {
         encounterTypes.add('Lure Encounters')
       }
       if (isSingleEncounter(encounter)) {
-        encounterTypes.add('Singles')
+        encounterTypes.add(isWaterEncounter(encounter) ? 'Water Encounters' : 'Grass Encounters')
       }
       if (isFishingEncounter(encounter)) {
         encounterTypes.add('Fishing Encounters')
@@ -308,10 +313,12 @@ export default function Pokedex() {
 
   const getEncounterTypeDesc = (type) => {
     const descriptions = {
-      'Horde': 'All Pokemon found within Hordes on the route',
+      'Grass Hordes': 'All Pokemon found within land-based hordes on the route',
+      'Water Hordes': 'All Pokemon found within water-based hordes on the route',
       'Lure Encounters': 'Any Pokemon using a lure',
       'Rares': 'Rare tier Pokemon (Tier 0-2) found in singles',
-      'Singles': 'Common Pokemon (Tier 3+) found in singles (Very Common, Common, Uncommon, Rare, Very Rare)',
+      'Grass Encounters': 'Land-based single encounters (Very Common, Common, Uncommon, Rare, Very Rare)',
+      'Water Encounters': 'Water-based single encounters (Very Common, Common, Uncommon, Rare, Very Rare)',
       'Fishing Encounters': 'Any Pokemon caught within "Fishing"',
       'Headbutt': 'Any Pokemon found by using Headbutt on trees',
       'Special': 'Any Pokemon caught within "Special"'
@@ -381,12 +388,16 @@ export default function Pokedex() {
       return locationText.includes(normalizedSearch) && matchesSelectedSeason(encounter, selectedSeason)
     })
 
-    if (encounterType === 'Horde') {
-      matchingEncounters = matchingEncounters.filter(e => isHordeEncounter(e))
+    if (encounterType === 'Grass Hordes') {
+      matchingEncounters = matchingEncounters.filter(e => isHordeEncounter(e) && !isWaterEncounter(e))
+    } else if (encounterType === 'Water Hordes') {
+      matchingEncounters = matchingEncounters.filter(e => isHordeEncounter(e) && isWaterEncounter(e))
     } else if (encounterType === 'Lure Encounters') {
       matchingEncounters = matchingEncounters.filter(e => isLureEncounter(e))
-    } else if (encounterType === 'Singles') {
-      matchingEncounters = matchingEncounters.filter(e => isSingleEncounter(e))
+    } else if (encounterType === 'Grass Encounters') {
+      matchingEncounters = matchingEncounters.filter(e => isSingleEncounter(e) && !isWaterEncounter(e))
+    } else if (encounterType === 'Water Encounters') {
+      matchingEncounters = matchingEncounters.filter(e => isSingleEncounter(e) && isWaterEncounter(e))
     } else if (encounterType === 'Fishing Encounters') {
       matchingEncounters = matchingEncounters.filter(e => isFishingEncounter(e))
     } else if (encounterType === 'Headbutt') {
@@ -1516,7 +1527,7 @@ const rarityOptions = useMemo(() => {
         {locationSearch.trim() && locationOptions.includes(locationSearch) ? (
           (() => {
             const encounterTypeMap = {}
-            const encounterTypeOrder = ['Lure Encounters', 'Rares', 'Horde', 'Singles', 'Fishing Encounters', 'Headbutt', 'Special']
+            const encounterTypeOrder = ['Lure Encounters', 'Rares', 'Grass Hordes', 'Water Hordes', 'Grass Encounters', 'Water Encounters', 'Fishing Encounters', 'Headbutt', 'Special']
             
             Object.entries(generationData).forEach(([gen, speciesGroups]) => {
               const flatPokemon = speciesGroups.flat()
@@ -1599,10 +1610,12 @@ const rarityOptions = useMemo(() => {
                 const encounterTypes = getEncounterTypeForPokemon(normalized, locationSearch, selectedSeason)
                 encounterTypes.forEach(type => {
                   let targetType = type
-                  if (type === 'Singles') {
+                  if (type === 'Grass Encounters' || type === 'Water Encounters') {
                     const tierMatch = pokemonTier.match(/Tier\s*(\d+)/)
                     const tierNumber = tierMatch ? parseInt(tierMatch[1], 10) : -1
-                    targetType = (tierNumber >= 0 && tierNumber <= 2) ? 'Rares' : 'Singles'
+                    if (tierNumber >= 0 && tierNumber <= 2) {
+                      targetType = 'Rares'
+                    }
                   }
                   
                   if (!encounterTypeMap[targetType]) {
@@ -1810,7 +1823,7 @@ const rarityOptions = useMemo(() => {
                 .filter(type => encounterTypeMap[type] && encounterTypeMap[type].length > 0)
                 .map(type => {
                   let pokemonList = encounterTypeMap[type]
-                if (type === 'Singles' || type === 'Rares') {
+                if (type === 'Singles' || type === 'Rares' || type === 'Grass Encounters' || type === 'Water Encounters') {
                   const rarityOrder = ['very common', 'common', 'uncommon', 'rare', 'very rare']
                   pokemonList = [...pokemonList].sort((a, b) => {
                     const aRarity = (a.primaryRarity || '').toLowerCase()
