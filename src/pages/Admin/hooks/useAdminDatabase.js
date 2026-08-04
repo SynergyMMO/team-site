@@ -97,6 +97,59 @@ function hasOswTeams(input) {
   return Object.keys(normalizeOswPlannerData(input)).length > 0;
 }
 
+function normalizeOswPlayerName(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function parseOswEntry(entry) {
+  if (Array.isArray(entry)) {
+    return {
+      player: String(entry[0] || ''),
+      pokemon: String(entry[1] || ''),
+    };
+  }
+
+  if (entry && typeof entry === 'object') {
+    return {
+      player: String(entry.player || entry.Player || entry.trainer || entry.Trainer || ''),
+      pokemon: String(entry.pokemon || entry.Pokemon || entry.name || entry.Name || ''),
+    };
+  }
+
+  if (typeof entry === 'string') {
+    return {
+      player: '',
+      pokemon: String(entry),
+    };
+  }
+
+  return {
+    player: '',
+    pokemon: '',
+  };
+}
+
+function findCanonicalOswPlayerName(teamData, playerName) {
+  const normalizedPlayerName = normalizeOswPlayerName(playerName);
+  if (!normalizedPlayerName) return '';
+
+  const tierKeys = Object.keys(teamData || {}).filter((key) => /^Tier\s+\d+$/i.test(key));
+
+  for (const tierKey of tierKeys) {
+    const entries = Array.isArray(teamData[tierKey]) ? teamData[tierKey] : [];
+    for (const entry of entries) {
+      const parsed = parseOswEntry(entry);
+      const existingPlayer = String(parsed.player || '').trim();
+      if (!existingPlayer) continue;
+      if (normalizeOswPlayerName(existingPlayer) === normalizedPlayerName) {
+        return existingPlayer;
+      }
+    }
+  }
+
+  return String(playerName || '').trim();
+}
+
 // ---------------- HOOK ----------------
 export default function useAdminDB(auth) {
   // --- Database / Streamers / Events / Log / Bounties ---
@@ -823,6 +876,8 @@ const deleteBounty = useCallback(async (id) => {
 
     const tierKey = `Tier ${normalizedTier}`;
     const nextData = deepClone(oswPlannerData || {});
+    const requestedPlayer = String(player || '').trim();
+    const normalizedPokemon = String(pokemon).trim().toLowerCase();
 
     if (!nextData[teamId]) {
       nextData[teamId] = {
@@ -834,11 +889,27 @@ const deleteBounty = useCallback(async (id) => {
       nextData[teamId][tierKey] = [];
     }
 
-    nextData[teamId][tierKey].push([String(player || '').trim(), String(pokemon).trim()]);
+    const canonicalPlayer = findCanonicalOswPlayerName(nextData[teamId], requestedPlayer);
+    const normalizedPlayer = normalizeOswPlayerName(canonicalPlayer);
+
+    const duplicateEntry = nextData[teamId][tierKey].some((entry) => {
+      const parsed = parseOswEntry(entry);
+      return normalizeOswPlayerName(parsed.player) === normalizedPlayer
+        && String(parsed.pokemon || '').trim().toLowerCase() === normalizedPokemon;
+    });
+
+    if (duplicateEntry) {
+      return {
+        success: false,
+        error: 'This player already has that Pokemon in this tier.',
+      };
+    }
+
+    nextData[teamId][tierKey].push([canonicalPlayer, String(pokemon).trim()]);
 
     return saveOswPlanner(
       nextData,
-      `Added OSW planner shiny: ${pokemon} (${teamId}, ${tierKey})`
+      `Added OSW planner shiny: ${pokemon} (${teamId}, ${tierKey}) for ${canonicalPlayer || 'unassigned'}`
     );
   }, [oswPlannerData, saveOswPlanner]);
 

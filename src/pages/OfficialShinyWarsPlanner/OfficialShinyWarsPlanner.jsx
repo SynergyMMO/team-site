@@ -8,6 +8,7 @@ import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import oswCaughtData from '../../data/osw-caught.json'
 import oswEncounterMethods from '../../data/osw-encounter-methods.json'
 import oswEncounterTiers from '../../data/osw-encounter-tiers.json'
+import tierPointsData from '../../data/tier_points.json'
 import { getLocalPokemonGif, normalizePokemonName, onGifError } from '../../utils/pokemon'
 import styles from './OfficialShinyWarsPlanner.module.css'
 
@@ -34,6 +35,10 @@ const OSW_METHOD_KEYS = {
   fossils: 'Fossils',
 }
 const OSW_REMOTE_QUERY_KEY = ['osw-planner-data']
+
+function getTierPoints(tier) {
+  return Number(tierPointsData[`Tier ${Number(tier)}`]) || 0
+}
 
 function isValidOswCaughtData(data) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) return false
@@ -172,7 +177,7 @@ function buildTierColumnsFromTierJson() {
 
     if (!tierData) return
 
-    const points = Number(tierData.points) || 0
+    const points = getTierPoints(tier) || Number(tierData.points) || 0
 
     columns[tier] = (tierData.pokemon || [])
       .map(name => {
@@ -264,11 +269,62 @@ function getCaughtEntries(teamData) {
 }
 
 function getCaughtPokemon(teamData) {
-  return getCaughtEntries(teamData).map(entry => ({
-    ...getDisplayPokemon(entry.id),
-    player: entry.player,
-    tier: entry.tier,
-  }))
+  const caughtPokemon = getCaughtEntries(teamData).map(entry => {
+    const points = getTierPoints(entry.tier)
+
+    return {
+      ...getDisplayPokemon(entry.id, points, entry.tier),
+      player: entry.player.trim(),
+      tier: entry.tier,
+    }
+  })
+
+  const playerTotals = caughtPokemon.reduce((totals, pokemon) => {
+    if (!pokemon.player) return totals
+    totals.set(pokemon.player, (totals.get(pokemon.player) || 0) + pokemon.points)
+    return totals
+  }, new Map())
+
+  return caughtPokemon.sort((a, b) => {
+    const aHasPlayer = Boolean(a.player)
+    const bHasPlayer = Boolean(b.player)
+
+    if (aHasPlayer !== bHasPlayer) return aHasPlayer ? -1 : 1
+
+    const scoreDiff = (playerTotals.get(b.player) || 0) - (playerTotals.get(a.player) || 0)
+    if (scoreDiff !== 0) return scoreDiff
+
+    const playerNameDiff = a.player.localeCompare(b.player)
+    if (playerNameDiff !== 0) return playerNameDiff
+
+    const pointsDiff = b.points - a.points
+    if (pointsDiff !== 0) return pointsDiff
+
+    return a.name.localeCompare(b.name)
+  })
+}
+
+function getCaughtPokemonByPlayer(caughtPokemon) {
+  const groupsByPlayer = new Map()
+
+  caughtPokemon.forEach(pokemon => {
+    const playerName = pokemon.player || 'Unassigned'
+    const existing = groupsByPlayer.get(playerName)
+
+    if (existing) {
+      existing.pokemon.push(pokemon)
+      existing.totalPoints += pokemon.points
+      return
+    }
+
+    groupsByPlayer.set(playerName, {
+      player: playerName,
+      totalPoints: pokemon.points,
+      pokemon: [pokemon],
+    })
+  })
+
+  return Array.from(groupsByPlayer.values())
 }
 
 function getCaughtSet(teamData) {
@@ -366,6 +422,7 @@ export default function OfficialShinyWarsPlanner() {
   const caughtSet = useMemo(() => getCaughtSet(activeTeam?.data), [activeTeam])
   const summary = useMemo(() => getTeamSummary(tierColumns, caughtSet), [tierColumns, caughtSet])
   const caughtPokemon = useMemo(() => getCaughtPokemon(activeTeam?.data), [activeTeam])
+  const caughtPokemonByPlayer = useMemo(() => getCaughtPokemonByPlayer(caughtPokemon), [caughtPokemon])
 
   return (
     <div className={styles.page}>
@@ -478,22 +535,31 @@ export default function OfficialShinyWarsPlanner() {
             <h2>Caught Shinies</h2>
             <p>{caughtPokemon.length === 0 ? 'No caught shinies have been entered for this team yet.' : `${caughtPokemon.length} caught shinies entered for ${activeTeam.label}.`}</p>
           </div>
-          <div className={styles.caughtGrid}>
-            {caughtPokemon.map((pokemon, index) => (
-              <Link key={`${pokemon.tier}-${pokemon.id}-${pokemon.player || index}`} to={`/pokemon/${pokemon.id}/`} className={styles.caughtCard}>
-                <img
-                  src={getLocalPokemonGif(pokemon.id)}
-                  alt=""
-                  className={styles.caughtSprite}
-                  width="54"
-                  height="54"
-                  loading="lazy"
-                  onError={onGifError(pokemon.id)}
-                />
-                <span>{pokemon.name}</span>
-                {pokemon.player && <small>Caught by {pokemon.player}</small>}
-                <small>Tier {pokemon.tier} - {pokemon.points} raw pts</small>
-              </Link>
+          <div className={styles.playerGroups}>
+            {caughtPokemonByPlayer.map(group => (
+              <section key={group.player} className={styles.playerGroup} aria-label={`${group.player} caught shinies`}>
+                <div className={styles.playerHeader}>
+                  <h3>{group.player}:</h3>
+                  <small>{group.totalPoints} raw pts</small>
+                </div>
+                <div className={styles.caughtGrid}>
+                  {group.pokemon.map((pokemon, index) => (
+                    <Link key={`${pokemon.tier}-${pokemon.id}-${pokemon.player || index}`} to={`/pokemon/${pokemon.id}/`} className={styles.caughtCard}>
+                      <img
+                        src={getLocalPokemonGif(pokemon.id)}
+                        alt=""
+                        className={styles.caughtSprite}
+                        width="54"
+                        height="54"
+                        loading="lazy"
+                        onError={onGifError(pokemon.id)}
+                      />
+                      <span>{pokemon.name}</span>
+                      <small>Tier {pokemon.tier} - {pokemon.points} raw pts</small>
+                    </Link>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         </section>

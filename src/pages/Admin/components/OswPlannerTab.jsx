@@ -132,6 +132,29 @@ export default function OswPlannerTab({
   const entries = Array.isArray(oswPlannerData?.[teamId]?.[tierKey])
     ? oswPlannerData[teamId][tierKey]
     : []
+  const teamPlayerOptions = useMemo(() => {
+    const teamData = oswPlannerData?.[teamId]
+    if (!teamData || typeof teamData !== 'object') return []
+
+    const byLowerName = new Map()
+
+    Object.entries(teamData).forEach(([key, value]) => {
+      if (!/^Tier\s+\d+$/i.test(key) || !Array.isArray(value)) return
+
+      value.forEach((entry) => {
+        const parsed = parseCaughtEntry(entry)
+        const name = String(parsed.player || '').trim()
+        if (!name) return
+
+        const lowerName = name.toLowerCase()
+        if (!byLowerName.has(lowerName)) {
+          byLowerName.set(lowerName, name)
+        }
+      })
+    })
+
+    return Array.from(byLowerName.values()).sort((a, b) => a.localeCompare(b))
+  }, [oswPlannerData, teamId])
   const inferredTierMatch = useMemo(() => inferOswTier(pokemon), [pokemon])
   const inferredTier = inferredTierMatch?.tier ?? null
 
@@ -194,13 +217,13 @@ export default function OswPlannerTab({
           </select>
 
           <label htmlFor="osw-player">Player (optional)</label>
-          <input
+          <Autocomplete
             id="osw-player"
-            className={styles.adminInput}
-            type="text"
             value={player}
-            onChange={(e) => setPlayer(e.target.value)}
+            onChange={setPlayer}
+            getOptions={() => teamPlayerOptions}
             placeholder="Hyper"
+            className={styles.adminInput}
             disabled={isMutating}
           />
 

@@ -1,7 +1,16 @@
 import { useState, useRef, useEffect } from 'react'
 import styles from '../Admin.module.css'
 
-export default function Autocomplete({ id, value, onChange, onSelect, getOptions, placeholder }) {
+export default function Autocomplete({
+  id,
+  value,
+  onChange,
+  onSelect,
+  getOptions,
+  placeholder,
+  className,
+  disabled = false,
+}) {
   const [suggestions, setSuggestions] = useState([])
   const [show, setShow] = useState(false)
   const [focusIdx, setFocusIdx] = useState(-1)
@@ -48,6 +57,7 @@ export default function Autocomplete({ id, value, onChange, onSelect, getOptions
         id={id}
         ref={ref}
         type="text"
+        className={className}
         value={value}
         onChange={e => handleInput(e.target.value)}
         onKeyDown={handleKeyDown}
@@ -55,6 +65,7 @@ export default function Autocomplete({ id, value, onChange, onSelect, getOptions
         onBlur={() => { blurTimeoutRef.current = setTimeout(() => setShow(false), 100) }}
         placeholder={placeholder}
         autoComplete="off"
+        disabled={disabled}
       />
       {show && (
         <div className={styles.suggestions}>

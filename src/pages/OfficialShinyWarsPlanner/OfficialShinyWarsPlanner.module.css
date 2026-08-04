@@ -373,6 +373,59 @@
   gap: 12px;
 }
 
+.playerGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.playerGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.playerGroup + .playerGroup {
+  margin-top: 2px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(210, 180, 222, 0.35);
+}
+
+.playerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(155, 89, 182, 0.32);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 15% 35%, rgba(210, 180, 222, 0.18), transparent 58%),
+    linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(74, 144, 226, 0.12));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.playerHeader h3 {
+  margin: 0;
+  color: #f8f4ff;
+  font-size: clamp(1rem, 1.25vw, 1.22rem);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-shadow: 0 0 14px rgba(155, 89, 182, 0.55);
+}
+
+.playerHeader small {
+  color: #ead7f3;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(210, 180, 222, 0.45);
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: rgba(20, 10, 35, 0.45);
+}
+
 .caughtCard {
   display: grid;
   justify-items: center;
@@ -406,6 +459,16 @@
   font-size: 0.78rem;
 }
 
+@media print {
+  .playerGroup + .playerGroup {
+    break-before: page;
+    page-break-before: always;
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+
 @media (max-width: 1180px) {
   .page {
     width: min(100vw - 12px, 1800px);
@@ -420,6 +483,11 @@
 @media (max-width: 760px) {
   .page {
     width: min(100vw - 16px, 520px);
+  }
+
+  .playerHeader {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .grid {
