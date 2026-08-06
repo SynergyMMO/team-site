@@ -11,34 +11,61 @@ import { TRAIT_POINTS, calculateShinyPoints } from '../../utils/points'
 import shotmHistory from '../../data/shotm_history.json'
 import styles from './SHOTM.module.css'
 
+const ENGLISH_MONTHS = [
+  'january',
+  'february',
+  'march',
+  'april',
+  'may',
+  'june',
+  'july',
+  'august',
+  'september',
+  'october',
+  'november',
+  'december',
+]
+
+function getMonthIndex(month) {
+  return ENGLISH_MONTHS.indexOf(String(month || '').toLowerCase())
+}
+
 function shiftMonth(month, year, delta) {
-  const date = new Date(`${month} 1, ${year}`)
+  const monthIndex = getMonthIndex(month)
+  if (monthIndex < 0) {
+    return {
+      month,
+      year,
+    }
+  }
+  const date = new Date(year, monthIndex, 1)
   date.setMonth(date.getMonth() + delta)
   return {
-    month: date.toLocaleString('default', { month: 'long' }).toLowerCase(),
+    month: ENGLISH_MONTHS[date.getMonth()],
     year: date.getFullYear(),
   }
 }
 
 function isCurrentMonth(month, year) {
   const now = new Date()
+  const monthIndex = getMonthIndex(month)
   return (
-    now.toLocaleString('default', { month: 'long' }).toLowerCase() === month &&
+    monthIndex === now.getMonth() &&
     String(now.getFullYear()) === String(year)
   )
 }
 
 function getMonthKey(month, year) {
-  const date = new Date(`${month} 1, ${year}`)
-  if (Number.isNaN(date.getTime())) return null
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+  const monthIndex = getMonthIndex(month)
+  if (monthIndex < 0) return null
+  return `${year}-${String(monthIndex + 1).padStart(2, '0')}`
 }
 
 function monthKeyToSelection(monthKey) {
   const [year, monthNumber] = monthKey.split('-').map(Number)
-  const date = new Date(year, monthNumber - 1, 1)
+  const monthIndex = monthNumber - 1
   return {
-    month: date.toLocaleString('default', { month: 'long' }).toLowerCase(),
+    month: ENGLISH_MONTHS[monthIndex],
     year,
   }
 }
@@ -63,7 +90,7 @@ export default function SHOTM() {
 
   const now = new Date()
   const [currentMonth, setCurrentMonth] = useState(
-    now.toLocaleString('default', { month: 'long' }).toLowerCase()
+    ENGLISH_MONTHS[now.getMonth()]
   )
   const [currentYear, setCurrentYear] = useState(now.getFullYear())
   const [showPoints, setShowPoints] = useState(false)
@@ -75,6 +102,10 @@ export default function SHOTM() {
   const { data, isLoading } = useDatabase()
   const { tierPoints, tierLookup } = useTierData()
   const selectedMonthKey = getMonthKey(currentMonth, currentYear)
+  const currentMonthDisplay = useMemo(
+    () => new Date(currentYear, getMonthIndex(currentMonth), 1).toLocaleString(undefined, { month: 'long' }),
+    [currentMonth, currentYear]
+  )
   const pausedMonthKeys = useMemo(
     () => new Set(shotmHistory.pausedMonths || []),
     []
@@ -272,7 +303,7 @@ export default function SHOTM() {
         <h1>Shiny Hunters of the Month</h1>
         <div className={styles.monthNav}>
           <h2 className={styles.monthTitle}>
-            {currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)} {currentYear}
+            {currentMonthDisplay} {currentYear}
           </h2>
           <div className={styles.monthButtons}>
             {hasPrevData && <button onClick={goPrev} className={styles.monthBtn}>&#9664; Previous</button>}
