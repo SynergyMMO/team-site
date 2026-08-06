@@ -123,6 +123,12 @@ const PLAYER_LEADERBOARD_SECTIONS = [
     value: (entry) => `${entry.headbuttCount} shinies`,
   },
   {
+    key: 'mostMysteriousBallShinies',
+    title: 'Most Mysterious Ball Shinies',
+    subtitle: 'Who even found those?',
+    value: (entry) => `${entry.mysteriousBallCount} shinies`,
+  },
+  {
     key: 'mostSafariCatches',
     title: 'Most Safari Catches',
     subtitle: 'It was meant to be!',

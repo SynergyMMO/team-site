@@ -22,9 +22,14 @@ const ICON_MAP = {
   Fishing: [`${BASE}images/Shiny Showcase/fishing.png`, 'fishingIcon'],
   Swarm: [`${BASE}images/Shiny Showcase/swarm.png`, 'swarmIcon'],
   Headbutt: [`${BASE}images/Shiny Showcase/headbutt.png`, 'headbuttIcon'],
+  Pkid: [`${BASE}images/pkid.png`, 'pkidIcon'],
   Event: [`${BASE}images/Shiny Showcase/event.png`, 'eventIcon'],
   MysteriousBall: [`${BASE}images/Shiny Showcase/mysteriousball.gif`, 'mysteriousballGif'],
   Favourite: [`${BASE}images/Shiny Showcase/heart.png`, 'favouriteHeart'],
+}
+
+const ICON_TITLES = {
+  Pkid: 'Particle: PKid',
 }
 
 // Detect if device is mobile
@@ -68,15 +73,21 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
   // Icons to display
   const icons = useMemo(() => {
     const iconList = []
+    const hasEgg = shiny.Egg?.toLowerCase() === 'yes'
 
     Object.entries(ICON_MAP).forEach(([key, [src, cls]]) => {
       if (shiny[key]?.toLowerCase() === 'yes') {
+        const extraClass = [styles[cls]]
+        if (key === 'Pkid' && hasEgg) {
+          extraClass.push(styles.pkidWithEgg)
+        }
         iconList.push(
           <img
             key={key}
             src={src}
-            className={styles[cls]}
+            className={extraClass.join(' ')}
             alt={key}
+            title={ICON_TITLES[key] || key}
             width="20"
             height="20"
             loading="lazy"

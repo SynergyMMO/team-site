@@ -35,6 +35,7 @@ const YES_NO_FIELDS = [
   { key : 'Swarm', label: 'Swarm' },
   { key: 'Fishing', label: 'Fishing' },
   { key: 'Headbutt', label: 'Headbutt' },
+  { key: 'Pkid', label: 'Pkid' },
   { key: 'Legendary', label: 'Legendary' },
 ]
 
@@ -79,6 +80,7 @@ function getDefaultState() {
     Fishing: 'No',
     Swarm: 'No',
     Headbutt: 'No',
+    Pkid: 'No',
     Legendary: 'No',
     'Reaction Link': '',
   }

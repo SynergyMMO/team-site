@@ -29,6 +29,7 @@ export function parseBulkAddText(text) {
         Fishing: (flags.includes('fishing') || flags.includes('fish')) ? 'Yes' : 'No',
         Swarm: flags.includes('swarm') ? 'Yes' : 'No',
         Headbutt: flags.includes('headbutt') ? 'Yes' : 'No',
+        Pkid: flags.includes('pkid') ? 'Yes' : 'No',
         Alpha: flags.includes('shalpha') ? 'Yes' : 'No',
         Event: flags.includes('event') ? 'Yes' : 'No',
         MysteriousBall: flags.includes('mb') ? 'Yes' : 'No',

@@ -177,6 +177,20 @@
   z-index: 5;
 }
 
+.pkidIcon {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.pkidWithEgg {
+  right: -4px;
+}
+
 .mysteriousballGif {
   position: absolute;
   top: 2px;
@@ -212,9 +226,12 @@
 }
 
 @media (max-width: 900px) {
-  .secretIcon, .eggIcon, .reactionIcon, .safariIcon, .fossilIcon, .fishingIcon, .swarmIcon, .mysteriousballGif, .honeyIcon {
+  .secretIcon, .eggIcon, .reactionIcon, .safariIcon, .fossilIcon, .fishingIcon, .swarmIcon, .mysteriousballGif, .honeyIcon, .pkidIcon {
     max-width: 10px;
     max-height: 10px;
+  }
+  .pkidWithEgg {
+    right: -2px;
   }
   .favouriteHeart {
     max-width: 7px;

@@ -562,6 +562,12 @@
   border: 1px solid rgba(121, 85, 72, 0.4);
 }
 
+.traitPkid {
+  background-color: rgba(255, 112, 67, 0.2);
+  color: #ff8a65;
+  border: 1px solid rgba(255, 112, 67, 0.45);
+}
+
 .traitSwarm {
   background-color: rgba(76, 175, 80, 0.2);
   color: #66bb6a;

@@ -287,6 +287,7 @@ export default function PlayerPage() {
               { key: 'mostFossils', label: 'Most Fossil Shinies' },
               { key: 'mostSwarm', label: 'Most Swarm Shinies' },
               { key: 'mostHeadbutt', label: 'Most Headbutt Shinies' },
+              { key: 'mostMysteriousBall', label: 'Most Mysterious Ball Shinies' },
               { key: 'mostSafariCatches', label: 'Most Safari Catches' },
               { key: 'mostSafariFlees', label: 'Most Safari Flees' },
               { key: 'mostBountiesClaimed', label: 'Most Bounties Claimed' },
