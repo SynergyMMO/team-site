@@ -22,7 +22,7 @@ const NAV_ITEMS = [
   },
   { to: '/pokedex/', label: 'PokeDex' },
   { to: '/safari-zones/', label: 'Safari Zones' },
-  { to: '/altering-cave-rotations/', label: 'Altering Cave' },
+  //{ to: '/altering-cave-rotations/', label: 'Altering Cave' },
   { to: '/region-maps/', label: 'Region Maps' },
   { to: '/official-event-calendar/', label: 'Official Event Calendar' },
   { to: '/catching-calculator/', label: 'Catching Calculator' },

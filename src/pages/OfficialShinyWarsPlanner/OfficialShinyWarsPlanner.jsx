@@ -147,6 +147,38 @@ function buildEvolutionFamilyLookup() {
 
 const EVOLUTION_FAMILY_BY_POKEMON = buildEvolutionFamilyLookup()
 
+function buildOfficialTierLookup() {
+  const lookup = new Map()
+
+  Object.entries(oswEncounterTiers || {}).forEach(([tierKey, tierData]) => {
+    const tierMatch = tierKey.match(/^tier_(\d+)$/i)
+    if (!tierMatch) return
+
+    const tier = Number(tierMatch[1])
+    ;(tierData?.pokemon || []).forEach(name => {
+      const id = normalizePokemonName(String(name || ''))
+      if (id) lookup.set(id, tier)
+    })
+  })
+
+  return lookup
+}
+
+const OFFICIAL_TIER_BY_POKEMON = buildOfficialTierLookup()
+
+function getOfficialTier(pokemonId) {
+  const directTier = OFFICIAL_TIER_BY_POKEMON.get(pokemonId)
+  if (directTier !== undefined) return directTier
+
+  const evolutionFamily = EVOLUTION_FAMILY_BY_POKEMON.get(pokemonId) || []
+  for (const familyMember of evolutionFamily) {
+    const familyTier = OFFICIAL_TIER_BY_POKEMON.get(familyMember)
+    if (familyTier !== undefined) return familyTier
+  }
+
+  return null
+}
+
 function isOfficialTier(pokemon) {
   const tier = Number(pokemon?.shiny_tier)
   return TIER_ORDER.includes(tier)
@@ -270,12 +302,15 @@ function getCaughtEntries(teamData) {
 
 function getCaughtPokemon(teamData) {
   const caughtPokemon = getCaughtEntries(teamData).map(entry => {
-    const points = getTierPoints(entry.tier)
+    // Caught data is stored in tier buckets and may contain legacy misclassifications.
+    // The official encounter tiers are the source of truth for display and scoring.
+    const tier = getOfficialTier(entry.id) ?? entry.tier
+    const points = getTierPoints(tier)
 
     return {
-      ...getDisplayPokemon(entry.id, points, entry.tier),
+      ...getDisplayPokemon(entry.id, points, tier),
       player: entry.player.trim(),
-      tier: entry.tier,
+      tier,
     }
   })
 
