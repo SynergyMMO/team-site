@@ -254,9 +254,8 @@ function getEncounterBaseChanceByPeriod(encounter) {
     Night: parseRarityPercent(encounter?.rarity_night, encounter),
   }
 }
-
 function getOtherPokemonForWindow(
-  routeLocation,
+  routeLocationId,
   routeRegion,
   routeSeason,
   periodSet,
@@ -265,208 +264,466 @@ function getOtherPokemonForWindow(
   pokemonIndex,
   includedTargetKeys
 ) {
-  const periodArray = [...periodSet]
-  const methodNeedles = new Set([...methodSet].map(normalizeSearch))
-  const includeAnyMethod = methodNeedles.size === 0
-  const normalizedLocation = normalizeSearch(routeLocation)
-  const normalizedRegion = normalizeSearch(routeRegion)
+  const periods = new Set(
+    [...periodSet]
+      .map(period => String(period).trim())
+      .filter(Boolean)
+  )
+
+  const methods = new Set(
+    [...methodSet]
+      .map(method => normalizeSearch(method))
+      .filter(Boolean)
+  )
+
+  const locationId = String(
+    routeLocationId || ''
+  ).trim()
+
+  const normalizedRegion =
+    normalizeSearch(routeRegion)
+
   const matches = []
 
   pokemonIndex.byKey.forEach((entry, key) => {
     if (includedTargetKeys.has(key)) return
 
-    const encounters = Array.isArray(entry.data?.location_area_encounters)
+    const encounters = Array.isArray(
+      entry.data?.location_area_encounters
+    )
       ? entry.data.location_area_encounters
       : []
 
     let chanceWeightedSum = 0
     let chanceWeight = 0
+
     encounters.forEach((encounter) => {
-      const encounterLocation = normalizeSearch(encounter.location_name_full || encounter.location_name)
-      const encounterRegion = normalizeSearch(encounter.region_name)
-      if (!encounterLocation || !encounterRegion) return
-      if (encounterLocation !== normalizedLocation || encounterRegion !== normalizedRegion) return
+      /*
+       * LOCATION
+       *
+       * This is the important part:
+       * identify the route using location_id.
+       */
+      const encounterLocationId = String(
+        encounter.location_id || ''
+      ).trim()
 
-      const season = normalizeSeason(encounter.season)
-      if (!(season === routeSeason || season === 'Any' || routeSeason === 'Any')) return
+      if (
+        !locationId ||
+        !encounterLocationId ||
+        encounterLocationId !== locationId
+      ) {
+        return
+      }
 
-      const method = normalizeSearch(encounter.type)
-      if (!includeAnyMethod && !methodNeedles.has(method)) return
+      /*
+       * REGION
+       */
+      const encounterRegion =
+        normalizeSearch(encounter.region_name)
 
-      const encounterHordeType = getHordeType(encounter)
-      if (encounterHordeType !== requiredHordeType) return
+      if (
+        encounterRegion !== normalizedRegion
+      ) {
+        return
+      }
 
-      const byPeriod = getEncounterBaseChanceByPeriod(encounter)
-      periodArray.forEach((period) => {
-        const chance = byPeriod[period] || 0
+      /*
+       * SEASON
+       */
+      const encounterSeason =
+        normalizeSeason(encounter.season)
+
+      if (
+        encounterSeason !== routeSeason &&
+        encounterSeason !== 'Any' &&
+        routeSeason !== 'Any'
+      ) {
+        return
+      }
+
+      /*
+       * METHOD
+       */
+      const encounterMethod =
+        normalizeSearch(encounter.type)
+
+      if (
+        methods.size > 0 &&
+        !methods.has(encounterMethod)
+      ) {
+        return
+      }
+
+      /*
+       * HORDE TYPE
+       */
+      const encounterHordeType =
+        getHordeType(encounter)
+
+      if (
+        encounterHordeType !==
+        requiredHordeType
+      ) {
+        return
+      }
+
+      /*
+       * PHASES
+       *
+       * Check each phase individually.
+       *
+       * This allows a Pokemon to be found if it appears
+       * during ANY of the phases represented by the route.
+       */
+      const byPeriod =
+        getEncounterBaseChanceByPeriod(encounter)
+
+      periods.forEach((period) => {
+        const chance =
+          byPeriod[period] || 0
+
         if (chance <= 0) return
-        const periodWeight = PERIOD_WEIGHT_BY_LABEL[period] || 1
-        chanceWeightedSum += chance * periodWeight
-        chanceWeight += periodWeight
+
+        const periodWeight =
+          PERIOD_WEIGHT_BY_LABEL[period] || 1
+
+        chanceWeightedSum +=
+          chance * periodWeight
+
+        chanceWeight +=
+          periodWeight
       })
     })
 
-    const averagedChance = chanceWeight > 0 ? (chanceWeightedSum / chanceWeight) : 0
+    /*
+     * Average the Pokemon's spawn chance across
+     * all matching phases.
+     */
+    const averagedChance =
+      chanceWeight > 0
+        ? chanceWeightedSum / chanceWeight
+        : 0
+
     if (averagedChance > 0) {
-      matches.push({ name: entry.displayName, chance: averagedChance })
+      matches.push({
+        name: entry.displayName,
+        chance: averagedChance,
+      })
     }
   })
 
   return matches
-    .sort((a, b) => b.chance - a.chance || a.name.localeCompare(b.name))
+    .sort((a, b) => {
+      if (b.chance !== a.chance) {
+        return b.chance - a.chance
+      }
+
+      return a.name.localeCompare(b.name)
+    })
     .slice(0, 24)
 }
-
-function buildHuntResults(targetKeys, pokemonIndex, seasonFilter, timeFilter) {
+function buildHuntResults(
+  targetKeys,
+  pokemonIndex,
+  seasonFilter,
+  timeFilter
+) {
   const windowAggregate = new Map()
-  const maxPeriodWeight = timeFilter === 'All'
-    ? PERIODS.reduce((sum, period) => sum + period.weight, 0)
-    : (PERIOD_WEIGHT_BY_LABEL[timeFilter] || 1)
+
+  const maxPeriodWeight =
+    timeFilter === 'All'
+      ? PERIODS.reduce((sum, period) => sum + period.weight, 0)
+      : (PERIOD_WEIGHT_BY_LABEL[timeFilter] || 1)
 
   targetKeys.forEach((targetKey) => {
     const targetPokemon = pokemonIndex.byKey.get(targetKey)
     if (!targetPokemon) return
 
-    const encounters = Array.isArray(targetPokemon.data?.location_area_encounters)
+    const encounters = Array.isArray(
+      targetPokemon.data?.location_area_encounters
+    )
       ? targetPokemon.data.location_area_encounters
       : []
 
     encounters.forEach((encounter) => {
       const season = normalizeSeason(encounter.season)
+
       if (!seasonMatchesFilter(season, seasonFilter)) return
 
-      const region = String(encounter.region_name || 'Unknown Region')
-      const location = String(encounter.location_name_full || encounter.location_name || '').trim()
-      if (!location) return
+      const region = String(
+        encounter.region_name || 'Unknown Region'
+      )
 
-      const method = String(encounter.type || 'Unknown')
+      // location_id is the unique identifier.
+      const locationId = String(
+        encounter.location_id || ''
+      ).trim()
+
+      // location_name_full is only used for display.
+      const location = String(
+        encounter.location_name_full ||
+        encounter.location_name ||
+        ''
+      ).trim()
+
+      if (!locationId || !location) return
+
+      const method = String(
+        encounter.type || 'Unknown'
+      )
+
       const hordeType = getHordeType(encounter)
-      PERIODS.forEach((period) => {
-        if (timeFilter !== 'All' && period.label !== timeFilter) return
 
-        const rarityField = encounter[`rarity_${period.id}`]
-        const baseChance = parseRarityPercent(rarityField, encounter)
+      PERIODS.forEach((period) => {
+        if (
+          timeFilter !== 'All' &&
+          period.label !== timeFilter
+        ) {
+          return
+        }
+
+        const rarityField =
+          encounter[`rarity_${period.id}`]
+
+        const baseChance = parseRarityPercent(
+          rarityField,
+          encounter
+        )
+
         if (baseChance <= 0) return
 
-        const weightedChance = baseChance * period.weight * HORDE_WEIGHT[hordeType]
+        const weightedChance =
+          baseChance *
+          period.weight *
+          HORDE_WEIGHT[hordeType]
+
+        // Use location_id instead of location name.
         const spotKey = [
           region,
-          location,
+          locationId,
           season,
           period.label,
           method,
           hordeType,
         ].join('|')
 
-        const current = windowAggregate.get(spotKey) || {
-          id: spotKey,
-          region,
-          location,
-          season,
-          period: period.label,
-          periodWeight: period.weight,
-          method,
-          hordeType,
-          hordeRank: getHordeRank(hordeType),
-          weightedChance: 0,
-          baseChance: 0,
-          species: new Map(),
-          minLevel: Number.POSITIVE_INFINITY,
-          maxLevel: Number.NEGATIVE_INFINITY,
-        }
+        const current =
+          windowAggregate.get(spotKey) || {
+            id: spotKey,
+            region: region,
+            locationId: locationId,
+            location: location,
+            season: season,
+            period: period.label,
+            periodWeight: period.weight,
+            method: method,
+            hordeType: hordeType,
+            hordeRank: getHordeRank(hordeType),
+            weightedChance: 0,
+            baseChance: 0,
+            species: new Map(),
+            minLevel: Number.POSITIVE_INFINITY,
+            maxLevel: Number.NEGATIVE_INFINITY,
+          }
 
         current.baseChance += baseChance
         current.weightedChance += weightedChance
-        current.species.set(targetPokemon.displayName, (current.species.get(targetPokemon.displayName) || 0) + baseChance)
 
-        const minLevel = Number(encounter.min_level)
-        const maxLevel = Number(encounter.max_level)
-        if (Number.isFinite(minLevel)) current.minLevel = Math.min(current.minLevel, minLevel)
-        if (Number.isFinite(maxLevel)) current.maxLevel = Math.max(current.maxLevel, maxLevel)
+        current.species.set(
+          targetPokemon.displayName,
+          (
+            current.species.get(
+              targetPokemon.displayName
+            ) || 0
+          ) + baseChance
+        )
 
-        windowAggregate.set(spotKey, current)
+        const minLevel = Number(
+          encounter.min_level
+        )
+
+        const maxLevel = Number(
+          encounter.max_level
+        )
+
+        if (Number.isFinite(minLevel)) {
+          current.minLevel = Math.min(
+            current.minLevel,
+            minLevel
+          )
+        }
+
+        if (Number.isFinite(maxLevel)) {
+          current.maxLevel = Math.max(
+            current.maxLevel,
+            maxLevel
+          )
+        }
+
+        windowAggregate.set(
+          spotKey,
+          current
+        )
       })
     })
   })
 
   const routeAggregate = new Map()
 
-  ;[...windowAggregate.values()].forEach((windowEntry) => {
-    const routeKey = [
-      windowEntry.region,
-      windowEntry.location,
-      windowEntry.season,
-      windowEntry.method,
-      windowEntry.hordeType,
-    ].join('|')
+  ;[...windowAggregate.values()].forEach(
+    (windowEntry) => {
+      // location_id identifies the actual location.
+      const routeKey = [
+        windowEntry.region,
+        windowEntry.locationId,
+        windowEntry.season,
+        windowEntry.method,
+        windowEntry.hordeType,
+      ].join('|')
 
-    const current = routeAggregate.get(routeKey) || {
-      id: routeKey,
-      region: windowEntry.region,
-      location: windowEntry.location,
-      season: windowEntry.season,
-      method: windowEntry.method,
-      hordeType: windowEntry.hordeType,
-      hordeRank: windowEntry.hordeRank,
-      weightedChance: 0,
-      baseChance: 0,
-      weightedScoreSum: 0,
-      baseChanceWeightedSum: 0,
-      availabilityWeight: 0,
-      species: new Map(),
-      minLevel: Number.POSITIVE_INFINITY,
-      maxLevel: Number.NEGATIVE_INFINITY,
-      availablePeriods: new Set(),
-      periodWeights: new Map(),
+      const current =
+        routeAggregate.get(routeKey) || {
+          id: routeKey,
+          region: windowEntry.region,
+          locationId: windowEntry.locationId,
+          location: windowEntry.location,
+          season: windowEntry.season,
+          method: windowEntry.method,
+          hordeType: windowEntry.hordeType,
+          hordeRank: windowEntry.hordeRank,
+          weightedChance: 0,
+          baseChance: 0,
+          weightedScoreSum: 0,
+          baseChanceWeightedSum: 0,
+          availabilityWeight: 0,
+          species: new Map(),
+          minLevel: Number.POSITIVE_INFINITY,
+          maxLevel: Number.NEGATIVE_INFINITY,
+          availablePeriods: new Set(),
+          periodWeights: new Map(),
+        }
+
+      current.hordeType = pickDominantHordeType(
+        current.hordeType,
+        windowEntry.hordeType
+      )
+
+      current.hordeRank = getHordeRank(
+        current.hordeType
+      )
+
+      current.weightedScoreSum +=
+        windowEntry.weightedChance
+
+      current.baseChanceWeightedSum +=
+        windowEntry.baseChance *
+        windowEntry.periodWeight
+
+      current.availabilityWeight +=
+        windowEntry.periodWeight
+
+      current.availablePeriods.add(
+        windowEntry.period
+      )
+
+      current.periodWeights.set(
+        windowEntry.period,
+        windowEntry.periodWeight
+      )
+
+      current.minLevel = Math.min(
+        current.minLevel,
+        windowEntry.minLevel
+      )
+
+      current.maxLevel = Math.max(
+        current.maxLevel,
+        windowEntry.maxLevel
+      )
+
+      windowEntry.species.forEach(
+        (chance, speciesName) => {
+          current.species.set(
+            speciesName,
+            (
+              current.species.get(
+                speciesName
+              ) || 0
+            ) + chance
+          )
+        }
+      )
+
+      routeAggregate.set(
+        routeKey,
+        current
+      )
     }
-
-    current.hordeType = pickDominantHordeType(current.hordeType, windowEntry.hordeType)
-    current.hordeRank = getHordeRank(current.hordeType)
-    current.weightedScoreSum += windowEntry.weightedChance
-    current.baseChanceWeightedSum += windowEntry.baseChance * windowEntry.periodWeight
-    current.availabilityWeight += windowEntry.periodWeight
-    current.availablePeriods.add(windowEntry.period)
-    current.periodWeights.set(windowEntry.period, windowEntry.periodWeight)
-    current.minLevel = Math.min(current.minLevel, windowEntry.minLevel)
-    current.maxLevel = Math.max(current.maxLevel, windowEntry.maxLevel)
-
-    windowEntry.species.forEach((chance, speciesName) => {
-      current.species.set(speciesName, (current.species.get(speciesName) || 0) + chance)
-    })
-
-    routeAggregate.set(routeKey, current)
-  })
+  )
 
   return [...routeAggregate.values()]
     .map((entry) => {
-      const baseChance = entry.availabilityWeight > 0
-        ? (entry.baseChanceWeightedSum / entry.availabilityWeight)
-        : 0
-      const weightedChance = maxPeriodWeight > 0
-        ? (entry.weightedScoreSum / maxPeriodWeight)
-        : 0
+      const baseChance =
+        entry.availabilityWeight > 0
+          ? entry.baseChanceWeightedSum /
+            entry.availabilityWeight
+          : 0
+
+      const weightedChance =
+        maxPeriodWeight > 0
+          ? entry.weightedScoreSum /
+            maxPeriodWeight
+          : 0
 
       return {
         ...entry,
         baseChance,
         weightedChance,
-        periodLabel: [...entry.availablePeriods].sort((a, b) => {
-        const order = { Morning: 0, Day: 1, Night: 2 }
-        return (order[a] ?? 9) - (order[b] ?? 9)
-      }).join(' / '),
-        speciesList: [...entry.species.entries()]
+
+      periodLabel: [...entry.availablePeriods]
+        .sort((a, b) => {
+          const order = {
+            Morning: 0,
+            Day: 1,
+            Night: 2,
+          }
+
+          return (order[a] ?? 9) - (order[b] ?? 9)
+        })
+        .join(' / '),
+
+        speciesList: [
+          ...entry.species.entries(),
+        ]
           .sort((a, b) => b[1] - a[1])
           .map(([name]) => name),
-        levelText: Number.isFinite(entry.minLevel) && Number.isFinite(entry.maxLevel)
-          ? (entry.minLevel === entry.maxLevel ? `Lv. ${entry.minLevel}` : `Lv. ${entry.minLevel}-${entry.maxLevel}`)
-          : 'Lv. ?',
+
+        levelText:
+          Number.isFinite(entry.minLevel) &&
+          Number.isFinite(entry.maxLevel)
+            ? entry.minLevel === entry.maxLevel
+              ? `Lv. ${entry.minLevel}`
+              : `Lv. ${entry.minLevel}-${entry.maxLevel}`
+            : 'Lv. ?',
       }
     })
     .sort((a, b) => {
-      if (a.hordeRank !== b.hordeRank) return b.hordeRank - a.hordeRank
-      if (a.weightedChance !== b.weightedChance) return b.weightedChance - a.weightedChance
-      if (a.baseChance !== b.baseChance) return b.baseChance - a.baseChance
-      return `${a.region} ${a.location}`.localeCompare(`${b.region} ${b.location}`)
+      if (a.hordeRank !== b.hordeRank) {
+        return b.hordeRank - a.hordeRank
+      }
+
+      if (a.weightedChance !== b.weightedChance) {
+        return b.weightedChance - a.weightedChance
+      }
+
+      if (a.baseChance !== b.baseChance) {
+        return b.baseChance - a.baseChance
+      }
+
+      return `${a.region} ${a.location}`.localeCompare(
+        `${b.region} ${b.location}`
+      )
     })
 }
 
@@ -547,7 +804,7 @@ export default function RouteFinder() {
     const methods = new Set([selectedResult.method])
 
     return getOtherPokemonForWindow(
-      selectedResult.location,
+      selectedResult.locationId,
       selectedResult.region,
       selectedResult.season,
       periods,
