@@ -822,7 +822,7 @@ function buildAllRouteUniverse(encounterMethod) {
       const pokemonSlug = normalizePokemonName(pokemon.name)
       const encounterType = String(encounter?.type || '')
       const method = getEncounterMethodFromType(encounterType)
-      if (method !== encounterMethod) return
+      if (encounterMethod && method !== encounterMethod) return
       if (isSpecialEncounterType(encounterType) && pokemonSlug !== 'feebas') return
 
       const region = titleCase(String(encounter?.region_name || '').trim())
@@ -1549,18 +1549,6 @@ function buildRouteRanking({
     })
 }
 
-  const handleInfoDropdownToggle = (event) => {
-    const isOpen = event.currentTarget.open
-    setIsInfoDropdownOpen(isOpen)
-
-    if (typeof window === 'undefined') return
-    if (isOpen) {
-      window.localStorage.removeItem(INFO_DROPDOWN_CLOSED_KEY)
-    } else {
-      window.localStorage.setItem(INFO_DROPDOWN_CLOSED_KEY, 'true')
-    }
-  }
-
 function buildSpecificPokemonSelection({
   routes,
   pokemonName,
@@ -1668,13 +1656,28 @@ export default function CatchingCalculator() {
     description: 'Plan the fastest and most cost-efficient catch strategy by route, Pokemon, or egg group in PokeMMO.',
     canonicalPath: '/catching-calculator/',
   })
+
+  const handleInfoDropdownToggle = (event) => {
+    const isOpen = event.currentTarget.open
+    setIsInfoDropdownOpen(isOpen)
+
+    if (typeof window === 'undefined') return
+    if (isOpen) {
+      window.localStorage.removeItem(INFO_DROPDOWN_CLOSED_KEY)
+    } else {
+      window.localStorage.setItem(INFO_DROPDOWN_CLOSED_KEY, 'true')
+    }
+  }
+
   function getInitialInfoDropdownOpen() {
-  if (typeof window === 'undefined') return true
-  return window.localStorage.getItem(INFO_DROPDOWN_CLOSED_KEY) !== 'true'
-}
+    if (typeof window === 'undefined') return true
+    return window.localStorage.getItem(INFO_DROPDOWN_CLOSED_KEY) !== 'true'
+  }
+
   const routeEncounterIndex = useMemo(() => buildRouteEncounterIndex(), [])
 
   const allRoutes = useMemo(() => buildAllRouteUniverse(routeEncounterMethod), [routeEncounterMethod])
+  const allSearchableRoutes = useMemo(() => buildAllRouteUniverse(), [])
 
   const officialCatchEvents = useMemo(() => {
     const now = new Date()
@@ -1774,18 +1777,19 @@ export default function CatchingCalculator() {
   useEffect(() => {
     if (!specificRouteId) return
 
-    const selectedSpecificRoute = allRoutes.find((route) => route.id === specificRouteId)
+    const selectedSpecificRoute = allSearchableRoutes.find((route) => route.id === specificRouteId)
+      || allRoutes.find((route) => route.id === specificRouteId)
     const canonicalName = getCanonicalPokemonName(specificPokemonSearch)
 
     setSpecificLevel(getSpecificRouteLevel(selectedSpecificRoute, canonicalName, routeEncounterIndex))
-  }, [specificRouteId, specificPokemonSearch, allRoutes, routeEncounterIndex])
+  }, [specificRouteId, specificPokemonSearch, allRoutes, allSearchableRoutes, routeEncounterIndex])
 
   const customPokemonSelection = useMemo(() => {
     const canonicalName = getCanonicalPokemonName(specificPokemonSearch)
     if (!canonicalName) return null
 
     return buildSpecificPokemonSelection({
-      routes: allRoutes,
+      routes: allSearchableRoutes,
       pokemonName: canonicalName,
       selectedRouteId: specificRouteId,
       options,
@@ -1794,25 +1798,28 @@ export default function CatchingCalculator() {
       customLevel: Math.max(1, Number(specificLevel) || 1),
       alphaMode: specificAlpha,
     })
-  }, [specificPokemonSearch, specificRouteId, specificLevel, specificAlpha, allRoutes, options, routeEncounterIndex, period])
+  }, [specificPokemonSearch, specificRouteId, specificLevel, specificAlpha, allSearchableRoutes, options, routeEncounterIndex, period])
 
   const customPokemonResult = customPokemonSelection?.result || null
   const customPokemonRouteEntry = customPokemonSelection?.routeEntry || null
 
   const selectedRouteEntry = useMemo(
-    () => allRoutes.find((route) => route.id === selectedRoute) || null,
-    [allRoutes, selectedRoute]
+    () => allRoutes.find((route) => route.id === selectedRoute)
+      || allSearchableRoutes.find((route) => route.id === selectedRoute)
+      || null,
+    [allRoutes, allSearchableRoutes, selectedRoute]
   )
 
   const routeOptions = useMemo(
-    () => allRoutes
+    () => allSearchableRoutes
       .map((route) => ({
         id: route.id,
+        region: route.region,
         label: `${route.region} - ${route.displayName}`,
         routeName: route.displayName,
       }))
       .sort((a, b) => a.label.localeCompare(b.label)),
-    [allRoutes]
+    [allSearchableRoutes]
   )
 
   const filteredRouteOptions = useMemo(() => {
@@ -1848,8 +1855,10 @@ export default function CatchingCalculator() {
   }, [pokemonNames, specificPokemonSearch])
 
   const specificRouteEntry = useMemo(
-    () => allRoutes.find((route) => route.id === specificRouteId) || null,
-    [allRoutes, specificRouteId]
+    () => allRoutes.find((route) => route.id === specificRouteId)
+      || allSearchableRoutes.find((route) => route.id === specificRouteId)
+      || null,
+    [allRoutes, allSearchableRoutes, specificRouteId]
   )
 
   useEffect(() => {
@@ -1858,9 +1867,27 @@ export default function CatchingCalculator() {
     setRouteSearch(label)
   }, [selectedRouteEntry?.id])
 
+  function findRouteOptionByValue(value, optionsList = routeOptions) {
+    const query = normalizeKey(value)
+    if (!query) return null
+
+    return optionsList.find((option) => {
+      const candidates = [
+        option.label,
+        option.routeName,
+        option.region,
+        `${option.region} - ${option.routeName}`,
+        `${option.region} ${option.routeName}`,
+        `${option.routeName} ${option.region}`,
+      ]
+
+      return candidates.some((candidate) => normalizeKey(candidate) === query)
+    }) || null
+  }
+
   function handleRoutePick(value) {
     setRouteSearch(value)
-    const exact = routeOptions.find((option) => normalizeKey(option.label) === normalizeKey(value))
+    const exact = findRouteOptionByValue(value)
     if (exact) {
       setSelectedRoute(exact.id)
     } else {
@@ -1870,7 +1897,7 @@ export default function CatchingCalculator() {
 
   function handleSpecificRoutePick(value) {
     setSpecificRouteSearch(value)
-    const exact = routeOptions.find((option) => normalizeKey(option.label) === normalizeKey(value))
+    const exact = findRouteOptionByValue(value)
     if (exact) {
       setSpecificRouteId(exact.id)
     } else {
@@ -2049,16 +2076,38 @@ export default function CatchingCalculator() {
               <span>Route</span>
               <input
                 type="text"
-                list="catch-calc-route-list"
+                autoComplete="off"
+                spellCheck={false}
                 value={routeSearch}
                 onChange={(event) => handleRoutePick(event.target.value)}
                 placeholder="Search route (e.g. Route 24, Viridian Forest)"
               />
-              <datalist id="catch-calc-route-list">
-                {filteredRouteOptions.map((route) => (
-                  <option key={route.id} value={route.label} />
-                ))}
-              </datalist>
+              {routeSearch.trim() && filteredRouteOptions.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 6, maxHeight: 180, overflowY: 'auto', border: '1px solid #4a5568', borderRadius: 8, background: '#111827', padding: 4 }}>
+                  {filteredRouteOptions.map((route) => (
+                    <button
+                      key={route.id}
+                      type="button"
+                      onMouseDown={(event) => {
+                        event.preventDefault()
+                        setRouteSearch(route.label)
+                        setSelectedRoute(route.id)
+                      }}
+                      style={{
+                        textAlign: 'left',
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#e5e7eb',
+                        padding: '8px 10px',
+                        borderRadius: 6,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {route.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </label>
           )}
 
@@ -2134,16 +2183,38 @@ export default function CatchingCalculator() {
                 <span>Route Location</span>
                 <input
                   type="text"
-                  list="catch-calc-specific-route-list"
+                  autoComplete="off"
+                  spellCheck={false}
                   value={specificRouteSearch}
                   onChange={(event) => handleSpecificRoutePick(event.target.value)}
                   placeholder="Optional: type and select route"
                 />
-                <datalist id="catch-calc-specific-route-list">
-                  {filteredSpecificRouteOptions.map((route) => (
-                    <option key={`specific-${route.id}`} value={route.label} />
-                  ))}
-                </datalist>
+                {specificRouteSearch.trim() && filteredSpecificRouteOptions.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 6, maxHeight: 180, overflowY: 'auto', border: '1px solid #4a5568', borderRadius: 8, background: '#111827', padding: 4 }}>
+                    {filteredSpecificRouteOptions.map((route) => (
+                      <button
+                        key={`specific-${route.id}`}
+                        type="button"
+                        onMouseDown={(event) => {
+                          event.preventDefault()
+                          setSpecificRouteSearch(route.label)
+                          setSpecificRouteId(route.id)
+                        }}
+                        style={{
+                          textAlign: 'left',
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#e5e7eb',
+                          padding: '8px 10px',
+                          borderRadius: 6,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {route.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </label>
 
               <label className={styles.controlField}>
