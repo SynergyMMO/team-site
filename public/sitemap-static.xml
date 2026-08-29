@@ -3,163 +3,163 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://synergymmo.com/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/shiny-showcase/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/shotm/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/team-statistics/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/pokedex/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/dex-helper/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/roaming-legendaries/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/streamers/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/trophy-board/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/counter-generator/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/egg-move-calculator/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/player-card-generator/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/random-pokemon-generator/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/particle-viewer/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/LnyCatchCalc/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/events/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/official-event-calendar/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/official-shiny-wars-planner/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/region-maps/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/hunt-planner/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/altering-cave-rotations/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/resources/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/shiny-war-2025/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/themes/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/bounties/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/time-display/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://synergymmo.com/sprite-recolour/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
