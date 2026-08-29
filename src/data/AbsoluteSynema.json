@@ -30077,8 +30077,8 @@
       }
     ]
   },
-  "EJayb": {
-    "playtime": 0,
+  "EJAYB": {
+    "playtime": 292,
     "total_encounter": 202735,
     "data": [
       {
@@ -91016,6 +91016,22 @@
         "alpha": false,
         "name": "Beedrill",
         "date_readable": "2026-08-06T00:00:00Z"
+      },
+      {
+        "date": 1786406400000,
+        "species_id": 559,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": null,
+        "ivs": "4/31/18/20/9/24",
+        "global_encounter": 4593,
+        "species_encounter": null,
+        "nature_string_id": null,
+        "nature_name": null,
+        "form": 0,
+        "alpha": false,
+        "name": "Scraggy",
+        "date_readable": "2026-08-11T00:00:00Z"
       },
       {
         "date": 1786406400000,
