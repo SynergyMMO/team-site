@@ -91128,6 +91128,22 @@
         "alpha": false,
         "name": "Gurdurr",
         "date_readable": "2026-08-21T00:00:00Z"
+      },
+      {
+        "date": 1787616000000,
+        "species_id": 44,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": null,
+        "ivs": "6/2/30/3/0/31",
+        "global_encounter": 33702,
+        "species_encounter": null,
+        "nature_string_id": null,
+        "nature_name": null,
+        "form": 0,
+        "alpha": false,
+        "name": "Gloom",
+        "date_readable": "2026-08-24T00:00:00Z"
       }
     ]
   },
