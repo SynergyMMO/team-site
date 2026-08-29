@@ -549,6 +549,10 @@ function PlayerPerformanceSection({ players, overview }) {
     <section className={styles.section}>
       <div className={styles.sectionHeaderRow}>
         <SectionHeader index="02" title="Player Performance" subtitle="Individual standings and full catch records" />
+      </div>
+
+      <SubHeading>Team Highlights</SubHeading>
+      <OverviewGrid overview={overview} />
         <div className={styles.sortToggle}>
           <button
             className={`${styles.sortButton} ${sortMode === 'points' ? styles.sortButtonActive : ''}`}
@@ -569,11 +573,6 @@ function PlayerPerformanceSection({ players, overview }) {
             Sort by Shinies
           </button>
         </div>
-      </div>
-
-      <SubHeading>Team Highlights</SubHeading>
-      <OverviewGrid overview={overview} />
-
       <div className={styles.playerStatList}>
         {sortedPlayers.map((player, index) => {
           const isExpanded = expanded.has(player.name)
