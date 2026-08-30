@@ -14,6 +14,8 @@ import styles from './Showcase.module.css'
 
 const INITIAL_COUNT = 5
 const BATCH_SIZE = 5
+  
+
 
 export default function Showcase() {
   useDocumentHead({
@@ -103,7 +105,7 @@ export default function Showcase() {
 
   const playersToShow = filteredPlayers.slice(0, visibleCount)
   const hasMore = visibleCount < filteredPlayers.length
-
+  
   return (
     <div>
       <h1 className="seo-optimized">

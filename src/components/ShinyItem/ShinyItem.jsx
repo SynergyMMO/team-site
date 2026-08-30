@@ -47,6 +47,51 @@ function isMobileDevice() {
   }
   return isMobile || hasTouch()
 }
+function getShinyWarsBanner(shiny) {
+  if (!shiny) return null
+
+  // 1. ISO Date check
+  const dateStr = shiny.date_caught || shiny.Date || shiny['Caught Date']
+  if (dateStr) {
+    const caughtDate = new Date(dateStr).getTime()
+    if (!isNaN(caughtDate)) {
+      const sw2026Start = Date.UTC(2026, 7, 1, 0, 0, 0)
+      const sw2026End = Date.UTC(2026, 7, 28, 23, 59, 0)
+
+      const sw2025Start = Date.UTC(2025, 6, 11, 0, 0, 0)
+      const sw2025End = Date.UTC(2025, 7, 8, 0, 0, 0)
+
+      const sw2024Start = Date.UTC(2024, 6, 22, 0, 0, 0)
+      const sw2024End = Date.UTC(2024, 8, 22, 0, 0, 0)
+
+      if (caughtDate >= sw2026Start && caughtDate <= sw2026End) {
+        return { shortText: 'SW26', fullText: 'Shiny Wars 2026', year: '2026' }
+      }
+      if (caughtDate >= sw2025Start && caughtDate <= sw2025End) {
+        return { shortText: 'SW25', fullText: 'Shiny Wars 2025', year: '2025' }
+      }
+      if (caughtDate >= sw2024Start && caughtDate <= sw2024End) {
+        return { shortText: 'SW24', fullText: 'Shiny Wars 2024', year: '2024' }
+      }
+    }
+  }
+
+  // 2. Month/Year fallback check
+  const month = shiny.Month?.trim()
+  const year = String(shiny.Year || '').trim()
+
+  if (year === '2026' && month === 'August') {
+    return { shortText: 'SW26', fullText: 'Shiny Wars 2026', year: '2026' }
+  }
+  if (year === '2025' && (month === 'July' || month === 'August')) {
+    return { shortText: 'SW25', fullText: 'Shiny Wars 2025', year: '2025' }
+  }
+  if (year === '2024' && (month === 'July' || month === 'August' || month === 'September')) {
+    return { shortText: 'SW24', fullText: 'Shiny Wars 2024', year: '2024' }
+  }
+
+  return null
+}
 
 function ShinyItem({ shiny, points, userName, localizeDates = true }) {
   const navigate = useNavigate()
@@ -70,7 +115,9 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
     return classes.join(' ')
   }, [shiny])
 
-  // Icons to display
+const bannerInfo = useMemo(() => {
+  return getShinyWarsBanner(shiny)
+}, [shiny])
   const icons = useMemo(() => {
     const iconList = []
     const hasEgg = shiny.Egg?.toLowerCase() === 'yes'
@@ -222,29 +269,45 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
 
   return (
     <span className={styles.wrapper} ref={wrapperRef} data-mobile={isMobile} data-show-infobox={isMobile && showInfoBoxMobile}>
-      <div className={containerClasses}>
-        {icons}
-        <img
-          src={shinyGifPath}
-          alt={shiny.Pokemon}
-          className={`${styles.shinyGif} ${isSold ? styles.soldPokemon : ''} ${styles.clickable}`}
-          width="80"
-          height="80"
-          loading="lazy"
-          onError={onGifError(shiny.Pokemon)}
-          onClick={handleGifClick}
-          onTouchEnd={handleGifTouchEnd}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              navigate(`/pokemon/${getBasePokemonName(shiny.Pokemon).toLowerCase()}`)
-            }
-          }}
-        />
-      </div>
-      <InfoBox shiny={shiny} points={points} customText={infoText} localizeDates={localizeDates} showOnMobile={isMobile && showInfoBoxMobile} />
-    </span>
+  <div 
+    className={containerClasses} 
+    title={bannerInfo ? bannerInfo.fullText : undefined}
+  >
+    {/* Shortened Badge Text ("SW24"), Full Tooltip on Hover */}
+    {bannerInfo && (
+      <span 
+        className={`${styles.shinyWarsBanner} ${styles[`sw${bannerInfo.year}`]}`}
+        title={bannerInfo.fullText}
+      >
+        {bannerInfo.shortText}
+      </span>
+    )}
+
+    {icons}
+    
+    <img
+      src={shinyGifPath}
+      alt={shiny.Pokemon}
+      /* Hovering the GIF displays full banner name */
+      title={bannerInfo ? bannerInfo.fullText : shiny.Pokemon}
+      className={`${styles.shinyGif} ${isSold ? styles.soldPokemon : ''} ${styles.clickable}`}
+      width="80"
+      height="80"
+      loading="lazy"
+      onError={onGifError(shiny.Pokemon)}
+      onClick={handleGifClick}
+      onTouchEnd={handleGifTouchEnd}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          navigate(`/pokemon/${getBasePokemonName(shiny.Pokemon).toLowerCase()}`)
+        }
+      }}
+    />
+  </div>
+  <InfoBox shiny={shiny} points={points} customText={infoText} localizeDates={localizeDates} showOnMobile={isMobile && showInfoBoxMobile} />
+</span>
   )
 }
 

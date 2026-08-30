@@ -25,7 +25,26 @@
   width: 12px;
   height: 100%;
 }
+.tagShinyWars2026 {
+  background: linear-gradient(135deg, #d4af37, #8a6d0b);
+  color: #ffffff;
+  border: 1px solid #ffea88;
+  font-weight: bold;
+}
 
+.tagShinyWars2025 {
+  background: linear-gradient(135deg, #6366f1, #3730a3);
+  color: #ffffff;
+  border: 1px solid #c7d2fe;
+  font-weight: bold;
+}
+
+.tagShinyWars2024 {
+  background: linear-gradient(135deg, #ef4444, #991b1b);
+  color: #ffffff;
+  border: 1px solid #fca5a5;
+  font-weight: bold;
+}
 .infoBox::after {
   content: '';
   position: absolute;

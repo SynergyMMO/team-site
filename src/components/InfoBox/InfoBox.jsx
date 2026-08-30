@@ -30,12 +30,58 @@ const API_FIELDS = [
   { key: 'variant', label: 'Variant' },
 ]
 
+// Helper function to evaluate Shiny Wars event status
+function getShinyWarsInfo(shiny) {
+  if (!shiny) return null
+
+  // 1. ISO Date check
+  const dateStr = shiny.date_caught || shiny.Date || shiny['Caught Date']
+  if (dateStr) {
+    const caughtDate = new Date(dateStr).getTime()
+    if (!isNaN(caughtDate)) {
+      const sw2026Start = Date.UTC(2026, 7, 1, 0, 0, 0)
+      const sw2026End = Date.UTC(2026, 7, 28, 23, 59, 0)
+
+      const sw2025Start = Date.UTC(2025, 6, 11, 0, 0, 0)
+      const sw2025End = Date.UTC(2025, 7, 8, 0, 0, 0)
+
+      const sw2024Start = Date.UTC(2024, 6, 22, 0, 0, 0)
+      const sw2024End = Date.UTC(2024, 8, 22, 0, 0, 0)
+
+      if (caughtDate >= sw2026Start && caughtDate <= sw2026End) {
+        return { label: 'Shiny Wars 2026', cls: 'tagShinyWars2026' }
+      }
+      if (caughtDate >= sw2025Start && caughtDate <= sw2025End) {
+        return { label: 'Shiny Wars 2025', cls: 'tagShinyWars2025' }
+      }
+      if (caughtDate >= sw2024Start && caughtDate <= sw2024End) {
+        return { label: 'Shiny Wars 2024', cls: 'tagShinyWars2024' }
+      }
+    }
+  }
+
+  // 2. Month and Year fallback check
+  const month = shiny.Month?.trim()
+  const year = String(shiny.Year || '').trim()
+
+  if (year === '2026' && month === 'August') {
+    return { label: 'Shiny Wars 2026', cls: 'tagShinyWars2026' }
+  }
+  if (year === '2025' && (month === 'July' || month === 'August')) {
+    return { label: 'Shiny Wars 2025', cls: 'tagShinyWars2025' }
+  }
+  if (year === '2024' && (month === 'July' || month === 'August' || month === 'September')) {
+    return { label: 'Shiny Wars 2024', cls: 'tagShinyWars2024' }
+  }
+
+  return null
+}
+
 // Format date to readable format
 function formatDate(dateStr, localize = true) {
   if (!dateStr) return null
   try {
     if (!localize) {
-      // Non-localized: parse directly without timezone conversion
       const parts = dateStr.split('-')
       if (parts.length === 3) {
         const year = parseInt(parts[0], 10)
@@ -49,14 +95,12 @@ function formatDate(dateStr, localize = true) {
         }
       }
       
-      // Fallback: try parsing as UTC
       const date = new Date(dateStr + 'T00:00:00Z')
       if (!isNaN(date.getTime())) {
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         return `${monthNames[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
       }
     } else {
-      // Localized: convert to user timezone
       const date = new Date(dateStr)
       return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
     }
@@ -118,13 +162,11 @@ export default function InfoBox({ shiny, points, customText, localizeDates = tru
       box.style.top = top + 'px'
     }
 
-    // Only attach hover listener if not showing on mobile
     if (!showOnMobile) {
       span.addEventListener('mouseenter', handleMouseEnter)
       return () => span.removeEventListener('mouseenter', handleMouseEnter)
     }
 
-    // For mobile, position the box at the center when showOnMobile is true
     if (showOnMobile) {
       const spanRect = span.getBoundingClientRect()
       const viewportWidth = document.documentElement.clientWidth
@@ -146,11 +188,17 @@ export default function InfoBox({ shiny, points, customText, localizeDates = tru
     }
   }, [showOnMobile])
 
-  const activeTraits = TRAIT_CHECKS.filter(
-    t => shiny[t.key]?.toLowerCase() === 'yes'
-  )
+  const activeTraits = useMemo(() => {
+    const traits = TRAIT_CHECKS.filter(
+      t => shiny[t.key]?.toLowerCase() === 'yes'
+    )
+    const shinyWars = getShinyWarsInfo(shiny)
+    if (shinyWars) {
+      traits.unshift(shinyWars)
+    }
+    return traits
+  }, [shiny])
 
-  // Get API fields that exist and are not null
   const activeApiFields = useMemo(() => {
     return API_FIELDS.filter(field => {
       const value = shiny[field.key] ?? (field.fallback ? shiny[field.fallback] : undefined)
