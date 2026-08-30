@@ -47,22 +47,30 @@ function isMobileDevice() {
   }
   return isMobile || hasTouch()
 }
+
 function getShinyWarsBanner(shiny) {
   if (!shiny) return null
 
-  // 1. ISO Date check
-  const dateStr = shiny.date_caught || shiny.Date || shiny['Caught Date']
+  const dateStr = shiny.date_caught || shiny.Date || shiny['Caught Date'] || shiny.Caught
   if (dateStr) {
-    const caughtDate = new Date(dateStr).getTime()
-    if (!isNaN(caughtDate)) {
+    const dateObj = new Date(dateStr)
+    if (!isNaN(dateObj.getTime())) {
+      const caughtDate = Date.UTC(
+        dateObj.getUTCFullYear(),
+        dateObj.getUTCMonth(),
+        dateObj.getUTCDate(),
+        dateObj.getUTCHours(),
+        dateObj.getUTCMinutes()
+      )
+
       const sw2026Start = Date.UTC(2026, 7, 1, 0, 0, 0)
-      const sw2026End = Date.UTC(2026, 7, 28, 23, 59, 0)
+      const sw2026End   = Date.UTC(2026, 7, 28, 23, 59, 59)
 
       const sw2025Start = Date.UTC(2025, 6, 11, 0, 0, 0)
-      const sw2025End = Date.UTC(2025, 7, 8, 0, 0, 0)
+      const sw2025End   = Date.UTC(2025, 7, 8, 23, 59, 59)
 
       const sw2024Start = Date.UTC(2024, 6, 22, 0, 0, 0)
-      const sw2024End = Date.UTC(2024, 8, 22, 0, 0, 0)
+      const sw2024End   = Date.UTC(2024, 8, 22, 23, 59, 59)
 
       if (caughtDate >= sw2026Start && caughtDate <= sw2026End) {
         return { shortText: 'SW26', fullText: 'Shiny Wars 2026', year: '2026' }
@@ -73,10 +81,13 @@ function getShinyWarsBanner(shiny) {
       if (caughtDate >= sw2024Start && caughtDate <= sw2024End) {
         return { shortText: 'SW24', fullText: 'Shiny Wars 2024', year: '2024' }
       }
+
+      // Exit early if date string existed but was out of event bounds
+      return null
     }
   }
 
-  // 2. Month/Year fallback check
+  // Fallback: only runs when no valid date string exists
   const month = shiny.Month?.trim()
   const year = String(shiny.Year || '').trim()
 

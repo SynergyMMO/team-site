@@ -30,23 +30,27 @@ const API_FIELDS = [
   { key: 'variant', label: 'Variant' },
 ]
 
-// Helper function to evaluate Shiny Wars event status
 function getShinyWarsInfo(shiny) {
   if (!shiny) return null
 
-  // 1. ISO Date check
-  const dateStr = shiny.date_caught || shiny.Date || shiny['Caught Date']
+  const dateStr = shiny.date_caught || shiny.Date || shiny['Caught Date'] || shiny.Caught
   if (dateStr) {
-    const caughtDate = new Date(dateStr).getTime()
-    if (!isNaN(caughtDate)) {
-      const sw2026Start = Date.UTC(2026, 7, 1, 0, 0, 0)
-      const sw2026End = Date.UTC(2026, 7, 28, 23, 59, 0)
+    const dateObj = new Date(dateStr)
+    if (!isNaN(dateObj.getTime())) {
+      const caughtDate = Date.UTC(
+        dateObj.getUTCFullYear(),
+        dateObj.getUTCMonth(),
+        dateObj.getUTCDate()
+      )
 
-      const sw2025Start = Date.UTC(2025, 6, 11, 0, 0, 0)
-      const sw2025End = Date.UTC(2025, 7, 8, 0, 0, 0)
+      const sw2026Start = Date.UTC(2026, 7, 1)   // Aug 1, 2026
+      const sw2026End   = Date.UTC(2026, 7, 28)  // Aug 28, 2026
 
-      const sw2024Start = Date.UTC(2024, 6, 22, 0, 0, 0)
-      const sw2024End = Date.UTC(2024, 8, 22, 0, 0, 0)
+      const sw2025Start = Date.UTC(2025, 6, 11)  // Jul 11, 2025
+      const sw2025End   = Date.UTC(2025, 7, 8)   // Aug 8, 2025
+
+      const sw2024Start = Date.UTC(2024, 6, 22)  // Jul 22, 2024
+      const sw2024End   = Date.UTC(2024, 8, 22)  // Sep 22, 2024
 
       if (caughtDate >= sw2026Start && caughtDate <= sw2026End) {
         return { label: 'Shiny Wars 2026', cls: 'tagShinyWars2026' }
@@ -57,10 +61,13 @@ function getShinyWarsInfo(shiny) {
       if (caughtDate >= sw2024Start && caughtDate <= sw2024End) {
         return { label: 'Shiny Wars 2024', cls: 'tagShinyWars2024' }
       }
+
+      // Exit early if date string existed but was out of event bounds
+      return null
     }
   }
 
-  // 2. Month and Year fallback check
+  // Fallback: only runs when no valid date string exists
   const month = shiny.Month?.trim()
   const year = String(shiny.Year || '').trim()
 
