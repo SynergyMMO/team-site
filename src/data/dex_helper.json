@@ -36,7 +36,7 @@
     "description": "Horde at National Park, Johto, day only"
   },
   "Farfetchd": {
-    "description": "Can be hunted while ditto farming in Johto during the Day/Morning"
+    "description": "Can be 3x horded in spring"
   },
   "Exeggcute": {
     "description": "Can be found in Berry Forest while looking for the birds"
@@ -71,6 +71,9 @@
   "Gulpin":{
     "description": "Single at Route 110 in Hoenn, can also find Minun and Plusle here."
   },
+  "Plusle": {
+    "description": "Single at Route 110 in Hoenn, can also find Minun and Plusle here."
+  },
   "Anorith": {
     "description": "Claw Fossils"
   },
@@ -84,7 +87,7 @@
     "description": "Plume Fossils"
   },
   "Tropius": {
-    "description": "Can be found in route 120 Hoenn in the tall grass, alongside Absol, Kecleon and Marshtomp, can also be found in the Great Marsh, with a pretty high catch rate"
+    "description": "20% 5x horde in Summer and Spring, Route 123"
   },
   "Carnivine": {
     "description": "Can be found in the Great Marsh, is also a Johto Safari Rotational mon, which is the preferred way of hunting it"
@@ -99,7 +102,7 @@
     "description": "Route 24 Kanto while looking for the bird or egg"
   },
   "Porygon":{
-    "description": "Only found inside the game corner for a big amount of coins, swarm or egg only"
+    "description": "Trophy garden, swarm or egg only"
   },
   "Togepi":{
     "description": "Single in Five Isle Meadow or Route 24 while looking for dog/bird, lure hunt only, hard to egg due to friendship evolution. Good luck!"
@@ -111,13 +114,13 @@
     "description": "Root Fossils"
   },
   "Castform":{
-    "description": "Can be singled in the entrance of Hoenn Safari, bad phases but pretty decent catch rate, can be egged fairly cheap too."
+    "description": "Egg, Trophy Garden or Alt Cave."
   },
   "Skorupi":{
     "description": "Can be hunted all times of the day inside Great Marsh, Rotational mon in Johto Safari, about 45% catch rate, Drapion can be singled Route 228 although Lure mon and constant sandstorm make this hunt very slow. Leave this one to Hyper."
   },
   "Kecleon":{
-    "description": "Can be found in Route 120 Hoenn in the tall grass, alongside Absol, Tropius and Marshtomp"
+    "description": "20% 5x horde in Summer and Spring, Route 123"
   },
   "Burmy":{
     "description": "Honey Treeeee"
@@ -141,9 +144,12 @@
     "description": "Pheno, Impossible to hunt, Egg only"
   },
   "Alomomola":{
-    "description": "Pheno, Impossible to hunt, Egg only"
+    "description": "Pheno, sometimes in alt cave, Egg it"
   },
   "Larvesta":{
     "description": "Can be hunted at a 2% chance inside Relic Castle, don't do that though, that would be so silly to even try to single that, very silly indeed. Egg!"
+  },
+  "Relicanth": {
+    "description": "Fishing, 20% in winter Route 226!"
   }
 }
