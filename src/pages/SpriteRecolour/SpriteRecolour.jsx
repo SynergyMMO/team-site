@@ -638,6 +638,14 @@ export default function SpriteRecolour() {
   const [isPaused, setIsPaused] = useState(false);
   const [selectedFrame, setSelectedFrame] = useState(0);
   const [addSparkles, setAddSparkles] = useState(false);
+  const [isFirefox, setIsFirefox] = useState(false);
+
+  // Detect Firefox on mount
+  useEffect(() => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    setIsFirefox(userAgent.includes('firefox'));
+  }, []);
+
   const previewMaxSize = 350;
   const previewScale = Math.min(
     previewMaxSize / (state.gifWidth || 256),
@@ -1391,16 +1399,18 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
                     className={styles["color-box"]}
                     style={{ backgroundColor: colorMap[hex] || hex }}
                   />
-                 {/* Color picker */}
-                <input
-                  type="color"
-                  value={colorMap[hex] || hex}
-                  onChange={(event) => handleColorChange(hex, event.target.value)}
-                  ref={(node) => {
-                    if (node) colorInputRefs.current[hex] = node;
-                    else delete colorInputRefs.current[hex];
-                  }}
-                />
+                 {/* Color picker - hidden for Firefox */}
+                {!isFirefox && (
+                  <input
+                    type="color"
+                    value={colorMap[hex] || hex}
+                    onChange={(event) => handleColorChange(hex, event.target.value)}
+                    ref={(node) => {
+                      if (node) colorInputRefs.current[hex] = node;
+                      else delete colorInputRefs.current[hex];
+                    }}
+                  />
+                )}
 
                 {/* Hex text input */}
                 <input
@@ -1415,7 +1425,20 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
                       setColorMap((prev) => ({ ...prev, [hex]: value }));
                     }
                   }}
-                  style={{ width: 90, marginLeft: 6 }}
+                  style={{ 
+                    width: isFirefox ? 120 : 90, 
+                    marginLeft: 6,
+                    ...(isFirefox && {
+                      backgroundColor: colorMap[hex] || hex,
+                      color: '#fff',
+                      textShadow: '0 0 2px rgba(0,0,0,0.5)',
+                      cursor: 'pointer',
+                      fontWeight: 500,
+                      textAlign: 'center'
+                    })
+                  }}
+                  placeholder="#000000"
+                  title="Click to edit hex color"
                 />
 
 
@@ -1600,11 +1623,38 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
             {addSparkles && (
               <div style={{ marginTop: 8 }}>
                 <label>Sparkles Color: </label>
-                <input
-                  type="color"
-                  value={sparklesColor}
-                  onChange={(e) => setSparklesColor(e.target.value)}
-                />
+                {!isFirefox ? (
+                  <input
+                    type="color"
+                    value={sparklesColor}
+                    onChange={(e) => setSparklesColor(e.target.value)}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={sparklesColor}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^#?[0-9A-Fa-f]{6}$/.test(value)) {
+                        const formatted = value.startsWith("#") ? value : `#${value}`;
+                        setSparklesColor(formatted);
+                      } else {
+                        setSparklesColor(value);
+                      }
+                    }}
+                    style={{
+                      width: 120,
+                      backgroundColor: sparklesColor,
+                      color: '#fff',
+                      textShadow: '0 0 2px rgba(0,0,0,0.5)',
+                      cursor: 'pointer',
+                      fontWeight: 500,
+                      textAlign: 'center'
+                    }}
+                    placeholder="#ffffff"
+                    title="Click to edit hex color"
+                  />
+                )}
               </div>
             )}
           </div>
@@ -1665,16 +1715,18 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
                         className={styles["color-box"]}
                         style={{ backgroundColor: modColorMap[hex] || hex }}
                       />
-                      <input
-                        type="color"
-                        value={modColorMap[hex] || hex}
-                        onChange={(event) => handleModColorChange(hex, event.target.value)}
-                        ref={(node) => {
-                          if (!modColorInputRefs.current[key]) modColorInputRefs.current[key] = {};
-                          if (node) modColorInputRefs.current[key][hex] = node;
-                          else delete modColorInputRefs.current[key][hex];
-                        }}
-                      />
+                      {!isFirefox && (
+                        <input
+                          type="color"
+                          value={modColorMap[hex] || hex}
+                          onChange={(event) => handleModColorChange(hex, event.target.value)}
+                          ref={(node) => {
+                            if (!modColorInputRefs.current[key]) modColorInputRefs.current[key] = {};
+                            if (node) modColorInputRefs.current[key][hex] = node;
+                            else delete modColorInputRefs.current[key][hex];
+                          }}
+                        />
+                      )}
                       <input
                         type="text"
                         value={modColorMap[hex] || hex}
@@ -1687,7 +1739,20 @@ const handleModFileChange = React.useCallback(async (side, fileOrUrl) => {
                             setModColorMap((prev) => ({ ...prev, [hex]: value }));
                           }
                         }}
-                        style={{ width: 90, marginLeft: 6 }}
+                        style={{ 
+                          width: isFirefox ? 120 : 90, 
+                          marginLeft: 6,
+                          ...(isFirefox && {
+                            backgroundColor: modColorMap[hex] || hex,
+                            color: '#fff',
+                            textShadow: '0 0 2px rgba(0,0,0,0.5)',
+                            cursor: 'pointer',
+                            fontWeight: 500,
+                            textAlign: 'center'
+                          })
+                        }}
+                        placeholder="#000000"
+                        title="Click to edit hex color"
                       />
                       <span>{hex}</span>
                     </div>
