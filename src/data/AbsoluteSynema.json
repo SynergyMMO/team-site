@@ -13369,7 +13369,7 @@
       }
     ]
   },
-  "Chaseth": {
+  "Chase": {
     "playtime": 433,
     "total_encounter": 338131,
     "data": [
@@ -57673,7 +57673,7 @@
       }
     ]
   },
-  "OGNEXTDOOR": {
+  "OGNextDoor": {
     "playtime": 358,
     "total_encounter": 296838,
     "data": [
@@ -71834,6 +71834,2868 @@
         "alpha": false,
         "name": "Sneasel",
         "date_readable": "2026-08-28T21:29:21.714000Z"
+      }
+    ]
+  },
+  "saywhatpoke": {
+    "playtime": 329,
+    "total_encounter": 234529,
+    "data": [
+      {
+        "species_id": 396,
+        "total_encounter": 0,
+        "name": "Starly",
+        "encounter": 0
+      },
+      {
+        "species_id": 400,
+        "total_encounter": 0,
+        "name": "Bibarel",
+        "encounter": 0
+      },
+      {
+        "species_id": 280,
+        "total_encounter": 0,
+        "name": "Ralts",
+        "encounter": 0
+      },
+      {
+        "species_id": 397,
+        "total_encounter": 0,
+        "name": "Staravia",
+        "encounter": 0
+      },
+      {
+        "species_id": 41,
+        "total_encounter": 18,
+        "name": "Zubat",
+        "encounter": 18
+      },
+      {
+        "species_id": 261,
+        "total_encounter": 0,
+        "name": "Poochyena",
+        "encounter": 0
+      },
+      {
+        "species_id": 637,
+        "total_encounter": 0,
+        "name": "Volcarona",
+        "encounter": 0
+      },
+      {
+        "species_id": 408,
+        "total_encounter": 2,
+        "name": "Cranidos",
+        "encounter": 2
+      },
+      {
+        "species_id": 351,
+        "total_encounter": 0,
+        "name": "Castform",
+        "encounter": 0
+      },
+      {
+        "species_id": 120,
+        "total_encounter": 530,
+        "name": "Staryu",
+        "encounter": 530
+      },
+      {
+        "species_id": 156,
+        "total_encounter": 0,
+        "name": "Quilava",
+        "encounter": 0
+      },
+      {
+        "species_id": 14,
+        "total_encounter": 0,
+        "name": "Kakuna",
+        "encounter": 0
+      },
+      {
+        "species_id": 438,
+        "total_encounter": 0,
+        "name": "Bonsly",
+        "encounter": 0
+      },
+      {
+        "species_id": 373,
+        "total_encounter": 0,
+        "name": "Salamence",
+        "encounter": 0
+      },
+      {
+        "species_id": 285,
+        "total_encounter": 7,
+        "name": "Shroomish",
+        "encounter": 7
+      },
+      {
+        "species_id": 128,
+        "total_encounter": 0,
+        "name": "Tauros",
+        "encounter": 0
+      },
+      {
+        "species_id": 203,
+        "total_encounter": 501,
+        "name": "Girafarig",
+        "encounter": 501
+      },
+      {
+        "species_id": 290,
+        "total_encounter": 138,
+        "name": "Nincada",
+        "encounter": 138
+      },
+      {
+        "species_id": 370,
+        "total_encounter": 559,
+        "name": "Luvdisc",
+        "encounter": 559
+      },
+      {
+        "species_id": 453,
+        "total_encounter": 8536,
+        "name": "Croagunk",
+        "encounter": 8536
+      },
+      {
+        "species_id": 421,
+        "total_encounter": 0,
+        "name": "Cherrim",
+        "encounter": 0
+      },
+      {
+        "species_id": 248,
+        "total_encounter": 0,
+        "name": "Tyranitar",
+        "encounter": 0
+      },
+      {
+        "species_id": 4,
+        "total_encounter": 1,
+        "name": "Charmander",
+        "encounter": 1
+      },
+      {
+        "species_id": 471,
+        "total_encounter": 0,
+        "name": "Glaceon",
+        "encounter": 0
+      },
+      {
+        "species_id": 307,
+        "total_encounter": 0,
+        "name": "Meditite",
+        "encounter": 0
+      },
+      {
+        "species_id": 98,
+        "total_encounter": 1194,
+        "name": "Krabby",
+        "encounter": 1194
+      },
+      {
+        "species_id": 425,
+        "total_encounter": 0,
+        "name": "Drifloon",
+        "encounter": 0
+      },
+      {
+        "species_id": 415,
+        "total_encounter": 116,
+        "name": "Combee",
+        "encounter": 116
+      },
+      {
+        "species_id": 116,
+        "total_encounter": 4010,
+        "name": "Horsea",
+        "encounter": 4010
+      },
+      {
+        "species_id": 147,
+        "total_encounter": 1720,
+        "name": "Dratini",
+        "encounter": 1720
+      },
+      {
+        "species_id": 129,
+        "total_encounter": 316,
+        "name": "Magikarp",
+        "encounter": 316
+      },
+      {
+        "species_id": 375,
+        "total_encounter": 1,
+        "name": "Metang",
+        "encounter": 1
+      },
+      {
+        "species_id": 99,
+        "total_encounter": 0,
+        "name": "Kingler",
+        "encounter": 0
+      },
+      {
+        "species_id": 213,
+        "total_encounter": 4,
+        "name": "Shuckle",
+        "encounter": 4
+      },
+      {
+        "species_id": 25,
+        "total_encounter": 0,
+        "name": "Pikachu",
+        "encounter": 0
+      },
+      {
+        "species_id": 327,
+        "total_encounter": 0,
+        "name": "Spinda",
+        "encounter": 0
+      },
+      {
+        "species_id": 19,
+        "total_encounter": 2,
+        "name": "Rattata",
+        "encounter": 2
+      },
+      {
+        "species_id": 228,
+        "total_encounter": 4,
+        "name": "Houndour",
+        "encounter": 4
+      },
+      {
+        "species_id": 27,
+        "total_encounter": 0,
+        "name": "Sandshrew",
+        "encounter": 0
+      },
+      {
+        "species_id": 55,
+        "total_encounter": 1685,
+        "name": "Golduck",
+        "encounter": 1685
+      },
+      {
+        "species_id": 9,
+        "total_encounter": 4,
+        "name": "Blastoise",
+        "encounter": 4
+      },
+      {
+        "species_id": 54,
+        "total_encounter": 0,
+        "name": "Psyduck",
+        "encounter": 0
+      },
+      {
+        "species_id": 44,
+        "total_encounter": 1346,
+        "name": "Gloom",
+        "encounter": 1346
+      },
+      {
+        "species_id": 479,
+        "total_encounter": 4,
+        "name": "Rotom",
+        "encounter": 4
+      },
+      {
+        "species_id": 194,
+        "total_encounter": 95,
+        "name": "Wooper",
+        "encounter": 95
+      },
+      {
+        "species_id": 86,
+        "total_encounter": 0,
+        "name": "Seel",
+        "encounter": 0
+      },
+      {
+        "species_id": 220,
+        "total_encounter": 19161,
+        "name": "Swinub",
+        "encounter": 19161
+      },
+      {
+        "species_id": 264,
+        "total_encounter": 1260,
+        "name": "Linoone",
+        "encounter": 1260
+      },
+      {
+        "species_id": 350,
+        "total_encounter": 4,
+        "name": "Milotic",
+        "encounter": 4
+      },
+      {
+        "species_id": 237,
+        "total_encounter": 0,
+        "name": "Hitmontop",
+        "encounter": 0
+      },
+      {
+        "species_id": 42,
+        "total_encounter": 16,
+        "name": "Golbat",
+        "encounter": 16
+      },
+      {
+        "species_id": 123,
+        "total_encounter": 5,
+        "name": "Scyther",
+        "encounter": 5
+      },
+      {
+        "species_id": 320,
+        "total_encounter": 8,
+        "name": "Wailmer",
+        "encounter": 8
+      },
+      {
+        "species_id": 341,
+        "total_encounter": 0,
+        "name": "Corphish",
+        "encounter": 0
+      },
+      {
+        "species_id": 95,
+        "total_encounter": 1235,
+        "name": "Onix",
+        "encounter": 1235
+      },
+      {
+        "species_id": 75,
+        "total_encounter": 8,
+        "name": "Graveler",
+        "encounter": 8
+      },
+      {
+        "species_id": 72,
+        "total_encounter": 692,
+        "name": "Tentacool",
+        "encounter": 692
+      },
+      {
+        "species_id": 176,
+        "total_encounter": 0,
+        "name": "Togetic",
+        "encounter": 0
+      },
+      {
+        "species_id": 258,
+        "total_encounter": 1826,
+        "name": "Mudkip",
+        "encounter": 1826
+      },
+      {
+        "species_id": 149,
+        "total_encounter": 0,
+        "name": "Dragonite",
+        "encounter": 0
+      },
+      {
+        "species_id": 281,
+        "total_encounter": 0,
+        "name": "Kirlia",
+        "encounter": 0
+      },
+      {
+        "species_id": 21,
+        "total_encounter": 8,
+        "name": "Spearow",
+        "encounter": 8
+      },
+      {
+        "species_id": 74,
+        "total_encounter": 688,
+        "name": "Geodude",
+        "encounter": 688
+      },
+      {
+        "species_id": 52,
+        "total_encounter": 0,
+        "name": "Meowth",
+        "encounter": 0
+      },
+      {
+        "species_id": 104,
+        "total_encounter": 15,
+        "name": "Cubone",
+        "encounter": 15
+      },
+      {
+        "species_id": 411,
+        "total_encounter": 4,
+        "name": "Bastiodon",
+        "encounter": 4
+      },
+      {
+        "species_id": 155,
+        "total_encounter": 4,
+        "name": "Cyndaquil",
+        "encounter": 4
+      },
+      {
+        "species_id": 338,
+        "total_encounter": 5,
+        "name": "Solrock",
+        "encounter": 5
+      },
+      {
+        "species_id": 17,
+        "total_encounter": 10,
+        "name": "Pidgeotto",
+        "encounter": 10
+      },
+      {
+        "species_id": 524,
+        "total_encounter": 0,
+        "name": "Roggenrola",
+        "encounter": 0
+      },
+      {
+        "species_id": 20,
+        "total_encounter": 660,
+        "name": "Raticate",
+        "encounter": 660
+      },
+      {
+        "species_id": 152,
+        "total_encounter": 0,
+        "name": "Chikorita",
+        "encounter": 0
+      },
+      {
+        "species_id": 6,
+        "total_encounter": 0,
+        "name": "Charizard",
+        "encounter": 0
+      },
+      {
+        "species_id": 278,
+        "total_encounter": 0,
+        "name": "Wingull",
+        "encounter": 0
+      },
+      {
+        "species_id": 265,
+        "total_encounter": 76,
+        "name": "Wurmple",
+        "encounter": 76
+      },
+      {
+        "species_id": 276,
+        "total_encounter": 525,
+        "name": "Taillow",
+        "encounter": 525
+      },
+      {
+        "species_id": 455,
+        "total_encounter": 4,
+        "name": "Carnivine",
+        "encounter": 4
+      },
+      {
+        "species_id": 349,
+        "total_encounter": 0,
+        "name": "Feebas",
+        "encounter": 0
+      },
+      {
+        "species_id": 318,
+        "total_encounter": 0,
+        "name": "Carvanha",
+        "encounter": 0
+      },
+      {
+        "species_id": 319,
+        "total_encounter": 0,
+        "name": "Sharpedo",
+        "encounter": 0
+      },
+      {
+        "species_id": 195,
+        "total_encounter": 205,
+        "name": "Quagsire",
+        "encounter": 205
+      },
+      {
+        "species_id": 141,
+        "total_encounter": 2,
+        "name": "Kabutops",
+        "encounter": 2
+      },
+      {
+        "species_id": 126,
+        "total_encounter": 1100,
+        "name": "Magmar",
+        "encounter": 1100
+      },
+      {
+        "species_id": 404,
+        "total_encounter": 0,
+        "name": "Luxio",
+        "encounter": 0
+      },
+      {
+        "species_id": 463,
+        "total_encounter": 0,
+        "name": "Lickilicky",
+        "encounter": 0
+      },
+      {
+        "species_id": 108,
+        "total_encounter": 0,
+        "name": "Lickitung",
+        "encounter": 0
+      },
+      {
+        "species_id": 412,
+        "total_encounter": 64,
+        "name": "Burmy",
+        "encounter": 64
+      },
+      {
+        "species_id": 190,
+        "total_encounter": 41,
+        "name": "Aipom",
+        "encounter": 41
+      },
+      {
+        "species_id": 422,
+        "total_encounter": 1077,
+        "name": "Shellos",
+        "encounter": 1077
+      },
+      {
+        "species_id": 441,
+        "total_encounter": 1,
+        "name": "Chatot",
+        "encounter": 1
+      },
+      {
+        "species_id": 36,
+        "total_encounter": 0,
+        "name": "Clefable",
+        "encounter": 0
+      },
+      {
+        "species_id": 556,
+        "total_encounter": 0,
+        "name": "Maractus",
+        "encounter": 0
+      },
+      {
+        "species_id": 551,
+        "total_encounter": 19,
+        "name": "Sandile",
+        "encounter": 19
+      },
+      {
+        "species_id": 554,
+        "total_encounter": 11449,
+        "name": "Darumaka",
+        "encounter": 11449
+      },
+      {
+        "species_id": 28,
+        "total_encounter": 540,
+        "name": "Sandslash",
+        "encounter": 540
+      },
+      {
+        "species_id": 227,
+        "total_encounter": 0,
+        "name": "Skarmory",
+        "encounter": 0
+      },
+      {
+        "species_id": 142,
+        "total_encounter": 7,
+        "name": "Aerodactyl",
+        "encounter": 7
+      },
+      {
+        "species_id": 331,
+        "total_encounter": 830,
+        "name": "Cacnea",
+        "encounter": 830
+      },
+      {
+        "species_id": 328,
+        "total_encounter": 0,
+        "name": "Trapinch",
+        "encounter": 0
+      },
+      {
+        "species_id": 288,
+        "total_encounter": 0,
+        "name": "Vigoroth",
+        "encounter": 0
+      },
+      {
+        "species_id": 22,
+        "total_encounter": 2,
+        "name": "Fearow",
+        "encounter": 2
+      },
+      {
+        "species_id": 416,
+        "total_encounter": 0,
+        "name": "Vespiquen",
+        "encounter": 0
+      },
+      {
+        "species_id": 474,
+        "total_encounter": 0,
+        "name": "Porygon-Z",
+        "encounter": 0
+      },
+      {
+        "species_id": 257,
+        "total_encounter": 0,
+        "name": "Blaziken",
+        "encounter": 0
+      },
+      {
+        "species_id": 148,
+        "total_encounter": 0,
+        "name": "Dragonair",
+        "encounter": 0
+      },
+      {
+        "species_id": 252,
+        "total_encounter": 0,
+        "name": "Treecko",
+        "encounter": 0
+      },
+      {
+        "species_id": 259,
+        "total_encounter": 4,
+        "name": "Marshtomp",
+        "encounter": 4
+      },
+      {
+        "species_id": 185,
+        "total_encounter": 0,
+        "name": "Sudowoodo",
+        "encounter": 0
+      },
+      {
+        "species_id": 577,
+        "total_encounter": 0,
+        "name": "Solosis",
+        "encounter": 0
+      },
+      {
+        "species_id": 543,
+        "total_encounter": 0,
+        "name": "Venipede",
+        "encounter": 0
+      },
+      {
+        "species_id": 570,
+        "total_encounter": 24,
+        "name": "Zorua",
+        "encounter": 24
+      },
+      {
+        "species_id": 2,
+        "total_encounter": 0,
+        "name": "Ivysaur",
+        "encounter": 0
+      },
+      {
+        "species_id": 117,
+        "total_encounter": 0,
+        "name": "Seadra",
+        "encounter": 0
+      },
+      {
+        "species_id": 79,
+        "total_encounter": 0,
+        "name": "Slowpoke",
+        "encounter": 0
+      },
+      {
+        "species_id": 130,
+        "total_encounter": 0,
+        "name": "Gyarados",
+        "encounter": 0
+      },
+      {
+        "species_id": 339,
+        "total_encounter": 0,
+        "name": "Barboach",
+        "encounter": 0
+      },
+      {
+        "species_id": 137,
+        "total_encounter": 2135,
+        "name": "Porygon",
+        "encounter": 2135
+      },
+      {
+        "species_id": 461,
+        "total_encounter": 15,
+        "name": "Weavile",
+        "encounter": 15
+      },
+      {
+        "species_id": 302,
+        "total_encounter": 42,
+        "name": "Sableye",
+        "encounter": 42
+      },
+      {
+        "species_id": 593,
+        "total_encounter": 8,
+        "name": "Jellicent",
+        "encounter": 8
+      },
+      {
+        "species_id": 592,
+        "total_encounter": 1368,
+        "name": "Frillish",
+        "encounter": 1368
+      },
+      {
+        "species_id": 197,
+        "total_encounter": 7,
+        "name": "Umbreon",
+        "encounter": 7
+      },
+      {
+        "species_id": 510,
+        "total_encounter": 433,
+        "name": "Liepard",
+        "encounter": 433
+      },
+      {
+        "species_id": 409,
+        "total_encounter": 8,
+        "name": "Rampardos",
+        "encounter": 8
+      },
+      {
+        "species_id": 566,
+        "total_encounter": 1350,
+        "name": "Archen",
+        "encounter": 1350
+      },
+      {
+        "species_id": 633,
+        "total_encounter": 671,
+        "name": "Deino",
+        "encounter": 671
+      },
+      {
+        "species_id": 138,
+        "total_encounter": 1392,
+        "name": "Omanyte",
+        "encounter": 1392
+      },
+      {
+        "species_id": 430,
+        "total_encounter": 14,
+        "name": "Honchkrow",
+        "encounter": 14
+      },
+      {
+        "species_id": 56,
+        "total_encounter": 1,
+        "name": "Mankey",
+        "encounter": 1
+      },
+      {
+        "species_id": 23,
+        "total_encounter": 147,
+        "name": "Ekans",
+        "encounter": 147
+      },
+      {
+        "species_id": 39,
+        "total_encounter": 600,
+        "name": "Jigglypuff",
+        "encounter": 600
+      },
+      {
+        "species_id": 16,
+        "total_encounter": 2,
+        "name": "Pidgey",
+        "encounter": 2
+      },
+      {
+        "species_id": 32,
+        "total_encounter": 0,
+        "name": "Nidoran\u2642",
+        "encounter": 0
+      },
+      {
+        "species_id": 585,
+        "total_encounter": 2453,
+        "name": "Deerling",
+        "encounter": 2453
+      },
+      {
+        "species_id": 81,
+        "total_encounter": 515,
+        "name": "Magnemite",
+        "encounter": 515
+      },
+      {
+        "species_id": 234,
+        "total_encounter": 5,
+        "name": "Stantler",
+        "encounter": 5
+      },
+      {
+        "species_id": 15,
+        "total_encounter": 975,
+        "name": "Beedrill",
+        "encounter": 975
+      },
+      {
+        "species_id": 12,
+        "total_encounter": 3590,
+        "name": "Butterfree",
+        "encounter": 3590
+      },
+      {
+        "species_id": 166,
+        "total_encounter": 3990,
+        "name": "Ledian",
+        "encounter": 3990
+      },
+      {
+        "species_id": 10,
+        "total_encounter": 0,
+        "name": "Caterpie",
+        "encounter": 0
+      },
+      {
+        "species_id": 165,
+        "total_encounter": 0,
+        "name": "Ledyba",
+        "encounter": 0
+      },
+      {
+        "species_id": 13,
+        "total_encounter": 0,
+        "name": "Weedle",
+        "encounter": 0
+      },
+      {
+        "species_id": 11,
+        "total_encounter": 0,
+        "name": "Metapod",
+        "encounter": 0
+      },
+      {
+        "species_id": 214,
+        "total_encounter": 601,
+        "name": "Heracross",
+        "encounter": 601
+      },
+      {
+        "species_id": 127,
+        "total_encounter": 0,
+        "name": "Pinsir",
+        "encounter": 0
+      },
+      {
+        "species_id": 43,
+        "total_encounter": 0,
+        "name": "Oddish",
+        "encounter": 0
+      },
+      {
+        "species_id": 433,
+        "total_encounter": 0,
+        "name": "Chingling",
+        "encounter": 0
+      },
+      {
+        "species_id": 238,
+        "total_encounter": 0,
+        "name": "Smoochum",
+        "encounter": 0
+      },
+      {
+        "species_id": 573,
+        "total_encounter": 0,
+        "name": "Cinccino",
+        "encounter": 0
+      },
+      {
+        "species_id": 361,
+        "total_encounter": 0,
+        "name": "Snorunt",
+        "encounter": 0
+      },
+      {
+        "species_id": 315,
+        "total_encounter": 0,
+        "name": "Roselia",
+        "encounter": 0
+      },
+      {
+        "species_id": 204,
+        "total_encounter": 0,
+        "name": "Pineco",
+        "encounter": 0
+      },
+      {
+        "species_id": 183,
+        "total_encounter": 0,
+        "name": "Marill",
+        "encounter": 0
+      },
+      {
+        "species_id": 221,
+        "total_encounter": 736,
+        "name": "Piloswine",
+        "encounter": 736
+      },
+      {
+        "species_id": 124,
+        "total_encounter": 23470,
+        "name": "Jynx",
+        "encounter": 23470
+      },
+      {
+        "species_id": 225,
+        "total_encounter": 7801,
+        "name": "Delibird",
+        "encounter": 7801
+      },
+      {
+        "species_id": 67,
+        "total_encounter": 0,
+        "name": "Machoke",
+        "encounter": 0
+      },
+      {
+        "species_id": 219,
+        "total_encounter": 0,
+        "name": "Magcargo",
+        "encounter": 0
+      },
+      {
+        "species_id": 572,
+        "total_encounter": 572,
+        "name": "Minccino",
+        "encounter": 572
+      },
+      {
+        "species_id": 73,
+        "total_encounter": 15,
+        "name": "Tentacruel",
+        "encounter": 15
+      },
+      {
+        "species_id": 29,
+        "total_encounter": 0,
+        "name": "Nidoran\u2640",
+        "encounter": 0
+      },
+      {
+        "species_id": 353,
+        "total_encounter": 0,
+        "name": "Shuppet",
+        "encounter": 0
+      },
+      {
+        "species_id": 168,
+        "total_encounter": 4131,
+        "name": "Ariados",
+        "encounter": 4131
+      },
+      {
+        "species_id": 35,
+        "total_encounter": 1095,
+        "name": "Clefairy",
+        "encounter": 1095
+      },
+      {
+        "species_id": 459,
+        "total_encounter": 0,
+        "name": "Snover",
+        "encounter": 0
+      },
+      {
+        "species_id": 82,
+        "total_encounter": 0,
+        "name": "Magneton",
+        "encounter": 0
+      },
+      {
+        "species_id": 207,
+        "total_encounter": 0,
+        "name": "Gligar",
+        "encounter": 0
+      },
+      {
+        "species_id": 216,
+        "total_encounter": 0,
+        "name": "Teddiursa",
+        "encounter": 0
+      },
+      {
+        "species_id": 232,
+        "total_encounter": 0,
+        "name": "Donphan",
+        "encounter": 0
+      },
+      {
+        "species_id": 231,
+        "total_encounter": 0,
+        "name": "Phanpy",
+        "encounter": 0
+      },
+      {
+        "species_id": 363,
+        "total_encounter": 0,
+        "name": "Spheal",
+        "encounter": 0
+      },
+      {
+        "species_id": 297,
+        "total_encounter": 0,
+        "name": "Hariyama",
+        "encounter": 0
+      },
+      {
+        "species_id": 305,
+        "total_encounter": 0,
+        "name": "Lairon",
+        "encounter": 0
+      },
+      {
+        "species_id": 202,
+        "total_encounter": 0,
+        "name": "Wobbuffet",
+        "encounter": 0
+      },
+      {
+        "species_id": 586,
+        "total_encounter": 0,
+        "name": "Sawsbuck",
+        "encounter": 0
+      },
+      {
+        "species_id": 424,
+        "total_encounter": 1459,
+        "name": "Ambipom",
+        "encounter": 1459
+      },
+      {
+        "species_id": 131,
+        "total_encounter": 0,
+        "name": "Lapras",
+        "encounter": 0
+      },
+      {
+        "species_id": 244,
+        "total_encounter": 0,
+        "name": "Entei",
+        "encounter": 0
+      },
+      {
+        "species_id": 30,
+        "total_encounter": 1273,
+        "name": "Nidorina",
+        "encounter": 1273
+      },
+      {
+        "species_id": 100,
+        "total_encounter": 0,
+        "name": "Voltorb",
+        "encounter": 0
+      },
+      {
+        "species_id": 458,
+        "total_encounter": 0,
+        "name": "Mantyke",
+        "encounter": 0
+      },
+      {
+        "species_id": 163,
+        "total_encounter": 13,
+        "name": "Hoothoot",
+        "encounter": 13
+      },
+      {
+        "species_id": 114,
+        "total_encounter": 1320,
+        "name": "Tangela",
+        "encounter": 1320
+      },
+      {
+        "species_id": 399,
+        "total_encounter": 0,
+        "name": "Bidoof",
+        "encounter": 0
+      },
+      {
+        "species_id": 447,
+        "total_encounter": 3,
+        "name": "Riolu",
+        "encounter": 3
+      },
+      {
+        "species_id": 188,
+        "total_encounter": 3,
+        "name": "Skiploom",
+        "encounter": 3
+      },
+      {
+        "species_id": 187,
+        "total_encounter": 0,
+        "name": "Hoppip",
+        "encounter": 0
+      },
+      {
+        "species_id": 263,
+        "total_encounter": 0,
+        "name": "Zigzagoon",
+        "encounter": 0
+      },
+      {
+        "species_id": 180,
+        "total_encounter": 402,
+        "name": "Flaaffy",
+        "encounter": 402
+      },
+      {
+        "species_id": 162,
+        "total_encounter": 0,
+        "name": "Furret",
+        "encounter": 0
+      },
+      {
+        "species_id": 193,
+        "total_encounter": 0,
+        "name": "Yanma",
+        "encounter": 0
+      },
+      {
+        "species_id": 406,
+        "total_encounter": 0,
+        "name": "Budew",
+        "encounter": 0
+      },
+      {
+        "species_id": 268,
+        "total_encounter": 7,
+        "name": "Cascoon",
+        "encounter": 7
+      },
+      {
+        "species_id": 266,
+        "total_encounter": 29,
+        "name": "Silcoon",
+        "encounter": 29
+      },
+      {
+        "species_id": 287,
+        "total_encounter": 4,
+        "name": "Slakoth",
+        "encounter": 4
+      },
+      {
+        "species_id": 364,
+        "total_encounter": 3,
+        "name": "Sealeo",
+        "encounter": 3
+      },
+      {
+        "species_id": 615,
+        "total_encounter": 0,
+        "name": "Cryogonal",
+        "encounter": 0
+      },
+      {
+        "species_id": 460,
+        "total_encounter": 0,
+        "name": "Abomasnow",
+        "encounter": 0
+      },
+      {
+        "species_id": 358,
+        "total_encounter": 1,
+        "name": "Chimecho",
+        "encounter": 1
+      },
+      {
+        "species_id": 87,
+        "total_encounter": 0,
+        "name": "Dewgong",
+        "encounter": 0
+      },
+      {
+        "species_id": 613,
+        "total_encounter": 550,
+        "name": "Cubchoo",
+        "encounter": 550
+      },
+      {
+        "species_id": 300,
+        "total_encounter": 0,
+        "name": "Skitty",
+        "encounter": 0
+      },
+      {
+        "species_id": 546,
+        "total_encounter": 1742,
+        "name": "Cottonee",
+        "encounter": 1742
+      },
+      {
+        "species_id": 540,
+        "total_encounter": 0,
+        "name": "Sewaddle",
+        "encounter": 0
+      },
+      {
+        "species_id": 548,
+        "total_encounter": 4831,
+        "name": "Petilil",
+        "encounter": 4831
+      },
+      {
+        "species_id": 495,
+        "total_encounter": 0,
+        "name": "Snivy",
+        "encounter": 0
+      },
+      {
+        "species_id": 63,
+        "total_encounter": 0,
+        "name": "Abra",
+        "encounter": 0
+      },
+      {
+        "species_id": 69,
+        "total_encounter": 0,
+        "name": "Bellsprout",
+        "encounter": 0
+      },
+      {
+        "species_id": 7,
+        "total_encounter": 1657,
+        "name": "Squirtle",
+        "encounter": 1657
+      },
+      {
+        "species_id": 191,
+        "total_encounter": 10413,
+        "name": "Sunkern",
+        "encounter": 10413
+      },
+      {
+        "species_id": 515,
+        "total_encounter": 1950,
+        "name": "Panpour",
+        "encounter": 1950
+      },
+      {
+        "species_id": 519,
+        "total_encounter": 0,
+        "name": "Pidove",
+        "encounter": 0
+      },
+      {
+        "species_id": 513,
+        "total_encounter": 1206,
+        "name": "Pansear",
+        "encounter": 1206
+      },
+      {
+        "species_id": 511,
+        "total_encounter": 0,
+        "name": "Pansage",
+        "encounter": 0
+      },
+      {
+        "species_id": 376,
+        "total_encounter": 0,
+        "name": "Metagross",
+        "encounter": 0
+      },
+      {
+        "species_id": 562,
+        "total_encounter": 1296,
+        "name": "Yamask",
+        "encounter": 1296
+      },
+      {
+        "species_id": 229,
+        "total_encounter": 562,
+        "name": "Houndoom",
+        "encounter": 562
+      },
+      {
+        "species_id": 140,
+        "total_encounter": 2,
+        "name": "Kabuto",
+        "encounter": 2
+      },
+      {
+        "species_id": 514,
+        "total_encounter": 0,
+        "name": "Simisear",
+        "encounter": 0
+      },
+      {
+        "species_id": 564,
+        "total_encounter": 183,
+        "name": "Tirtouga",
+        "encounter": 183
+      },
+      {
+        "species_id": 388,
+        "total_encounter": 0,
+        "name": "Grotle",
+        "encounter": 0
+      },
+      {
+        "species_id": 446,
+        "total_encounter": 21,
+        "name": "Munchlax",
+        "encounter": 21
+      },
+      {
+        "species_id": 3,
+        "total_encounter": 0,
+        "name": "Venusaur",
+        "encounter": 0
+      },
+      {
+        "species_id": 394,
+        "total_encounter": 0,
+        "name": "Prinplup",
+        "encounter": 0
+      },
+      {
+        "species_id": 253,
+        "total_encounter": 0,
+        "name": "Grovyle",
+        "encounter": 0
+      },
+      {
+        "species_id": 473,
+        "total_encounter": 0,
+        "name": "Mamoswine",
+        "encounter": 0
+      },
+      {
+        "species_id": 209,
+        "total_encounter": 0,
+        "name": "Snubbull",
+        "encounter": 0
+      },
+      {
+        "species_id": 392,
+        "total_encounter": 0,
+        "name": "Infernape",
+        "encounter": 0
+      },
+      {
+        "species_id": 419,
+        "total_encounter": 1,
+        "name": "Floatzel",
+        "encounter": 1
+      },
+      {
+        "species_id": 418,
+        "total_encounter": 131,
+        "name": "Buizel",
+        "encounter": 131
+      },
+      {
+        "species_id": 210,
+        "total_encounter": 0,
+        "name": "Granbull",
+        "encounter": 0
+      },
+      {
+        "species_id": 359,
+        "total_encounter": 0,
+        "name": "Absol",
+        "encounter": 0
+      },
+      {
+        "species_id": 260,
+        "total_encounter": 0,
+        "name": "Swampert",
+        "encounter": 0
+      },
+      {
+        "species_id": 222,
+        "total_encounter": 1,
+        "name": "Corsola",
+        "encounter": 1
+      },
+      {
+        "species_id": 5,
+        "total_encounter": 0,
+        "name": "Charmeleon",
+        "encounter": 0
+      },
+      {
+        "species_id": 47,
+        "total_encounter": 0,
+        "name": "Parasect",
+        "encounter": 0
+      },
+      {
+        "species_id": 61,
+        "total_encounter": 0,
+        "name": "Poliwhirl",
+        "encounter": 0
+      },
+      {
+        "species_id": 60,
+        "total_encounter": 0,
+        "name": "Poliwag",
+        "encounter": 0
+      },
+      {
+        "species_id": 160,
+        "total_encounter": 0,
+        "name": "Feraligatr",
+        "encounter": 0
+      },
+      {
+        "species_id": 445,
+        "total_encounter": 0,
+        "name": "Garchomp",
+        "encounter": 0
+      },
+      {
+        "species_id": 444,
+        "total_encounter": 0,
+        "name": "Gabite",
+        "encounter": 0
+      },
+      {
+        "species_id": 167,
+        "total_encounter": 16,
+        "name": "Spinarak",
+        "encounter": 16
+      },
+      {
+        "species_id": 262,
+        "total_encounter": 970,
+        "name": "Mightyena",
+        "encounter": 970
+      },
+      {
+        "species_id": 273,
+        "total_encounter": 0,
+        "name": "Seedot",
+        "encounter": 0
+      },
+      {
+        "species_id": 357,
+        "total_encounter": 450,
+        "name": "Tropius",
+        "encounter": 450
+      },
+      {
+        "species_id": 48,
+        "total_encounter": 3,
+        "name": "Venonat",
+        "encounter": 3
+      },
+      {
+        "species_id": 93,
+        "total_encounter": 0,
+        "name": "Haunter",
+        "encounter": 0
+      },
+      {
+        "species_id": 85,
+        "total_encounter": 0,
+        "name": "Dodrio",
+        "encounter": 0
+      },
+      {
+        "species_id": 88,
+        "total_encounter": 5,
+        "name": "Grimer",
+        "encounter": 5
+      },
+      {
+        "species_id": 218,
+        "total_encounter": 0,
+        "name": "Slugma",
+        "encounter": 0
+      },
+      {
+        "species_id": 198,
+        "total_encounter": 2306,
+        "name": "Murkrow",
+        "encounter": 2306
+      },
+      {
+        "species_id": 217,
+        "total_encounter": 0,
+        "name": "Ursaring",
+        "encounter": 0
+      },
+      {
+        "species_id": 77,
+        "total_encounter": 657,
+        "name": "Ponyta",
+        "encounter": 657
+      },
+      {
+        "species_id": 286,
+        "total_encounter": 1,
+        "name": "Breloom",
+        "encounter": 1
+      },
+      {
+        "species_id": 402,
+        "total_encounter": 1815,
+        "name": "Kricketune",
+        "encounter": 1815
+      },
+      {
+        "species_id": 122,
+        "total_encounter": 0,
+        "name": "Mr. Mime",
+        "encounter": 0
+      },
+      {
+        "species_id": 372,
+        "total_encounter": 0,
+        "name": "Shelgon",
+        "encounter": 0
+      },
+      {
+        "species_id": 196,
+        "total_encounter": 0,
+        "name": "Espeon",
+        "encounter": 0
+      },
+      {
+        "species_id": 325,
+        "total_encounter": 0,
+        "name": "Spoink",
+        "encounter": 0
+      },
+      {
+        "species_id": 619,
+        "total_encounter": 0,
+        "name": "Mienfoo",
+        "encounter": 0
+      },
+      {
+        "species_id": 428,
+        "total_encounter": 0,
+        "name": "Lopunny",
+        "encounter": 0
+      },
+      {
+        "species_id": 555,
+        "total_encounter": 0,
+        "name": "Darmanitan",
+        "encounter": 0
+      },
+      {
+        "species_id": 125,
+        "total_encounter": 0,
+        "name": "Electabuzz",
+        "encounter": 0
+      },
+      {
+        "species_id": 627,
+        "total_encounter": 0,
+        "name": "Rufflet",
+        "encounter": 0
+      },
+      {
+        "species_id": 506,
+        "total_encounter": 0,
+        "name": "Lillipup",
+        "encounter": 0
+      },
+      {
+        "species_id": 235,
+        "total_encounter": 12,
+        "name": "Smeargle",
+        "encounter": 12
+      },
+      {
+        "species_id": 24,
+        "total_encounter": 0,
+        "name": "Arbok",
+        "encounter": 0
+      },
+      {
+        "species_id": 530,
+        "total_encounter": 0,
+        "name": "Excadrill",
+        "encounter": 0
+      },
+      {
+        "species_id": 547,
+        "total_encounter": 0,
+        "name": "Whimsicott",
+        "encounter": 0
+      },
+      {
+        "species_id": 508,
+        "total_encounter": 0,
+        "name": "Stoutland",
+        "encounter": 0
+      },
+      {
+        "species_id": 427,
+        "total_encounter": 0,
+        "name": "Buneary",
+        "encounter": 0
+      },
+      {
+        "species_id": 435,
+        "total_encounter": 0,
+        "name": "Skuntank",
+        "encounter": 0
+      },
+      {
+        "species_id": 313,
+        "total_encounter": 3781,
+        "name": "Volbeat",
+        "encounter": 3781
+      },
+      {
+        "species_id": 246,
+        "total_encounter": 0,
+        "name": "Larvitar",
+        "encounter": 0
+      },
+      {
+        "species_id": 611,
+        "total_encounter": 0,
+        "name": "Fraxure",
+        "encounter": 0
+      },
+      {
+        "species_id": 179,
+        "total_encounter": 0,
+        "name": "Mareep",
+        "encounter": 0
+      },
+      {
+        "species_id": 431,
+        "total_encounter": 0,
+        "name": "Glameow",
+        "encounter": 0
+      },
+      {
+        "species_id": 507,
+        "total_encounter": 240,
+        "name": "Herdier",
+        "encounter": 240
+      },
+      {
+        "species_id": 326,
+        "total_encounter": 0,
+        "name": "Grumpig",
+        "encounter": 0
+      },
+      {
+        "species_id": 610,
+        "total_encounter": 0,
+        "name": "Axew",
+        "encounter": 0
+      },
+      {
+        "species_id": 78,
+        "total_encounter": 0,
+        "name": "Rapidash",
+        "encounter": 0
+      },
+      {
+        "species_id": 626,
+        "total_encounter": 1718,
+        "name": "Bouffalant",
+        "encounter": 1718
+      },
+      {
+        "species_id": 432,
+        "total_encounter": 1305,
+        "name": "Purugly",
+        "encounter": 1305
+      },
+      {
+        "species_id": 289,
+        "total_encounter": 0,
+        "name": "Slaking",
+        "encounter": 0
+      },
+      {
+        "species_id": 522,
+        "total_encounter": 0,
+        "name": "Blitzle",
+        "encounter": 0
+      },
+      {
+        "species_id": 230,
+        "total_encounter": 0,
+        "name": "Kingdra",
+        "encounter": 0
+      },
+      {
+        "species_id": 529,
+        "total_encounter": 0,
+        "name": "Drilbur",
+        "encounter": 0
+      },
+      {
+        "species_id": 620,
+        "total_encounter": 1,
+        "name": "Mienshao",
+        "encounter": 1
+      },
+      {
+        "species_id": 398,
+        "total_encounter": 0,
+        "name": "Staraptor",
+        "encounter": 0
+      },
+      {
+        "species_id": 181,
+        "total_encounter": 0,
+        "name": "Ampharos",
+        "encounter": 0
+      },
+      {
+        "species_id": 199,
+        "total_encounter": 0,
+        "name": "Slowking",
+        "encounter": 0
+      },
+      {
+        "species_id": 628,
+        "total_encounter": 1,
+        "name": "Braviary",
+        "encounter": 1
+      },
+      {
+        "species_id": 523,
+        "total_encounter": 0,
+        "name": "Zebstrika",
+        "encounter": 0
+      },
+      {
+        "species_id": 612,
+        "total_encounter": 0,
+        "name": "Haxorus",
+        "encounter": 0
+      },
+      {
+        "species_id": 552,
+        "total_encounter": 15,
+        "name": "Krokorok",
+        "encounter": 15
+      },
+      {
+        "species_id": 563,
+        "total_encounter": 0,
+        "name": "Cofagrigus",
+        "encounter": 0
+      },
+      {
+        "species_id": 393,
+        "total_encounter": 4,
+        "name": "Piplup",
+        "encounter": 4
+      },
+      {
+        "species_id": 299,
+        "total_encounter": 0,
+        "name": "Nosepass",
+        "encounter": 0
+      },
+      {
+        "species_id": 437,
+        "total_encounter": 0,
+        "name": "Bronzong",
+        "encounter": 0
+      },
+      {
+        "species_id": 410,
+        "total_encounter": 930,
+        "name": "Shieldon",
+        "encounter": 930
+      },
+      {
+        "species_id": 111,
+        "total_encounter": 675,
+        "name": "Rhyhorn",
+        "encounter": 675
+      },
+      {
+        "species_id": 241,
+        "total_encounter": 0,
+        "name": "Miltank",
+        "encounter": 0
+      },
+      {
+        "species_id": 255,
+        "total_encounter": 0,
+        "name": "Torchic",
+        "encounter": 0
+      },
+      {
+        "species_id": 84,
+        "total_encounter": 0,
+        "name": "Doduo",
+        "encounter": 0
+      },
+      {
+        "species_id": 177,
+        "total_encounter": 0,
+        "name": "Natu",
+        "encounter": 0
+      },
+      {
+        "species_id": 347,
+        "total_encounter": 3,
+        "name": "Anorith",
+        "encounter": 3
+      },
+      {
+        "species_id": 132,
+        "total_encounter": 4,
+        "name": "Ditto",
+        "encounter": 4
+      },
+      {
+        "species_id": 451,
+        "total_encounter": 27,
+        "name": "Skorupi",
+        "encounter": 27
+      },
+      {
+        "species_id": 448,
+        "total_encounter": 1,
+        "name": "Lucario",
+        "encounter": 1
+      },
+      {
+        "species_id": 284,
+        "total_encounter": 0,
+        "name": "Masquerain",
+        "encounter": 0
+      },
+      {
+        "species_id": 164,
+        "total_encounter": 4840,
+        "name": "Noctowl",
+        "encounter": 4840
+      },
+      {
+        "species_id": 8,
+        "total_encounter": 0,
+        "name": "Wartortle",
+        "encounter": 0
+      },
+      {
+        "species_id": 157,
+        "total_encounter": 0,
+        "name": "Typhlosion",
+        "encounter": 0
+      },
+      {
+        "species_id": 348,
+        "total_encounter": 3,
+        "name": "Armaldo",
+        "encounter": 3
+      },
+      {
+        "species_id": 212,
+        "total_encounter": 0,
+        "name": "Scizor",
+        "encounter": 0
+      },
+      {
+        "species_id": 391,
+        "total_encounter": 8,
+        "name": "Monferno",
+        "encounter": 8
+      },
+      {
+        "species_id": 154,
+        "total_encounter": 0,
+        "name": "Meganium",
+        "encounter": 0
+      },
+      {
+        "species_id": 50,
+        "total_encounter": 0,
+        "name": "Diglett",
+        "encounter": 0
+      },
+      {
+        "species_id": 31,
+        "total_encounter": 0,
+        "name": "Nidoqueen",
+        "encounter": 0
+      },
+      {
+        "species_id": 520,
+        "total_encounter": 5,
+        "name": "Tranquill",
+        "encounter": 5
+      },
+      {
+        "species_id": 26,
+        "total_encounter": 0,
+        "name": "Raichu",
+        "encounter": 0
+      },
+      {
+        "species_id": 550,
+        "total_encounter": 0,
+        "name": "Basculin",
+        "encounter": 0
+      },
+      {
+        "species_id": 291,
+        "total_encounter": 2,
+        "name": "Ninjask",
+        "encounter": 2
+      },
+      {
+        "species_id": 466,
+        "total_encounter": 0,
+        "name": "Electivire",
+        "encounter": 0
+      },
+      {
+        "species_id": 102,
+        "total_encounter": 141,
+        "name": "Exeggcute",
+        "encounter": 141
+      },
+      {
+        "species_id": 97,
+        "total_encounter": 700,
+        "name": "Hypno",
+        "encounter": 700
+      },
+      {
+        "species_id": 159,
+        "total_encounter": 0,
+        "name": "Croconaw",
+        "encounter": 0
+      },
+      {
+        "species_id": 420,
+        "total_encounter": 40,
+        "name": "Cherubi",
+        "encounter": 40
+      },
+      {
+        "species_id": 133,
+        "total_encounter": 2279,
+        "name": "Eevee",
+        "encounter": 2279
+      },
+      {
+        "species_id": 1,
+        "total_encounter": 0,
+        "name": "Bulbasaur",
+        "encounter": 0
+      },
+      {
+        "species_id": 575,
+        "total_encounter": 0,
+        "name": "Gothorita",
+        "encounter": 0
+      },
+      {
+        "species_id": 578,
+        "total_encounter": 230,
+        "name": "Duosion",
+        "encounter": 230
+      },
+      {
+        "species_id": 624,
+        "total_encounter": 0,
+        "name": "Pawniard",
+        "encounter": 0
+      },
+      {
+        "species_id": 66,
+        "total_encounter": 0,
+        "name": "Machop",
+        "encounter": 0
+      },
+      {
+        "species_id": 279,
+        "total_encounter": 0,
+        "name": "Pelipper",
+        "encounter": 0
+      },
+      {
+        "species_id": 405,
+        "total_encounter": 0,
+        "name": "Luxray",
+        "encounter": 0
+      },
+      {
+        "species_id": 436,
+        "total_encounter": 2,
+        "name": "Bronzor",
+        "encounter": 2
+      },
+      {
+        "species_id": 333,
+        "total_encounter": 1,
+        "name": "Swablu",
+        "encounter": 1
+      },
+      {
+        "species_id": 158,
+        "total_encounter": 0,
+        "name": "Totodile",
+        "encounter": 0
+      },
+      {
+        "species_id": 401,
+        "total_encounter": 0,
+        "name": "Kricketot",
+        "encounter": 0
+      },
+      {
+        "species_id": 434,
+        "total_encounter": 645,
+        "name": "Stunky",
+        "encounter": 645
+      },
+      {
+        "species_id": 439,
+        "total_encounter": 0,
+        "name": "Mime Jr.",
+        "encounter": 0
+      },
+      {
+        "species_id": 134,
+        "total_encounter": 0,
+        "name": "Vaporeon",
+        "encounter": 0
+      },
+      {
+        "species_id": 91,
+        "total_encounter": 0,
+        "name": "Cloyster",
+        "encounter": 0
+      },
+      {
+        "species_id": 161,
+        "total_encounter": 0,
+        "name": "Sentret",
+        "encounter": 0
+      },
+      {
+        "species_id": 92,
+        "total_encounter": 0,
+        "name": "Gastly",
+        "encounter": 0
+      },
+      {
+        "species_id": 292,
+        "total_encounter": 0,
+        "name": "Shedinja",
+        "encounter": 0
+      },
+      {
+        "species_id": 143,
+        "total_encounter": 0,
+        "name": "Snorlax",
+        "encounter": 0
+      },
+      {
+        "species_id": 186,
+        "total_encounter": 0,
+        "name": "Politoed",
+        "encounter": 0
+      },
+      {
+        "species_id": 462,
+        "total_encounter": 0,
+        "name": "Magnezone",
+        "encounter": 0
+      },
+      {
+        "species_id": 469,
+        "total_encounter": 0,
+        "name": "Yanmega",
+        "encounter": 0
+      },
+      {
+        "species_id": 153,
+        "total_encounter": 0,
+        "name": "Bayleef",
+        "encounter": 0
+      },
+      {
+        "species_id": 211,
+        "total_encounter": 0,
+        "name": "Qwilfish",
+        "encounter": 0
+      },
+      {
+        "species_id": 223,
+        "total_encounter": 156,
+        "name": "Remoraid",
+        "encounter": 156
+      },
+      {
+        "species_id": 40,
+        "total_encounter": 0,
+        "name": "Wigglytuff",
+        "encounter": 0
+      },
+      {
+        "species_id": 59,
+        "total_encounter": 0,
+        "name": "Arcanine",
+        "encounter": 0
+      },
+      {
+        "species_id": 369,
+        "total_encounter": 0,
+        "name": "Relicanth",
+        "encounter": 0
+      },
+      {
+        "species_id": 205,
+        "total_encounter": 3234,
+        "name": "Forretress",
+        "encounter": 3234
+      },
+      {
+        "species_id": 113,
+        "total_encounter": 0,
+        "name": "Chansey",
+        "encounter": 0
+      },
+      {
+        "species_id": 440,
+        "total_encounter": 0,
+        "name": "Happiny",
+        "encounter": 0
+      },
+      {
+        "species_id": 308,
+        "total_encounter": 0,
+        "name": "Medicham",
+        "encounter": 0
+      },
+      {
+        "species_id": 83,
+        "total_encounter": 0,
+        "name": "Farfetch'd",
+        "encounter": 0
+      },
+      {
+        "species_id": 352,
+        "total_encounter": 1210,
+        "name": "Kecleon",
+        "encounter": 1210
+      },
+      {
+        "species_id": 336,
+        "total_encounter": 141,
+        "name": "Seviper",
+        "encounter": 141
+      },
+      {
+        "species_id": 568,
+        "total_encounter": 80,
+        "name": "Trubbish",
+        "encounter": 80
+      },
+      {
+        "species_id": 587,
+        "total_encounter": 0,
+        "name": "Emolga",
+        "encounter": 0
+      },
+      {
+        "species_id": 574,
+        "total_encounter": 0,
+        "name": "Gothita",
+        "encounter": 0
+      },
+      {
+        "species_id": 541,
+        "total_encounter": 0,
+        "name": "Swadloon",
+        "encounter": 0
+      },
+      {
+        "species_id": 590,
+        "total_encounter": 0,
+        "name": "Foongus",
+        "encounter": 0
+      },
+      {
+        "species_id": 607,
+        "total_encounter": 0,
+        "name": "Litwick",
+        "encounter": 0
+      },
+      {
+        "species_id": 622,
+        "total_encounter": 0,
+        "name": "Golett",
+        "encounter": 0
+      },
+      {
+        "species_id": 105,
+        "total_encounter": 25,
+        "name": "Marowak",
+        "encounter": 25
+      },
+      {
+        "species_id": 34,
+        "total_encounter": 0,
+        "name": "Nidoking",
+        "encounter": 0
+      },
+      {
+        "species_id": 33,
+        "total_encounter": 1340,
+        "name": "Nidorino",
+        "encounter": 1340
+      },
+      {
+        "species_id": 504,
+        "total_encounter": 0,
+        "name": "Patrat",
+        "encounter": 0
+      },
+      {
+        "species_id": 517,
+        "total_encounter": 1265,
+        "name": "Munna",
+        "encounter": 1265
+      },
+      {
+        "species_id": 346,
+        "total_encounter": 0,
+        "name": "Cradily",
+        "encounter": 0
+      },
+      {
+        "species_id": 509,
+        "total_encounter": 19,
+        "name": "Purrloin",
+        "encounter": 19
+      },
+      {
+        "species_id": 274,
+        "total_encounter": 1647,
+        "name": "Nuzleaf",
+        "encounter": 1647
+      },
+      {
+        "species_id": 256,
+        "total_encounter": 0,
+        "name": "Combusken",
+        "encounter": 0
+      },
+      {
+        "species_id": 53,
+        "total_encounter": 0,
+        "name": "Persian",
+        "encounter": 0
+      },
+      {
+        "species_id": 80,
+        "total_encounter": 270,
+        "name": "Slowbro",
+        "encounter": 270
+      },
+      {
+        "species_id": 342,
+        "total_encounter": 0,
+        "name": "Crawdaunt",
+        "encounter": 0
+      },
+      {
+        "species_id": 544,
+        "total_encounter": 0,
+        "name": "Whirlipede",
+        "encounter": 0
+      },
+      {
+        "species_id": 603,
+        "total_encounter": 0,
+        "name": "Eelektrik",
+        "encounter": 0
+      },
+      {
+        "species_id": 239,
+        "total_encounter": 0,
+        "name": "Elekid",
+        "encounter": 0
+      },
+      {
+        "species_id": 201,
+        "total_encounter": 0,
+        "name": "Unown",
+        "encounter": 0
+      },
+      {
+        "species_id": 310,
+        "total_encounter": 0,
+        "name": "Manectric",
+        "encounter": 0
+      },
+      {
+        "species_id": 90,
+        "total_encounter": 396,
+        "name": "Shellder",
+        "encounter": 396
+      },
+      {
+        "species_id": 296,
+        "total_encounter": 0,
+        "name": "Makuhita",
+        "encounter": 0
+      },
+      {
+        "species_id": 283,
+        "total_encounter": 170,
+        "name": "Surskit",
+        "encounter": 170
+      },
+      {
+        "species_id": 37,
+        "total_encounter": 240,
+        "name": "Vulpix",
+        "encounter": 240
+      },
+      {
+        "species_id": 525,
+        "total_encounter": 1,
+        "name": "Boldore",
+        "encounter": 1
+      },
+      {
+        "species_id": 58,
+        "total_encounter": 710,
+        "name": "Growlithe",
+        "encounter": 710
+      },
+      {
+        "species_id": 226,
+        "total_encounter": 1860,
+        "name": "Mantine",
+        "encounter": 1860
+      },
+      {
+        "species_id": 589,
+        "total_encounter": 3,
+        "name": "Escavalier",
+        "encounter": 3
+      },
+      {
+        "species_id": 178,
+        "total_encounter": 9,
+        "name": "Xatu",
+        "encounter": 9
+      },
+      {
+        "species_id": 539,
+        "total_encounter": 2170,
+        "name": "Sawk",
+        "encounter": 2170
+      },
+      {
+        "species_id": 109,
+        "total_encounter": 791,
+        "name": "Koffing",
+        "encounter": 791
+      },
+      {
+        "species_id": 240,
+        "total_encounter": 780,
+        "name": "Magby",
+        "encounter": 780
+      },
+      {
+        "species_id": 618,
+        "total_encounter": 16,
+        "name": "Stunfisk",
+        "encounter": 16
+      },
+      {
+        "species_id": 269,
+        "total_encounter": 3,
+        "name": "Dustox",
+        "encounter": 3
+      },
+      {
+        "species_id": 314,
+        "total_encounter": 4075,
+        "name": "Illumise",
+        "encounter": 4075
+      },
+      {
+        "species_id": 630,
+        "total_encounter": 1,
+        "name": "Mandibuzz",
+        "encounter": 1
+      },
+      {
+        "species_id": 560,
+        "total_encounter": 13,
+        "name": "Scrafty",
+        "encounter": 13
+      },
+      {
+        "species_id": 309,
+        "total_encounter": 840,
+        "name": "Electrike",
+        "encounter": 840
+      },
+      {
+        "species_id": 277,
+        "total_encounter": 31,
+        "name": "Swellow",
+        "encounter": 31
+      },
+      {
+        "species_id": 294,
+        "total_encounter": 3,
+        "name": "Loudred",
+        "encounter": 3
+      },
+      {
+        "species_id": 49,
+        "total_encounter": 475,
+        "name": "Venomoth",
+        "encounter": 475
+      },
+      {
+        "species_id": 403,
+        "total_encounter": 1,
+        "name": "Shinx",
+        "encounter": 1
+      },
+      {
+        "species_id": 625,
+        "total_encounter": 1904,
+        "name": "Bisharp",
+        "encounter": 1904
+      },
+      {
+        "species_id": 571,
+        "total_encounter": 28,
+        "name": "Zoroark",
+        "encounter": 28
+      },
+      {
+        "species_id": 337,
+        "total_encounter": 2175,
+        "name": "Lunatone",
+        "encounter": 2175
+      },
+      {
+        "species_id": 426,
+        "total_encounter": 2185,
+        "name": "Drifblim",
+        "encounter": 2185
+      },
+      {
+        "species_id": 559,
+        "total_encounter": 2515,
+        "name": "Scraggy",
+        "encounter": 2515
+      },
+      {
+        "species_id": 538,
+        "total_encounter": 1065,
+        "name": "Throh",
+        "encounter": 1065
+      },
+      {
+        "species_id": 103,
+        "total_encounter": 4,
+        "name": "Exeggutor",
+        "encounter": 4
+      },
+      {
+        "species_id": 119,
+        "total_encounter": 1675,
+        "name": "Seaking",
+        "encounter": 1675
+      },
+      {
+        "species_id": 389,
+        "total_encounter": 4,
+        "name": "Torterra",
+        "encounter": 4
+      },
+      {
+        "species_id": 312,
+        "total_encounter": 156,
+        "name": "Minun",
+        "encounter": 156
+      },
+      {
+        "species_id": 595,
+        "total_encounter": 1221,
+        "name": "Joltik",
+        "encounter": 1221
+      },
+      {
+        "species_id": 597,
+        "total_encounter": 1345,
+        "name": "Ferroseed",
+        "encounter": 1345
+      },
+      {
+        "species_id": 602,
+        "total_encounter": 1,
+        "name": "Tynamo",
+        "encounter": 1
+      },
+      {
+        "species_id": 452,
+        "total_encounter": 17,
+        "name": "Drapion",
+        "encounter": 17
+      },
+      {
+        "species_id": 215,
+        "total_encounter": 7685,
+        "name": "Sneasel",
+        "encounter": 7685
+      },
+      {
+        "species_id": 169,
+        "total_encounter": 3,
+        "name": "Crobat",
+        "encounter": 3
+      },
+      {
+        "species_id": 335,
+        "total_encounter": 1205,
+        "name": "Zangoose",
+        "encounter": 1205
+      },
+      {
+        "species_id": 629,
+        "total_encounter": 1,
+        "name": "Vullaby",
+        "encounter": 1
+      },
+      {
+        "species_id": 588,
+        "total_encounter": 6265,
+        "name": "Karrablast",
+        "encounter": 6265
+      },
+      {
+        "species_id": 616,
+        "total_encounter": 6350,
+        "name": "Shelmet",
+        "encounter": 6350
+      },
+      {
+        "species_id": 536,
+        "total_encounter": 1,
+        "name": "Palpitoad",
+        "encounter": 1
+      },
+      {
+        "species_id": 270,
+        "total_encounter": 2825,
+        "name": "Lotad",
+        "encounter": 2825
+      },
+      {
+        "species_id": 271,
+        "total_encounter": 350,
+        "name": "Lombre",
+        "encounter": 350
+      },
+      {
+        "species_id": 442,
+        "total_encounter": 138,
+        "name": "Spiritomb",
+        "encounter": 138
+      },
+      {
+        "species_id": 553,
+        "total_encounter": 6,
+        "name": "Krookodile",
+        "encounter": 6
+      },
+      {
+        "species_id": 139,
+        "total_encounter": 5,
+        "name": "Omastar",
+        "encounter": 5
+      },
+      {
+        "species_id": 635,
+        "total_encounter": 6,
+        "name": "Hydreigon",
+        "encounter": 6
+      },
+      {
+        "species_id": 345,
+        "total_encounter": 1,
+        "name": "Lileep",
+        "encounter": 1
+      },
+      {
+        "species_id": 565,
+        "total_encounter": 2,
+        "name": "Carracosta",
+        "encounter": 2
+      },
+      {
+        "species_id": 634,
+        "total_encounter": 2,
+        "name": "Zweilous",
+        "encounter": 2
+      },
+      {
+        "species_id": 567,
+        "total_encounter": 1,
+        "name": "Archeops",
+        "encounter": 1
+      }
+    ],
+    "history": [
+      {
+        "date": 1785543758141,
+        "species_id": 336,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 0,
+        "ivs": "0/4/24/17/19/31",
+        "global_encounter": 46907,
+        "species_encounter": 141,
+        "nature_string_id": 180003,
+        "nature_name": "Adamant [+Atk|-SpA]",
+        "form": 0,
+        "alpha": false,
+        "name": "Seviper",
+        "date_readable": "2026-08-01T00:22:38.141000Z"
+      },
+      {
+        "date": 1785815474301,
+        "species_id": 309,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 0,
+        "ivs": "2/1/19/14/31/7",
+        "global_encounter": 31782,
+        "species_encounter": 840,
+        "nature_string_id": 180020,
+        "nature_name": "Calm [+SpD|-Atk]",
+        "form": 0,
+        "alpha": false,
+        "name": "Electrike",
+        "date_readable": "2026-08-04T03:51:14.301000Z"
+      },
+      {
+        "date": 1785997462659,
+        "species_id": 198,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 1,
+        "ivs": "23/31/15/19/0/31",
+        "global_encounter": 22543,
+        "species_encounter": 1715,
+        "nature_string_id": 180023,
+        "nature_name": "Careful [+SpD|-SpA]",
+        "form": 0,
+        "alpha": false,
+        "name": "Murkrow",
+        "date_readable": "2026-08-06T06:24:22.659000Z"
+      },
+      {
+        "date": 1786247577744,
+        "species_id": 559,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 1,
+        "ivs": "2/18/7/31/5/27",
+        "global_encounter": 18901,
+        "species_encounter": 2515,
+        "nature_string_id": 180023,
+        "nature_name": "Careful [+SpD|-SpA]",
+        "form": 0,
+        "alpha": false,
+        "name": "Scraggy",
+        "date_readable": "2026-08-09T03:52:57.744000Z"
+      },
+      {
+        "date": 1786315539971,
+        "species_id": 119,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 0,
+        "ivs": "11/7/3/31/10/30",
+        "global_encounter": 5748,
+        "species_encounter": 1675,
+        "nature_string_id": 180010,
+        "nature_name": "Timid [+Spe|-Atk]",
+        "form": 0,
+        "alpha": false,
+        "name": "Seaking",
+        "date_readable": "2026-08-09T22:45:39.971000Z"
+      },
+      {
+        "date": 1786642873540,
+        "species_id": 168,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 1,
+        "ivs": "12/10/29/18/31/31",
+        "global_encounter": 22625,
+        "species_encounter": 3440,
+        "nature_string_id": 180020,
+        "nature_name": "Calm [+SpD|-Atk]",
+        "form": 0,
+        "alpha": false,
+        "name": "Ariados",
+        "date_readable": "2026-08-13T17:41:13.540000Z"
+      },
+      {
+        "date": 1786714571433,
+        "species_id": 147,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 1,
+        "ivs": "11/9/20/15/23/31",
+        "global_encounter": 3692,
+        "species_encounter": 330,
+        "nature_string_id": 180016,
+        "nature_name": "Mild [+SpA|-Def]",
+        "form": 0,
+        "alpha": false,
+        "name": "Dratini",
+        "date_readable": "2026-08-14T13:36:11.433000Z"
+      },
+      {
+        "date": 1786777301280,
+        "species_id": 613,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 0,
+        "ivs": "12/26/31/23/21/11",
+        "global_encounter": 6995,
+        "species_encounter": 550,
+        "nature_string_id": 180014,
+        "nature_name": "Naive [+Spe|-SpD]",
+        "form": 0,
+        "alpha": false,
+        "name": "Cubchoo",
+        "date_readable": "2026-08-15T07:01:41.280000Z"
+      },
+      {
+        "date": 1786803960866,
+        "species_id": 203,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 0,
+        "ivs": "3/10/31/1/27/26",
+        "global_encounter": 4674,
+        "species_encounter": 360,
+        "nature_string_id": 180014,
+        "nature_name": "Naive [+Spe|-SpD]",
+        "form": 0,
+        "alpha": false,
+        "name": "Girafarig",
+        "date_readable": "2026-08-15T14:26:00.866000Z"
+      },
+      {
+        "date": 1786824247409,
+        "species_id": 626,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 1,
+        "ivs": "19/17/3/19/18/31",
+        "global_encounter": 3574,
+        "species_encounter": 1718,
+        "nature_string_id": 180022,
+        "nature_name": "Sassy [+SpD|-Spe]",
+        "form": 0,
+        "alpha": false,
+        "name": "Bouffalant",
+        "date_readable": "2026-08-15T20:04:07.409000Z"
+      },
+      {
+        "date": 1787289937850,
+        "species_id": 220,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 0,
+        "ivs": "1/1/31/14/22/11",
+        "global_encounter": 58025,
+        "species_encounter": 16426,
+        "nature_string_id": 180018,
+        "nature_name": "Bashful [-]",
+        "form": 0,
+        "alpha": false,
+        "name": "Swinub",
+        "date_readable": "2026-08-21T05:25:37.850000Z"
+      },
+      {
+        "date": 1787775352983,
+        "species_id": 166,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 0,
+        "ivs": "4/4/29/31/31/14",
+        "global_encounter": 43985,
+        "species_encounter": 3990,
+        "nature_string_id": 180012,
+        "nature_name": "Serious [-]",
+        "form": 0,
+        "alpha": false,
+        "name": "Ledian",
+        "date_readable": "2026-08-26T20:15:52.983000Z"
+      },
+      {
+        "date": 1787920626632,
+        "species_id": 105,
+        "caught": true,
+        "secret_shiny": false,
+        "gender": 1,
+        "ivs": "21/31/29/4/25/1",
+        "global_encounter": 10728,
+        "species_encounter": 4,
+        "nature_string_id": 180016,
+        "nature_name": "Mild [+SpA|-Def]",
+        "form": 0,
+        "alpha": false,
+        "name": "Marowak",
+        "date_readable": "2026-08-28T12:37:06.632000Z"
       }
     ]
   },
@@ -91019,22 +93881,6 @@
       },
       {
         "date": 1786406400000,
-        "species_id": 559,
-        "caught": true,
-        "secret_shiny": false,
-        "gender": null,
-        "ivs": "4/31/18/20/9/24",
-        "global_encounter": 4593,
-        "species_encounter": null,
-        "nature_string_id": null,
-        "nature_name": null,
-        "form": 0,
-        "alpha": false,
-        "name": "Scraggy",
-        "date_readable": "2026-08-11T00:00:00Z"
-      },
-      {
-        "date": 1786406400000,
         "species_id": 314,
         "caught": true,
         "secret_shiny": false,
@@ -91144,22 +93990,6 @@
         "alpha": false,
         "name": "Gurdurr",
         "date_readable": "2026-08-21T00:00:00Z"
-      },
-      {
-        "date": 1787616000000,
-        "species_id": 44,
-        "caught": true,
-        "secret_shiny": false,
-        "gender": null,
-        "ivs": "6/2/30/3/0/31",
-        "global_encounter": 33702,
-        "species_encounter": null,
-        "nature_string_id": null,
-        "nature_name": null,
-        "form": 0,
-        "alpha": false,
-        "name": "Gloom",
-        "date_readable": "2026-08-24T00:00:00Z"
       }
     ]
   },
