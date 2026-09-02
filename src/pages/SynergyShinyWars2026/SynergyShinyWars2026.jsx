@@ -3,8 +3,11 @@ import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getLocalPokemonGif, onGifError } from '../../utils/pokemon'
 import { isRarePokemon } from '../../utils/playerStatistics'
 import synemaData from '../../data/AbsoluteSynema.json'
+import taskForceData from '../../data/SynergyTaskForceShinyWars2026.json'
+import synsationalData from '../../data/SynsationalShinyWars2026.json'
 import oswEncounterTiers from '../../data/osw-encounter-tiers.json'
 import generationData from '../../data/generation.json'
+import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import styles from './SynergyShinyWars2026.module.css'
 
 function normalizeSpecies(name) {
@@ -679,11 +682,69 @@ function AbsoluteSynemaTab() {
   )
 }
 
-function ComingSoon({ label }) {
+// Renders a team roster ordered by total war points, each expandable to show every shiny caught
+function RosterWarTab({ teamData, label, position, points }) {
+  const [expanded, setExpanded] = useState(() => new Set())
+
+  const players = useMemo(() => {
+    return Object.entries(teamData)
+      .map(([name, p]) => {
+        const shinies = Object.values(p.shinies || {})
+        const totalPoints = shinies.reduce((sum, s) => sum + (getSpeciesPoints(s.Pokemon) || 0), 0)
+        return { name, shinies, caughtCount: shinies.length, totalPoints }
+      })
+      .sort((a, b) => b.totalPoints - a.totalPoints || b.caughtCount - a.caughtCount)
+  }, [teamData])
+
+  const toggleExpanded = useCallback((name) => {
+    setExpanded((prev) => {
+      const next = new Set(prev)
+      if (next.has(name)) next.delete(name)
+      else next.add(name)
+      return next
+    })
+  }, [])
+
   return (
-    <div className={styles.comingSoon}>
-      <h2>{label}</h2>
-      <p>Coming soon.</p>
+    <div className={styles.reportPanel}>
+      <section className={styles.section}>
+        <SectionHeader index="01" title={label} subtitle="Members ranked by total Shiny Wars points" />
+        <div className={styles.achievementCardsRow}>
+          <div className={`${styles.achievementCard} ${styles.achievementCardPoints}`}>
+            <span className={styles.achievementLabelPoints}>Total Points</span>
+            <span className={styles.achievementValue}>{formatNumber(points)}</span>
+          </div>
+          <div className={`${styles.achievementCard} ${styles.achievementCardPosition}`}>
+            <span className={styles.achievementLabelPosition}>Final Position</span>
+            <span className={styles.achievementValue}>{position}</span>
+          </div>
+        </div>
+        <div className={styles.playerStatList}>
+          {players.map((player, index) => {
+            const isExpanded = expanded.has(player.name)
+            return (
+              <div key={player.name} className={`${styles.playerStatRow} ${isExpanded ? styles.playerStatRowOpen : ''}`}>
+                <button className={styles.playerStatHeader} onClick={() => toggleExpanded(player.name)}>
+                  <span className={styles.playerStatRank}>#{index + 1}</span>
+                  <span className={styles.playerStatName}>{player.name}</span>
+                  <span className={styles.playerStatMeta}>
+                    {formatNumber(player.caughtCount)} shinies · {formatNumber(player.totalPoints)} pts
+                  </span>
+                  <span className={styles.expandArrow}>{isExpanded ? '\u25B2' : '\u25BC'}</span>
+                </button>
+                {isExpanded && (
+                  <div className={styles.detailedGrid}>
+                    {player.shinies.length === 0 && <p className={styles.emptyNote}>No shinies recorded.</p>}
+                    {player.shinies.map((shiny, i) => (
+                      <ShinyItem key={i} shiny={shiny} points={getSpeciesPoints(shiny.Pokemon)} userName={player.name} localizeDates />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </section>
     </div>
   )
 }
@@ -727,8 +788,8 @@ export default function SynergyShinyWars2026() {
 
       <div className={styles.reportBody}>
         {activeTab === 'synema' && <AbsoluteSynemaTab />}
-        {activeTab === 'synsational' && <ComingSoon label="Synsational" />}
-        {activeTab === 'taskforce' && <ComingSoon label="Synergy Task Force" />}
+        {activeTab === 'synsational' && <RosterWarTab teamData={synsationalData} label="Synsational" points={2680} position={85} />}
+        {activeTab === 'taskforce' && <RosterWarTab teamData={taskForceData} label="Synergy Task Force" position={79} points={2817} />}
       </div>
     </div>
   )

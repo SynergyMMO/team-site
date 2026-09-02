@@ -33,7 +33,8 @@
     "mapeditor": "node scripts/mapEditorServer.mjs",
     "encountereditor": "node scripts/encounterPercentsEditorServer.mjs",
     "routefinderreward": "node scripts/pickRouteFinderRewardWinner.mjs",
-    "sendBountiesToDiscord": "node scripts/sendBountiesToDiscord.js"
+    "sendBountiesToDiscord": "node scripts/sendBountiesToDiscord.js",
+    "GenerateShinyWarsTeamSnapshots": "node scripts/generateShinyWarsTeamSnapshots.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",
