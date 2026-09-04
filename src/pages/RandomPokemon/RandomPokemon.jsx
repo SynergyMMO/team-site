@@ -3,13 +3,13 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getPokemonImageUrl, formatPokemonName, onGifError } from '../../utils/pokemon'
 import { checkBingo, saveBingo, loadBingo } from '../../utils/bingo'
-import randomizerTiers from '../../data/randomizer_tiers.json'
+import tierPokemon from '../../data/tier_pokemon.json'
 import generationData from '../../data/generation.json'
 import styles from './RandomPokemon.module.css'
 
 const ODDS = {
-  'Tier 0': 5, 'Tier 1': 8, 'Tier 2': 15, 'Tier 3': 30,
-  'Tier 4': 45, 'Tier 5': 70, 'Tier 6': 100,
+  'Tier 0': 5, 'Tier 1': 8, 'Tier 2': 15, 'Tier 3': 25,
+  'Tier 4': 40, 'Tier 5': 60, 'Tier 6': 85, 'Tier 7': 115,
 }
 
 const NATURES = [
@@ -19,13 +19,14 @@ const NATURES = [
 ]
 
 const normalizedTiers = {
-  'Tier 0': randomizerTiers['Tier 0'] || [],
-  'Tier 1': randomizerTiers['Tier 1'] || [],
-  'Tier 2': randomizerTiers['Tier 2'] || [],
-  'Tier 3': [...(randomizerTiers['Tier 3'] || []), ...(randomizerTiers['Tier 4'] || [])],
-  'Tier 4': randomizerTiers['Tier 5'] || [],
-  'Tier 5': randomizerTiers['Tier 6'] || [],
-  'Tier 6': randomizerTiers['Tier 7'] || [],
+  'Tier 0': tierPokemon['Tier 0'] || [],
+  'Tier 1': tierPokemon['Tier 1'] || [],
+  'Tier 2': tierPokemon['Tier 2'] || [],
+  'Tier 3': tierPokemon['Tier 3'] || [],
+  'Tier 4': tierPokemon['Tier 4'] || [],
+  'Tier 5': tierPokemon['Tier 5'] || [],
+  'Tier 6': tierPokemon['Tier 6'] || [],
+  'Tier 7': tierPokemon['Tier 7'] || [],
 }
 
 export default function RandomPokemon() {
