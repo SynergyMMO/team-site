@@ -44400,7 +44400,7 @@
             }
           }
         },
-        "Chains": {
+        "skels": {
           "points": 10,
           "shinies": {
             "6": {
@@ -45565,7 +45565,7 @@
           ]
         },
         {
-          "player": "Chains",
+          "player": "skels",
           "points": 10,
           "shinyIds": [
             "6",
@@ -47345,7 +47345,7 @@
             }
           }
         },
-        "Chains": {
+        "skels": {
           "points": 50,
           "shinies": {
             "8": {
@@ -48741,7 +48741,7 @@
           ]
         },
         {
-          "player": "Chains",
+          "player": "skels",
           "points": 50,
           "shinyIds": [
             "8",
@@ -50731,7 +50731,7 @@
             }
           }
         },
-        "Chains": {
+        "skels": {
           "points": 3,
           "shinies": {
             "10": {
@@ -52700,7 +52700,7 @@
           ]
         },
         {
-          "player": "Chains",
+          "player": "skels",
           "points": 3,
           "shinyIds": [
             "10"
@@ -54203,7 +54203,7 @@
             }
           }
         },
-        "Chains": {
+        "skels": {
           "points": 25,
           "shinies": {
             "11": {
@@ -55950,7 +55950,7 @@
           ]
         },
         {
-          "player": "Chains",
+          "player": "skels",
           "points": 25,
           "shinyIds": [
             "11"
@@ -71593,7 +71593,7 @@
             }
           }
         },
-        "Chains": {
+        "skels": {
           "points": 299,
           "shinies": {
             "13": {
@@ -79294,7 +79294,7 @@
           ]
         },
         {
-          "player": "Chains",
+          "player": "skels",
           "points": 299,
           "shinyIds": [
             "13",
