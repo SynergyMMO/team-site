@@ -140,6 +140,6 @@
     { "id": "friend-ball", "name": "Friend Ball", "price": 700, "apricorn": true, "marketPriced": true, "enabled": true },
     { "id": "heavy-ball", "name": "Heavy Ball", "price": 3000, "apricorn": true, "marketPriced": true, "enabled": false },
     { "id": "fast-ball", "name": "Fast Ball", "price": 1200, "apricorn": true, "marketPriced": true, "enabled": true },
-    { "id": "love-ball", "name": "Love Ball", "price": 3750, "apricorn": true, "marketPriced": true, "enabled": true }
+    { "id": "love-ball", "name": "Love Ball", "price": 5000, "apricorn": true, "marketPriced": true, "enabled": true }
   ]
 }
