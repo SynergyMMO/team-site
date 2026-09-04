@@ -20,24 +20,6 @@ Object.entries(tierPokemon).forEach(([tier, names]) => {
   })
 })
 
-const GIF_FOLDER_OVERRIDES = {
-  'porygon-z': 'tier_0',
-  'porygon2': 'tier_0',
-  'bonsly': 'tier_1',
-  'happiny': 'tier_1',
-  'chingling': 'tier_5',
-  'cleffa': 'tier_5',
-  'elekid': 'tier_5',
-  'magmortar': 'tier_5',
-  'probopass': 'tier_5',
-  'azurill': 'tier_7',
-  'igglybuff': 'tier_7',
-  'mantyke': 'tier_7',
-  'pichu': 'tier_7',
-  'smoochum': 'tier_7',
-  'wynaut': 'tier_7',
-}
-
 const LEGENDARY_MYTHICAL = new Set([
   'articuno',
   'zapdos',
@@ -142,9 +124,6 @@ export function getLocalPokemonGif(name) {
     return getRemoteFallbackUrl(name)
   }
   
-  if (GIF_FOLDER_OVERRIDES[sanitized]) {
-    return `/images/pokemon_gifs/${GIF_FOLDER_OVERRIDES[sanitized]}/${sanitized}.gif?v=${VERSION}`
-  }
   const tier = tierLookup[sanitized]
   const folder = tier ? `tier_${tier.replace(/\D/g, '')}` : 'tier_0'
   return `/images/pokemon_gifs/${folder}/${sanitized}.gif?v=${VERSION}`

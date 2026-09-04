@@ -37,13 +37,15 @@ function getShinyWarsInfo(shiny) {
   if (dateStr) {
     const dateObj = new Date(dateStr)
     if (!isNaN(dateObj.getTime())) {
+      // date_caught is recorded in PST wall-clock time (mislabeled as UTC); shift +8h to true UTC
+      const pstShifted = new Date(dateObj.getTime() + 8 * 60 * 60 * 1000)
       const caughtDate = Date.UTC(
-        dateObj.getUTCFullYear(),
-        dateObj.getUTCMonth(),
-        dateObj.getUTCDate()
+        pstShifted.getUTCFullYear(),
+        pstShifted.getUTCMonth(),
+        pstShifted.getUTCDate()
       )
 
-      const sw2026Start = Date.UTC(2026, 7, 1)   // Aug 1, 2026
+      const sw2026Start = Date.UTC(2026, 7, 1)   // Aug 1 0:00 UTC (4pm PST Jul 31)
       const sw2026End   = Date.UTC(2026, 7, 28)  // Aug 28, 2026
 
       const sw2025Start = Date.UTC(2025, 6, 11)  // Jul 11, 2025

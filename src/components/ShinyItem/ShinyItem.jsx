@@ -55,15 +55,17 @@ function getShinyWarsBanner(shiny) {
   if (dateStr) {
     const dateObj = new Date(dateStr)
     if (!isNaN(dateObj.getTime())) {
+      // date_caught is recorded in PST wall-clock time (mislabeled as UTC); shift +8h to true UTC
+      const pstShifted = new Date(dateObj.getTime() + 8 * 60 * 60 * 1000)
       const caughtDate = Date.UTC(
-        dateObj.getUTCFullYear(),
-        dateObj.getUTCMonth(),
-        dateObj.getUTCDate(),
-        dateObj.getUTCHours(),
-        dateObj.getUTCMinutes()
+        pstShifted.getUTCFullYear(),
+        pstShifted.getUTCMonth(),
+        pstShifted.getUTCDate(),
+        pstShifted.getUTCHours(),
+        pstShifted.getUTCMinutes()
       )
 
-      const sw2026Start = Date.UTC(2026, 7, 1, 0, 0, 0)
+      const sw2026Start = Date.UTC(2026, 7, 1, 0, 0, 0)   // Aug 1 0:00 UTC (4pm PST Jul 31)
       const sw2026End   = Date.UTC(2026, 7, 28, 23, 59, 59)
 
       const sw2025Start = Date.UTC(2025, 6, 11, 0, 0, 0)

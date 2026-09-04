@@ -298,28 +298,7 @@ function getLocalPokemonGif(name) {
     names.forEach(n => (tierLookup[sanitize(n)] = tier));
   });
 
-  const GIF_FOLDER_OVERRIDES = {
-    'porygon-z': 'tier_0',
-    'porygon2': 'tier_0',
-    'bonsly': 'tier_1',
-    'happiny': 'tier_1',
-    'chingling': 'tier_5',
-    'cleffa': 'tier_5',
-    'elekid': 'tier_5',
-    'magmortar': 'tier_5',
-    'probopass': 'tier_5',
-    'azurill': 'tier_7',
-    'igglybuff': 'tier_7',
-    'mantyke': 'tier_7',
-    'pichu': 'tier_7',
-    'smoochum': 'tier_7',
-    'wynaut': 'tier_7',
-  };
-
   const sanitized = sanitize(name);
-  if (GIF_FOLDER_OVERRIDES[sanitized]) {
-    return `/images/pokemon_gifs/${GIF_FOLDER_OVERRIDES[sanitized]}/${sanitized}.gif?v=1`;
-  }
   const tier = tierLookup[sanitized];
   const folder = tier ? `tier_${tier.replace(/\D/g, '')}` : 'tier_0';
   return `/images/pokemon_gifs/${folder}/${sanitized}.gif?v=1`;

@@ -4,6 +4,11 @@ import generationData from '../data/generation.json'
 const BLACKLISTED_PLAYERS = new Set([
 ])
 
+const MAX_WEEKLY_SHINIES_FOR_STATISTICS = 15
+
+const isEligibleForWeeklyShinyStats = (player) =>
+  Number(player?.mostInWeekCount) <= MAX_WEEKLY_SHINIES_FOR_STATISTICS
+
 export const MINIMUM_STATS_REQUIREMENTS = {
   totalEncounters: 60000,
   dataCompleteness: 40,
@@ -649,7 +654,7 @@ export const getPlayerRanks = (data, playerName, externalData = {}) => {
     mostInWeek: getRank(
       qualifiedAll,
       (a, b) => b.mostInWeekCount - a.mostInWeekCount,
-      (p) => p.mostInWeekCount > 0
+      (p) => p.mostInWeekCount > 0 && isEligibleForWeeklyShinyStats(p)
     ),
 
     mostSingleEncounters: getRank(
@@ -888,7 +893,8 @@ export const getStatisticsWinners = (data, externalData = {}) => {
   const byMinEncounter = [...qualifiedPlayers].sort((a, b) => a.minEncounter - b.minEncounter)
   const byRareCount = [...allEligiblePlayers].sort((a, b) => b.rareCount - a.rareCount)
   const byPhases = [...qualifiedPlayers].sort((a, b) => b.phasesCount - a.phasesCount)
-  const byWeek = [...allEligiblePlayers].sort((a, b) => b.mostInWeekCount - a.mostInWeekCount)
+  const byWeek = [...allEligiblePlayers.filter(isEligibleForWeeklyShinyStats)]
+    .sort((a, b) => b.mostInWeekCount - a.mostInWeekCount)
   const byMostEncounters = [...qualifiedPlayers].sort((a, b) => b.totalEncounters - a.totalEncounters)
   const bySingleEncounters = [...allEligiblePlayers].sort((a, b) => b.singleEncounterCount - a.singleEncounterCount)
   const byHorde5x = [...allEligiblePlayers].sort((a, b) => b.horde5xCount - a.horde5xCount)
@@ -984,6 +990,8 @@ export const getStatisticsLeaderboards = (data, limit = 3, externalData = {}) =>
     }
   })
 
+  const weeklyEligiblePlayers = allEligiblePlayers.filter(isEligibleForWeeklyShinyStats)
+
   return {
     luckiest: getTopEntries(qualifiedPlayers, (a, b) => a.averageEncounter - b.averageEncounter, limit, (p) => p.averageEncounter),
     unluckiest: getTopEntries(qualifiedPlayers, (a, b) => b.averageEncounter - a.averageEncounter, limit, (p) => p.averageEncounter),
@@ -992,7 +1000,7 @@ export const getStatisticsLeaderboards = (data, limit = 3, externalData = {}) =>
     leastEncounter: getTopEntries(qualifiedPlayers, (a, b) => a.minEncounter - b.minEncounter, limit, (p) => p.minEncounter),
     mostRares: getTopEntries(allEligiblePlayers, (a, b) => b.rareCount - a.rareCount, limit, (p) => p.rareCount),
     mostPhases: getTopEntries(qualifiedPlayers, (a, b) => b.phasesCount - a.phasesCount, limit, (p) => p.phasesCount),
-    mostInWeek: getTopEntries(allEligiblePlayers, (a, b) => b.mostInWeekCount - a.mostInWeekCount, limit, (p) => p.mostInWeekCount),
+    mostInWeek: getTopEntries(weeklyEligiblePlayers, (a, b) => b.mostInWeekCount - a.mostInWeekCount, limit, (p) => p.mostInWeekCount),
     mostSingleEncounters: getTopEntries(allEligiblePlayers, (a, b) => b.singleEncounterCount - a.singleEncounterCount, limit, (p) => p.singleEncounterCount),
     most5xHordes: getTopEntries(allEligiblePlayers, (a, b) => b.horde5xCount - a.horde5xCount, limit, (p) => p.horde5xCount),
     mostFishingShinies: getTopEntries(allEligiblePlayers, (a, b) => b.fishingCount - a.fishingCount, limit, (p) => p.fishingCount),

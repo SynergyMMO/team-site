@@ -10,7 +10,7 @@ const DATA_DIR = path.join(__dirname, '..', 'src', 'data')
 const DATABASE_URL = 'https://adminpage.hypersmmo.workers.dev/admin/database'
 
 // Mirrors the SW2026 window used in src/components/ShinyItem/ShinyItem.jsx
-const SW2026_START = Date.UTC(2026, 7, 1, 0, 0, 0)
+const SW2026_START = Date.UTC(2026, 7, 1, 0, 0, 0)   // Aug 1 0:00 UTC (4pm PST Jul 31)
 const SW2026_END = Date.UTC(2026, 7, 28, 23, 59, 59)
 
 function wasCaughtDuringWar(shiny) {
@@ -18,7 +18,9 @@ function wasCaughtDuringWar(shiny) {
   if (dateStr) {
     const d = new Date(dateStr)
     if (!Number.isNaN(d.getTime())) {
-      const caught = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes())
+      // date_caught is recorded in PST wall-clock time (mislabeled as UTC); shift +8h to true UTC
+      const pstShifted = new Date(d.getTime() + 8 * 60 * 60 * 1000)
+      const caught = Date.UTC(pstShifted.getUTCFullYear(), pstShifted.getUTCMonth(), pstShifted.getUTCDate(), pstShifted.getUTCHours(), pstShifted.getUTCMinutes())
       return caught >= SW2026_START && caught <= SW2026_END
     }
   }
