@@ -351,6 +351,44 @@
   text-decoration: underline;
 }
 
+/* Credits Section */
+.creditsSection {
+  background: rgba(20, 10, 40, 0.6);
+  border: 1px solid rgba(100, 150, 255, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.creditsSection h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  border-bottom: 2px solid rgba(100, 150, 255, 0.3);
+  padding-bottom: 0.5rem;
+}
+
+.creditsSection h3 {
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.creditsSection p {
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.creditsLink {
+  color: #6bb3ff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.creditsLink:hover {
+  text-decoration: underline;
+}
+
 /* Changelog Section */
 .changelogSection {
   background: rgba(20, 10, 40, 0.6);

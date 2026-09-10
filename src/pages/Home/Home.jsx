@@ -159,6 +159,15 @@ export default function Home() {
 
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
+      <section className={styles.creditsSection}>
+        <h2>Credits</h2>
+        <h3>Site Creators</h3>
+        <p>Hyper &amp; Mitchell</p>
+        <Link to="/credits/" className={styles.creditsLink}>View all credits</Link>
+      </section>
+
+      <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
+
       <section className={styles.changelogSection}>
         <h2>Changelog</h2>
         <div className={styles.changelog}>

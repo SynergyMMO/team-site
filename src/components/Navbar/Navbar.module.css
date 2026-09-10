@@ -149,9 +149,41 @@
   transform: scale(1.1);
 }
 
+.infoLink {
+  position: absolute;
+  right: 72px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(170, 170, 170, 0.7);
+  border-radius: 50%;
+  color: #aaa;
+  font-family: Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: bold;
+  font-style: italic;
+  line-height: 1;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  z-index: 5;
+}
+
+.infoLink:hover,
+.infoActive {
+  border-color: #6bb3ff;
+  color: #6bb3ff;
+  background: rgba(74, 144, 226, 0.15);
+}
+
 @media (max-width: 900px) {
   .discordLink {
     right: 10px;
+  }
+  .infoLink {
+    right: 58px;
   }
   .discordLink img {
     height: 36px;
@@ -272,6 +304,27 @@
 .mobileDiscord img {
   width: 32px;
   height: 32px;
+}
+
+.mobileInfoLink {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-top: 8px;
+  border: 1px solid rgba(170, 170, 170, 0.7);
+  border-radius: 50%;
+  color: #aaa;
+  font-family: Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: bold;
+  font-style: italic;
+  text-decoration: none;
+}
+
+.mobileInfoLink:hover {
+  border-color: #6bb3ff;
+  color: #6bb3ff;
 }
 
 /* Mobile dropdown toggle */

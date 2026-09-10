@@ -22,6 +22,7 @@ const RoamingLegendariesCalendar = lazy(() => import('./pages/RoamingLegendaries
 const SafariZones = lazy(() => import('./pages/SafariZones/SafariZones'))
 const AlteringCaveRotations = lazy(() => import('./pages/AlteringCaveRotations/AlteringCaveRotations'))
 const Resources = lazy(() => import('./pages/Resources/Resources'))
+const Credits = lazy(() => import('./pages/Credits/Credits'))
 const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
@@ -131,6 +132,7 @@ export default function App() {
             <Route path="/altering-cave-rotations" element={<AlteringCaveRotations />} />
             <Route path="/dex-helper" element={<DexHelper />} />
             <Route path="/resources" element={<Resources />} />
+            <Route path="/credits" element={<Credits />} />
             <Route path="/resources/:category" element={<Resources />} />
             <Route path="/resources/:category/:subcategory" element={<Resources />} />
             <Route path="/themes/" element={<ThemesPage />} />

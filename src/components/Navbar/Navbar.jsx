@@ -111,6 +111,15 @@ export default function Navbar() {
         ))}
       </ul>
 
+      <NavLink
+        to="/credits/"
+        className={({ isActive }) => `${styles.infoLink} ${isActive ? styles.infoActive : ''}`}
+        aria-label="Credits"
+        title="Credits"
+      >
+        i
+      </NavLink>
+
       {/* Discord icon for desktop */}
       <a
         href="https://discord.gg/2BEUq6fWAj"
@@ -177,6 +186,15 @@ export default function Navbar() {
           <img src={getAssetUrl('images/discord.png')} alt="Discord" width="32" height="32" />
           Join Discord
         </a>
+        <NavLink
+          to="/credits/"
+          className={({ isActive }) => `${styles.mobileInfoLink} ${isActive ? styles.mobileActive : ''}`}
+          onClick={handleLinkClick}
+          aria-label="Credits"
+          title="Credits"
+        >
+          i
+        </NavLink>
       </div>
     </nav>
   )
