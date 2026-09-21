@@ -1100,7 +1100,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
 
   const title = meta.ogTitle || 'Team Synergy - PokeMMO';
   const description = meta.ogDescription || 'Team Synergy is a PokeMMO shiny hunting team.';
-  const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2';
+  const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_6/reuniclus.gif?v=2';
   // Add trailing slash to match GitHub Pages serving pattern (avoids 301 redirects)
   const normalizedRoute =
     meta.route === '/'
@@ -1537,14 +1537,14 @@ async function prerender() {
       route: '/shiny-showcase',
       ogTitle: 'Shiny Showcase - Team Synergy PokeMMO Member Collections',
       ogDescription: 'Browse Team Synergy\'s 140+ member shiny collections ranked by total count. Discover the best shiny hunters, view collection statistics, and explore spectacular Pokemon catches.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_6/reuniclus.gif?v=2',
       crawlerLinks: playerLinks,
     },
     '/shotm': {
       route: '/shotm',
       ogTitle: 'Shiny of the Month - Team Synergy - PokeMMO',
       ogDescription: 'Team Synergy Shiny of the Month (SHOTM) showcases outstanding shiny catches and achievements by our community members each month.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_6/reuniclus.gif?v=2',
       crawlerLinks: [...playerLinks, ...pokemonLinks],
     },
     '/team-statistics': {
@@ -1558,7 +1558,7 @@ async function prerender() {
       route: '/pokedex',
       ogTitle: 'Pokédex Tracker - Shiny & Living Dex | Team Synergy - PokeMMO',
       ogDescription: 'Track Team Synergy\'s complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/pikachu.gif?v=2',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_5/pikachu.gif?v=2',
       crawlerLinks: [...roamingLegendariesLinks, ...pokemonLinks],
     },
     '/dex-helper': {
@@ -1635,14 +1635,14 @@ async function prerender() {
       route: '/events',
       ogTitle: 'Team Synergy Events | Team Synergy - PokeMMO',
       ogDescription: 'Discover Team Synergy\'s PokeMMO community events. Join shiny hunting competitions, seasonal tournaments, team challenges, and special gaming events. Stay connected with the latest Team Synergy activities.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_6/reuniclus.gif?v=2',
       crawlerLinks: eventLinks,
     },
     '/trophy-board': {
       route: '/trophy-board',
       ogTitle: 'Team Synergy Trophy Board | Team Synergy - PokeMMO',
       ogDescription: 'Explore trophies and achievements earned by Team Synergy members in PokeMMO. View championship awards, milestone accomplishments, and community recognition. Celebrate team success and member achievements.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_6/reuniclus.gif?v=2',
       crawlerLinks: trophyLinks,
     },
     '/streamers': {

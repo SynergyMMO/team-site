@@ -713,7 +713,7 @@ const rarityOptions = useMemo(() => {
     const om = new Map()
     Object.entries(data).forEach(([player, playerData]) => {
       Object.values(playerData.shinies).forEach(entry => {
-        const name = entry.Pokemon.toLowerCase()
+        const name = normalizePokemonName(entry.Pokemon)
         if (!entry.Sold || entry.Sold.toLowerCase() !== 'yes') {
           gs.add(name)
           if (!om.has(name)) om.set(name, [])
@@ -834,7 +834,7 @@ const rarityOptions = useMemo(() => {
       if (target.tagName !== 'IMG') return
 
       const dangerousWarningText = target.dataset.dangerousWarning || ''
-      const pokemonName = target.alt.toLowerCase()
+      const pokemonName = normalizePokemonName(target.alt)
       const owners = target.classList.contains(styles.complete)
         ? ownerMap.get(pokemonName) || []
         : []
@@ -1363,8 +1363,8 @@ const rarityOptions = useMemo(() => {
           const speciesCompleteSet = new Set()
           if (mode === 'shiny') {
             speciesGroups.forEach(group => {
-              if (group.some(p => globalShinies.has(p.toLowerCase()))) {
-                group.forEach(p => speciesCompleteSet.add(p.toLowerCase()))
+              if (group.some(p => globalShinies.has(normalizePokemonName(p)))) {
+                group.forEach(p => speciesCompleteSet.add(normalizePokemonName(p)))
               }
             })
           }
@@ -1402,7 +1402,7 @@ const rarityOptions = useMemo(() => {
             const matchingEncounters = getFilteredEncountersForPokemon(pokemonDetails, locationSearch, selectedSeason)
             if (selectedSeason && matchingEncounters.length === 0) return
 
-            const isComplete = mode === 'shiny' ? speciesCompleteSet.has(lowerName) : globalShinies.has(lowerName)
+            const isComplete = mode === 'shiny' ? speciesCompleteSet.has(normalized) : globalShinies.has(normalized)
             
             if (searchTerm) {
               const matchesSearch =
@@ -1553,7 +1553,7 @@ const rarityOptions = useMemo(() => {
                 const matchingEncounters = getFilteredEncountersForPokemon(pokemonDetails, locationSearch, selectedSeason)
                 if (selectedSeason && matchingEncounters.length === 0) return
 
-                const isComplete = mode === 'shiny' ? globalShinies.has(lowerName) : globalShinies.has(lowerName)
+                const isComplete = globalShinies.has(normalized)
                 if (hideComplete && isComplete) return
                 if (searchTerm) {
                   const matchesSearch = lowerName.includes(searchTerm) || normalized.includes(searchTerm)
@@ -1653,7 +1653,7 @@ const rarityOptions = useMemo(() => {
                 if (!pokemonSpawnsInSelectedSeason(details, selectedSeason)) return false
 
                 const lowerName = pokemon.name.toLowerCase()
-                const isComplete = globalShinies.has(lowerName)
+                const isComplete = globalShinies.has(normalized)
                 if (hideComplete && isComplete) return false
 
                 if (searchTerm) {
@@ -1718,7 +1718,7 @@ const rarityOptions = useMemo(() => {
               const renderAlteringPokemon = (pokemon, cycleNumber, idx) => {
                 const normalized = normalizePokemonName(pokemon.name)
                 const lowerName = pokemon.name.toLowerCase()
-                const isComplete = globalShinies.has(lowerName)
+                const isComplete = globalShinies.has(normalized)
                 const moveWarning = getAlteringCaveMoveWarning(pokemon.name)
 
                 return (
@@ -1847,7 +1847,7 @@ const rarityOptions = useMemo(() => {
                               const pokemon = pokemonData.name
                               const normalized = normalizePokemonName(pokemon)
                               const lowerName = pokemon.toLowerCase()
-                              const isComplete = globalShinies.has(lowerName)
+                              const isComplete = globalShinies.has(normalized)
 
                               const showRarityInfo = type === 'Singles' || type === 'Rares'
                               const primaryRarity = pokemonData.rarities && pokemonData.rarities[0]
@@ -2010,8 +2010,8 @@ const rarityOptions = useMemo(() => {
             const speciesCompleteSet = new Set()
             if (mode === 'shiny') {
               speciesGroups.forEach(group => {
-                if (group.some(p => globalShinies.has(p.toLowerCase()))) {
-                  group.forEach(p => speciesCompleteSet.add(p.toLowerCase()))
+                if (group.some(p => globalShinies.has(normalizePokemonName(p)))) {
+                  group.forEach(p => speciesCompleteSet.add(normalizePokemonName(p)))
                 }
               })
             }
@@ -2049,7 +2049,7 @@ const rarityOptions = useMemo(() => {
               const matchingEncounters = getFilteredEncountersForPokemon(pokemonDetails, locationSearch, selectedSeason)
               if (selectedSeason && matchingEncounters.length === 0) return false
 
-              const isComplete = mode === 'shiny' ? speciesCompleteSet.has(lowerName) : globalShinies.has(lowerName)
+              const isComplete = mode === 'shiny' ? speciesCompleteSet.has(normalized) : globalShinies.has(normalized)
               if (hideComplete && isComplete) return false
               if (searchTerm) {
                 const matchesSearch =
@@ -2124,8 +2124,8 @@ const rarityOptions = useMemo(() => {
 
                   const isComplete =
                     mode === 'shiny'
-                      ? speciesCompleteSet.has(lowerName)
-                      : globalShinies.has(lowerName)
+                      ? speciesCompleteSet.has(normalized)
+                      : globalShinies.has(normalized)
 
                   return (
                     <div 
