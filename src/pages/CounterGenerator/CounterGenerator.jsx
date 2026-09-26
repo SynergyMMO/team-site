@@ -27,7 +27,7 @@ export default function CounterGenerator() {
     setStatus('File loaded. Press Generate to process.')
     setGenerateEnabled(true)
   }, [])
-
+ 
   const resizeToBlob = useCallback((fileOrBlob, width, height) => {
     return new Promise((resolve, reject) => {
       const img = new Image()
