@@ -42,6 +42,36 @@ li {
   padding-top: 70px;
 }
 
+.site-footer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  margin-top: 3rem;
+  padding: 1.25rem 1rem;
+  border-top: 1px solid rgba(100, 150, 255, 0.2);
+  background: rgba(10, 10, 15, 0.82);
+  color: #aaa;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.site-footer a {
+  color: #8fc5ff;
+  text-decoration: none;
+}
+
+.site-footer a:hover,
+.site-footer a:focus-visible {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 h1 {
   text-align: center;
   font-size: 2.5rem;

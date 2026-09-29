@@ -1,6 +1,6 @@
 
 import { lazy, Suspense, useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar/Navbar'
 import StarField from './components/StarField/StarField'
 
@@ -150,6 +150,12 @@ export default function App() {
           </Routes>
         </Suspense>
       </main>
+      <footer className="site-footer">
+        <p>
+          @ 2026 Team Synergy - All rights Reserved -{' '}
+          <Link to="/credits/">Terms of Service</Link>
+        </p>
+      </footer>
     </>
   )
 }
