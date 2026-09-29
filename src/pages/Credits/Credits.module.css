@@ -71,6 +71,55 @@
   border-left: 3px solid rgba(100, 150, 255, 0.55);
 }
 
+.termsSection > h2 {
+  margin-bottom: 0.5rem;
+}
+
+.termsSection {
+  background: linear-gradient(145deg, rgba(24, 22, 40, 0.92), rgba(15, 19, 32, 0.94));
+}
+
+.termsUpdated {
+  margin: 0 0 1.5rem;
+  color: #aaa;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.termsSection section {
+  max-width: 74ch;
+  margin: 0 auto;
+  padding: 1.25rem 0;
+  border-top: 1px solid rgba(100, 150, 255, 0.2);
+}
+
+.termsSection section:last-child {
+  padding-bottom: 0;
+}
+
+.termsSection h3 {
+  margin: 0 0 0.5rem;
+  color: #dceaff;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.termsSection section p {
+  max-width: 68ch;
+  margin: 0;
+  color: #ccc;
+  line-height: 1.7;
+  text-align: left;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.termsSection section p + p {
+  margin-top: 0.75rem;
+}
+
 @media (max-width: 600px) {
   .container {
     padding: 1rem;
@@ -78,6 +127,10 @@
 
   .creditSection {
     padding: 1.25rem;
+  }
+
+  .termsSection section {
+    padding: 1rem 0;
   }
 
   .nameList {

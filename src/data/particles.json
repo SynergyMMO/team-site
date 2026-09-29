@@ -54,7 +54,6 @@
     "name": "Kanto Friends",
     "icon": "Kanto Friends.png",
     "breed": true,
-    "broken": true,
     "description": "Exclusive to 10th Year Anniversary (2022). Attached to all party members defeating The Original You. Can only be attached by breeding now."
   },
   {
@@ -141,7 +140,6 @@
   {
     "name": "Shiny Kanto Friends",
     "icon": "Shiny Kanto Friends.png",
-    "broken": true,
     "description": "Exclusive to 10th Year Anniversary (2022). Found in Golden Anniversary Chest."
   },
   {
@@ -162,7 +160,6 @@
   {
     "name": "Spider's Web",
     "icon": "Spider's Web.png",
-    "broken": true,
     "description": "Exclusive to Halloween (2020). Found in the Pumpking Goodie Bag (2020) and pre-attached to special swarms found during the event."
   },
   {
