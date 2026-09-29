@@ -71,6 +71,9 @@ export default function Credits() {
           <p>The design, layout, text, artwork, graphics, tools, and code of synergymmo.com are owned by SynergyMMO and are protected by copyright. © 2026 SynergyMMO. All rights reserved.</p>
           <p>You may not copy, republish, clone, scrape, or redistribute the site's design, code, content, or data, in whole or in part, or present it as your own, without written permission from SynergyMMO.</p>
           <p>You must not feed SynergyMMO Into Any Automated Systems or AI without explicit permission, this includes web scrapers, bots, and AI models for any reason.</p>
+          <p>SynergyMMO does not own the rights or licenses to any Pokemon or PokeMMO licensed content. All such content is being used as part of a fan project under fair use, and the above terms do not apply to such content.</p>
+          <p>By using this site, you agree to comply with these terms and acknowledge that SynergyMMO retains all rights to its content.</p>
+          <p>If you do not agree with these terms, you must discontinue use of the site immediately.</p>
         </section>
         <section>
           <h3>7. Contact</h3>

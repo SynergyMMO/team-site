@@ -87,7 +87,7 @@
 }
 
 .termsSection section {
-  max-width: 74ch;
+  max-width: 80ch;
   margin: 0 auto;
   padding: 1.25rem 0;
   border-top: 1px solid rgba(100, 150, 255, 0.2);
