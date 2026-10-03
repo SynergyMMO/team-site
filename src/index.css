@@ -37,15 +37,24 @@ li {
   z-index: 1;
 }
 
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Ensure main content is not hidden behind the fixed navbar */
 #main-container {
   padding-top: 70px;
+  flex: 1 0 auto;
+  width: 100%;
 }
 
 .site-footer {
   position: relative;
   z-index: 1;
   width: 100%;
+  flex-shrink: 0;
   margin-top: 3rem;
   padding: 1.25rem 1rem;
   border-top: 1px solid rgba(100, 150, 255, 0.2);
