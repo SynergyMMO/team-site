@@ -9,6 +9,7 @@ import pokemonData from "../../data/pokemmo_data/pokemon-data.json";
 import { getPokemonDataByName } from "../../utils/getPokemonDataByName";
 import { extractLevelUpMoves } from "../../utils/extractLevelUpMoves";
 import { getLevelUpMoveset } from "../../utils/levelup-moves";
+import { getSelfDamagingMoveWarning } from "../../utils/dangerousPokemonWarnings";
 
 const getDefaultSeasonId = (date = new Date()) => {
   const month = date.getMonth();
@@ -176,6 +177,14 @@ const EventSwarmsTab = () => {
 
             const levelUpMoves = pokeData ? extractLevelUpMoves(pokeData.moves) : [];
             const moveset = getLevelUpMoveset({ level_up_moves: levelUpMoves }, 30);
+            const movesetWithWarnings = moveset.map(move => ({
+              ...move,
+              selfDamageWarning: getSelfDamagingMoveWarning(move.move, pokeData || {}),
+            }));
+            const selfDamagingMoves = movesetWithWarnings.filter(move => move.selfDamageWarning);
+            const selfDamageTitle = selfDamagingMoves
+              .map(move => `${move.move}: ${move.selfDamageWarning.message}`)
+              .join("\n");
 
             return (
               <Link
@@ -194,7 +203,14 @@ const EventSwarmsTab = () => {
                   height="50"
                   loading="lazy"
                 />
-                <div className={styles.pokemonName}>{poke.name}</div>
+                <div className={styles.pokemonName}>
+                  {poke.name}
+                  {selfDamagingMoves.length > 0 && (
+                    <span className={styles.selfDamageBadge} title={selfDamageTitle}>
+                      Self-damage risk
+                    </span>
+                  )}
+                </div>
                 <div className={styles.catchRate}>
                   Catch Rate: <b>{catchRate !== null && catchRate !== undefined ? catchRate : "?"}</b>
                 </div>
@@ -222,9 +238,20 @@ const EventSwarmsTab = () => {
                     {moveset.length === 0 ? (
                       <li className={styles.noMoves}>No data</li>
                     ) : (
-                      moveset.map(m => (
+                      movesetWithWarnings.map(m => (
                         <li key={m.move + m.level} className={styles.moveItem}>
-                          <span className={styles.moveName}>{m.move}</span>
+                          <span className={styles.moveName}>
+                            {m.move}
+                            {m.selfDamageWarning && (
+                              <span
+                                className={styles.selfDamageMove}
+                                title={m.selfDamageWarning.message}
+                                aria-label={`Self-damage risk: ${m.selfDamageWarning.message}`}
+                              >
+                                {" "}⚠
+                              </span>
+                            )}
+                          </span>
                           <span className={styles.moveLevel}>Lv{m.level}</span>
                         </li>
                       ))

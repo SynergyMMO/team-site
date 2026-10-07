@@ -2,15 +2,18 @@
   "moves": [
     {
       "name": "Self Destruct",
-      "message": "Instantly kills the user, use a Damp Pokemon to prevent this"
+      "message": "Instantly kills the user, use a Damp Pokemon to prevent this",
+      "selfDamaging": true
     },
     {
       "name": "Explosion",
-      "message": "Instantly kills the user, use a Damp Pokemon to prevent this"
+      "message": "Instantly kills the user, use a Damp Pokemon to prevent this",
+      "selfDamaging": true
     },
     {
       "name": "Take Down",
-      "message": "Does recoil damage, do not False Swipe"
+      "message": "Does recoil damage, do not False Swipe",
+      "selfDamaging": true
     },
     {
       "name": "Sketch",
@@ -22,39 +25,48 @@
     },
     {
       "name": "Curse",
-      "message": "If Pokemon is a ghost type, Curse will lower its HP by 50% each turn, eventually killing it. Soak it so it is not a ghost type"
+      "message": "If Pokemon is a ghost type, Curse will lower its HP by 50% each turn, eventually killing it. Soak it so it is not a ghost type",
+      "selfDamaging": true
     },
     {
       "name": "High Jump Kick",
-      "message": "If misses does huge recoil damage, can use Gravity to prevent this"
+      "message": "If misses does huge recoil damage, can use Gravity to prevent this",
+      "selfDamaging": true
     },
     {
       "name": "Double Edge",
-      "message": "Recoil damage, do not False Swipe"
+      "message": "Recoil damage, do not False Swipe",
+      "selfDamaging": true
     },
     {
       "name": "Jump Kick",
-      "message": "If misses does huge recoil damage, can use Gravity to prevent this"
+      "message": "If misses does huge recoil damage, can use Gravity to prevent this",
+      "selfDamaging": true
     },
     {
       "name": "Brave Bird",
-      "message": "Recoil damage, do not False Swipe"
+      "message": "Recoil damage, do not False Swipe",
+      "selfDamaging": true
     },
     {
       "name": "Flare Blitz",
-      "message": "Recoil damage, do not False Swipe"
+      "message": "Recoil damage, do not False Swipe",
+      "selfDamaging": true
     },
     {
       "name": "Head Smash",
-      "message": "Recoil damage, do not False Swipe"
+      "message": "Recoil damage, do not False Swipe",
+      "selfDamaging": true
     },
     {
       "name": "Wild Charge",
-      "message": "Recoil damage, do not False Swipe"
+      "message": "Recoil damage, do not False Swipe",
+      "selfDamaging": true
     },
     {
       "name": "Wood Hammer",
-      "message": "Recoil damage, do not False Swipe"
+      "message": "Recoil damage, do not False Swipe",
+      "selfDamaging": true
     },
     {
       "name": "Whirlwind",
@@ -62,11 +74,13 @@
     },
     {
       "name": "Outrage",
-      "message": "Can cause confusion which may lead to recoil"
+      "message": "Can cause confusion which may lead to recoil",
+      "selfDamaging": true
     },
     {
       "name": "Thrash",
-      "message": "Can cause confusion which may lead to recoil"
+      "message": "Can cause confusion which may lead to recoil",
+      "selfDamaging": true
     },
     {
       "name": "Teleport",
@@ -74,7 +88,8 @@
     },
     {
       "name": "Memento",
-      "message": "Instantly kills the Pokemon if used, taunt it or Imprison it to prevent the move being used"
+      "message": "Instantly kills the Pokemon if used, taunt it or Imprison it to prevent the move being used",
+      "selfDamaging": true
     },
     {
       "name": "Follow Me",
@@ -82,7 +97,8 @@
     },
     {
       "name": "Final Gambit",
-      "message": "Instantly kills the Pokemon, use a ghost type to make it fail"
+      "message": "Instantly kills the Pokemon, use a ghost type to make it fail",
+      "selfDamaging": true
     },
     {
       "name": "Ally Switch",
@@ -94,15 +110,18 @@
     },
     {
       "name": "Submission",
-      "message": "Recoil damage, do not False Swipe"
+      "message": "Recoil damage, do not False Swipe",
+      "selfDamaging": true
     },
     {
       "name": "Perish Song",
-      "message": "Can kill the Pokemon, does not work in hordes"
+      "message": "Can kill the Pokemon, does not work in hordes",
+      "selfDamaging": true
     },
     {
       "name": "Petal Dance",
-      "message": "Can cause confusion which may lead to recoil"
+      "message": "Can cause confusion which may lead to recoil",
+      "selfDamaging": true
     },
     {
       "name": "Rage Powder",

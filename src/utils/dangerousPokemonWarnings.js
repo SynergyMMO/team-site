@@ -129,9 +129,20 @@ function getPossibleWildLevelUpMoves(moves = [], encounters = []) {
 function shouldApplyMoveWarning(warning, pokemonDetails) {
   if (normalizeWarningKey(warning?.name) !== 'curse') return true
 
-  return (pokemonDetails.types || [])
+  const types = Array.isArray(pokemonDetails.types)
+    ? pokemonDetails.types
+    : Object.values(pokemonDetails.types || {})
+
+  return types
     .map(type => String(type || '').toLowerCase())
     .includes('ghost')
+}
+
+export function getSelfDamagingMoveWarning(moveName, pokemonDetails = {}) {
+  const warning = dangerousMoveMap.get(normalizeWarningKey(moveName))
+  if (!warning?.selfDamaging || !shouldApplyMoveWarning(warning, pokemonDetails)) return null
+
+  return warning
 }
 
 export function getDangerousPokemonWarnings(pokemonDetails = {}, encounters = []) {

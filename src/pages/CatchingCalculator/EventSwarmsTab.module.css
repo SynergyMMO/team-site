@@ -233,6 +233,19 @@
   text-align: center;
 }
 
+.selfDamageBadge {
+  display: block;
+  width: fit-content;
+  margin: 0.35rem auto 0;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid rgba(255, 112, 112, 0.55);
+  border-radius: 999px;
+  background: rgba(150, 35, 35, 0.22);
+  color: #ffb0a8;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
 .catchRate {
   font-size: 0.88rem;
   margin-bottom: 0.6rem;
@@ -305,6 +318,11 @@
 .moveName {
   color: #c3b1e1;
   font-weight: 500;
+}
+
+.selfDamageMove {
+  color: #ff8f82;
+  font-weight: 700;
 }
 
 .moveLevel {
