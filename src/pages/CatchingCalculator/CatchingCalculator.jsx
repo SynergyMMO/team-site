@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useInGameClock } from '../../hooks/useInGameClock'
 import { useOfficialEvents } from '../../hooks/useOfficialEvents'
@@ -10,12 +10,22 @@ import safariData from '../../data/safari_zones.json'
 import catchCalculatorConfig from '../../data/catching_calculator_config.json'
 import { getCatchRateByName } from '../../hooks/useCatchCalcs'
 import styles from './CatchingCalculator.module.css'
+import EventSwarmsTab from './EventSwarmsTab'
 
 const MODE_ROUTE = 'route'
 const MODE_POKEMON = 'pokemon'
 const MODE_EGG = 'egg'
 const MODE_SPECIFIC = 'specific'
 const MODE_CATCH_EVENTS = 'catchEvents'
+const MODE_EVENT_SWARMS = 'eventSwarms'
+const VALID_MODES = new Set([
+  MODE_ROUTE,
+  MODE_POKEMON,
+  MODE_EGG,
+  MODE_SPECIFIC,
+  MODE_CATCH_EVENTS,
+  MODE_EVENT_SWARMS,
+])
 
 const INFO_DROPDOWN_CLOSED_KEY = 'catchcalculatorInfoClosed'
 const METHOD_NORMAL = 'normal'
@@ -1622,9 +1632,13 @@ function buildComparisonRows(result, priority) {
 export default function CatchingCalculator() {
   const { period } = useInGameClock()
   const { data: officialEventsData, isLoading: isOfficialEventsLoading } = useOfficialEvents()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const [isInfoDropdownOpen, setIsInfoDropdownOpen] = useState(() => getInitialInfoDropdownOpen())
-  const [mode, setMode] = useState(MODE_ROUTE)
+  const [mode, setMode] = useState(() => {
+    const requestedMode = searchParams.get('tab')
+    return VALID_MODES.has(requestedMode) ? requestedMode : MODE_ROUTE
+  })
   const [selectedRoute, setSelectedRoute] = useState('')
   const [routeEncounterMethod, setRouteEncounterMethod] = useState(METHOD_NORMAL)
   const [routeSearch, setRouteSearch] = useState('')
@@ -1648,12 +1662,27 @@ export default function CatchingCalculator() {
 
   const effectiveForceNight = forceNight || (period === 'Night' && !forceDayTimeOverride)
 
+  useEffect(() => {
+    const requestedMode = searchParams.get('tab')
+    setMode(VALID_MODES.has(requestedMode) ? requestedMode : MODE_ROUTE)
+  }, [searchParams])
+
+  const selectMode = (nextMode) => {
+    setMode(nextMode)
+    setShowMoreCount(1)
+    setSearchParams((currentParams) => {
+      const nextParams = new URLSearchParams(currentParams)
+      nextParams.set('tab', nextMode)
+      return nextParams
+    })
+  }
+
   const enableAllApricornBalls = () => setApricornEnabled(createApricornSelection(APRICORN_BALL_IDS))
   const disableAllApricornBalls = () => setApricornEnabled(createApricornSelection([]))
 
   useDocumentHead({
     title: 'Catching Calculator - Team Synergy',
-    description: 'Plan the fastest and most cost-efficient catch strategy by route, Pokemon, or egg group in PokeMMO.',
+    description: 'Plan catch strategies by route, Pokemon, or egg group, and compare catch rates for seasonal PokeMMO event swarms.',
     canonicalPath: '/catching-calculator/',
   })
 
@@ -2006,70 +2035,66 @@ export default function CatchingCalculator() {
     <div className={styles.page}>
       <h1 className="page-title">Catching Calculator</h1>
 
-      <details className={styles.infoDropdown} open={isInfoDropdownOpen} onToggle={handleInfoDropdownToggle}>
-        <summary>Work In Progress</summary>
-        <p>
-            This is currently work in progress, it uses the Catch %, Ball cost, and Turn Time to calculate the best ball, I have tested a few routes and pokemon and think its good enough to be released, although I am sure there may be some mistakes lurking, if you find any catch %s that are just wrong, please contact oHypers on discord.
-        </p>
-        <p>
-            Until I am confident with the calculations, take this page with a grain of salt. Regardless, I am sure this page can still be useful!
-        </p>
+      {mode !== MODE_EVENT_SWARMS && (
+        <details className={styles.infoDropdown} open={isInfoDropdownOpen} onToggle={handleInfoDropdownToggle}>
+          <summary>Work In Progress</summary>
+          <p>
+              This is currently work in progress, it uses the Catch %, Ball cost, and Turn Time to calculate the best ball, I have tested a few routes and pokemon and think its good enough to be released, although I am sure there may be some mistakes lurking, if you find any catch %s that are just wrong, please contact oHypers on discord.
+          </p>
+          <p>
+              Until I am confident with the calculations, take this page with a grain of salt. Regardless, I am sure this page can still be useful!
+          </p>
         </details>
+      )}
 
       <section className={styles.controlsCard}>
         <div className={styles.modeTabs} role="tablist" aria-label="Search mode">
           <button
             type="button"
             className={`${styles.modeTab} ${mode === MODE_ROUTE ? styles.modeTabActive : ''}`}
-            onClick={() => {
-              setMode(MODE_ROUTE)
-              setShowMoreCount(1)
-            }}
+            onClick={() => selectMode(MODE_ROUTE)}
           >
             Route Search
           </button>
           <button
             type="button"
             className={`${styles.modeTab} ${mode === MODE_POKEMON ? styles.modeTabActive : ''}`}
-            onClick={() => {
-              setMode(MODE_POKEMON)
-              setShowMoreCount(1)
-            }}
+            onClick={() => selectMode(MODE_POKEMON)}
           >
             Pokemon Search
           </button>
           <button
             type="button"
             className={`${styles.modeTab} ${mode === MODE_EGG ? styles.modeTabActive : ''}`}
-            onClick={() => {
-              setMode(MODE_EGG)
-              setShowMoreCount(1)
-            }}
+            onClick={() => selectMode(MODE_EGG)}
           >
             Egg Group Search
           </button>
           <button
             type="button"
             className={`${styles.modeTab} ${mode === MODE_SPECIFIC ? styles.modeTabActive : ''}`}
-            onClick={() => {
-              setMode(MODE_SPECIFIC)
-              setShowMoreCount(1)
-            }}
+            onClick={() => selectMode(MODE_SPECIFIC)}
           >
             Specific Mon Search
           </button>
           <button
             type="button"
             className={`${styles.modeTab} ${mode === MODE_CATCH_EVENTS ? styles.modeTabActive : ''}`}
-            onClick={() => {
-              setMode(MODE_CATCH_EVENTS)
-              setShowMoreCount(1)
-            }}
+            onClick={() => selectMode(MODE_CATCH_EVENTS)}
           >
             Catch Events
           </button>
+          <button
+            type="button"
+            className={`${styles.modeTab} ${mode === MODE_EVENT_SWARMS ? styles.modeTabActive : ''}`}
+            onClick={() => selectMode(MODE_EVENT_SWARMS)}
+          >
+            Event Swarms
+          </button>
         </div>
 
+        {mode !== MODE_EVENT_SWARMS && (
+          <>
         <div className={styles.controlGrid}>
           {mode === MODE_ROUTE && (
             <label className={styles.controlField}>
@@ -2331,7 +2356,11 @@ export default function CatchingCalculator() {
         <p className={styles.helperText}>
           Current in-game period: <strong>{period}</strong>. Quick Ball is only considered at 90%+ turn-1 chance, Timer Balls are the last resort. At night, Force Dusk Ball auto-enables; unchecking it treats the calculator as daytime.
         </p>
+          </>
+        )}
       </section>
+
+      {mode === MODE_EVENT_SWARMS && <EventSwarmsTab />}
 
       {mode === MODE_ROUTE && selectedRouteEntry && (
         <section className={styles.resultsSection}>

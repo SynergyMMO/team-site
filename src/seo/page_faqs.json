@@ -7,12 +7,12 @@
       { "question": "What is shiny hunting?", "answer": "Shiny hunting is the practice of catching shiny Pokémon - rare variants with different colors. Team Synergy specializes in shiny collection and offers tools to help." },
       { "question": "How can I track my Pokemon progress?", "answer": "Use our interactive Pokédex to filter by type, tier, and location. Track which Pokemon you need and find shiny hunting locations." }
     ],
-    "/LnyCatchCalc": [
-      { "question": "What is the LNY Catch Calculator?", "answer": "The LNY Catch Calculator is a tool for estimating your odds of catching Pokémon during the PokeMMO Lunar New Year event." },
-      { "question": "How do I use the LNY Catch Calculator?", "answer": "Enter your event attempts and the tool will calculate your shiny odds and expected catch rates for the Lunar New Year event." },
-      { "question": "Does the calculator work for all LNY Pokémon?", "answer": "Yes, it supports all special event Pokémon available during the Lunar New Year event in PokeMMO." },
-      { "question": "Is the LNY Catch Calculator accurate?", "answer": "The calculator uses the latest event mechanics and odds to provide accurate estimates for your shiny hunting during LNY." },
-      { "question": "Can I use this tool for other events?", "answer": "This calculator is specifically designed for the Lunar New Year event, but Team Synergy offers other calculators for different events." }
+    "/catching-calculator": [
+      { "question": "What is the Event Swarms tab?", "answer": "Event Swarms is part of the Catching Calculator and compares catch rates and recommended Poké Balls for Pokémon featured in PokeMMO seasonal events." },
+      { "question": "How do I use Event Swarms?", "answer": "Open the Event Swarms tab, choose a season, and browse its Pokémon, catch rates, recommended Poké Balls, and level 30 movesets." },
+      { "question": "Which event seasons are supported?", "answer": "Event Swarms has Halloween, Christmas, and Lunar New Year tabs, each with its seasonal Pokémon list." },
+      { "question": "Can I search for a Pokémon?", "answer": "Yes, use the search box to filter the Pokémon in the currently selected event season." },
+      { "question": "How is the default season selected?", "answer": "The calculator selects Halloween from July through November, Christmas from December through January 15, and Lunar New Year from January 16 through June." }
     ],
     "/shiny-odds": [
       { "question": "What is the Shiny Odds Calculator?", "answer": "The Shiny Odds Calculator is an advanced tool for calculating your odds of encountering a shiny Pokémon in PokeMMO, including boosts and probability graphs." },

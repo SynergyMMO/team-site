@@ -25,7 +25,7 @@ const staticRoutes = [
   { path: '/player-card-generator/', changefreq: 'monthly', priority: '0.6' },
   { path: '/random-pokemon-generator/', changefreq: 'monthly', priority: '0.7' },
   { path: '/particle-viewer/', changefreq: 'monthly', priority: '0.6' },
-  { path: '/LnyCatchCalc/', changefreq: 'weekly', priority: '0.4' },
+  { path: '/catching-calculator/', changefreq: 'weekly', priority: '0.6' },
   { path: '/events/', changefreq: 'weekly', priority: '0.6' },
   { path: '/official-event-calendar/', changefreq: 'daily', priority: '0.65' },
   { path: '/official-shiny-wars-planner/', changefreq: 'daily', priority: '0.7' },
@@ -316,4 +316,3 @@ buildSitemap().catch(err => {
   console.error('❌ Sitemap generation failed:', err);
   process.exit(1);
 });
-
