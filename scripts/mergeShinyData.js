@@ -469,7 +469,9 @@ async function updateCloudflareDatabase(updatedDatabase, username, password) {
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to update database: ${response.status}`);
+      const error = new Error(`Failed to update database: ${response.status}`);
+      error.status = response.status;
+      throw error;
     }
 
     log('✓ Database updated successfully!', 'success');
@@ -610,8 +612,23 @@ async function mergeShinyData(users, fields, mode, outputPath, username = null, 
 
       await new Promise(resolve => setTimeout(resolve, 5000));
 
-      log('\n🔄 Pushing merged data to Cloudflare...', 'info');
-      await updateCloudflareDatabase(mergedDatabase, username, password);
+      while (true) {
+        log('\n🔄 Pushing merged data to Cloudflare...', 'info');
+        try {
+          await updateCloudflareDatabase(mergedDatabase, username, password);
+          break;
+        } catch (error) {
+          if (error.status !== 401 && error.status !== 403) {
+            throw error;
+          }
+
+          log('The username or password was rejected. Please try again.', 'warning');
+          const credentials = await promptCredentials();
+          username = credentials.username;
+          password = credentials.password;
+        }
+      }
+
       log('\n✅ Push complete! Cloudflare database updated successfully!', 'success');
       log('🎉 All configured users now have merged API data.', 'success');
     }

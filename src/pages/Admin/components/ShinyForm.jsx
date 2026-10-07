@@ -1,6 +1,7 @@
 import { useReducer, useEffect, useMemo } from 'react'
 import Autocomplete from './Autocomplete'
 import pokemonData from '../../../data/pokemmo_data/pokemon-data.json'
+import styles from '../Admin.module.css'
 
 
 
@@ -96,6 +97,7 @@ function reducer(state, action) {
       return {
         ...getDefaultState(),
         ...action.data,
+        Reaction: action.data?.['Reaction Link']?.trim() ? 'Yes' : 'No',
         encounter_method: action.data?.encounter_method ?? normalizeLegacyEncounterMethod(action.data?.['Encounter Type']) ?? '',
         location: action.data?.location ?? action.data?.Location ?? '',
         encounter_count: action.data?.encounter_count ?? action.data?.['Encounter Count'] ?? '',
@@ -116,17 +118,6 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', al
   const [form, dispatch] = useReducer(reducer, initialData || getDefaultState())
 
   useEffect(() => { if(initialData) dispatch({ type:'LOAD', data:initialData }) }, [initialData])
-
-  useEffect(() => {
-    const listener = (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault()
-        handleSubmit()
-      }
-    }
-    document.addEventListener('keydown', listener)
-    return () => document.removeEventListener('keydown', listener)
-  }, [form])
 
   const encounters = useMemo(() => lookupEncounters(form.Pokemon), [form.Pokemon])
   const locationOptions = useMemo(() => {
@@ -158,6 +149,7 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', al
     if(!form.Pokemon.trim()) return
     const cleaned = {
       ...form,
+      Reaction: form['Reaction Link']?.trim() ? 'Yes' : 'No',
       Month: form.Month || null,
       Year: form.Year || null,
       date_caught: form.date_caught || null,
@@ -182,93 +174,118 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', al
 
 
 
-  const handleReset = () => dispatch({ type:'RESET' })
-
   const formatIVs = raw => raw
 
   return (
-    <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
-      <label>Pokemon Name:</label>
-      <Autocomplete
-        id="shinyFormPokemon"
-        value={form.Pokemon}
-        className="autocomplete-input"
-        onChange={handlePokemonChange}
-        getOptions={() => allPokemonNames}
-        placeholder="mew"
-      />
-
-      <label>Encounter Type:</label>
-      <select value={form.encounter_method} onChange={e=>dispatch({ type:'SET_FIELD', field:'encounter_method', value:e.target.value })}>
-        <option value="">Select a method</option>
-        {ENCOUNTER_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-      </select>
-
-      <label>Location:</label>
-      {locationOptions.length > 0 ? (
-        <select value={form.location} onChange={e=>handleLocationChange(e.target.value)}>
-          <option value="">Select a location</option>
-          {locationOptions.map(loc => <option key={loc} value={loc}>{loc}</option>)}
-        </select>
-      ) : (
-        <input type="text" value={form.location} onChange={e=>handleLocationChange(e.target.value)} placeholder="Enter location" />
-      )}
-
-      <label>Encounter Count:</label>
-      <input type="number" min="0" value={form.encounter_count ?? ''} onChange={e=>dispatch({ type:'SET_FIELD', field:'encounter_count', value:e.target.value })} placeholder="e.g. 3240" />
-
-      <label>Month:</label>
-      <select value={form.Month||''} onChange={e=>dispatch({ type:'SET_FIELD', field:'Month', value:e.target.value })}>
-        <option value="">Select month</option>
-        {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
-      </select>
-
-      <label>Year:</label>
-      <select value={form.Year||''} onChange={e=>dispatch({ type:'SET_FIELD', field:'Year', value:e.target.value })}>
-        <option value="">Select year</option>
-        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-      </select>
-
-      <label>Date Caught:</label>
-      <input type="date" value={form.date_caught||''} onChange={e=>handleDateCaughtChange(e.target.value)} />
-
-      <label>Nature:</label>
-      <select value={form.nature} onChange={e=>dispatch({ type:'SET_FIELD', field:'nature', value:e.target.value })}>
-        <option value="">Select a nature</option>
-        {NATURES.map(n => <option key={n} value={n}>{n}</option>)}
-      </select>
-
-      <label>IVs:</label>
-      <input type="text" value={form.ivs} onChange={e=>dispatch({ type:'SET_FIELD', field:'ivs', value:formatIVs(e.target.value) })} placeholder="31/31/31/31/31/31" maxLength={17} />
-
-      <label>Nickname:</label>
-      <input type="text" value={form.nickname} onChange={e=>dispatch({ type:'SET_FIELD', field:'nickname', value:e.target.value })} placeholder="Optional nickname" />
-
-      <label>Variant:</label>
-      <input type="text" value={form.variant} onChange={e=>dispatch({ type:'SET_FIELD', field:'variant', value:e.target.value })} placeholder="Optional variant" />
-
-      {YES_NO_FIELDS.map(({key,label})=>(
-        <div key={key}>
-          <label>{label}:</label>
-          <select value={form[key]} onChange={e=>dispatch({ type:'SET_FIELD', field:key, value:e.target.value })}>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
+    <form className={styles.shinyForm} onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
+      <section className={styles.shinyFormSection}>
+        <h4>Pokémon details</h4>
+        <div className={styles.shinyFormGrid}>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormPokemon">Pokémon Name</label>
+            <Autocomplete
+              id="shinyFormPokemon"
+              value={form.Pokemon}
+              className="autocomplete-input"
+              onChange={handlePokemonChange}
+              getOptions={() => allPokemonNames}
+              placeholder="Search Pokémon"
+            />
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormEncounter">Encounter Type</label>
+            <select id="shinyFormEncounter" value={form.encounter_method} onChange={e=>dispatch({ type:'SET_FIELD', field:'encounter_method', value:e.target.value })}>
+              <option value="">Select a method</option>
+              {ENCOUNTER_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormLocation">Location</label>
+            {locationOptions.length > 0 ? (
+              <select id="shinyFormLocation" value={form.location} onChange={e=>handleLocationChange(e.target.value)}>
+                <option value="">Select a location</option>
+                {locationOptions.map(loc => <option key={loc} value={loc}>{loc}</option>)}
+              </select>
+            ) : (
+              <input id="shinyFormLocation" type="text" value={form.location} onChange={e=>handleLocationChange(e.target.value)} placeholder="Enter location" />
+            )}
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormEncounterCount">Encounter Count</label>
+            <input id="shinyFormEncounterCount" type="number" min="0" value={form.encounter_count ?? ''} onChange={e=>dispatch({ type:'SET_FIELD', field:'encounter_count', value:e.target.value })} placeholder="e.g. 3240" />
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormMonth">Month</label>
+            <select id="shinyFormMonth" value={form.Month||''} onChange={e=>dispatch({ type:'SET_FIELD', field:'Month', value:e.target.value })}>
+              <option value="">Select month</option>
+              {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormYear">Year</label>
+            <select id="shinyFormYear" value={form.Year||''} onChange={e=>dispatch({ type:'SET_FIELD', field:'Year', value:e.target.value })}>
+              <option value="">Select year</option>
+              {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormDateCaught">Date Caught</label>
+            <input id="shinyFormDateCaught" type="date" value={form.date_caught||''} onChange={e=>handleDateCaughtChange(e.target.value)} />
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormNature">Nature</label>
+            <select id="shinyFormNature" value={form.nature} onChange={e=>dispatch({ type:'SET_FIELD', field:'nature', value:e.target.value })}>
+              <option value="">Select a nature</option>
+              {NATURES.map(n => <option key={n} value={n}>{n}</option>)}
+            </select>
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormIvs">IVs</label>
+            <input id="shinyFormIvs" type="text" value={form.ivs} onChange={e=>dispatch({ type:'SET_FIELD', field:'ivs', value:formatIVs(e.target.value) })} placeholder="31/31/31/31/31/31" maxLength={17} />
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormNickname">Nickname</label>
+            <input id="shinyFormNickname" type="text" value={form.nickname} onChange={e=>dispatch({ type:'SET_FIELD', field:'nickname', value:e.target.value })} placeholder="Optional nickname" />
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormVariant">Variant</label>
+            <input id="shinyFormVariant" type="text" value={form.variant} onChange={e=>dispatch({ type:'SET_FIELD', field:'variant', value:e.target.value })} placeholder="Optional variant" />
+          </div>
+          <div className={styles.shinyFormField}>
+            <label htmlFor="shinyFormReactionLink">Reaction Link</label>
+            <input
+              id="shinyFormReactionLink"
+              type="text"
+              value={form['Reaction Link']}
+              onChange={e => {
+                const value = e.target.value
+                dispatch({ type:'SET_FIELD', field:'Reaction Link', value })
+                dispatch({ type:'SET_FIELD', field:'Reaction', value:value.trim() ? 'Yes' : 'No' })
+              }}
+              placeholder="Optional URL"
+            />
+            <span className={styles.fieldHint}>Adding a link automatically marks the reaction as present.</span>
+          </div>
         </div>
-      ))}
+      </section>
 
-      <div>
-        <label>Reaction:</label>
-        <select value={form.Reaction} onChange={e=>dispatch({ type:'SET_FIELD', field:'Reaction', value:e.target.value })}>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </div>
+      <section className={styles.shinyFormSection}>
+        <h4>Tags and status</h4>
+        <div className={styles.shinyFlagGrid}>
+          {YES_NO_FIELDS.map(({key,label})=>(
+            <label key={key} className={styles.shinyFlag}>
+              <input
+                type="checkbox"
+                checked={form[key] === 'Yes'}
+                onChange={e=>dispatch({ type:'SET_FIELD', field:key, value:e.target.checked ? 'Yes' : 'No' })}
+              />
+              {label}
+            </label>
+          ))}
+        </div>
+      </section>
 
-      <label>Reaction Link:</label>
-      <input type="text" value={form['Reaction Link']} onChange={e=>dispatch({ type:'SET_FIELD', field:'Reaction Link', value:e.target.value })} placeholder="Optional URL" />
-
-      <div style={{ display:'flex', gap:10, marginTop:16 }}>
+      <div className={styles.shinyFormActions}>
         <button type="submit" disabled={isMutating || !form.Pokemon.trim()}>{isMutating ? 'Saving...' : submitLabel}</button>
         <button type="button" onClick={() => dispatch({ type:'RESET' })} style={{ backgroundColor:'#555' }}>Reset</button>
       </div>

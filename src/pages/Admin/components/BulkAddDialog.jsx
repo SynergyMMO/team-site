@@ -2,49 +2,63 @@ import { useState } from 'react'
 import BulkAddReview from './BulkAddReview'
 import styles from '../Admin.module.css'
 
+function splitPokemonParts(value) {
+  const parts = []
+  let current = ''
+  let depth = 0
+  for (const character of value) {
+    if (character === '(') depth += 1
+    if (character === ')' && depth > 0) depth -= 1
+    if (depth === 0 && ['/', '|', ','].includes(character)) {
+      if (current.trim()) parts.push(current.trim())
+      current = ''
+    } else {
+      current += character
+    }
+  }
+  if (current.trim()) parts.push(current.trim())
+  return parts
+}
+
 export function parseBulkAddText(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
   const entries = []
   for (const line of lines) {
-    // Split the right side (after :) by / or |, but keep flags for each
     const match = line.match(/^([^:]+):\s*(.+)$/i)
     if (!match) continue
     const player = match[1].trim()
     const right = match[2].trim()
-    // Split on /, |, or , but keep (flags) with each
-    const pokeParts = right.split(/\s*[\/|,]\s*/)
+    const pokeParts = splitPokemonParts(right)
     for (const part of pokeParts) {
-      // Extract 'Pokemon (flags)' or just 'Pokemon'
       const pokeMatch = part.match(/^([^()]+?)(?:\s*\(([^)]+)\))?$/)
       if (!pokeMatch) continue
       const poke = pokeMatch[1].trim()
       const flags = pokeMatch[2] ? pokeMatch[2].toLowerCase() : ''
+      const flagTokens = flags.match(/[a-z0-9]+/g) || []
+      const hasFlag = (...aliases) => aliases.some(alias => alias.includes(' ')
+        ? flags.includes(alias)
+        : flagTokens.includes(alias))
       const entry = {
         player,
         Pokemon: poke,
-        'Secret Shiny': flags.includes('ss') ? 'Yes' : 'No',
-        Egg: flags.includes('egg') ? 'Yes' : 'No',
-        Safari: flags.includes('safari') ? 'Yes' : 'No',
-        Fossil: flags.includes('fossil') ? 'Yes' : 'No',
-        Fishing: (flags.includes('fishing') || flags.includes('fish')) ? 'Yes' : 'No',
-        Swarm: flags.includes('swarm') ? 'Yes' : 'No',
-        Headbutt: flags.includes('headbutt') ? 'Yes' : 'No',
-        Pkid: flags.includes('pkid') ? 'Yes' : 'No',
-        Alpha: flags.includes('shalpha') ? 'Yes' : 'No',
-        Event: flags.includes('event') ? 'Yes' : 'No',
-        MysteriousBall: flags.includes('mb') ? 'Yes' : 'No',
-        'Honey Tree': (flags.includes('ht') || flags.includes('honey') || flags.includes('tree')) ? 'Yes' : 'No',
-        Sold: 'No',
-        Favourite: 'No',
+        'Secret Shiny': hasFlag('ss', 'secret shiny') ? 'Yes' : 'No',
+        Egg: hasFlag('egg') ? 'Yes' : 'No',
+        Safari: hasFlag('safari') ? 'Yes' : 'No',
+        Fossil: hasFlag('fossil') ? 'Yes' : 'No',
+        Fishing: hasFlag('fishing', 'fish') ? 'Yes' : 'No',
+        Swarm: hasFlag('swarm') ? 'Yes' : 'No',
+        Headbutt: hasFlag('headbutt') ? 'Yes' : 'No',
+        Pkid: hasFlag('pkid') ? 'Yes' : 'No',
+        Alpha: hasFlag('shalpha', 'alpha') ? 'Yes' : 'No',
+        Event: hasFlag('event') ? 'Yes' : 'No',
+        MysteriousBall: hasFlag('mb', 'mysterious ball') ? 'Yes' : 'No',
+        'Honey Tree': hasFlag('ht', 'honey tree', 'honey', 'tree') ? 'Yes' : 'No',
+        'Altering Cave': hasFlag('altering cave', 'ac') ? 'Yes' : 'No',
+        Sold: hasFlag('sold') ? 'Yes' : 'No',
+        Favourite: hasFlag('favourite', 'favorite') ? 'Yes' : 'No',
         Reaction: 'No',
-        Legendary: 'No',
+        Legendary: hasFlag('legendary') ? 'Yes' : 'No',
         'Reaction Link': '',
-        ivs: '',
-        nature: '',
-        location: '',
-        encounter_method: '',
-        encounter_count: '',
-        nickname: '',
         Month: null,
         Year: null,
         date_caught: null,

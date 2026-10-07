@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react'
 import ConfirmDialog from './ConfirmDialog'
 import styles from '../Admin.module.css'
 
+const MAX_LINES = 50
+
 const REQUIRED_SHINY_FIELDS = [
   'Pokemon', 'Secret Shiny', 'Egg', 'Alpha',
   'Sold', 'Event', 'Reaction', 'MysteriousBall', 'Safari', 'Altering Cave',
@@ -79,6 +81,20 @@ function normalizePokemonDatabase(data) {
     }
 
     const shinies = playerData.shinies
+
+    let filled = 0
+    for (const shiny of Object.values(shinies)) {
+      if (typeof shiny !== 'object' || shiny === null) continue
+      for (const field of REQUIRED_SHINY_FIELDS) {
+        if (field !== 'Pokemon' && !(field in shiny)) {
+          shiny[field] = field === 'Reaction Link' ? '' : 'No'
+          filled++
+        }
+      }
+    }
+    if (filled > 0) {
+      corrections.push(`"${player}": Filled ${filled} missing field(s) with defaults`)
+    }
     const shinyIds = Object.keys(shinies)
       .map(id => parseInt(id, 10))
       .filter(id => !isNaN(id))
@@ -279,7 +295,8 @@ export default function AdvancedJsonTab({
             <div className={styles.validationErrors}>
               <strong>Validation Errors:</strong>
               <ul>
-                {validationErrors.map((err, i) => <li key={i}>{err}</li>)}
+                {validationErrors.slice(0, MAX_LINES).map((err, i) => <li key={i}>{err}</li>)}
+                {validationErrors.length > MAX_LINES && <li>...and {validationErrors.length - MAX_LINES} more</li>}
               </ul>
             </div>
           )}
@@ -299,7 +316,9 @@ export default function AdvancedJsonTab({
           message={
             changeSummary.length === 0
               ? 'No structural changes detected. Save anyway?'
-              : `${changeSummary.length} change(s) detected:\n\n${changeSummary.join('\n')}`
+              : `${changeSummary.length} change(s) detected:\n\n${changeSummary.slice(0, MAX_LINES).join('\n')}${
+                  changeSummary.length > MAX_LINES ? `\n...and ${changeSummary.length - MAX_LINES} more` : ''
+                }`
           }
           confirmLabel="Save Changes"
           onConfirm={handleConfirmSave}
