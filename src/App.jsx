@@ -153,10 +153,10 @@ export default function App() {
       <footer className="site-footer">
         <p>
           @ 2026 Team Synergy - All rights Reserved -{' '}
+          <Link to="/pokedex/">PokeMMO Pokédex</Link> -{' '}
           <Link to="/credits/">Terms of Service</Link>
         </p>
       </footer>
     </>
   )
 }
-

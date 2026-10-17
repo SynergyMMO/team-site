@@ -1,7 +1,10 @@
 // Turns the Vite-built index.html into a fully prerendered page for one route.
 import { DOMAIN, SITE, DYNAMIC_PAGES } from './config.mjs';
 import { cleanText, escapeHtml, escapeRegExp, jsonLdScript, withTrailingSlash } from './utils.mjs';
-import { getKeywords, getFaqs, getHiddenContent, getCrawlerNav } from './content.mjs';
+import {
+  getKeywords, getFaqs, getHiddenContent, getCrawlerNav,
+  getPokemonIndex, getPokemonRelatedLinks,
+} from './content.mjs';
 import { buildSchemas } from './schemas.mjs';
 
 const INDEXABLE_ROBOTS = 'index, follow, max-image-preview:large';
@@ -84,12 +87,21 @@ export function renderPage(templateHtml, page) {
 
   let html = applyHead(templateHtml, { ...page, title: cleanText(page.title) || SITE.defaultTitle }, { url, description, keywords });
 
-  html = html.replace(/<body[^>]*>/, () => `<body>\n  ${PRERENDER_MARKER}\n  ${getHiddenContent(page)}`);
+  const hiddenContent = page.type === 'static' && page.route === '/pokedex'
+    ? ''
+    : getHiddenContent(page);
+  html = html.replace(/<body[^>]*>/, () => `<body>\n  ${PRERENDER_MARKER}\n  ${hiddenContent}`);
 
   const parent = DYNAMIC_PAGES[page.type]?.parent;
   const schemas = buildSchemas(page, { faqs: getFaqs(page), parent });
   const schemaHtml = schemas.map(jsonLdScript).join('\n  ');
-  html = html.replace('</body>', () => `  ${schemaHtml}${getCrawlerNav(page)}\n</body>`);
+  const crawlerNav = page.type === 'static' && page.route === '/pokedex' || page.type === 'pokemon'
+    ? ''
+    : getCrawlerNav(page);
+  html = html.replace(
+    '</body>',
+    () => `  ${schemaHtml}${crawlerNav}${getPokemonIndex(page)}${getPokemonRelatedLinks(page)}\n</body>`,
+  );
 
   return html;
 }

@@ -54,12 +54,11 @@
   },
   "/pokedex": {
     "collection": "pokemon",
-    "title": "Pokédex Tracker - Shiny & Living Dex | Team Synergy - PokeMMO",
-    "description": "Track Team Synergy's complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.",
+    "title": "PokeMMO PokeDex & Pokédex | Shiny Tracker | Team Synergy",
+    "description": "PokeMMO Pokédex (PokeDex) tracker with 731 Pokémon, shiny forms, encounter locations, tiers and abilities. Search and filter Pokémon to plan your next hunt.",
     "image": "https://synergymmo.com/images/pokemon_gifs/tier_5/pikachu.gif?v=2",
     "crawlerLinks": [
-      "roamingLegendaries",
-      "pokemon"
+      "roamingLegendaries"
     ],
     "sitemap": {
       "changefreq": "weekly",

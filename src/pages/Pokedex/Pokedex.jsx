@@ -55,15 +55,52 @@ function normalizePokemonType(value) {
   return String(value || '').trim().toUpperCase()
 }
 
+function PokemonIndex() {
+  const pokemon = Object.entries(pokemonData)
+
+  return (
+    <details className={styles.pokemonIndex}>
+      <summary>Browse all {pokemon.length} Pokémon</summary>
+      <p>Explore the PokeMMO Pokédex by Pokémon name, with direct links to each Pokémon's guide.</p>
+      <ul>
+        {pokemon.map(([key, details]) => {
+          const slug = key.toLowerCase().replace(/\s/g, '-')
+          const name = details.displayName || key
+          return (
+            <li key={key}>
+              <Link to={`/pokemon/${slug}/`}>{name}</Link>
+            </li>
+          )
+        })}
+      </ul>
+    </details>
+  )
+}
+
 export default function Pokedex() {
+  const [renderClientPokemonIndex] = useState(() =>
+    typeof document === 'undefined' || !document.querySelector('[data-prerender-pokemon-index]')
+  )
+  useEffect(() => {
+    const removePrerenderedIndexOnNavigation = (event) => {
+      const link = event.target.closest?.('a[href^="/"]')
+      if (link && !link.pathname.startsWith('/pokedex')) {
+        document.querySelector('[data-prerender-pokemon-index]')?.remove()
+      }
+    }
+
+    document.addEventListener('click', removePrerenderedIndexOnNavigation)
+    return () => document.removeEventListener('click', removePrerenderedIndexOnNavigation)
+  }, [])
+
   const breadcrumbs = [
     { name: 'Home', url: '/' },
     { name: 'PokeMMO Pokédex', url: '/pokedex' }
   ];
 
   useDocumentHead({
-    title: 'PokeMMO Pokédex Tracker - 731 Pokémon Encounter Locations & Tiers',
-    description: 'The ultimate PokeMMO Pokédex tracker for shiny hunters. Find all 731 Pokémon with PokeMMO encounter locations, tier rarities, abilities, and shiny hunting strategies. Track living dex progress.',
+    title: 'PokeMMO PokeDex & Pokédex | Shiny Tracker | Team Synergy',
+    description: 'PokeMMO Pokédex (PokeDex) tracker with 731 Pokémon, shiny forms, encounter locations, tiers and abilities. Search and filter Pokémon to plan your next hunt.',
     canonicalPath: '/pokedex/',
     breadcrumbs: breadcrumbs
   })
@@ -835,7 +872,9 @@ const rarityOptions = useMemo(() => {
 
       const dangerousWarningText = target.dataset.dangerousWarning || ''
       const pokemonName = normalizePokemonName(target.alt)
-      const owners = target.classList.contains(styles.complete)
+      const lookupName = nameAliasMap[pokemonName] || pokemonName
+      const pokemonDetails = pokemonData[lookupName] || {}
+      const owners = synergyDataToggle && target.classList.contains(styles.complete)
         ? ownerMap.get(pokemonName) || []
         : []
 
@@ -848,12 +887,31 @@ const rarityOptions = useMemo(() => {
         count > 1 ? `${name}\u00A0(${count})` : name
       )
 
-      const infoLines = []
-      if (dangerousWarningText) infoLines.push(dangerousWarningText)
-      if (formattedOwners.length) infoLines.push(`Owned by: ${formattedOwners.join(', ')}`)
+      const infoLines = [dangerousWarningText].filter(Boolean)
+      if (synergyDataToggle) {
+        infoLines.push(`Owned by: ${formattedOwners.length ? formattedOwners.join(', ') : 'No one yet'}`)
+      } else {
+        const displayName = target.alt.charAt(0).toUpperCase() + target.alt.slice(1)
+        const pokemonInfo = [displayName]
+        if (pokemonDetails.shiny_tier !== undefined && pokemonDetails.shiny_tier !== null) {
+          pokemonInfo.push(`Shiny Tier: Tier ${pokemonDetails.shiny_tier}`)
+        }
+        if (Array.isArray(pokemonDetails.egg_groups) && pokemonDetails.egg_groups.length) {
+          pokemonInfo.push(`Egg Groups: ${pokemonDetails.egg_groups.join(', ')}`)
+        }
+        if (Array.isArray(pokemonDetails.types) && pokemonDetails.types.length) {
+          pokemonInfo.push(`Types: ${pokemonDetails.types.join(', ')}`)
+        }
+        if (pokemonDetails.capture_rate !== undefined && pokemonDetails.capture_rate !== null) {
+          pokemonInfo.push(`Catch Rate: ${pokemonDetails.capture_rate}`)
+        }
+        if (pokemonDetails.alpha) pokemonInfo.push(`Alpha: ${pokemonDetails.alpha === 'yes' ? 'Yes' : 'No'}`)
+        infoLines.push(pokemonInfo.join('\n'))
+      }
+      infoLines.push('Click for more info!')
 
       showInfoBoxForTarget(target, infoLines.join('\n\n'))
-    }, [ownerMap, showInfoBoxForTarget])
+    }, [ownerMap, showInfoBoxForTarget, synergyDataToggle])
 
 
 
@@ -960,7 +1018,14 @@ const rarityOptions = useMemo(() => {
 
   const sliderIndex = mode === 'shiny' ? 0 : 1
 
-  if (isLoading) return <div className="message">Loading...</div>
+  if (isLoading) {
+    return (
+      <>
+        <div className="message">Loading...</div>
+        {renderClientPokemonIndex && <PokemonIndex />}
+      </>
+    )
+  }
 
   return (
     <div>
@@ -2171,6 +2236,8 @@ const rarityOptions = useMemo(() => {
           {hoverInfo}
         </div>
       )}
+
+      {renderClientPokemonIndex && <PokemonIndex />}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useRef,useMemo, useState, useEffect } from 'react'
 import { usePokemonDetails } from '../../hooks/usePokemonDetails'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
@@ -714,6 +714,25 @@ export default function PokemonDetail() {
   const { pokemonName } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
+  const [renderClientRelatedLinks, setRenderClientRelatedLinks] = useState(() =>
+    typeof document === 'undefined' || !document.querySelector('[data-prerender-pokemon-related]')
+  )
+  useEffect(() => {
+    const removePrerenderedLinksOnNavigation = (event) => {
+      if (event.target.closest?.('a[href^="/"]')) {
+        document.querySelector('[data-prerender-pokemon-related]')?.remove()
+      }
+    }
+    document.addEventListener('click', removePrerenderedLinksOnNavigation)
+    return () => document.removeEventListener('click', removePrerenderedLinksOnNavigation)
+  }, [])
+  useEffect(() => {
+    const prerenderedRelatedLinks = document.querySelector('[data-prerender-pokemon-related]')
+    if (prerenderedRelatedLinks && prerenderedRelatedLinks.dataset.prerenderPokemonRelated !== location.pathname) {
+      prerenderedRelatedLinks.remove()
+      setRenderClientRelatedLinks(true)
+    }
+  }, [location.pathname])
   const { data: pokemon, isLoading, error } = usePokemonDetails(pokemonName)
   const { data: databaseData } = useDatabase()
   const { allPokemon, getNextPokemon, getPreviousPokemon } = usePokemonOrder()
@@ -2299,6 +2318,16 @@ return ( <section className={styles.infoCard}> <h2 className={styles.cardTitle}>
         </section>
       )}
 
+      {renderClientRelatedLinks && (
+        <details className={styles.relatedPokemon}>
+          <summary>Explore more Pokémon</summary>
+          <nav aria-label="Related Pokémon links">
+            <Link to="/pokedex/">PokeMMO Pokédex</Link>
+            {prevPokemon && <Link to={`/pokemon/${prevPokemon}/`}>Previous Pokémon</Link>}
+            {nextPokemon && <Link to={`/pokemon/${nextPokemon}/`}>Next Pokémon</Link>}
+          </nav>
+        </details>
+      )}
     </article>
   )
 }

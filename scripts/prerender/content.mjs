@@ -67,3 +67,40 @@ export function getCrawlerNav(page) {
     ${links.map(link => `<a href="${escapeHtml(link.href)}" title="${escapeHtml(link.title)}"></a>`).join('\n    ')}
   </nav>`;
 }
+
+export function getPokemonIndex(page) {
+  const items = page.pokemonIndexItems;
+  if (!items?.length) return '';
+
+  return `
+  <details class="prerender-pokemon-index" data-prerender-pokemon-index>
+    <summary>Browse all ${items.length} Pokémon</summary>
+    <p>Explore the PokeMMO Pokédex by Pokémon name, with direct links to each Pokémon's guide.</p>
+    <ul>
+      ${items.map(link => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.title)}</a></li>`).join('\n      ')}
+    </ul>
+  </details>`;
+}
+
+export function getPokemonRelatedLinks(page) {
+  if (page.type !== 'pokemon') return '';
+  const links = [
+    { href: '/pokedex/', title: 'PokeMMO Pokédex' },
+    page.previousPokemon && {
+      href: withTrailingSlash(page.previousPokemon.route),
+      title: `Previous Pokémon: ${page.previousPokemon.name}`,
+    },
+    page.nextPokemon && {
+      href: withTrailingSlash(page.nextPokemon.route),
+      title: `Next Pokémon: ${page.nextPokemon.name}`,
+    },
+  ].filter(Boolean);
+
+  return `
+  <details class="prerender-pokemon-related" data-prerender-pokemon-related="${escapeHtml(withTrailingSlash(page.route))}">
+    <summary>Explore more Pokémon</summary>
+    <nav aria-label="Related Pokémon links">
+      ${links.map(link => `<a href="${escapeHtml(link.href)}">${escapeHtml(link.title)}</a>`).join('\n      ')}
+    </nav>
+  </details>`;
+}

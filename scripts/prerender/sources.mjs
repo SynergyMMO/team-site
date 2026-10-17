@@ -110,7 +110,7 @@ const MAX_TITLE_LENGTH = 70;
 export function getPokemon() {
   const template = DYNAMIC_PAGES.pokemon;
 
-  return Object.entries(pokemonData).map(([key, pokemon]) => {
+  const pages = Object.entries(pokemonData).map(([key, pokemon]) => {
     const name = capitalize(pokemon.displayName || key);
     const sanitized = key.toLowerCase().replace(/\s/g, '-');
     const vars = {
@@ -132,6 +132,12 @@ export function getPokemon() {
       vars: { pokemon: name },
     };
   });
+
+  return pages.map((page, index) => ({
+    ...page,
+    previousPokemon: pages[index - 1],
+    nextPokemon: pages[index + 1],
+  }));
 }
 
 // ---------- themes ----------
@@ -228,6 +234,7 @@ export function buildLinkGroups({ players, events, trophies, pokemon }) {
     events: toLinks(events),
     trophies: toLinks(trophies),
     pokemon: pokemonLinks,
+    allPokemon: toLinks(pokemon),
   };
 }
 
@@ -241,6 +248,7 @@ export function getStaticPages(linkGroups, counts) {
     canonical: page.canonical,
     noindex: page.noindex,
     collectionItems: page.collection ? counts[page.collection] : undefined,
+    pokemonIndexItems: page.collection === 'pokemon' ? linkGroups.allPokemon : undefined,
     crawlerLinks: (page.crawlerLinks || []).flatMap(group => linkGroups[group] || []),
   }));
 }

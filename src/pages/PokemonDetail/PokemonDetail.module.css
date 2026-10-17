@@ -1,3 +1,32 @@
+.relatedPokemon {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(155, 89, 182, 0.4);
+  border-radius: 12px;
+  background: rgba(20, 10, 35, 0.55);
+  color: #fff;
+}
+
+.relatedPokemon summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.relatedPokemon nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-top: 0.75rem;
+}
+
+.relatedPokemon a {
+  color: #cbb4ff;
+}
+
+.relatedPokemon a:hover {
+  color: #fff;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
