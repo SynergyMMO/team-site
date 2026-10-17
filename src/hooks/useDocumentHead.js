@@ -61,7 +61,7 @@ export function useDocumentHead({
   author = null,
 } = {}) {
   useEffect(() => {
-    const fullTitle = title ? `${title} | ${siteName}` : siteName;
+    const fullTitle = !title ? siteName : /Team Synergy/i.test(title) ? title : `${title} | ${siteName}`;
     const desc = description || DEFAULT_DESCRIPTION;
     const image = ogImage || DEFAULT_IMAGE;
     let finalUrl = url || `${DEFAULT_BASE_URL}${canonicalPath || '/'}`;

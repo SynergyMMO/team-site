@@ -25,8 +25,10 @@ function ThemeDetail() {
 
   // Set document head for SEO
   useDocumentHead({
-    title: theme ? theme.name : 'Theme Detail',
-    description: theme && theme.description ? theme.description : 'View details for this PokeMMO theme.',
+    title: theme ? `${theme.name} | PokeMMO Theme by ${theme.author || 'Team Synergy'} | Team Synergy` : 'Theme Detail',
+    description: theme
+      ? `${(theme.description || '').trim()} A PokeMMO theme by ${theme.author || 'a community member'} shared on Team Synergy - preview it and download it free.`.trim()
+      : 'View details for this PokeMMO theme.',
     canonicalPath: theme ? `/themes/${slug}/` : '/themes/',
     robots: !loading && !theme ? 'noindex, follow' : undefined,
   });

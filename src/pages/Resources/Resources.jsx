@@ -114,8 +114,14 @@ export default function Resources() {
   }
 
   // Determine which metadata to use for the page head
-  const seoMeta = nestedMeta || subcategoryMeta || categoryMeta || {}
-  let currentCanonicalPath = `/resources${activeCategory ? `/${toSlug(activeCategory)}` : ''}${activeSubcategory ? `/${toSlug(activeSubcategory)}` : ''}${activeNestedTab ? `/${toSlug(activeNestedTab)}` : ''}/`;
+  const requestedMeta = urlNested ? (actualNested && subcategoryData?.[actualNested]?._meta)
+    : urlSubcategory ? subcategoryMeta
+    : urlCategory ? categoryMeta
+    : null
+  const seoMeta = requestedMeta || (urlCategory ? nestedMeta || subcategoryMeta || categoryMeta : null) || {}
+  // Canonical follows the requested URL; hub pages auto-select a child tab client-side,
+  // which must not change the canonical away from the prerendered hub page.
+  const currentCanonicalPath = `/resources${[urlCategory, urlSubcategory, urlNested].filter(Boolean).map(s => `/${s.toLowerCase()}`).join('')}/`;
 
   useDocumentHead({
     title: seoMeta.title || 'Team Synergy Resources',

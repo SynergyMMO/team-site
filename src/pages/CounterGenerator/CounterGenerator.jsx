@@ -10,7 +10,7 @@ export default function CounterGenerator() {
 
   useDocumentHead({
     title: 'PokeMMO Counter Theme Generator - Custom Encounter Counters',
-    description: 'PokeMMO encounter counter theme generator tool.',
+    description: 'Create a custom PokeMMO encounter counter theme. Pick Pokemon, colours and layouts, then export a ready-to-use counter for your shiny hunts.',
     canonicalPath: '/counter-generator/',
     breadcrumbs
   })
