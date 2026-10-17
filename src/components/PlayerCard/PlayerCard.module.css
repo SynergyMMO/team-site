@@ -17,6 +17,64 @@
   z-index: 10;
 }
 
+.roleBorder {
+  border: 3px solid transparent;
+  background:
+    linear-gradient(rgb(20, 10, 35), rgb(20, 10, 35)) padding-box,
+    linear-gradient(135deg, var(--role-a), var(--role-b), var(--role-c), var(--role-a)) border-box;
+  background-size: 100% 100%, 300% 300%;
+  box-shadow: 0 0 14px var(--role-color), 0 0 30px color-mix(in srgb, var(--role-color) 40%, transparent);
+  animation: roleShimmer 6s ease-in-out infinite;
+}
+
+.roleBadge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7em;
+  height: 1.7em;
+  margin-left: 6px;
+  font-size: 0.9rem;
+  border-radius: 50%;
+  border: 2px solid var(--role-color);
+  background: rgba(20, 10, 35, 0.85);
+  box-shadow: 0 0 8px var(--role-color);
+  cursor: help;
+}
+
+.roleTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  color: #fff;
+  background: rgba(20, 10, 35, 0.95);
+  border: 1px solid var(--role-color);
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 20;
+}
+
+.roleBadge:hover .roleTooltip,
+.roleBadge:focus .roleTooltip {
+  opacity: 1;
+}
+
+@keyframes roleShimmer {
+  0%, 100% { background-position: 0 0, 0% 50%; }
+  50% { background-position: 0 0, 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roleBorder { animation: none; }
+}
+
 .nameContainer {
   display: inline-flex;
   align-items: center;

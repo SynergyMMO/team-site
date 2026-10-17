@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import ShinyItem from '../ShinyItem/ShinyItem'
 import { getAssetUrl } from '../../utils/assets'
+import { getPlayerRole, getRoleStyle } from '../../config/playerRoles'
 import styles from './PlayerCard.module.css'
 
 function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, linkState, showPoints = false, isInactivePlayer = false }) {
@@ -20,9 +21,14 @@ function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, 
     null
 
   const sparkle = rank >= 3
+  const role = getPlayerRole(player)
 
   return (
-    <div className={styles.card}>
+    <div
+      className={`${styles.card} ${role ? styles.roleBorder : ''}`}
+      style={getRoleStyle(role)}
+      data-role={role?.name}
+    >
       <div className={styles.nameContainer}>
         <Link
           to={`/player/${player}/`}
@@ -33,6 +39,12 @@ function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, 
         >
           #{rank + 1} {player} ({showPoints && typeof data.points === 'number' ? `${data.points} pts` : data.shiny_count})
         </Link>
+        {role && (
+          <span className={styles.roleBadge} style={getRoleStyle(role)} aria-label={`Role: ${role.name}`} tabIndex={0}>
+            {role.icon}
+            <span className={styles.roleTooltip} role="tooltip">{role.name}</span>
+          </span>
+        )}
         {medal && <span className={styles.medal}>{medal}</span>}
         {sparkle && <span className={styles.sparkle}>&#10024;</span>}
       </div>

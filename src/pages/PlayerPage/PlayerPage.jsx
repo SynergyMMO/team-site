@@ -8,6 +8,7 @@ import ShinyItem from '../../components/ShinyItem/ShinyItem'
 import TrophyShelf from '../../components/TrophyShelf/TrophyShelf'
 import StatisticsSection from '../../components/StatisticsSection/StatisticsSection'
 import BackButton from '../../components/BackButton/BackButton'
+import { getPlayerRole, getRoleStyle } from '../../config/playerRoles'
 import styles from './PlayerPage.module.css'
 import { getLocalPokemonGif } from '../../utils/pokemon'
 import { getPlayerRanks } from '../../utils/playerStatistics'
@@ -46,6 +47,7 @@ export default function PlayerPage() {
 
   // --- Safe defaults ---
   const safeRealKey = realKey || playerName
+  const role = getPlayerRole(safeRealKey)
 
   const safeShinies = Object.entries(playerData?.shinies || {})
 
@@ -239,7 +241,20 @@ export default function PlayerPage() {
     <div className={styles.playerPage}>
       <BackButton to={backTo} label={backLabel} />
       
-      <h1>{safeRealKey}'s Shiny Collection &#10024;</h1>
+      <h1>
+        {safeRealKey}'s Shiny Collection &#10024;
+        {role && (
+          <span
+            className={styles.roleBadge}
+            style={getRoleStyle(role)}
+            aria-label={`Role: ${role.name}`}
+            tabIndex={0}
+          >
+            {role.icon}
+            <span className={styles.roleTooltip} role="tooltip">{role.name}</span>
+          </span>
+        )}
+      </h1>
       <p>Total Shinies: {playerData.shiny_count ?? 0}</p>
 
       {safeFavourites.length > 0 && (
