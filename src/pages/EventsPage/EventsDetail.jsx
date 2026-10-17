@@ -43,6 +43,7 @@ export default function EventsDetail() {
     ogImage: event?.imageLink || 'https://synergymmo.com/images/openGraph.jpg',
     twitterCard: 'summary_large_image',
     breadcrumbs: breadcrumbs,
+    robots: !loading && !event ? 'noindex, follow' : undefined,
     structuredData: eventSchema
   })
 

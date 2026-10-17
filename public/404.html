@@ -2,22 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Team Synergy - PokeMMO</title>
-  <!-- GitHub Pages SPA redirect: encodes the path into the query string so
-       index.html can restore it via history.replaceState.
-       Pre-rendered pages are served directly and never reach this file.
-       This only fires for routes that don't have a pre-rendered index.html
-       (e.g. a new event created after the last build). -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, follow">
+  <title>Page Not Found | Team Synergy - PokeMMO</title>
+  <!-- GitHub Pages SPA redirect for humans only: routes created after the last build
+       have no prerendered file, so the SPA renders them via /?/path.
+       Crawlers are NOT redirected; they get this static page with a real 404 status,
+       which lets removed players/events/pages drop out of the index cleanly. -->
   <script type="text/javascript">
-    var l = window.location;
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 1).join('/') + '/?/' +
-      l.pathname.slice(1).split('/').join('/').replace(/&/g, '~and~') +
-      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash
-    );
+    var isBot = /bot|crawl|spider|slurp|googlebot|bingbot|duckduckbot|baiduspider|yandex|facebookexternalhit|twitterbot|lighthouse/i.test(navigator.userAgent);
+    if (!isBot) {
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        '/?/' +
+        l.pathname.slice(1).replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    }
   </script>
 </head>
-<body></body>
+<body>
+  <h1>Page not found</h1>
+  <p>This page no longer exists. <a href="/">Return to Team Synergy</a>.</p>
+</body>
 </html>

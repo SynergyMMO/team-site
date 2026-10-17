@@ -6,6 +6,12 @@ const DEFAULT_IMAGE = `${DEFAULT_BASE_URL}/images/openGraph.jpg`;
 const DEFAULT_DESCRIPTION =
   'Team Synergy is a PokeMMO shiny hunting team. Browse our shiny dex, view shiny collections, watch our streamers, and generate encounter counter themes.';
 
+// GitHub Pages serves every page at /route/, so canonicals must match: trailing slash, no query/hash
+function toCanonicalUrl(url) {
+  const clean = url.split('#')[0].split('?')[0];
+  return /\.[a-z0-9]+$/i.test(clean) || clean.endsWith('/') ? clean : `${clean}/`;
+}
+
 function setMeta(name, content, attr = 'name') {
   let el = document.querySelector(`meta[${attr}="${name}"]`);
   if (!el) {
@@ -60,8 +66,7 @@ export function useDocumentHead({
     const image = ogImage || DEFAULT_IMAGE;
     let finalUrl = url || `${DEFAULT_BASE_URL}${canonicalPath || '/'}`;
 
-    // --- REMOVE QUERY STRINGS for clean OG URL and canonical ---
-    finalUrl = finalUrl.split('?')[0];
+    finalUrl = toCanonicalUrl(finalUrl);
 
     document.title = fullTitle;
 
@@ -109,7 +114,7 @@ export function useDocumentHead({
           '@type': 'ListItem',
           'position': idx + 1,
           'name': item.name,
-          'item': item.url.startsWith('http') ? item.url : `${DEFAULT_BASE_URL}${item.url}`
+          'item': toCanonicalUrl(item.url.startsWith('http') ? item.url : `${DEFAULT_BASE_URL}${item.url}`)
         }))
       };
       setStructuredData(breadcrumbSchema, 'breadcrumb-schema');

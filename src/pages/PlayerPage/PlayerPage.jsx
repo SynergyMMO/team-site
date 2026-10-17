@@ -29,11 +29,6 @@ export default function PlayerPage() {
     return { realKey: key || null, playerData: key ? data[key] : null }
   }, [data, playerName])
 
-  if (realKey && playerName && realKey !== playerName) {
-    window.location.replace(`/player/${realKey}`);
-    return null;
-  }
-
 
 
 
@@ -45,8 +40,8 @@ export default function PlayerPage() {
 
   const breadcrumbs = realKey ? [
     { name: 'Home', url: '/' },
-    { name: 'Shiny Showcase', url: '/' },
-    { name: realKey, url: `/player/${playerName}` }
+    { name: 'Shiny Showcase', url: '/shiny-showcase/' },
+    { name: realKey, url: `/player/${encodeURIComponent(realKey)}/` }
   ] : null;
 
   // --- Safe defaults ---
@@ -74,17 +69,18 @@ export default function PlayerPage() {
     (firstNormalShiny && getLocalPokemonGif(firstNormalShiny.Pokemon)) ||
     'https://synergymmo.com/images/openGraph.jpg'
 
-  const ogUrl = `https://synergymmo.com/player/${playerName?.toLowerCase()}/?v=2`
+  const canonicalPlayerPath = `/player/${encodeURIComponent(realKey || playerName || '')}/`
+  const notFound = !isLoading && data && !realKey
 
   useDocumentHead({
     title: realKey ? `${realKey}'s Shiny Collection | Team Synergy PokeMMO` : 'Player Shinies | Team Synergy - PokeMMO',
     description: realKey
       ? `Browse ${realKey}'s shiny Pokémon collection in PokeMMO. View caught shinies, collections, and stats for Team Synergy member.`
       : 'Explore player shiny collections in Team Synergy PokeMMO.',
-    canonicalPath: `/player/${playerName?.toLowerCase()}/`,
+    canonicalPath: canonicalPlayerPath,
     breadcrumbs: breadcrumbs,
     ogImage,
-    url: ogUrl,
+    robots: notFound ? 'noindex, follow' : undefined,
   })
 
   // --- Back button logic ---

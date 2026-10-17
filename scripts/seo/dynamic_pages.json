@@ -1,0 +1,56 @@
+{
+  "_readme": "Templates for pages generated from data (players, pokemon, events, trophies, themes). Placeholders use {name}. 'parent' is the real listing page used for breadcrumbs, because the /player/, /pokemon/, /event/ and /trophy/ index URLs do not exist.",
+  "player": {
+    "title": "{name}'s Shinies | Team Synergy - PokeMMO",
+    "description": "{name} has caught {count} shiny Pokemon in PokeMMO. Browse {name}'s Team Synergy shiny collection, favourites and stats.",
+    "parent": { "name": "Shiny Showcase", "path": "/shiny-showcase/" },
+    "relatedLinks": [
+      { "href": "/trophy-board/", "title": "Trophy Board" },
+      { "href": "/shiny-showcase/", "title": "Shiny Showcase" },
+      { "href": "/streamers/", "title": "Streamers" }
+    ]
+  },
+  "pokemon": {
+    "title": "{name} Shiny Dex | Type: {types} | Team Synergy - PokeMMO",
+    "titleShort": "{name} Shiny Dex | Team Synergy - PokeMMO",
+    "description": "{name} ({types}) - Tier: {tier}{generation}. View {name} details, shiny form, location, and abilities in Team Synergy's PokeMMO Pokédex.",
+    "parent": { "name": "Pokédex", "path": "/pokedex/" },
+    "relatedLinks": [
+      { "href": "/pokedex/", "title": "PokeMMO Pokédex" },
+      { "href": "/random-pokemon-generator/", "title": "Pokemon Randomizer" },
+      { "href": "/counter-generator/", "title": "Counter Theme" }
+    ]
+  },
+  "event": {
+    "title": "{name} | Team Synergy - PokeMMO",
+    "description": "Join the {name} event in PokeMMO, a Team Synergy community event. See details, dates and how to take part.",
+    "descriptionSuffix": "A Team Synergy PokeMMO community event - see details, dates and how to take part.",
+    "parent": { "name": "Events", "path": "/events/" },
+    "relatedLinks": [
+      { "href": "/events/", "title": "All Events" },
+      { "href": "/streamers/", "title": "Team Streamers" }
+    ]
+  },
+  "trophy": {
+    "title": "{name} Trophy | Team Synergy - PokeMMO",
+    "description": "See which Team Synergy members earned the {name} trophy in PokeMMO.",
+    "parent": { "name": "Trophy Board", "path": "/trophy-board/" },
+    "relatedLinks": [
+      { "href": "/trophy-board/", "title": "All Trophies" },
+      { "href": "/shiny-showcase/", "title": "Team Members" }
+    ]
+  },
+  "theme": {
+    "title": "{name} | PokeMMO Theme by {author} | Team Synergy",
+    "description": "{name} is a PokeMMO theme by {author} in the {category} category. Download and customize your game!",
+    "descriptionSuffix": "A PokeMMO theme by {author} shared on Team Synergy - preview it and download it free.",
+    "parent": { "name": "Themes", "path": "/themes/" },
+    "relatedLinks": [
+      { "href": "/themes/", "title": "All Themes" },
+      { "href": "/counter-generator/", "title": "Counter Theme Generator" }
+    ]
+  },
+  "resource": {
+    "parent": { "name": "Resources", "path": "/resources/" }
+  }
+}

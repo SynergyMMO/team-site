@@ -5,6 +5,7 @@ export default function NotFound() {
   useDocumentHead({
     title: 'Page Not Found',
     description: "This page doesn't exist on Team Synergy's PokeMMO site.",
+    robots: 'noindex, follow',
   })
   return (
     <div style={{ textAlign: 'center', padding: '60px 20px' }}>

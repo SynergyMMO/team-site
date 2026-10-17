@@ -1,0 +1,334 @@
+{
+  "/": {
+    "title": "Team Synergy - PokeMMO Shiny Hunting Community Hub",
+    "description": "Team Synergy is the ultimate PokeMMO shiny hunting community hub. Browse 140+ player shiny collections, explore our detailed Pokédex, watch live Twitch streamers, track roaming legendaries, and join competitions.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "crawlerLinks": [
+      "players",
+      "pokemon",
+      "streamers"
+    ],
+    "sitemap": {
+      "changefreq": "daily",
+      "priority": "1.0"
+    }
+  },
+  "/shiny-showcase": {
+    "collection": "players",
+    "title": "Shiny Showcase - Team Synergy PokeMMO Member Collections",
+    "description": "Browse Team Synergy's 140+ member shiny collections ranked by total count. Discover the best shiny hunters, view collection statistics, and explore spectacular Pokemon catches.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_6/reuniclus.gif?v=2",
+    "crawlerLinks": [
+      "players"
+    ],
+    "sitemap": {
+      "changefreq": "daily",
+      "priority": "0.95"
+    }
+  },
+  "/shotm": {
+    "title": "Shiny of the Month - Team Synergy - PokeMMO",
+    "description": "Team Synergy Shiny of the Month (SHOTM) showcases outstanding shiny catches and achievements by our community members each month.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_6/reuniclus.gif?v=2",
+    "crawlerLinks": [
+      "players",
+      "pokemon"
+    ],
+    "sitemap": {
+      "changefreq": "daily",
+      "priority": "0.9"
+    }
+  },
+  "/team-statistics": {
+    "title": "Team Statistics - Player & SHOTM Leaderboards | Team Synergy",
+    "description": "View Team Synergy player statistics, top 3 leaderboard categories, all-time SHOTM points standings, and the top 5 most common shiny Pokemon.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif?v=2",
+    "crawlerLinks": [
+      "players",
+      "pokemon"
+    ],
+    "sitemap": {
+      "changefreq": "daily",
+      "priority": "0.85"
+    }
+  },
+  "/pokedex": {
+    "collection": "pokemon",
+    "title": "Pokédex Tracker - Shiny & Living Dex | Team Synergy - PokeMMO",
+    "description": "Track Team Synergy's complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_5/pikachu.gif?v=2",
+    "crawlerLinks": [
+      "roamingLegendaries",
+      "pokemon"
+    ],
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.8"
+    }
+  },
+  "/dex-helper": {
+    "title": "Dex Helper - Missing Shiny Targets | Team Synergy - PokeMMO",
+    "description": "Use Team Synergy Dex Helper to track missing base evolution shiny targets grouped by Horde, Singles, and Eggs, with bounty tags and hunt notes.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_0/ducklett.gif?v=2",
+    "crawlerLinks": [
+      "pokemon"
+    ],
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.7"
+    }
+  },
+  "/roaming-legendaries": {
+    "title": "PokeMMO Roaming Legendaries Calendar & Schedule | Team Synergy",
+    "description": "PokeMMO Roaming Legendaries Calendar showing monthly availability of Zapdos, Moltres, Articuno, Entei, Suicune, and Raikou. Track which roaming legendaries are available each month and plan your shiny hunts.",
+    "image": "https://img.pokemondb.net/sprites/black-white/anim/shiny/suicune.gif",
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.8"
+    }
+  },
+  "/streamers": {
+    "title": "Team Synergy Streamers | Team Synergy - PokeMMO",
+    "description": "Watch Team Synergy members stream PokeMMO live on Twitch. Check live status, find active streamers, join the community watching shiny hunts, encounters, and competitive gameplay.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "crawlerLinks": [
+      "streamers"
+    ],
+    "sitemap": {
+      "changefreq": "daily",
+      "priority": "0.7"
+    }
+  },
+  "/trophy-board": {
+    "collection": "trophies",
+    "title": "Team Synergy Trophy Board | Team Synergy - PokeMMO",
+    "description": "Explore trophies and achievements earned by Team Synergy members in PokeMMO. View championship awards, milestone accomplishments, and community recognition. Celebrate team success and member achievements.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_6/reuniclus.gif?v=2",
+    "crawlerLinks": [
+      "trophies"
+    ],
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.6"
+    }
+  },
+  "/counter-generator": {
+    "title": "PokeMMO Counter Theme Generator | Team Synergy - PokeMMO",
+    "description": "Create custom encounter counter themes for PokeMMO. Upload Pokémon GIFs, resize and customize them, then download ready-to-use counter theme packages to track your shiny hunts in-game.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_0/charmander.gif?v=2",
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.6"
+    }
+  },
+  "/egg-move-calculator": {
+    "title": "PokeMMO Egg Move Calculator | Team Synergy",
+    "description": "Calculate PokeMMO egg move breeding chains from natural move learners through shared egg groups.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_0/blastoise.gif?v=2",
+    "crawlerLinks": [
+      "pokemon"
+    ],
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.6"
+    }
+  },
+  "/player-card-generator": {
+    "title": "PokeMMO Player Card Generator | Team Synergy",
+    "description": "Upload your encounter tracker JSON and trainer image to create a downloadable PokeMMO player card with encounter totals, shinies, rares seen, and most seen Pokemon.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "crawlerLinks": [
+      "pokemon"
+    ],
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.6"
+    }
+  },
+  "/random-pokemon-generator": {
+    "title": "Random Pokémon Generator & Shiny Bingo | Team Synergy - PokeMMO",
+    "description": "Generate random Pokémon targets for PokeMMO hunts. Play shiny bingo with 3x3, 4x4, or 5x5 boards, filter by tier, randomize natures and IVs. Track your completion and find new hunt challenges.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_0/bulbasaur.gif?v=2",
+    "crawlerLinks": [
+      "pokemon"
+    ],
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.7"
+    }
+  },
+  "/particle-viewer": {
+    "title": "Particle Viewer - Team Synergy - PokeMMO",
+    "description": "Watch in-game particle effects from PokeMMO. View all available particles including shiny effects and special animations.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.6"
+    }
+  },
+  "/catching-calculator": {
+    "title": "Catching Calculator | Team Synergy - PokeMMO",
+    "description": "Plan catch strategies and compare catch rates for PokeMMO event swarms, Halloween, Christmas, and Lunar New Year Pokémon.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.6"
+    }
+  },
+  "/events": {
+    "title": "Team Synergy Events | Team Synergy - PokeMMO",
+    "description": "Discover Team Synergy's PokeMMO community events. Join shiny hunting competitions, seasonal tournaments, team challenges, and special gaming events. Stay connected with the latest Team Synergy activities.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_6/reuniclus.gif?v=2",
+    "crawlerLinks": [
+      "events"
+    ],
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.6"
+    }
+  },
+  "/official-event-calendar": {
+    "title": "Official Event Calendar | Team Synergy - PokeMMO",
+    "description": "View upcoming official PokeMMO PvP and Catch events from the official RSS feed, sorted by date and shown in your local timezone.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "daily",
+      "priority": "0.65"
+    }
+  },
+  "/official-shiny-wars-planner": {
+    "title": "Official Shiny Wars Planner | Team Synergy - PokeMMO",
+    "description": "Track Tryhard and Casual team shiny catches for the official PokeMMO Shiny Wars event by tier, points, and evolution family.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "daily",
+      "priority": "0.7"
+    }
+  },
+  "/region-maps": {
+    "title": "Interactive Region Maps | Team Synergy - PokeMMO",
+    "description": "Explore interactive region maps for Kanto, Johto, Hoenn, Sinnoh, and Unova with pan and zoom, area overlays, spawn filters, and route planning annotations.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.65"
+    }
+  },
+  "/hunt-planner": {
+    "title": "Hunt Planner | Team Synergy - PokeMMO",
+    "description": "Search tracked PokeMMO encounter percentages by Pokemon or route. Find target Pokemon, shiny hunt phases, route totals, and credited route data.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.65"
+    }
+  },
+  "/altering-cave-rotations": {
+    "title": "Altering Cave Rotations - PokeMMO Shiny Hunting | Team Synergy",
+    "description": "Track PokeMMO Altering Cave rotations with the current rotation, swap timer, repel trick filter, repel levels, and target rarity.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_0/bagon.gif?v=2",
+    "sitemap": {
+      "changefreq": "daily",
+      "priority": "0.65"
+    }
+  },
+  "/resources": {
+    "title": "PokeMMO Resources - Guides, Tools & Community Links | Team Synergy",
+    "description": "Explore Team Synergy's comprehensive PokeMMO resources. Find guides, tools, calculators, community links, and expert tips for shiny hunting, PVP training, and competitive gameplay.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.6"
+    }
+  },
+  "/shiny-war-2025": {
+    "title": "Shiny Wars 2025 Results | Team Synergy - PokeMMO",
+    "description": "Team Synergy placed #25 in the Official PokeMMO Shiny Wars 2025 with 1060 points and 111 shinies. View every catch with tier breakdowns and point totals.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif?v=2",
+    "crawlerLinks": [
+      "pokemon"
+    ],
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.7"
+    }
+  },
+  "/themes": {
+    "title": "PokeMMO Themes, Encounter Counters & Retextures | Team Synergy",
+    "description": "Browse a curated collection of PokeMMO themes, encounter counter overlays, and Pokémon retexture packs. Find visual mods, custom UI themes, and encounter counter designs to personalize your PokeMMO experience. Download community-made resources to enhance your gameplay, improve shiny hunting, and refresh your game's look. Team Synergy's theme hub features the best encounter counter themes, game retextures, and other creative mods for PokeMMO.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.7"
+    }
+  },
+  "/bounties": {
+    "title": "Team Synergy Bounties | Shiny Hunting Challenges - PokeMMO",
+    "description": "Participate in Team Synergy monthly and permanent bounties. Complete shiny hunting challenges, earn rewards, and join the community competition. View current and past bounties for all members.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif?v=2",
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.7"
+    }
+  },
+  "/time-display": {
+    "title": "PokeMMO Time Display | Team Synergy",
+    "description": "View the current in-game time for PokeMMO. Plan your shiny hunts and event participation with accurate day/night cycle tracking. Essential for time-based encounters and event planning.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.6"
+    }
+  },
+  "/sprite-recolour": {
+    "title": "PokeMMO Custom Sprite Retexture Tool | PokeMMO",
+    "description": "Customize your Pokémon sprites with the custom Sprite Recolour Tool. Change colors, create unique looks then download the ready to use mod to enhance your PokeMMO experience.",
+    "image": "https://synergymmo.com/images/dragonite_sprite.gif",
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.7"
+    }
+  },
+  "/safari-zones": {
+    "title": "PokeMMO Safari Zone Guide - Catch & Flee Rates | Team Synergy",
+    "description": "Complete PokeMMO Safari Zone guide with catch rates, flee rates, and optimal strategies for Johto and Sinnoh (Great Marsh). Find the best approach for every Safari Zone Pokemon.",
+    "image": "https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif?v=2",
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.6"
+    }
+  },
+  "/shiny-odds": {
+    "title": "Advanced Shiny Odds Calculator | Team Synergy - PokeMMO",
+    "description": "shiny odds calculator with boosts and probability graph. Calculate your odds for any shiny hunt in PokeMMO for max COPE.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.6"
+    }
+  },
+  "/synergy-2026-shiny-wars": {
+    "title": "Synergy 2026 Shiny Wars | Team Synergy - PokeMMO",
+    "description": "Team Synergy 2026 Shiny Wars statistics: team and player performance, shiny catch timelines, and leaderboards for Absolute Synema, Synsational, and Synergy Task Force.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.7"
+    }
+  },
+  "/credits": {
+    "title": "Credits | Team Synergy - PokeMMO",
+    "description": "Meet the creators, Route Finder contributors, and moderators behind Team Synergy.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "yearly",
+      "priority": "0.3"
+    }
+  },
+  "/route-finder": {
+    "title": "Route Finder | Team Synergy - PokeMMO",
+    "description": "Search tracked PokeMMO encounter percentages by Pokemon or route. Find target Pokemon, shiny hunt phases, route totals, and credited route data.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "canonical": "/hunt-planner/"
+  }
+}

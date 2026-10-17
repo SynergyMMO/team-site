@@ -1,0 +1,28 @@
+{
+  "CREATORS": {
+    "primary": {
+      "name": "Team Synergy",
+      "title": "Community-Driven PokeMMO Project",
+      "description": "A PokeMMO shiny hunting community dedicated to shiny collection, PVP competition, and gaming events.",
+      "url": "https://synergymmo.com",
+      "sameAs": [
+        "https://www.youtube.com/@ohypers",
+        "https://discord.com/invite/2BEUq6fWAj"
+      ]
+    },
+    "features": [
+      {
+        "name": "Pokédex & Data",
+        "role": "Content Development"
+      },
+      {
+        "name": "Shiny Showcase",
+        "role": "Community Content"
+      },
+      {
+        "name": "Event Management",
+        "role": "Community Events"
+      }
+    ]
+  }
+}

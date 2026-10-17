@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AdminProvider } from './context/AdminContext'
 import App from './App'
 import './index.css'
+import { startTrailingSlashLinks } from './utils/trailingSlashLinks'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,23 +33,6 @@ const queryClient = new QueryClient({
     // Clear any leftover redirect flags
     sessionStorage.removeItem('spa-redirect-attempted')
   }
-})()
-
-// Update canonical URL dynamically based on current location
-;(function() {
-  const updateCanonicalURL = () => {
-    const canonical = document.querySelector('link[rel="canonical"]')
-    if (canonical) {
-      const currentPath = window.location.pathname + window.location.search + window.location.hash
-      canonical.href = `https://synergymmo.com${currentPath}`
-    }
-  }
-  
-  // Update on page load
-  updateCanonicalURL()
-  
-  // Update on route changes
-  window.addEventListener('popstate', updateCanonicalURL)
 })()
 
 // Auto-reload once when Vite chunks 404 after a deploy (stale asset hashes)
@@ -122,3 +106,5 @@ if (rootElement.hasChildNodes() && !window.__SPA_REDIRECT) {
   rootElement.innerHTML = ''
   createRoot(rootElement).render(app)
 }
+
+startTrailingSlashLinks()

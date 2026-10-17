@@ -1,0 +1,39 @@
+{
+  "PAGE_KEYWORDS": {
+    "/": "Team Synergy, PokeMMO shiny hunting community, shiny hunters, player shiny collections, PokeMMO Pokédex, roaming legendaries, PokeMMO tools, Trophy Board",
+    "/shiny-showcase": "PokeMMO shiny showcase, Team Synergy shiny collections, player shiny rankings, Pokemon collectors, shiny count leaderboard, Team Synergy members",
+    "/pokedex": "PokeMMO Pokédex, Pokédex tracker, Generation 1-5 Pokemon, PokeMMO shiny tracker, Pokemon database, PokeMMO Shiny Locations, PokeMMO Where to Shiny Hunt, PokeMMO Catch Calculator",
+    "/dex-helper": "PokeMMO Dex Helper, shiny dex helper, missing shiny tracker, Team Synergy dex targets, shiny hunting checklist, horde singles eggs, bounty tracker",
+    "/roaming-legendaries": "PokeMMO roaming legendaries, roaming legendary calendar, Zapdos, Articuno, Moltres, Entei, Suicune, Raikou, PokeMMO legendary spawns, roaming Pokémon locations, legendary monthly schedule, PokeMMO shiny hunting legendaries",
+    "/random-pokemon-generator": "Pokemon randomizer, shiny hunt randomizer, random Pokemon generator, shiny bingo cards, encounter picker, hunt challenge",
+    "/counter-generator": "PokeMMO counter theme, counter theme generator, encounter counter, PokeMMO tools, theme customizer, counter maker",
+    "/egg-move-calculator": "PokeMMO egg move calculator, egg move breeding chains, Pokemon egg groups, PokeMMO breeding tool, egg move transfer route",
+    "/player-card-generator": "PokeMMO player card generator, encounter tracker JSON, shiny hunting stats, trainer card, player profile PNG",
+    "/sprite-recolour": "sprite recolour tool, Pokemon sprite editor, GIF palette editor, sprite recolor, Pokemon GIF editor, palette swap tool, PokeMMO tools, Team Synergy tools",
+    "/particle-viewer": "Particle Viewer, PokeMMO particle effects, particle animations, shiny particles, PokeMMO visual effects, Team Synergy tools",
+    "/events": "PokeMMO events, shiny hunting competition, PokeMMO PVP events, gaming tournament, team events, community challenges",
+    "/streamers": "PokeMMO streamers, PokeMMO Twitch streamers, PokeMMO YouTube, gaming livestream, content creators, streamer directory",
+    "/trophy-board": "PokeMMO trophies, achievement trophies, trophy list, PokeMMO leaderboard, gaming achievements, community awards",
+    "/team-statistics": "Team Statistics, Team Synergy leaderboard, PokeMMO player leaderboard, all-time SHOTM points, top shiny hunters, most common shiny pokemon",
+    "/shiny-war-2025": "Shiny Wars 2025, PokeMMO competition, Shiny Wars standings, leaderboard results, shiny catching championship, competition rankings, team synergy shiny war results",
+    "/resources": "PokeMMO resources, PokeMMO guides, hunting tools, community links, shiny hunting guides, PokeMMO calculators, Team Synergy resources",
+    "/catching-calculator": "PokeMMO Catching Calculator, event swarm calculator, event catch rates, Halloween Pokémon, Christmas Pokémon, Lunar New Year Pokémon, catch rates, Poké Balls",
+    "/shiny-odds": "Shiny Odds Calculator, advanced shiny odds, PokeMMO shiny odds, shiny probability, shiny boosts, shiny hunt tracker, shiny odds graph, Team Synergy shiny odds",
+    "/bounties": "Team Synergy bounties, PokeMMO shiny hunting bounties, monthly bounties, permanent bounties, shiny hunting challenges, Team Synergy rewards",
+    "/themes": "PokeMMO themes, encounter counter themes, Pokemon retexture, PokeMMO mods, custom UI, visual mods, Team Synergy themes, PokeMMO overlays, download themes, shiny hunting tools, game customization, PokeMMO resources",
+    "/time-display": "PokeMMO time display, in-game clock, real-time events, Team Synergy time tool, PokeMMO time zones, event timing, shiny hunting time, day/night cycle, PokeMMO utilities, Team Synergy tools",
+    "/region-maps": "PokeMMO interactive map, Kanto map, Johto map, Hoenn map, Sinnoh map, Unova map, Pokemon spawn map, route overlays, Pokemon route planner, Team Synergy tools",
+    "/route-finder": "PokeMMO route finder, Pokemon encounter percentages, shiny hunt phases, tracked route data, Pokemon route search, Team Synergy tools",
+    "/altering-cave-rotations": "PokeMMO Altering Cave rotations, Altering Cave repel trick, rotation timer, Bagon, Absol, Aron, shiny hunting route",
+    "/hunt-planner": "PokeMMO hunt planner, PokeMMO route finder, Pokemon encounter percentages, shiny hunt phases, tracked route data, Pokemon route search, Team Synergy tools",
+    "/credits": "Team Synergy credits, PokeMMO site creators, Route Finder contributors, Team Synergy moderators",
+    "/synergy-2026-shiny-wars": "Synergy 2026 Shiny Wars, PokeMMO Shiny Wars 2026, Absolute Synema, Synsational, Synergy Task Force, Team Synergy shiny war statistics"
+  },
+  "DYNAMIC_KEYWORDS": {
+    "pokemon": "{pokemon} shiny, {pokemon} PokeMMO, Pokemon stats, Pokemon abilities, {pokemon} pokemmo catch location, {pokemon} pokemmo catch calculator, {pokemon} encounter, tier rank",
+    "player": "{player} shiny collection, {player} PokeMMO player, player profile, encounter statistics, trophy showcase, shiny hunter",
+    "trophy": "{trophy} trophy, {trophy} achievement, PokeMMO trophy, trophy winners, gaming award, community milestone",
+    "event": "{event} PokeMMO event, {event} tournament, event details, tournament rules, competition schedule, event prizes",
+    "theme": "{theme} PokeMMO theme, {theme} download, {theme} by {author}, {category} theme, PokeMMO custom theme, PokeMMO mod, Team Synergy theme, PokeMMO overlay, encounter counter theme, retexture, visual mod, game customization"
+  }
+}

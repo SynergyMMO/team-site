@@ -27,7 +27,8 @@ function ThemeDetail() {
   useDocumentHead({
     title: theme ? theme.name : 'Theme Detail',
     description: theme && theme.description ? theme.description : 'View details for this PokeMMO theme.',
-    canonicalPath: theme ? `/themes/${slug}/` : '/themes/'
+    canonicalPath: theme ? `/themes/${slug}/` : '/themes/',
+    robots: !loading && !theme ? 'noindex, follow' : undefined,
   });
 
   // Fetch all theme data

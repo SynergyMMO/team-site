@@ -39,6 +39,7 @@ export default function TrophyPage() {
     canonicalPath: ogUrl,
     ogImage: trophyImg,
     url: ogUrl,
+    robots: !loadingTrophies && !loadingDB && !trophyKey ? 'noindex, follow' : undefined,
     breadcrumbs: breadcrumbs
   });
 

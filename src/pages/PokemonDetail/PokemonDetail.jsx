@@ -1014,6 +1014,7 @@ useDocumentHead({
 
   canonicalPath: `/pokemon/${pokemonName?.toLowerCase()}/`,
 
+  robots: !isLoading && !pokemon ? 'noindex, follow' : undefined,
   url: `https://synergymmo.com/pokemon/${pokemonName?.toLowerCase()}/`,
 
   ogImage: animatedShinyGif,

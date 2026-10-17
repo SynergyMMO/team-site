@@ -1,0 +1,25 @@
+{
+  "domain": "https://synergymmo.com",
+  "siteName": "Team Synergy - PokeMMO",
+  "defaultTitle": "Team Synergy - PokeMMO",
+  "defaultDescription": "Team Synergy is a PokeMMO shiny hunting team.",
+  "defaultImage": "https://synergymmo.com/images/openGraph.jpg",
+  "defaultKeywords": "PokeMMO, Pokemon, gaming, shiny hunting, community",
+  "authorMeta": "Team Synergy - PokeMMO Community",
+  "api": {
+    "database": "https://adminpage.hypersmmo.workers.dev/admin/database",
+    "events": "https://adminpage.hypersmmo.workers.dev/admin/events",
+    "themes": "https://adminpage.hypersmmo.workers.dev/admin/themes"
+  },
+  "mainNavLinks": [
+    { "href": "/", "title": "Home" },
+    { "href": "/pokedex/", "title": "Pokédex" },
+    { "href": "/trophy-board/", "title": "Trophy Board" },
+    { "href": "/events/", "title": "Events" },
+    { "href": "/streamers/", "title": "Streamers" }
+  ],
+  "crawlerGroups": {
+    "streamers": [{ "href": "/streamers/", "title": "Team Synergy Streamers" }],
+    "roamingLegendaries": [{ "href": "/roaming-legendaries/", "title": "Roaming Legendaries Calendar" }]
+  }
+}

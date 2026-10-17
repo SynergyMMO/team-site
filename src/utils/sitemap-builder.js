@@ -10,35 +10,11 @@ const trophiesData = JSON.parse(fs.readFileSync(trophiesPath, 'utf-8'));
 const resourcesPath = new URL('../data/resources.json', import.meta.url);
 const resourcesData = JSON.parse(fs.readFileSync(resourcesPath, 'utf-8'));
 
-const staticRoutes = [
-  { path: '/', changefreq: 'daily', priority: '1.0' },
-  { path: '/shiny-showcase/', changefreq: 'daily', priority: '0.95' },
-  { path: '/shotm/', changefreq: 'daily', priority: '0.9' },
-  { path: '/team-statistics/', changefreq: 'daily', priority: '0.85' },
-  { path: '/pokedex/', changefreq: 'weekly', priority: '0.8' },
-  { path: '/dex-helper/', changefreq: 'weekly', priority: '0.7' },
-  { path: '/roaming-legendaries/', changefreq: 'weekly', priority: '0.8' },
-  { path: '/streamers/', changefreq: 'daily', priority: '0.7' },
-  { path: '/trophy-board/', changefreq: 'monthly', priority: '0.6' },
-  { path: '/counter-generator/', changefreq: 'monthly', priority: '0.6' },
-  { path: '/egg-move-calculator/', changefreq: 'monthly', priority: '0.6' },
-  { path: '/player-card-generator/', changefreq: 'monthly', priority: '0.6' },
-  { path: '/random-pokemon-generator/', changefreq: 'monthly', priority: '0.7' },
-  { path: '/particle-viewer/', changefreq: 'monthly', priority: '0.6' },
-  { path: '/catching-calculator/', changefreq: 'weekly', priority: '0.6' },
-  { path: '/events/', changefreq: 'weekly', priority: '0.6' },
-  { path: '/official-event-calendar/', changefreq: 'daily', priority: '0.65' },
-  { path: '/official-shiny-wars-planner/', changefreq: 'daily', priority: '0.7' },
-  { path: '/region-maps/', changefreq: 'weekly', priority: '0.65' },
-  { path: '/hunt-planner/', changefreq: 'weekly', priority: '0.65' },
-  { path: '/altering-cave-rotations/', changefreq: 'daily', priority: '0.65' },
-  { path: '/resources/', changefreq: 'monthly', priority: '0.6' },
-  { path: '/shiny-war-2025/', changefreq: 'weekly', priority: '0.7' },
-  { path: '/themes/', changefreq: 'weekly', priority: '0.7' },
-  { path: '/bounties/', changefreq: 'monthly', priority: '0.7' },
-  { path: '/time-display/', changefreq: 'weekly', priority: '0.6' },
-  { path: '/sprite-recolour/', changefreq: 'weekly', priority: '0.7' }
-];
+// Shared with the prerender: every entry in static_pages.json with a `sitemap` block is listed
+const staticPages = JSON.parse(fs.readFileSync(new URL('../../scripts/seo/static_pages.json', import.meta.url), 'utf-8'));
+const staticRoutes = Object.entries(staticPages)
+  .filter(([, page]) => page.sitemap)
+  .map(([path, page]) => ({ path, ...page.sitemap }));
 
 // Ensure we always publish canonical URLs with a trailing slash
 function ensureTrailingSlash(path) {
