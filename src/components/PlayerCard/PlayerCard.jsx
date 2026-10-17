@@ -29,6 +29,7 @@ function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, 
       style={getRoleStyle(role)}
       data-role={role?.name}
     >
+      {role?.banner && <div className={styles.roleBanner}>{role.banner}</div>}
       <div className={styles.nameContainer}>
         <Link
           to={`/player/${player}/`}

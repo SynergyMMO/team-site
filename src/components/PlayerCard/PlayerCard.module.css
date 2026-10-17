@@ -18,13 +18,13 @@
 }
 
 .roleBorder {
-  border: 3px solid transparent;
+  border: 5px solid transparent;
   background:
     linear-gradient(rgb(20, 10, 35), rgb(20, 10, 35)) padding-box,
     linear-gradient(135deg, var(--role-a), var(--role-b), var(--role-c), var(--role-a)) border-box;
   background-size: 100% 100%, 300% 300%;
-  box-shadow: 0 0 14px var(--role-color), 0 0 30px color-mix(in srgb, var(--role-color) 40%, transparent);
-  animation: roleShimmer 6s ease-in-out infinite;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--role-color) 60%, transparent);
+  animation: roleShimmer 16s ease-in-out infinite;
 }
 
 .roleBadge {
@@ -64,6 +64,25 @@
 .roleBadge:hover .roleTooltip,
 .roleBadge:focus .roleTooltip {
   opacity: 1;
+}
+
+.roleBanner {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.5px;
+  color: var(--role-color);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--role-color) 40%, transparent);
+  animation: roleBannerGlow 6s ease-in-out infinite;
+}
+
+@keyframes roleBannerGlow {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roleBanner { animation: none; }
 }
 
 @keyframes roleShimmer {

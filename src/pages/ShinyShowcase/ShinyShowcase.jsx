@@ -6,6 +6,7 @@ import { useStreamers } from '../../hooks/useStreamers'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { getAssetUrl } from '../../utils/assets'
+import { getPlayerRole } from '../../config/playerRoles'
 import { API } from '../../api/endpoints'
 import styles from './ShinyShowcase.module.css'
 
@@ -86,9 +87,13 @@ export default function ShinyShowcase() {
   }, [data])
 
   const filteredPlayers = useMemo(() => {
-    if (!search) return sortedPlayers
     const lower = search.toLowerCase()
-    return sortedPlayers.filter(([name]) => name.toLowerCase().includes(lower))
+    const matches = search
+      ? sortedPlayers.filter(([name]) => name.toLowerCase().includes(lower))
+      : sortedPlayers
+    // Pinned roles (e.g. Shiny Hunter of the Month) bypass shiny count; sort is stable
+    const isPinned = ([name]) => getPlayerRole(name)?.pinned
+    return [...matches.filter(isPinned), ...matches.filter((p) => !isPinned(p))]
   }, [sortedPlayers, search])
 
   const playersWithFilteredShinies = useMemo(() => {

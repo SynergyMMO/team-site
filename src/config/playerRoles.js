@@ -1,5 +1,6 @@
 
 export const ROLE_MEMBERS = {
+  'Shiny Hunter of the Month!': ["GAMJI"],
   Owner: ['Hyper', 'Bloom', 'BaldBabyBat'],
   Admin: ["ItsTurn", "TFastest"],
   Moderator: ["Indica", "Russoto", "Stinky", "Zempex"],
@@ -8,6 +9,8 @@ export const ROLE_MEMBERS = {
 }
 
 export const ROLE_DEFINITIONS = {
+  // pinned: always listed first on the showcase, banner: text shown above the card
+  'Shiny Hunter of the Month!': { icon: '\uD83C\uDF1F', color: '#ffd700', gradient: ['#ffd700', '#fff6b0', '#d4a017'], pinned: true, banner: 'Shiny Hunter of the Month!' },
   Owner: { icon: '\uD83D\uDC51', color: '#ffd700', gradient: ['#ffd700', '#ff8c00', '#fff1a8'] },
   Admin: { icon: '\uD83D\uDEE1\uFE0F', color: '#00ffff', gradient: ['#ff0000', '#00ff00', '#0000ff'] },
   Moderator: { icon: '\uD83D\uDD28', color: '#9a5f1b', gradient: ['#9a831b', '#645b07', '#b9cc4d'] },
