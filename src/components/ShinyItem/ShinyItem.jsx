@@ -311,10 +311,7 @@ const bannerInfo = useMemo(() => {
     <span className={styles.wrapper} ref={wrapperRef} data-mobile={isMobile} data-show-infobox={isMobile && showInfoBoxMobile}>
   <div 
     className={`${containerClasses} ${isHunterOfTheMonthContribution ? styles.hunterOfTheMonthContribution : ''}`}
-    title={[
-      isHunterOfTheMonthContribution ? 'Contributed to Shiny Hunter of the Month' : null,
-      bannerInfo?.fullText,
-    ].filter(Boolean).join(' · ') || undefined}
+    title={bannerInfo ? bannerInfo.fullText : undefined}
   >
     {/* Shortened Badge Text ("SW24"), Full Tooltip on Hover */}
     {bannerInfo && (
@@ -332,9 +329,7 @@ const bannerInfo = useMemo(() => {
       src={shinyGifPath}
       alt={shiny.Pokemon}
       /* Hovering the GIF displays full banner name */
-      title={isHunterOfTheMonthContribution
-        ? 'Contributed to Shiny Hunter of the Month'
-        : bannerInfo ? bannerInfo.fullText : shiny.Pokemon}
+      title={bannerInfo ? bannerInfo.fullText : shiny.Pokemon}
       className={`${styles.shinyGif} ${isSold ? styles.soldPokemon : ''} ${styles.clickable}`}
       width="80"
       height="80"
