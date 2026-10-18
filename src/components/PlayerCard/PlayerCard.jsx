@@ -51,7 +51,14 @@ function PlayerCard({ player, data, rank, streamers, mobileInteractive = false, 
       </div>
       <div className={styles.shinyList}>
         {Object.entries(data.shinies).map(([id, s]) => (
-          <ShinyItem key={id} shiny={s} userName={player} localizeDates={false} mobileInteractive={mobileInteractive} />
+          <ShinyItem
+            key={id}
+            shiny={s}
+            userName={player}
+            localizeDates={false}
+            mobileInteractive={mobileInteractive}
+            highlightPreviousMonth={role?.name === 'Shiny Hunter of the Month!'}
+          />
         ))}
       </div>
     </div>

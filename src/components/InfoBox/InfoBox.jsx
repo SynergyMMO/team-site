@@ -127,7 +127,14 @@ function formatEncounterCount(count) {
   return Number(count).toLocaleString()
 }
 
-export default function InfoBox({ shiny, points, customText, localizeDates = true, showOnMobile = false }) {
+export default function InfoBox({
+  shiny,
+  points,
+  customText,
+  localizeDates = true,
+  showOnMobile = false,
+  hunterOfTheMonthContribution = false,
+}) {
   const boxRef = useRef(null)
 
   useEffect(() => {
@@ -239,6 +246,11 @@ export default function InfoBox({ shiny, points, customText, localizeDates = tru
       data-show-mobile={showOnMobile}
     >
       <strong>{customText || shiny.Pokemon}</strong>
+      {hunterOfTheMonthContribution && (
+        <div className={styles.hunterOfTheMonthContribution}>
+          Contributed to Shiny Hunter of the Month
+        </div>
+      )}
       {points !== undefined && (
         <div className={styles.detail}>({points} pts)</div>
       )}

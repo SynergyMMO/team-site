@@ -1,4 +1,5 @@
-import { useReducer, useEffect, useMemo } from 'react'
+import { useReducer, useEffect, useMemo, useRef } from 'react'
+import useEnterToSubmit from './useEnterToSubmit'
 import Autocomplete from './Autocomplete'
 import pokemonData from '../../../data/pokemmo_data/pokemon-data.json'
 import styles from '../Admin.module.css'
@@ -161,23 +162,25 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', al
     onSubmit(cleaned)
   }
 
+  const formRef = useRef(null)
   const handleKeyDown = (e) => {
     if(e.key === 'Enter') {
       const tag = e.target.tagName.toLowerCase()
-      console.log('KeyDown:', { key: e.key, tag, classList: e.target.classList })
-      if(tag !== 'textarea' && !e.target.classList.contains('autocomplete-input')) {
+      if(tag !== 'textarea' && tag !== 'button' && !e.target.classList.contains('autocomplete-input')) {
         e.preventDefault()
         handleSubmit()
       }
     }
   }
+  // Enter pressed while focus is outside the form (e.g. on the page body)
+  useEnterToSubmit(() => { if(!isMutating) handleSubmit() }, { ignoreRef: formRef })
 
 
 
   const formatIVs = raw => raw
 
   return (
-    <form className={styles.shinyForm} onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
+    <form ref={formRef} className={styles.shinyForm} onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
       <section className={styles.shinyFormSection}>
         <h4>Pokémon details</h4>
         <div className={styles.shinyFormGrid}>

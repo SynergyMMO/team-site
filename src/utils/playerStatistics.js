@@ -268,10 +268,8 @@ const getHighestWildIvStats = (data) => {
     let bestIvText = null
 
     Object.values(playerData?.shinies || {}).forEach((shiny) => {
-      if (getEncounterMethod(shiny) === 'egg') return
-
-      if (getEncounterMethod(shiny) === 'gift') return
-
+      const encounterMethod = getEncounterMethod(shiny)
+      if (encounterMethod === 'egg' || encounterMethod === 'gift') return
 
       const ivsRaw = shiny?.ivs ?? shiny?.IVs ?? shiny?.Iv ?? shiny?.IV ?? null
       const ivTotal = parseIvTotal(ivsRaw)
@@ -295,7 +293,14 @@ const getHighestWildIvStats = (data) => {
 }
 
 const getEncounterMethod = (shiny) => {
-  return String(shiny?.encounter_method ?? shiny?.method ?? shiny?.Method ?? '').trim().toLowerCase()
+  const method = [
+    shiny?.encounter_method,
+    shiny?.['Encounter Type'],
+    shiny?.method,
+    shiny?.Method,
+  ].find((value) => value != null && String(value).trim())
+
+  return String(method ?? '').trim().toLowerCase()
 }
 
 
@@ -1053,4 +1058,3 @@ export const getMostCommonPokemon = (data, limit = 5) => {
     .slice(0, limit)
     .map(([pokemon, count]) => ({ pokemon, count }))
 }
-

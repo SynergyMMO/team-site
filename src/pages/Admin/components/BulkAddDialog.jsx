@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import BulkAddReview from './BulkAddReview'
+import useEnterToSubmit from './useEnterToSubmit'
 import styles from '../Admin.module.css'
 
 function splitPokemonParts(value) {
@@ -100,6 +101,9 @@ export default function BulkAddDialog({ open, onClose, onBulkAdd, playerNames = 
     setReviewEntries(null)
     onClose()
   }
+
+  // The review step registers its own Enter handler
+  useEnterToSubmit(handleBulkAdd, { enabled: open && !reviewEntries })
 
   if (!open) return null
   return (

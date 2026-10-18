@@ -77,6 +77,11 @@
   border-color: #4a90e2;
 }
 
+.gifContainer.hunterOfTheMonthContribution {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.75), 0 0 16px rgba(255, 215, 0, 0.35);
+}
+
 .shinyGif {
   max-width: 90%;
   max-height: 90%;

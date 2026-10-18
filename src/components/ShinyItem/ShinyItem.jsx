@@ -107,7 +107,32 @@ function getShinyWarsBanner(shiny) {
   return null
 }
 
-function ShinyItem({ shiny, points, userName, localizeDates = true }) {
+function wasCaughtPreviousMonth(shiny) {
+  const now = new Date()
+  const previousMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1))
+  const dateStr = shiny.date_caught || shiny.Date || shiny['Caught Date'] || shiny.Caught
+
+  if (dateStr) {
+    const dateObj = new Date(dateStr)
+    if (!Number.isNaN(dateObj.getTime())) {
+      // date_caught is recorded as PST wall-clock time mislabeled as UTC.
+      const caughtDate = new Date(dateObj.getTime() + 8 * 60 * 60 * 1000)
+      return caughtDate.getUTCFullYear() === previousMonth.getUTCFullYear()
+        && caughtDate.getUTCMonth() === previousMonth.getUTCMonth()
+    }
+  }
+
+  const month = String(shiny.Month || '').trim().toLowerCase()
+  const year = Number(shiny.Year)
+  const monthIndex = [
+    'january', 'february', 'march', 'april', 'may', 'june',
+    'july', 'august', 'september', 'october', 'november', 'december',
+  ].indexOf(month)
+
+  return year === previousMonth.getUTCFullYear() && monthIndex === previousMonth.getUTCMonth()
+}
+
+function ShinyItem({ shiny, points, userName, localizeDates = true, highlightPreviousMonth = false }) {
   const navigate = useNavigate()
   const shinyGifPath = useMemo(() => getLocalPokemonGif(shiny.Pokemon), [shiny.Pokemon])
   const [isMobile] = useState(isMobileDevice())
@@ -183,6 +208,7 @@ const bannerInfo = useMemo(() => {
   }, [shiny])
 
   const isSold = shiny.Sold?.toLowerCase() === 'yes'
+  const isHunterOfTheMonthContribution = highlightPreviousMonth && wasCaughtPreviousMonth(shiny)
 
   // Conditional override for InfoBox text
   const infoText = userName === 'Strength' && shiny.Pokemon === 'zorua'
@@ -284,8 +310,11 @@ const bannerInfo = useMemo(() => {
   return (
     <span className={styles.wrapper} ref={wrapperRef} data-mobile={isMobile} data-show-infobox={isMobile && showInfoBoxMobile}>
   <div 
-    className={containerClasses} 
-    title={bannerInfo ? bannerInfo.fullText : undefined}
+    className={`${containerClasses} ${isHunterOfTheMonthContribution ? styles.hunterOfTheMonthContribution : ''}`}
+    title={[
+      isHunterOfTheMonthContribution ? 'Contributed to Shiny Hunter of the Month' : null,
+      bannerInfo?.fullText,
+    ].filter(Boolean).join(' · ') || undefined}
   >
     {/* Shortened Badge Text ("SW24"), Full Tooltip on Hover */}
     {bannerInfo && (
@@ -303,7 +332,9 @@ const bannerInfo = useMemo(() => {
       src={shinyGifPath}
       alt={shiny.Pokemon}
       /* Hovering the GIF displays full banner name */
-      title={bannerInfo ? bannerInfo.fullText : shiny.Pokemon}
+      title={isHunterOfTheMonthContribution
+        ? 'Contributed to Shiny Hunter of the Month'
+        : bannerInfo ? bannerInfo.fullText : shiny.Pokemon}
       className={`${styles.shinyGif} ${isSold ? styles.soldPokemon : ''} ${styles.clickable}`}
       width="80"
       height="80"
@@ -320,7 +351,14 @@ const bannerInfo = useMemo(() => {
       }}
     />
   </div>
-  <InfoBox shiny={shiny} points={points} customText={infoText} localizeDates={localizeDates} showOnMobile={isMobile && showInfoBoxMobile} />
+  <InfoBox
+    shiny={shiny}
+    points={points}
+    customText={infoText}
+    localizeDates={localizeDates}
+    showOnMobile={isMobile && showInfoBoxMobile}
+    hunterOfTheMonthContribution={isHunterOfTheMonthContribution}
+  />
 </span>
   )
 }

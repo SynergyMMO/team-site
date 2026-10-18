@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Autocomplete from './Autocomplete'
+import useEnterToSubmit from './useEnterToSubmit'
 import styles from '../Admin.module.css'
 
 const FLAG_FIELDS = [
@@ -90,6 +91,7 @@ export default function BulkAddReview({ entries, playerNames, allPokemonNames, o
     onConfirm(result)
   }
 
+  useEnterToSubmit(handleConfirm)
   return (
     <div className={styles.dialogOverlay}>
       <div className={styles.dialogBox + ' ' + styles.bulkReviewFullWidth}>

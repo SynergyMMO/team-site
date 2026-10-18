@@ -173,7 +173,7 @@ const PLAYER_LEADERBOARD_SECTIONS = [
   {
     key: 'highestWildIvShiny',
     title: 'Highest Wild IV Shiny',
-    subtitle: 'Highest total IV shiny from wild encounters (egg method excluded).',
+    subtitle: 'Highest total IV shiny from wild encounters (egg and gift methods excluded).',
     value: (entry) => `IVs: ${entry.highestWildIvTotal}`,
     extra: (entry) => entry.highestWildIvPokemon
       ? `Pokemon: ${formatPokemonName(entry.highestWildIvPokemon)}${entry.highestWildIvSpread ? ` (${entry.highestWildIvSpread})` : ''}`
@@ -434,4 +434,3 @@ export default function TeamStatistics() {
     </div>
   )
 }
-
