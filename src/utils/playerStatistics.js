@@ -269,7 +269,12 @@ const getHighestWildIvStats = (data) => {
 
     Object.values(playerData?.shinies || {}).forEach((shiny) => {
       const encounterMethod = getEncounterMethod(shiny)
-      if (encounterMethod === 'egg' || encounterMethod === 'gift') return
+      if (
+        encounterMethod === 'egg' ||
+        encounterMethod === 'gift' ||
+        encounterMethod === 'event' ||
+        String(shiny?.Event ?? '').trim().toLowerCase() === 'yes'
+      ) return
 
       const ivsRaw = shiny?.ivs ?? shiny?.IVs ?? shiny?.Iv ?? shiny?.IV ?? null
       const ivTotal = parseIvTotal(ivsRaw)
@@ -762,9 +767,10 @@ export const calculatePlayerStatistics = (data) => {
     const totalShinies = shinyEntries.length
     const dataCompleteness = totalShinies > 0 ? (completeStats.length / totalShinies) * 100 : 0
 
+    // Number(null) is 0, so missing counts must be skipped explicitly
     const encounterCounts = shinyEntries
-      .map((s) => Number(s.encounter_count))
-      .filter((count) => Number.isFinite(count))
+      .map((s) => (s.encounter_count == null || s.encounter_count === '' ? NaN : Number(s.encounter_count)))
+      .filter((count) => Number.isFinite(count) && count > 0)
 
     const averageEncounter =
       encounterCounts.length > 0

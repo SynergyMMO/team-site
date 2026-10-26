@@ -127,7 +127,14 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
       tierCounts,
       shiniesWithEncounters,
       allShinies: shinies,
-      missingPokemon: shinies.filter(s => !s.encounter_count || s.encounter_count === 0),
+      missingPokemon: shinies.filter(s => {
+        const encounterMethod = String(s.encounter_method || '').trim().toLowerCase()
+        const isGift =
+          encounterMethod === 'gift' ||
+          encounterMethod === 'event' ||
+          String(s.Event || '').trim().toLowerCase() === 'yes'
+        return !isGift && (!s.encounter_count || s.encounter_count === 0)
+      }),
     }
   }, [playerData])
 

@@ -17,6 +17,10 @@
   z-index: 10000;
   white-space: normal;
   width: 300px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  box-sizing: border-box;
+  overflow-y: auto;
   font-size: 0.85rem;
   border: 2px solid #00d4ff;
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
@@ -36,6 +40,11 @@
   border-color: rgba(0, 0, 0, 0.95) transparent transparent transparent;
 }
 
+.tooltipArrowUp {
+  top: -10px;
+  border-color: transparent transparent rgba(0, 0, 0, 0.95) transparent;
+}
+
 @media (max-width: 768px) {
   .tooltip {
     width: 200px;
@@ -46,5 +55,9 @@
   .tooltipArrow {
     margin-left: -3px;
     border-width: 3px;
+  }
+
+  .tooltipArrowUp {
+    top: -6px;
   }
 }
