@@ -65,8 +65,9 @@ const normalizePokemonForDex = (value) => {
     .toLowerCase()
 }
 
-const buildSpeciesToLineMap = () => {
-  const map = new Map()
+const buildPokemonLineMaps = () => {
+  const speciesToLine = new Map()
+  const lineLabels = new Map()
   let lineId = 0
 
   Object.values(generationData || {}).forEach((generationLines) => {
@@ -76,18 +77,22 @@ const buildSpeciesToLineMap = () => {
       if (!Array.isArray(line) || line.length === 0) return
 
       const currentLineId = `line-${lineId++}`
+      lineLabels.set(currentLineId, line.join(' & '))
       line.forEach((species) => {
         const key = normalizePokemonForDex(species)
         if (!key) return
-        map.set(key, currentLineId)
+        speciesToLine.set(key, currentLineId)
       })
     })
   })
 
-  return map
+  return { speciesToLine, lineLabels }
 }
 
-const TEAM_DEX_SPECIES_TO_LINE = buildSpeciesToLineMap()
+const {
+  speciesToLine: TEAM_DEX_SPECIES_TO_LINE,
+  lineLabels: TEAM_DEX_LINE_LABELS,
+} = buildPokemonLineMaps()
 
 const getPokemonLineKey = (pokemonName) => {
   const key = normalizePokemonForDex(pokemonName)
@@ -1047,20 +1052,24 @@ export const getMostCommonPokemon = (data, limit = 5) => {
       .toLowerCase()
   }
 
-  const counts = {}
+  const counts = new Map()
   Object.values(data).forEach((playerData) => {
     Object.values(playerData?.shinies || {}).forEach((shiny) => {
       const pokemon = normalizePokemonKey(shiny?.Pokemon)
       if (!pokemon) return
-      counts[pokemon] = (counts[pokemon] || 0) + 1
+
+      const lineKey = getPokemonLineKey(shiny?.Pokemon)
+      const groupKey = lineKey || pokemon
+      const entry = counts.get(groupKey) || {
+        pokemon: lineKey ? TEAM_DEX_LINE_LABELS.get(lineKey) : pokemon,
+        count: 0,
+      }
+      entry.count += 1
+      counts.set(groupKey, entry)
     })
   })
 
-  return Object.entries(counts)
-    .sort((a, b) => {
-      if (b[1] !== a[1]) return b[1] - a[1]
-      return a[0].localeCompare(b[0])
-    })
+  return [...counts.values()]
+    .sort((a, b) => b.count - a.count || a.pokemon.localeCompare(b.pokemon))
     .slice(0, limit)
-    .map(([pokemon, count]) => ({ pokemon, count }))
 }
