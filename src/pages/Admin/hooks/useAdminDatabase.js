@@ -636,7 +636,12 @@ export default function useAdminDB(auth) {
       const response = await fetch(API.currentMembers);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      setMembers(data.map((name, index) => ({ id: index.toString(), name })));
+      setMembers(data.map((member, index) => ({
+        id: index.toString(),
+        name: typeof member === 'string' ? member : member.name,
+        discord: typeof member === 'string' ? '' : member.discord || '',
+        details: typeof member === 'string' ? '' : member.details || member.addedInformation || '',
+      })));
     } catch (err) {
       console.error("Failed to load members:", err);
       setMembers([]);
@@ -647,7 +652,11 @@ export default function useAdminDB(auth) {
 const saveMembers = useCallback(async (newMembers, actionDescription) => {
   if (!auth?.username && !auth?.name) return false;
 
-  const namesArray = newMembers.map(m => m.name);
+  const memberData = newMembers.map(({ name, discord, details, addedInformation }) => ({
+    name,
+    discord: discord || '',
+    details: details || addedInformation || '',
+  }));
   try {
     const response = await fetch(API.updateCurrentMembers, {
       method: 'POST',
@@ -655,7 +664,7 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
       body: JSON.stringify({
         username: auth.username || auth.name,
         password: auth.password,
-        data: namesArray,
+        data: memberData,
         action: actionDescription || "Updated current members",
       }),
     });
@@ -664,7 +673,12 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
     const result = text ? JSON.parse(text) : {};
 
     if (result.success) {
-      setMembers(namesArray.map((name, index) => ({ id: index.toString(), name })));
+      setMembers(newMembers.map((member, index) => ({
+        ...member,
+        id: index.toString(),
+        discord: member.discord || '',
+        details: member.details || member.addedInformation || '',
+      })));
       return true;
     } else {
       console.error("Failed to save members:", result.error || "Unknown error");
@@ -689,7 +703,7 @@ const saveMembers = useCallback(async (newMembers, actionDescription) => {
 
   const updateMember = useCallback(async (updatedPlayer) => {
     const newList = members.map(p => (p.id === updatedPlayer.id ? updatedPlayer : p));
-    await saveMembers(newList, `Updated member: ${updatedPlayer.name}`);
+    return saveMembers(newList, `Updated member: ${updatedPlayer.name}`);
   }, [members, saveMembers]);
 
   const deleteMember = useCallback(async (playerId) => {

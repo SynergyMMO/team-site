@@ -35,3 +35,58 @@ input {
   border-radius: 6px;
   border: 1px solid #b2bec3;
 }
+
+.dialogBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.detailsDialog {
+  width: min(100%, 480px);
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: #28203c;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.detailsDialog label {
+  display: block;
+  margin: 16px 0;
+  font-weight: 600;
+}
+
+.detailsDialog input,
+.detailsDialog textarea {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  margin: 8px 0 0;
+  font: inherit;
+}
+
+.detailsDialog textarea {
+  padding: 8px 10px;
+  border: 1px solid #b2bec3;
+  border-radius: 6px;
+  resize: vertical;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.dialogActions button {
+  margin-left: 0;
+}
+
+.error {
+  color: #ffb3b3;
+}
