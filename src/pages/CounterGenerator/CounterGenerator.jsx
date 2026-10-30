@@ -114,8 +114,12 @@ export default function CounterGenerator() {
             restoreFrame = new Uint8ClampedArray(fullFrame)
           }
 
-          const patch = new ImageData(frame.patch, info.width, info.height)
-          ctx.putImageData(patch, info.left, info.top)
+          // Composite the patch (putImageData would overwrite with transparent pixels)
+          const patchCanvas = document.createElement('canvas')
+          patchCanvas.width = info.width
+          patchCanvas.height = info.height
+          patchCanvas.getContext('2d').putImageData(new ImageData(frame.patch, info.width, info.height), 0, 0)
+          ctx.drawImage(patchCanvas, info.left, info.top)
           fullFrame = new Uint8ClampedArray(ctx.getImageData(0, 0, width, height).data)
 
           const resizedCanvas = document.createElement('canvas')
