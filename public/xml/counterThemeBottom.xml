@@ -1,38 +1,53 @@
-<images file="unexpanded/minimised.png">
-  <area name="encounter_counter" xywh="*" />
+  <images file="unexpanded/minimised.png">
+    <area name="encounter_counter" xywh="*"/>
   </images>
 
-<theme name="encounter-counter" ref="resizableframe">
-  <param name="titleAreaTop"><int>8</int></param>
-  <param name="titleAreaLeft"><int>11</int></param>
-  <param name="titleAreaRight"><int>-1</int></param>
-  <param name="titleAreaBottom"><int>20</int></param>
-  <param name="border"><border>20,0,0,0</border></param>
-  <param name="background"><image>encounter_counter</image></param>
-  <param name="minWidth"><int>200</int></param>
-  <theme name="content" ref="-defaults">
-    <theme name="label" ref="label">
-      <param name="minWidth"><int>50</int></param>
-      <param name="font"><font>alphabeta-border</font></param>
-      <param name="border"><border>7,7</border></param>
-      <param name="textAlignment"><enum type="alignment">CENTER</enum></param>
-    </theme>
-    <theme name="label-left" ref="label">
-      <param name="textAlignment"><enum type="alignment">LEFT</enum></param>
-    </theme>
-    <theme name="icon" ref="label">
-      <param name="border"><border>7,7</border></param>
-    </theme>
-    <theme name="cell" ref="label">
-      <param name="background"><image>ui-inputbox.background</image></param>
-      <param name="textAlignment"><enum type="alignment">LEFT</enum></param>
-      <param name="border"><border>5</border></param>
+  <theme name="encounter-counter" ref="resizableframe">
+    <param name="titleAreaTop"><int>8</int></param>
+    <param name="titleAreaLeft"><int>11</int></param>
+    <param name="titleAreaRight"><int>-1</int></param>
+    <param name="titleAreaBottom"><int>20</int></param>
+    <param name="border"><border>20,0,0,0</border></param>
+    <param name="background"><image>encounter_counter</image></param>
+    <param name="minWidth"><int>200</int></param>
+    <theme name="content" ref="-defaults">
+      <theme name="label" ref="label">
+        <param name="minWidth"><int>50</int></param>
+        <param name="font"><font>main-border</font></param>
+        <param name="border"><border>7,7</border></param>
+        <param name="textAlignment"><enum type="alignment">CENTER</enum></param>
+      </theme>
+      <theme name="label-left" ref="label">
+        <param name="textAlignment"><enum type="alignment">LEFT</enum></param>
+      </theme>
+      <theme name="icon" ref="label">
+        <param name="border"><border>7,7</border></param>
+      </theme>
+      <theme name="cell" ref="label">
+        <param name="background"><image>ui-inputbox.background</image></param>
+        <param name="textAlignment"><enum type="alignment">LEFT</enum></param>
+        <param name="border"><border>5</border></param>
+      </theme>
     </theme>
   </theme>
-</theme>
 
-<theme name="encounter-counter-expanded" ref="encounter-counter">
-  <param name="background"><image>encounter_counter_anim</image></param>
-</theme>
+  <theme name="encounter-counter-expanded" ref="encounter-counter">
+    <param name="background"><image>encounter_counter_anim</image></param>
+  </theme>
+
+  <theme name="hud-encounters" ref="-defaults" allowWildcard="true">
+    <param name="background"><image>none</image></param>
+    <param name="panelFill"><image>encounter_counter_anim</image></param>
+    <param name="panelEdge"><image>none</image></param>
+    <param name="panelFillTint"><color>#FFFFFFFF</color></param>
+    <param name="panelEdgeTint"><color>#00000000</color></param>
+  </theme>
+
+  <theme name="hud-encounters-menu" ref="-defaults" allowWildcard="true">
+    <param name="background"><image>none</image></param>
+    <param name="panelFill"><image>encounter_counter</image></param>
+    <param name="panelEdge"><image>none</image></param>
+    <param name="panelFillTint"><color>#FFFFFFFF</color></param>
+    <param name="panelEdgeTint"><color>#00000000</color></param>
+  </theme>
 </themes>
-

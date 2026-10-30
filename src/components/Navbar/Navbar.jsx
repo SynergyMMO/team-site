@@ -31,7 +31,7 @@ const NAV_ITEMS = [
   {
     label: 'Tools',
     submenu: [
-      { to: '/counter-generator/', label: 'Counter Generator' },
+      { to: '/counter-generator/', label: 'Encounter Counter Generator' },
       { to: '/egg-move-calculator/', label: 'Egg Move Calculator' },
       { to: '/player-card-generator/', label: 'Player Card Generator' },
       { to: '/random-pokemon-generator/', label: 'Random Pokemon Generator' },
@@ -199,4 +199,3 @@ export default function Navbar() {
     </nav>
   )
 }
-

@@ -9,7 +9,7 @@ export default function CounterGenerator() {
   ];
 
   useDocumentHead({
-    title: 'PokeMMO Counter Theme Generator - Custom Encounter Counters',
+    title: 'Encounter Counter Generator',
     description: 'Create a custom PokeMMO encounter counter theme. Pick Pokemon, colours and layouts, then export a ready-to-use counter for your shiny hunts.',
     canonicalPath: '/counter-generator/',
     breadcrumbs
@@ -73,17 +73,16 @@ export default function CounterGenerator() {
     setStatus('Processing frames...')
 
     try {
-      const { GifReader } = await import('omggif')
+      const { parseGIF, decompressFrames } = await import('gifuct-js')
       const JSZip = (await import('jszip')).default
 
       let frames = []
 
       if (file.type === 'image/gif') {
-        const buffer = new Uint8Array(await file.arrayBuffer())
-        const reader = new GifReader(buffer)
-
-        const width = reader.width
-        const height = reader.height
+        const gif = parseGIF(await file.arrayBuffer())
+        const gifFrames = decompressFrames(gif, true)
+        const width = gif.lsd.width
+        const height = gif.lsd.height
 
         const canvas = document.createElement('canvas')
         canvas.width = width
@@ -91,24 +90,33 @@ export default function CounterGenerator() {
         const ctx = canvas.getContext('2d')
 
         let fullFrame = new Uint8ClampedArray(width * height * 4)
-        let prevFrame = null
+        let restoreFrame = null
+        let previousDisposal = 0
+        let previousFrameInfo = null
 
-        for (let i = 0; i < reader.numFrames(); i++) {
-          const info = reader.frameInfo(i)
+        for (let i = 0; i < gifFrames.length; i++) {
+          const frame = gifFrames[i]
+          const info = frame.dims
 
-          if (info.disposal === 2) {
-            fullFrame.fill(0)
-            ctx.clearRect(0, 0, width, height)
-          } else if (info.disposal === 3 && prevFrame) {
-            fullFrame.set(prevFrame)
+          if (previousDisposal === 2) {
+            const { left, top, width: frameWidth, height: frameHeight } = previousFrameInfo
+            for (let row = top; row < top + frameHeight; row++) {
+              const start = (row * width + left) * 4
+              fullFrame.fill(0, start, start + frameWidth * 4)
+            }
+            ctx.clearRect(left, top, frameWidth, frameHeight)
+          } else if (previousDisposal === 3 && restoreFrame) {
+            fullFrame.set(restoreFrame)
+            ctx.putImageData(new ImageData(fullFrame, width, height), 0, 0)
           }
 
-          prevFrame = new Uint8ClampedArray(fullFrame)
+          if (frame.disposalType === 3) {
+            restoreFrame = new Uint8ClampedArray(fullFrame)
+          }
 
-          reader.decodeAndBlitFrameRGBA(i, fullFrame)
-
-          const imageData = new ImageData(fullFrame, width, height)
-          ctx.putImageData(imageData, 0, 0)
+          const patch = new ImageData(frame.patch, info.width, info.height)
+          ctx.putImageData(patch, info.left, info.top)
+          fullFrame = new Uint8ClampedArray(ctx.getImageData(0, 0, width, height).data)
 
           const resizedCanvas = document.createElement('canvas')
           resizedCanvas.width = w
@@ -127,22 +135,15 @@ export default function CounterGenerator() {
             blob,
             duration: userDuration
           })
+
+          previousDisposal = frame.disposalType
+          previousFrameInfo = info
         }
       } else if (file.type.startsWith('image/')) {
         const blob = await resizeToBlob(file, w, h)
         frames = [{ name: 'frame-00001.png', blob, duration: userDuration }]
       } else {
         throw new Error('Unsupported file type. Please upload a GIF or PNG.')
-      }
-
-      // ✅ FIX: smooth looping
-      if (frames.length > 1) {
-        const first = frames[0]
-        frames.push({
-          name: `frame-${String(frames.length + 1).padStart(5, '0')}.png`,
-          blob: first.blob,
-          duration: first.duration
-        })
       }
 
       setStatus(`Extracted ${frames.length} frames. Loading XML templates...`)
@@ -226,6 +227,9 @@ export default function CounterGenerator() {
 
   return (
     <div className={styles.page}>
+      <p className={styles.updateNotice}>
+        Currently working, The update limits counters to 13 frames total. This may or may not be a bug, and I hope existing themes from this website will auto-update/fix if they happen to fix this issue. If not, I will update this later and you will need to remake your theme once I do.
+      </p>
       <h2>PokeMMO Encounter Counter Generator</h2>
 
       <div className={styles.formGroup}>
