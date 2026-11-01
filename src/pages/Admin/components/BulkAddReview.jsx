@@ -21,6 +21,8 @@ const FLAG_FIELDS = [
   { key: 'Pkid', label: 'Pkid' },
   { key: 'Legendary', label: 'Legendary' },
 ]
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
 export default function BulkAddReview({ entries, playerNames, allPokemonNames, onChange, onConfirm, onCancel, db }) {
     // Helper to check if a shiny already exists for this player and Pokémon
     function isDuplicate(entry) {
@@ -42,6 +44,12 @@ export default function BulkAddReview({ entries, playerNames, allPokemonNames, o
       if (field === 'Reaction Link') changed.Reaction = value.trim() ? 'Yes' : 'No'
       return changed
     })
+    setPending(updated)
+    onChange && onChange(updated)
+  }
+
+  function handleApplyAll(field, value) {
+    const updated = pending.map(entry => ({ ...entry, [field]: value || null }))
     setPending(updated)
     onChange && onChange(updated)
   }
@@ -106,6 +114,30 @@ export default function BulkAddReview({ entries, playerNames, allPokemonNames, o
             />
             Current Month
           </label>
+        </div>
+        <div className={styles.bulkApplyAll}>
+          <div className={styles.bulkReviewField}>
+            <label htmlFor="bulk-all-month">Month (all entries)</label>
+            <select
+              id="bulk-all-month"
+              disabled={useCurrentMonth}
+              value={pending.length && pending.every(e => e.Month === pending[0].Month) ? pending[0].Month || '' : ''}
+              onChange={e => handleApplyAll('Month', e.target.value)}
+            >
+              <option value="">Mixed / none</option>
+              {MONTH_NAMES.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+          <div className={styles.bulkReviewField}>
+            <label htmlFor="bulk-all-year">Year (all entries)</label>
+            <input
+              id="bulk-all-year"
+              disabled={useCurrentMonth}
+              value={pending.length && pending.every(e => e.Year === pending[0].Year) ? pending[0].Year || '' : ''}
+              onChange={e => handleApplyAll('Year', e.target.value)}
+              placeholder="e.g. 2026"
+            />
+          </div>
         </div>
         <div className={styles.bulkReviewList}>
           {pending.map((entry, idx) => (

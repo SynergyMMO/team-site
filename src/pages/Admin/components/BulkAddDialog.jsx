@@ -21,14 +21,67 @@ function splitPokemonParts(value) {
   return parts
 }
 
-export function parseBulkAddText(text) {
+function stripFlags(value) {
+  return value.replace(/\([^)]*\)/g, '').trim().toLowerCase()
+}
+
+// Splits a line holding several "Player: Pokemon" groups (comma separated,
+// colon optional when the Pokemon name is known) into [player, pokemonText] records.
+function splitLineIntoRecords(line, knownNames) {
+  const records = []
+  let current = null
+  for (const segment of splitTopLevel(line, [','])) {
+    const colon = segment.match(/^([^:|/()]+):\s*(.*)$/)
+    if (colon) {
+      current = { player: colon[1].trim(), pokes: [colon[2]] }
+      records.push(current)
+      continue
+    }
+    const firstPart = splitPokemonParts(segment.replace(/,/g, ''))[0] || ''
+    if (current && knownNames.has(stripFlags(firstPart))) {
+      current.pokes.push(segment)
+      continue
+    }
+    const words = firstPart.split(/\s+/)
+    let started = false
+    for (let i = 1; i < words.length && !started; i += 1) {
+      if (knownNames.has(stripFlags(words.slice(i).join(' ')))) {
+        const player = words.slice(0, i).join(' ')
+        const rest = segment.trim().slice(player.length).trim()
+        current = { player, pokes: [rest] }
+        records.push(current)
+        started = true
+      }
+    }
+    if (!started && current) current.pokes.push(segment)
+  }
+  return records.map(r => ({ player: r.player, right: r.pokes.join(' | ') }))
+}
+
+function splitTopLevel(value, separators) {
+  const parts = []
+  let current = ''
+  let depth = 0
+  for (const character of value) {
+    if (character === '(') depth += 1
+    if (character === ')' && depth > 0) depth -= 1
+    if (depth === 0 && separators.includes(character)) {
+      if (current.trim()) parts.push(current.trim())
+      current = ''
+    } else {
+      current += character
+    }
+  }
+  if (current.trim()) parts.push(current.trim())
+  return parts
+}
+
+export function parseBulkAddText(text, pokemonNames = []) {
+  const knownNames = new Set(pokemonNames.map(n => String(n).trim().toLowerCase()))
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
   const entries = []
-  for (const line of lines) {
-    const match = line.match(/^([^:]+):\s*(.+)$/i)
-    if (!match) continue
-    const player = match[1].trim()
-    const right = match[2].trim()
+  const records = lines.flatMap(line => splitLineIntoRecords(line, knownNames))
+  for (const { player, right } of records) {
     const pokeParts = splitPokemonParts(right)
     for (const part of pokeParts) {
       const pokeMatch = part.match(/^([^()]+?)(?:\s*\(([^)]+)\))?$/)
@@ -77,7 +130,7 @@ export default function BulkAddDialog({ open, onClose, onBulkAdd, playerNames = 
 
   function handleBulkAdd() {
     try {
-      const entries = parseBulkAddText(text)
+      const entries =       parseBulkAddText(text, allPokemonNames)
       if (entries.length === 0) throw new Error('No valid entries found.')
       setReviewEntries(entries)
       setError('')

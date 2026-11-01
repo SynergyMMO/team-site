@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-01T14:49:09.318Z",
+  "generatedAt": "2026-11-01T15:08:37.176Z",
   "source": "https://adminpage.hypersmmo.workers.dev/admin/database",
   "pausedMonths": [
     "2026-07"
@@ -90989,7 +90989,7 @@
           }
         },
         "NuttyProfessor": {
-          "points": 130,
+          "points": 145,
           "shinies": {
             "51": {
               "Pokemon": "Heracross",
@@ -91110,6 +91110,30 @@
               "Pkid": "No",
               "Legendary": "No",
               "Reaction Link": ""
+            },
+            "55": {
+              "Pokemon": "Corphish",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
             }
           }
         },
@@ -91379,7 +91403,7 @@
           }
         },
         "magicseed": {
-          "points": 19,
+          "points": 22,
           "shinies": {
             "18": {
               "Pokemon": "Poliwhirl",
@@ -91500,11 +91524,64 @@
               "encounter_method": "5x horde",
               "encounter_count": 7193,
               "nickname": null
+            },
+            "22": {
+              "Pokemon": "Poliwhirl",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
+            }
+          }
+        },
+        "Fireflygoddess": {
+          "points": 15,
+          "shinies": {
+            "2": {
+              "Pokemon": "Surskit",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
             }
           }
         },
         "PokeTRNRGoku": {
-          "points": 40,
+          "points": 43,
           "shinies": {
             "9": {
               "Pokemon": "Petilil",
@@ -91565,6 +91642,30 @@
               "Pkid": "No",
               "Legendary": "No",
               "Reaction Link": ""
+            },
+            "11": {
+              "Pokemon": "Poliwhirl",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
             }
           }
         },
@@ -91691,8 +91792,37 @@
             }
           }
         },
+        "HuntedDuck": {
+          "points": 3,
+          "shinies": {
+            "46": {
+              "Pokemon": "Purugly",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
+            }
+          }
+        },
         "skels": {
-          "points": 40,
+          "points": 58,
           "shinies": {
             "29": {
               "Pokemon": "Solrock",
@@ -91801,11 +91931,83 @@
               "Month": "October",
               "Year": "2026",
               "date_caught": null
+            },
+            "33": {
+              "Pokemon": "Poliwhirl",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
+            },
+            "34": {
+              "Pokemon": "Ursaring",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
+            },
+            "35": {
+              "Pokemon": "Donphan",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
             }
           }
         },
         "Jfow": {
-          "points": 11,
+          "points": 41,
           "shinies": {
             "23": {
               "Pokemon": "Psyduck",
@@ -91857,6 +92059,30 @@
             },
             "25": {
               "Pokemon": "Smeargle",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
+            },
+            "26": {
+              "Pokemon": "Vulpix",
               "Secret Shiny": "No",
               "Egg": "No",
               "Safari": "No",
@@ -92496,6 +92722,35 @@
             }
           }
         },
+        "rikkoduu": {
+          "points": 15,
+          "shinies": {
+            "10": {
+              "Pokemon": "Persian",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
+            }
+          }
+        },
         "ItsElixir": {
           "points": 48,
           "shinies": {
@@ -92592,10 +92847,34 @@
           }
         },
         "strawbaerry": {
-          "points": 5,
+          "points": 8,
           "shinies": {
             "8": {
               "Pokemon": "Ponyta",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
+            },
+            "9": {
+              "Pokemon": "Psyduck",
               "Secret Shiny": "No",
               "Egg": "No",
               "Safari": "No",
@@ -92621,7 +92900,7 @@
           }
         },
         "mons": {
-          "points": 55,
+          "points": 70,
           "shinies": {
             "13": {
               "Pokemon": "Solrock",
@@ -92683,6 +92962,30 @@
               "Pkid": "No",
               "Legendary": "No",
               "Reaction Link": ""
+            },
+            "17": {
+              "Pokemon": "Heatmor",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
             }
           }
         },
@@ -92957,7 +93260,7 @@
           }
         },
         "StinkyWinkyxo": {
-          "points": 50,
+          "points": 55,
           "shinies": {
             "6": {
               "Pokemon": "Breloom",
@@ -92991,6 +93294,30 @@
             },
             "7": {
               "Pokemon": "Roselia",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
+            },
+            "8": {
+              "Pokemon": "Nidorina",
               "Secret Shiny": "No",
               "Egg": "No",
               "Safari": "No",
@@ -93107,6 +93434,35 @@
               "Pkid": "No",
               "Legendary": "No",
               "Reaction Link": ""
+            }
+          }
+        },
+        "Akiracole": {
+          "points": 3,
+          "shinies": {
+            "9": {
+              "Pokemon": "Tentacruel",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
             }
           }
         },
@@ -93300,7 +93656,7 @@
           }
         },
         "Katastrophe": {
-          "points": 82,
+          "points": 85,
           "shinies": {
             "45": {
               "Pokemon": "Feebas",
@@ -93475,6 +93831,30 @@
               "encounter_method": "5x horde",
               "encounter_count": 6251,
               "nickname": null
+            },
+            "51": {
+              "Pokemon": "Frillish",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
             }
           }
         },
@@ -93530,17 +93910,47 @@
               "date_caught": null
             }
           }
+        },
+        "Rivra": {
+          "points": 5,
+          "shinies": {
+            "10": {
+              "Pokemon": "Chinchou",
+              "Secret Shiny": "No",
+              "Egg": "No",
+              "Safari": "No",
+              "Fossil": "No",
+              "Fishing": "No",
+              "Swarm": "No",
+              "Headbutt": "No",
+              "Pkid": "No",
+              "Alpha": "No",
+              "Event": "No",
+              "MysteriousBall": "No",
+              "Honey Tree": "No",
+              "Altering Cave": "No",
+              "Sold": "No",
+              "Favourite": "No",
+              "Reaction": "No",
+              "Legendary": "No",
+              "Reaction Link": "",
+              "Month": "October",
+              "Year": "2026",
+              "date_caught": null
+            }
+          }
         }
       },
       "rankings": [
         {
           "player": "NuttyProfessor",
-          "points": 130,
+          "points": 145,
           "shinyIds": [
             "51",
             "52",
             "53",
-            "54"
+            "54",
+            "55"
           ]
         },
         {
@@ -93550,6 +93960,19 @@
             "85",
             "86",
             "87"
+          ]
+        },
+        {
+          "player": "Katastrophe",
+          "points": 85,
+          "shinyIds": [
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51"
           ]
         },
         {
@@ -93563,15 +93986,25 @@
           ]
         },
         {
-          "player": "Katastrophe",
-          "points": 82,
+          "player": "mons",
+          "points": 70,
           "shinyIds": [
-            "45",
-            "46",
-            "47",
-            "48",
-            "49",
-            "50"
+            "13",
+            "14",
+            "17"
+          ]
+        },
+        {
+          "player": "skels",
+          "points": 58,
+          "shinyIds": [
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35"
           ]
         },
         {
@@ -93590,11 +94023,12 @@
           ]
         },
         {
-          "player": "mons",
+          "player": "StinkyWinkyxo",
           "points": 55,
           "shinyIds": [
-            "13",
-            "14"
+            "6",
+            "7",
+            "8"
           ]
         },
         {
@@ -93602,14 +94036,6 @@
           "points": 50,
           "shinyIds": [
             "29"
-          ]
-        },
-        {
-          "player": "StinkyWinkyxo",
-          "points": 50,
-          "shinyIds": [
-            "6",
-            "7"
           ]
         },
         {
@@ -93636,6 +94062,15 @@
           ]
         },
         {
+          "player": "PokeTRNRGoku",
+          "points": 43,
+          "shinyIds": [
+            "9",
+            "10",
+            "11"
+          ]
+        },
+        {
           "player": "GAMJI",
           "points": 43,
           "shinyIds": [
@@ -93645,28 +94080,20 @@
           ]
         },
         {
+          "player": "Jfow",
+          "points": 41,
+          "shinyIds": [
+            "23",
+            "24",
+            "25",
+            "26"
+          ]
+        },
+        {
           "player": "Psilos",
           "points": 40,
           "shinyIds": [
             "21"
-          ]
-        },
-        {
-          "player": "PokeTRNRGoku",
-          "points": 40,
-          "shinyIds": [
-            "9",
-            "10"
-          ]
-        },
-        {
-          "player": "skels",
-          "points": 40,
-          "shinyIds": [
-            "29",
-            "30",
-            "31",
-            "32"
           ]
         },
         {
@@ -93726,6 +94153,17 @@
           ]
         },
         {
+          "player": "magicseed",
+          "points": 22,
+          "shinyIds": [
+            "18",
+            "19",
+            "20",
+            "21",
+            "22"
+          ]
+        },
+        {
           "player": "Dellwina",
           "points": 21,
           "shinyIds": [
@@ -93733,16 +94171,6 @@
             "21",
             "22",
             "23"
-          ]
-        },
-        {
-          "player": "magicseed",
-          "points": 19,
-          "shinyIds": [
-            "18",
-            "19",
-            "20",
-            "21"
           ]
         },
         {
@@ -93772,19 +94200,24 @@
           ]
         },
         {
+          "player": "Fireflygoddess",
+          "points": 15,
+          "shinyIds": [
+            "2"
+          ]
+        },
+        {
+          "player": "rikkoduu",
+          "points": 15,
+          "shinyIds": [
+            "10"
+          ]
+        },
+        {
           "player": "GSday",
           "points": 15,
           "shinyIds": [
             "8"
-          ]
-        },
-        {
-          "player": "Jfow",
-          "points": 11,
-          "shinyIds": [
-            "23",
-            "24",
-            "25"
           ]
         },
         {
@@ -93817,6 +94250,14 @@
           "shinyIds": [
             "24",
             "25"
+          ]
+        },
+        {
+          "player": "strawbaerry",
+          "points": 8,
+          "shinyIds": [
+            "8",
+            "9"
           ]
         },
         {
@@ -93886,13 +94327,6 @@
           ]
         },
         {
-          "player": "strawbaerry",
-          "points": 5,
-          "shinyIds": [
-            "8"
-          ]
-        },
-        {
           "player": "Breezy",
           "points": 5,
           "shinyIds": [
@@ -93914,6 +94348,13 @@
           ]
         },
         {
+          "player": "Rivra",
+          "points": 5,
+          "shinyIds": [
+            "10"
+          ]
+        },
+        {
           "player": "Litrafe",
           "points": 3,
           "shinyIds": [
@@ -93921,10 +94362,24 @@
           ]
         },
         {
+          "player": "HuntedDuck",
+          "points": 3,
+          "shinyIds": [
+            "46"
+          ]
+        },
+        {
           "player": "MiroMMO",
           "points": 3,
           "shinyIds": [
             "43"
+          ]
+        },
+        {
+          "player": "Akiracole",
+          "points": 3,
+          "shinyIds": [
+            "9"
           ]
         },
         {
