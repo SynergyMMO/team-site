@@ -29,6 +29,7 @@ const EventSwarmsTab = () => {
   const inputRef = useRef(null);
 
   const activeSeason = lnyPokemon.seasons.find((season) => season.id === activeSeasonId);
+  const catchLevel = activeSeasonId === "halloween" ? 40 : 30;
   const seasonPokemon = activeSeason?.pokemon ?? [];
   const filteredPokemon = seasonPokemon.filter((poke) =>
     poke.name.toLowerCase().includes(search.toLowerCase())
@@ -170,7 +171,7 @@ const EventSwarmsTab = () => {
 
             const [best, second] = getTopBalls(
               catchRate ?? 0,
-              30,
+              catchLevel,
               types,
               useLevelBall
             );
