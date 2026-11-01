@@ -25,6 +25,7 @@ const rootDir = path.resolve(__dirname, '..')
 const outputPath = path.join(rootDir, 'src', 'data', 'shotm_history.json')
 const tierPokemonPath = path.join(rootDir, 'src', 'data', 'tier_pokemon.json')
 const tierPointsPath = path.join(rootDir, 'src', 'data', 'tier_points.json')
+const playerRolesPath = path.join(rootDir, 'src', 'config', 'playerRoles.js')
 const pausedMonthsPath = path.join(rootDir, 'src', 'data', 'shotm_paused_months.json')
 
 function readJson(filePath) {
@@ -183,6 +184,30 @@ function buildShotmHistory(database, tierPoints, tierLookup, { pausedMonthKeys =
   )
 }
 
+function getPreviousMonthKey(now = new Date()) {
+  const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+  return getCurrentMonthKey(prev)
+}
+
+function updateShinyHunterRole(months, now = new Date()) {
+  const monthKey = getPreviousMonthKey(now)
+  const winner = months[monthKey]?.rankings?.[0]?.player
+  if (!winner) {
+    console.warn(`No SHOTM rankings for ${monthKey}; Shiny Hunter of the Month role unchanged`)
+    return
+  }
+
+  const source = fs.readFileSync(playerRolesPath, 'utf8')
+  const pattern = /('Shiny Hunter of the Month!':\s*)\[[^\]]*\]/
+  if (!pattern.test(source)) {
+    console.warn('Could not find the Shiny Hunter of the Month entry in playerRoles.js')
+    return
+  }
+  const updated = source.replace(pattern, `$1[${JSON.stringify(winner)}]`)
+  if (updated !== source) fs.writeFileSync(playerRolesPath, updated)
+  console.log(`Shiny Hunter of the Month (${monthKey}): ${winner}`)
+}
+
 async function main() {
   const tierPokemon = readJson(tierPokemonPath)
   const tierPoints = readJson(tierPointsPath)
@@ -220,6 +245,7 @@ async function main() {
   }
 
   fs.writeFileSync(outputPath, `${JSON.stringify(history, null, 2)}\n`)
+  updateShinyHunterRole(months)
   console.log(
     `Saved ${Object.keys(months).length} SHOTM month snapshots to ${path.relative(rootDir, outputPath)} ` +
       `(paused: ${pausedMonthKeys.size}, frozen: ${Object.keys(frozenMonths).length})`

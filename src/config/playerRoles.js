@@ -1,9 +1,9 @@
 
 export const ROLE_MEMBERS = {
-  'Shiny Hunter of the Month!': ["GAMJI"],
+  'Shiny Hunter of the Month!': ["NuttyProfessor"],
   Owner: ['Hyper', 'Bloom', 'BaldBabyBat'],
   Admin: ["ItsTurn", "TFastest"],
-  Moderator: ["Indica", "Russoto", "Stinky", "Zempex"],
+  Moderator: ["Indica", "Russoto", "Stinky", "Zempex", "Timmy", "ApparentlyAustin", "TimmyTwoTaper", "Faia"],
   '2026 Official Shiny Wars MVP': ["Ezra"],
   '2025 Official Shiny Wars MVP': ["Torskin"],
 }
