@@ -177,7 +177,7 @@ const EventSwarmsTab = () => {
             );
 
             const levelUpMoves = pokeData ? extractLevelUpMoves(pokeData.moves) : [];
-            const moveset = getLevelUpMoveset({ level_up_moves: levelUpMoves }, 30);
+            const moveset = getLevelUpMoveset({ level_up_moves: levelUpMoves }, catchLevel);
             const movesetWithWarnings = moveset.map(move => ({
               ...move,
               selfDamageWarning: getSelfDamagingMoveWarning(move.move, pokeData || {}),
@@ -232,9 +232,8 @@ const EventSwarmsTab = () => {
                   </div>
                 </div>
 
-                {/* Level 30 Moveset */}
                 <div className={styles.movesetSection}>
-                  <div className={styles.movesetTitle}>Level 30 Moveset</div>
+                  <div className={styles.movesetTitle}>Level {catchLevel} Moveset</div>
                   <ul className={styles.moveList}>
                     {moveset.length === 0 ? (
                       <li className={styles.noMoves}>No data</li>
