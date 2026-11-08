@@ -112,6 +112,7 @@ export function parseBulkAddText(text, pokemonNames = []) {
         Favourite: hasFlag('favourite', 'favorite') ? 'Yes' : 'No',
         Reaction: 'No',
         Legendary: hasFlag('legendary') ? 'Yes' : 'No',
+        Costumed: hasFlag('costumed') ? 'Yes' : 'No',
         'Reaction Link': '',
         Month: null,
         Year: null,

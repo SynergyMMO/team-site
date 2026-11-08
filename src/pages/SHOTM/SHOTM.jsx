@@ -246,7 +246,7 @@ export default function SHOTM() {
         {(showPoints || closingPoints) && (
           <div className={`${styles.pointsContent} ${closingPoints ? styles.slideUp : ''}`}>
             {Object.entries(tierPoints).map(([tier, pts]) => <div key={tier}>{tier}: {pts}</div>)}
-            {Object.entries(TRAIT_POINTS).map(([trait, pts]) => <div key={trait}>{trait}: {pts}</div>)}
+            {Object.entries(TRAIT_POINTS).map(([trait, pts]) => <div key={trait}>{trait === 'Costumed' ? 'Costumed Mons' : trait}: {pts}</div>)}
           </div>
         )}
 
@@ -347,4 +347,3 @@ export default function SHOTM() {
     </div>
   )
 }
-

@@ -39,6 +39,7 @@ const YES_NO_FIELDS = [
   { key: 'Altering Cave', label: 'Altering Cave' },
   { key: 'Pkid', label: 'Pkid' },
   { key: 'Legendary', label: 'Legendary' },
+  { key: 'Costumed', label: 'Costumed Mons' },
 ]
 
 const POKEMON_KEY_MAP = {}
@@ -85,6 +86,7 @@ function getDefaultState() {
     'Altering Cave': 'No',
     Pkid: 'No',
     Legendary: 'No',
+    Costumed: 'No',
     'Reaction Link': '',
   }
 }

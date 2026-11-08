@@ -14,6 +14,7 @@ const TRAIT_CHECKS = [
   { key: 'Altering Cave', label: 'Altering Cave', cls: 'tagAlteringCave' },
   { key: 'Pkid', label: 'Particle: PKid', cls: 'tagEvent' },
   { key: 'Event', label: 'Event', cls: 'tagEvent' },
+  { key: 'Costumed', label: 'Costumed Mons', cls: 'tagEvent' },
   { key: 'Favourite', label: 'Favourite', cls: 'tagFav' },
   { key: 'Legendary', label: 'Legend', cls: 'tagLegend' },
   { key: 'MysteriousBall', label: 'Mystery', cls: 'tagMystery' },

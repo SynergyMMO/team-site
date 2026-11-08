@@ -20,6 +20,7 @@ const FLAG_FIELDS = [
   { key: 'Altering Cave', label: 'Altering Cave' },
   { key: 'Pkid', label: 'Pkid' },
   { key: 'Legendary', label: 'Legendary' },
+  { key: 'Costumed', label: 'Costumed Mons' },
 ]
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December']
 

@@ -93,6 +93,7 @@ export default function ShinyTable({ shinies, onEdit, onDelete, onReorder }) {
             if (shiny.Legendary === 'Yes') traits.push({ label: 'Legend', cls: 'traitLegend' })
             if (shiny.MysteriousBall === 'Yes') traits.push({ label: 'Mystery', cls: 'traitMystery' })
             if (shiny.Reaction === 'Yes') traits.push({ label: 'Reaction', cls: 'traitReaction' })
+            if (shiny.Costumed === 'Yes') traits.push({ label: 'Costumed Mons', cls: 'traitEvent' })
 
             const spriteName = shiny.Pokemon.toLowerCase().replace(/[^a-z0-9-]/g, '')
 

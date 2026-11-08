@@ -329,7 +329,7 @@ const bannerInfo = useMemo(() => {
       src={shinyGifPath}
       alt={shiny.Pokemon}
       /* Hovering the GIF displays full banner name */
-      title={bannerInfo ? bannerInfo.fullText : shiny.Pokemon}
+      title={shiny.Costumed?.toLowerCase() === 'yes' ? 'costumed mons' : bannerInfo ? bannerInfo.fullText : shiny.Pokemon}
       className={`${styles.shinyGif} ${isSold ? styles.soldPokemon : ''} ${styles.clickable}`}
       width="80"
       height="80"

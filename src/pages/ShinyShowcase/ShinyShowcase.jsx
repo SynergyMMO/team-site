@@ -27,6 +27,7 @@ const SHINY_FILTERS = [
   { label: 'Honey Tree', key: 'Honey Tree' },
   { label: 'Secret Shiny', key: 'Secret Shiny' },
   { label: 'Event', key: 'Event' },
+  { label: 'Costumed Mons', key: 'Costumed' },
 ]
 
 function isTruthyFlag(value) {
