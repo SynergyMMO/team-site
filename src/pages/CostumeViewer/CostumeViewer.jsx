@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getAssetUrl } from '../../utils/assets'
 import costumesData from '../../data/costumes.json'
@@ -21,7 +21,7 @@ export default function CostumeViewer() {
     return getAssetUrl(`images/Shiny Showcase/costumes/${fileName}${shinyPostfix}.webp`)
   }, [])
 
-  const getCurrentImageUrl = useMemo(() => {
+  const getCurrentImageUrl = useCallback(() => {
     if (!selectedCostume) return ''
     
     const fileKey = isBackSprite ? 'back' : 'front'
@@ -48,21 +48,33 @@ export default function CostumeViewer() {
     const nextIndex = currentIndex === costumesData.length - 1 ? 0 : currentIndex + 1
     const prevIndex = currentIndex === 0 ? costumesData.length - 1 : currentIndex - 1
     
-    const nextCostume = costumesData[nextIndex]
-    const prevCostume = costumesData[prevIndex]
-    
-    // Preload next and previous images
-    [nextCostume, prevCostume].forEach(costume => {
-      const frontUrl = getAssetUrl(`images/Shiny Showcase/costumes/${costume.files.front}-1.webp`)
-      const backUrl = getAssetUrl(`images/Shiny Showcase/costumes/${costume.files.back}-1.webp`)
-      const frontShinyUrl = frontUrl.replace('-n-', '-s-')
-      const backShinyUrl = backUrl.replace('-n-', '-s-')
+    const preloadImages = (costume) => {
+      if (!costume) return
       
-      [frontUrl, backUrl, frontShinyUrl, backShinyUrl].forEach(url => {
+      // Preload front and back sprites (normal)
+      const frontFile = `${costume.files.front}-1.webp`
+      const backFile = `${costume.files.back}-1.webp`
+      
+      const frontUrl = getAssetUrl(`images/Shiny Showcase/costumes/${frontFile}`)
+      const backUrl = getAssetUrl(`images/Shiny Showcase/costumes/${backFile}`)
+      
+      // Preload shiny variants
+      const frontShinyFile = frontFile.replace('-n-', '-s-')
+      const backShinyFile = backFile.replace('-n-', '-s-')
+      
+      const frontShinyUrl = getAssetUrl(`images/Shiny Showcase/costumes/${frontShinyFile}`)
+      const backShinyUrl = getAssetUrl(`images/Shiny Showcase/costumes/${backShinyFile}`)
+      
+      // Load all 4 variants
+      const urlsToPreload = [frontUrl, backUrl, frontShinyUrl, backShinyUrl]
+      urlsToPreload.forEach(url => {
         const img = new Image()
         img.src = url
       })
-    })
+    }
+    
+    preloadImages(costumesData[nextIndex])
+    preloadImages(costumesData[prevIndex])
   }, [selectedCostume])
 
   const handleSelectCostume = useCallback((costume) => {
