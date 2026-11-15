@@ -50,26 +50,6 @@
     }
   },
   {
-    "id": "399",
-    "name": "Bidoof",
-    "costume": "Lord Bidoof",
-    "dexNumber": 399,
-    "files": {
-      "front": "399-f-n-f",
-      "back": "399-b-n-f"
-    }
-  },
-  {
-    "id": "400",
-    "name": "Bibarel",
-    "costume": "Lord Bibarel",
-    "dexNumber": 400,
-    "files": {
-      "front": "400-f-n-f",
-      "back": "400-b-n-f"
-    }
-  },
-  {
     "id": "443",
     "name": "Gible",
     "costume": "Pirate Gible",
