@@ -1,6 +1,7 @@
 import { memo, useMemo, useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfoBox from '../InfoBox/InfoBox'
+import costumesData from '../../data/costumes.json'
 import { getLocalPokemonGif, onGifError, getBasePokemonName } from '../../utils/pokemon'
 import styles from './ShinyItem.module.css'
 
@@ -13,6 +14,18 @@ const TRAIT_CLASSES = {
 
 // Mapping of icons — use base URL prefix for public asset paths
 const BASE = import.meta.env.BASE_URL || '/'
+const COSTUME_SPRITE_BASES = new Map(
+  costumesData.map(({ name, files }) => [name.toLowerCase(), files.front])
+)
+
+function getCostumeSpritePath(pokemon) {
+  const spriteBase = COSTUME_SPRITE_BASES.get(String(pokemon || '').trim().toLowerCase())
+  if (!spriteBase) return null
+
+  const shinySpriteBase = spriteBase.replace('-n-', '-s-').replace(/-f$/, '-m')
+  return `${BASE}images/Shiny Showcase/costumes/${shinySpriteBase}-1.webp`
+}
+
 const ICON_MAP = {
   'Secret Shiny': [`${BASE}images/Shiny Showcase/secretshiny.png`, 'secretIcon'],
   'Honey Tree': [`${BASE}images/Shiny Showcase/honey.png`, 'honeyIcon'],
@@ -27,10 +40,12 @@ const ICON_MAP = {
   Event: [`${BASE}images/Shiny Showcase/event.png`, 'eventIcon'],
   MysteriousBall: [`${BASE}images/Shiny Showcase/mysteriousball.gif`, 'mysteriousballGif'],
   Favourite: [`${BASE}images/Shiny Showcase/heart.png`, 'favouriteHeart'],
+  Costumed: [`${BASE}images/Shiny Showcase/costumed.png`, 'costumedIcon'],
 }
 
 const ICON_TITLES = {
   Pkid: 'Particle: PKid',
+  Costumed: 'Costumed Mons',
 }
 
 // Detect if device is mobile
@@ -135,6 +150,9 @@ function wasCaughtPreviousMonth(shiny) {
 function ShinyItem({ shiny, points, userName, localizeDates = true, highlightPreviousMonth = false }) {
   const navigate = useNavigate()
   const shinyGifPath = useMemo(() => getLocalPokemonGif(shiny.Pokemon), [shiny.Pokemon])
+  const isCostumed = shiny.Costumed?.toLowerCase() === 'yes'
+  const costumeSpritePath = isCostumed ? getCostumeSpritePath(shiny.Pokemon) : null
+  const [loadedCostumeSpritePath, setLoadedCostumeSpritePath] = useState(null)
   const [isMobile] = useState(isMobileDevice())
   const [showInfoBoxMobile, setShowInfoBoxMobile] = useState(false)
   const wrapperRef = useRef(null)
@@ -224,6 +242,28 @@ const bannerInfo = useMemo(() => {
     }
     // Desktop: navigate immediately
     navigate(`/pokemon/${getBasePokemonName(shiny.Pokemon).toLowerCase()}`)
+  }
+
+  const handleGifError = (e) => {
+    if (
+      costumeSpritePath
+      && e.currentTarget.src === new URL(costumeSpritePath, document.baseURI).href
+    ) {
+      setLoadedCostumeSpritePath(null)
+      e.currentTarget.src = shinyGifPath
+      return
+    }
+
+    onGifError(shiny.Pokemon)(e)
+  }
+
+  const handleGifLoad = (e) => {
+    if (
+      costumeSpritePath
+      && e.currentTarget.src === new URL(costumeSpritePath, document.baseURI).href
+    ) {
+      setLoadedCostumeSpritePath(costumeSpritePath)
+    }
   }
 
   // Handle double-tap on mobile
@@ -316,7 +356,7 @@ const bannerInfo = useMemo(() => {
     {/* Shortened Badge Text ("SW24"), Full Tooltip on Hover */}
     {bannerInfo && (
       <span 
-        className={`${styles.shinyWarsBanner} ${styles[`sw${bannerInfo.year}`]}`}
+        className={`${styles.shinyWarsBanner} ${styles[`sw${bannerInfo.year}`]} ${isCostumed ? styles.shinyWarsBannerWithCostume : ''}`}
         title={bannerInfo.fullText}
       >
         {bannerInfo.shortText}
@@ -326,15 +366,16 @@ const bannerInfo = useMemo(() => {
     {icons}
     
     <img
-      src={shinyGifPath}
+      src={costumeSpritePath || shinyGifPath}
       alt={shiny.Pokemon}
       /* Hovering the GIF displays full banner name */
       title={shiny.Costumed?.toLowerCase() === 'yes' ? 'costumed mons' : bannerInfo ? bannerInfo.fullText : shiny.Pokemon}
-      className={`${styles.shinyGif} ${isSold ? styles.soldPokemon : ''} ${styles.clickable}`}
+      className={`${styles.shinyGif} ${costumeSpritePath && loadedCostumeSpritePath === costumeSpritePath ? styles.costumeSprite : ''} ${isSold ? styles.soldPokemon : ''} ${styles.clickable}`}
       width="80"
       height="80"
       loading="lazy"
-      onError={onGifError(shiny.Pokemon)}
+      onLoad={handleGifLoad}
+      onError={handleGifError}
       onClick={handleGifClick}
       onTouchEnd={handleGifTouchEnd}
       role="button"

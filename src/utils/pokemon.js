@@ -2,7 +2,7 @@ import tierPokemon from '../data/tier_pokemon.json'
 
 const VERSION = 2
 
-function sanitize(name) {
+export function sanitizePokemonName(name) {
   return name
     .trim()
     .toLowerCase()
@@ -16,7 +16,7 @@ function sanitize(name) {
 const tierLookup = {}
 Object.entries(tierPokemon).forEach(([tier, names]) => {
   names.forEach(name => {
-    tierLookup[sanitize(name)] = tier
+    tierLookup[sanitizePokemonName(name)] = tier
   })
 })
 
@@ -118,7 +118,7 @@ const LEGENDARY_MYTHICAL = new Set([
 ])
 
 export function getLocalPokemonGif(name) {
-  const sanitized = sanitize(name)
+  const sanitized = sanitizePokemonName(name)
   
   if (LEGENDARY_MYTHICAL.has(sanitized)) {
     return getRemoteFallbackUrl(name)

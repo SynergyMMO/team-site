@@ -1,0 +1,383 @@
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0.8rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, rgba(50, 50, 80, 0.3) 0%, rgba(60, 40, 90, 0.3) 100%);
+  border-radius: 16px;
+  box-shadow: inset 0 0 30px rgba(102, 126, 234, 0.1);
+}
+
+.container h1 {
+  text-align: center;
+  margin: 0 0 0.6rem 0;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.costumesList {
+  flex-shrink: 0;
+  margin-bottom: 0.8rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.4rem;
+  max-height: 140px;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.costumesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.5rem;
+  padding: 0;
+  max-width: 100%;
+}
+
+.costumesGrid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.costumesGrid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.costumesGrid::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 3px;
+}
+
+.costumesGrid::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #7a8cff 0%, #8856b8 100%);
+}
+
+.costumeItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  aspect-ratio: 1;
+  overflow: hidden;
+  min-height: 90px;
+  min-width: 90px;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+.costumeItem:hover {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.15);
+  transform: scale(1.05);
+}
+
+.costumeItem.active {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.3);
+  box-shadow: 0 0 12px rgba(102, 126, 234, 0.4);
+}
+
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.viewerContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.viewerFrame {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  gap: 1rem;
+}
+
+.viewerFrameHeader {
+  text-align: center;
+  margin-bottom: 0.8rem;
+  flex-shrink: 0;
+}
+
+.viewerFrameHeader h2 {
+  color: #fff;
+  margin: 0 0 0.2rem 0;
+  font-size: 1.4rem;
+}
+
+.costumeTitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin: 0 0 0.3rem 0;
+}
+
+.dexInfo {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.imageDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+  border-radius: 8px;
+  flex: 1;
+  min-height: 400px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  width: 100%;
+}
+
+.costumeImage {
+  width: 104%;
+  height: 104%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.controls {
+  margin-bottom: 0.8rem;
+  flex-shrink: 0;
+}
+
+.toggleGroup {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.85);
+  user-select: none;
+  font-size: 0.9rem;
+}
+
+.toggleInput {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.toggleText {
+  font-size: 0.9rem;
+}
+
+.viewerFrameFooter {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.navButton {
+  flex: 1;
+  max-width: 150px;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.navButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.navButton:active {
+  transform: translateY(0);
+}
+
+.navButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  .container h1 {
+    font-size: 1.3rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .costumesList {
+    margin-bottom: 0.8rem;
+    padding: 0.4rem;
+    max-height: 130px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .costumesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .costumeItem {
+    min-height: 75px;
+    min-width: 75px;
+    padding: 0.15rem;
+  }
+
+  .viewerFrame {
+    padding: 0.8rem;
+    max-width: 100%;
+  }
+
+  .viewerFrameHeader {
+    margin-bottom: 0.5rem;
+  }
+
+  .viewerFrameHeader h2 {
+    font-size: 1.1rem;
+  }
+
+  .imageDisplay {
+    min-height: 350px;
+    margin-bottom: 0.8rem;
+  }
+
+  .toggleGroup {
+    gap: 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .toggleLabel {
+    font-size: 0.85rem;
+  }
+
+  .viewerFrameFooter {
+    gap: 0.6rem;
+  }
+
+  .navButton {
+    max-width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.4rem;
+  }
+
+  .container h1 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .costumesList {
+    margin-bottom: 0.6rem;
+    padding: 0.3rem;
+    max-height: 110px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .costumesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 0.3rem;
+  }
+
+  .costumeItem {
+    min-height: 60px;
+    min-width: 60px;
+    padding: 0.1rem;
+  }
+
+  .viewerFrame {
+    padding: 0.6rem;
+  }
+
+  .viewerFrameHeader h2 {
+    font-size: 1rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .costumeTitle {
+    font-size: 0.85rem;
+  }
+
+  .dexInfo {
+    font-size: 0.8rem;
+  }
+
+  .imageDisplay {
+    min-height: 280px;
+    margin-bottom: 0.6rem;
+  }
+
+  .toggleGroup {
+    gap: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .toggleLabel {
+    font-size: 0.75rem;
+    gap: 0.2rem;
+  }
+
+  .toggleInput {
+    width: 14px;
+    height: 14px;
+  }
+
+  .viewerFrameFooter {
+    gap: 0.3rem;
+  }
+
+  .navButton {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.7rem;
+  }
+}

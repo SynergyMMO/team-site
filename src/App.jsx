@@ -43,6 +43,7 @@ const CatchingCalculator = lazy(() => import('./pages/CatchingCalculator/Catchin
 const BountiesPage = lazy(() => import('./pages/Bounties/BountiesPage'));
 const SpriteRecolour = lazy(() => import('./pages/SpriteRecolour/SpriteRecolour'));
 const ParticleViewer = lazy(() => import('./pages/ParticleViewer/ParticleViewer'));
+const CostumeViewer = lazy(() => import('./pages/CostumeViewer/CostumeViewer'));
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 
 export default function App() {
@@ -144,6 +145,7 @@ export default function App() {
             <Route path="/time-display/" element={<TimeDisplay />} />
             <Route path="/sprite-recolour/" element={<SpriteRecolour />} />
             <Route path="/particle-viewer" element={<ParticleViewer />} />
+            <Route path="/costume-viewer" element={<CostumeViewer />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/panel" element={<AdminPanel />} />
             <Route path="*" element={<NotFound />} />

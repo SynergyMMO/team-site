@@ -1,0 +1,142 @@
+[
+  {
+    "id": "4",
+    "name": "Charmander",
+    "costume": "Royal Charmander",
+    "dexNumber": 4,
+    "files": {
+      "front": "4-f-n-b",
+      "back": "4-b-n-b"
+    }
+  },
+  {
+    "id": "5",
+    "name": "Charmeleon",
+    "costume": "Royal Charmeleon",
+    "dexNumber": 5,
+    "files": {
+      "front": "5-f-n-b",
+      "back": "5-b-n-b"
+    }
+  },
+  {
+    "id": "6",
+    "name": "Charizard",
+    "costume": "Royal Charizard",
+    "dexNumber": 6,
+    "files": {
+      "front": "6-f-n-b",
+      "back": "6-b-n-b"
+    }
+  },
+  {
+    "id": "52",
+    "name": "Meowth",
+    "costume": "Ninja Meowth",
+    "dexNumber": 52,
+    "files": {
+      "front": "52-f-n-b",
+      "back": "52-b-n-b"
+    }
+  },
+  {
+    "id": "53",
+    "name": "Persian",
+    "costume": "Ninja Persian",
+    "dexNumber": 53,
+    "files": {
+      "front": "53-f-n-b",
+      "back": "53-b-n-b"
+    }
+  },
+  {
+    "id": "399",
+    "name": "Bidoof",
+    "costume": "Lord Bidoof",
+    "dexNumber": 399,
+    "files": {
+      "front": "399-f-n-f",
+      "back": "399-b-n-f"
+    }
+  },
+  {
+    "id": "400",
+    "name": "Bibarel",
+    "costume": "Lord Bibarel",
+    "dexNumber": 400,
+    "files": {
+      "front": "400-f-n-f",
+      "back": "400-b-n-f"
+    }
+  },
+  {
+    "id": "443",
+    "name": "Gible",
+    "costume": "Pirate Gible",
+    "dexNumber": 443,
+    "files": {
+      "front": "443-f-n-f",
+      "back": "443-b-n-f"
+    }
+  },
+  {
+    "id": "444",
+    "name": "Gabite",
+    "costume": "Pirate Gabite",
+    "dexNumber": 444,
+    "files": {
+      "front": "444-f-n-f",
+      "back": "444-b-n-f"
+    }
+  },
+  {
+    "id": "445",
+    "name": "Garchomp",
+    "costume": "Pirate Garchomp",
+    "dexNumber": 445,
+    "files": {
+      "front": "445-f-n-f",
+      "back": "445-b-n-f"
+    }
+  },
+  {
+    "id": "447",
+    "name": "Riolu",
+    "costume": "Pharaoh Riolu",
+    "dexNumber": 447,
+    "files": {
+      "front": "447-f-n-b",
+      "back": "447-b-n-b"
+    }
+  },
+  {
+    "id": "448",
+    "name": "Lucario",
+    "costume": "Pharaoh Lucario",
+    "dexNumber": 448,
+    "files": {
+      "front": "448-f-n-b",
+      "back": "448-b-n-b"
+    }
+  },
+    {
+    "id": "215",
+    "name": "Sneasel",
+    "costume": "Vampire Sneasel",
+    "dexNumber": 215,
+    "files": {
+      "front": "215-f-n-f",
+      "back": "215-b-n-f"
+    }
+  },
+  {
+    "id": "461",
+    "name": "Weavile",
+    "costume": "Vampire Weavile",
+    "dexNumber": 461,
+    "files": {
+      "front": "461-f-n-f",
+      "back": "461-b-n-f"
+    }
+  }
+]
