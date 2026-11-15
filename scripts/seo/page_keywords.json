@@ -27,7 +27,8 @@
     "/altering-cave-rotations": "PokeMMO Altering Cave rotations, Altering Cave repel trick, rotation timer, Bagon, Absol, Aron, shiny hunting route",
     "/hunt-planner": "PokeMMO hunt planner, PokeMMO route finder, Pokemon encounter percentages, shiny hunt phases, tracked route data, Pokemon route search, Team Synergy tools",
     "/credits": "Team Synergy credits, PokeMMO site creators, Route Finder contributors, Team Synergy moderators",
-    "/synergy-2026-shiny-wars": "Synergy 2026 Shiny Wars, PokeMMO Shiny Wars 2026, Absolute Synema, Synsational, Synergy Task Force, Team Synergy shiny war statistics"
+    "/synergy-2026-shiny-wars": "Synergy 2026 Shiny Wars, PokeMMO Shiny Wars 2026, Absolute Synema, Synsational, Synergy Task Force, Team Synergy shiny war statistics",
+    "/costume-viewer": "PokeMMO costume viewer, Pokemon costumes, costume sprites, shiny costume sprites, costume gallery, sprite viewer, PokeMMO tools"
   },
   "DYNAMIC_KEYWORDS": {
     "pokemon": "{pokemon} shiny, {pokemon} PokeMMO, Pokemon stats, Pokemon abilities, {pokemon} pokemmo catch location, {pokemon} pokemmo catch calculator, {pokemon} encounter, tier rank",

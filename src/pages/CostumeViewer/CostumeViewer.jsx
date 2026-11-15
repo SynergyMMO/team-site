@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getAssetUrl } from '../../utils/assets'
 import costumesData from '../../data/costumes.json'
@@ -16,12 +16,12 @@ export default function CostumeViewer() {
   const [isBackSprite, setIsBackSprite] = useState(false)
   const [isShiny, setIsShiny] = useState(false)
 
-  const getCostumeImageUrl = (fileName, isShinyVersion) => {
+  const getCostumeImageUrl = useCallback((fileName, isShinyVersion) => {
     const shinyPostfix = isShinyVersion ? '_shiny' : ''
     return getAssetUrl(`images/Shiny Showcase/costumes/${fileName}${shinyPostfix}.webp`)
-  }
+  }, [])
 
-  const getCurrentImageUrl = () => {
+  const getCurrentImageUrl = useMemo(() => {
     if (!selectedCostume) return ''
     
     const fileKey = isBackSprite ? 'back' : 'front'
@@ -31,34 +31,55 @@ export default function CostumeViewer() {
       return getCostumeImageUrl(selectedCostume.files.front, isShiny)
     }
     
-    // For numbered files, append the sprite indicator and version
     if (selectedCostume.files[fileKey].includes('-')) {
-      // Format: "52-f-n-b" -> "52-f-n-b-1" (with shiny indicator if needed)
       const baseName = `${selectedCostume.files[fileKey]}-1`
-      // Replace 'n' with 's' if shiny is enabled
       const shinySpriteFile = isShiny ? baseName.replace('-n-', '-s-') : baseName
       return getAssetUrl(`images/Shiny Showcase/costumes/${shinySpriteFile}.webp`)
     }
     
-    // For regular costume files
     return getCostumeImageUrl(fileName, isShiny)
-  }
+  }, [selectedCostume, isBackSprite, isShiny, getCostumeImageUrl])
 
-  const handleSelectCostume = (costume) => {
+  // Preload next and previous costume images
+  useEffect(() => {
+    if (!selectedCostume) return
+    
+    const currentIndex = costumesData.findIndex(c => c.id === selectedCostume.id)
+    const nextIndex = currentIndex === costumesData.length - 1 ? 0 : currentIndex + 1
+    const prevIndex = currentIndex === 0 ? costumesData.length - 1 : currentIndex - 1
+    
+    const nextCostume = costumesData[nextIndex]
+    const prevCostume = costumesData[prevIndex]
+    
+    // Preload next and previous images
+    [nextCostume, prevCostume].forEach(costume => {
+      const frontUrl = getAssetUrl(`images/Shiny Showcase/costumes/${costume.files.front}-1.webp`)
+      const backUrl = getAssetUrl(`images/Shiny Showcase/costumes/${costume.files.back}-1.webp`)
+      const frontShinyUrl = frontUrl.replace('-n-', '-s-')
+      const backShinyUrl = backUrl.replace('-n-', '-s-')
+      
+      [frontUrl, backUrl, frontShinyUrl, backShinyUrl].forEach(url => {
+        const img = new Image()
+        img.src = url
+      })
+    })
+  }, [selectedCostume])
+
+  const handleSelectCostume = useCallback((costume) => {
     setSelectedCostume(costume)
-  }
+  }, [])
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     const currentIndex = costumesData.findIndex(c => c.id === selectedCostume.id)
     const prevIndex = currentIndex === 0 ? costumesData.length - 1 : currentIndex - 1
     setSelectedCostume(costumesData[prevIndex])
-  }
+  }, [selectedCostume])
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     const currentIndex = costumesData.findIndex(c => c.id === selectedCostume.id)
     const nextIndex = currentIndex === costumesData.length - 1 ? 0 : currentIndex + 1
     setSelectedCostume(costumesData[nextIndex])
-  }
+  }, [selectedCostume])
 
   return (
     <div className={styles.container}>

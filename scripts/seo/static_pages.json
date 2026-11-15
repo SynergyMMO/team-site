@@ -329,5 +329,14 @@
     "description": "Search tracked PokeMMO encounter percentages by Pokemon or route. Find target Pokemon, shiny hunt phases, route totals, and credited route data.",
     "image": "https://synergymmo.com/images/openGraph.jpg",
     "canonical": "/hunt-planner/"
+  },
+  "/costume-viewer": {
+    "title": "Costume Viewer - PokeMMO Costumes & Sprites | Team Synergy",
+    "description": "Browse and view all available PokeMMO costumes with detailed sprites. Toggle between front and back views, shiny variants, and explore unique costume designs for your favorite Pokémon.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.6"
+    }
   }
 }

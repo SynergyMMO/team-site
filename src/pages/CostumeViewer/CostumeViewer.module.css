@@ -159,6 +159,7 @@
   margin-bottom: 1rem;
   overflow: hidden;
   width: 100%;
+  will-change: contents;
 }
 
 .costumeImage {
@@ -168,6 +169,9 @@
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
+  will-change: contents;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .controls {
