@@ -315,6 +315,15 @@
       "priority": "0.7"
     }
   },
+  "/synergy-shiny-war-2026": {
+    "title": "Synergy Shiny War 2026 | Team Synergy - PokeMMO",
+    "description": "Follow the three teams, their legendary bosses, and shiny hits in the Synergy Shiny War 2026.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "weekly",
+      "priority": "0.7"
+    }
+  },
   "/credits": {
     "title": "Credits | Team Synergy - PokeMMO",
     "description": "Meet the creators, Route Finder contributors, and moderators behind Team Synergy.",

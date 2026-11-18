@@ -1,0 +1,12 @@
+{
+  "teams": [
+    { "id": "cobalion", "name": "Cobalion", "captain": "Bloom", "players": [] },
+    { "id": "terrakion", "name": "Terrakion", "captain": "Hyper", "players": [] },
+    { "id": "virizion", "name": "Virizion", "captain": "BaldBabyBat", "players": [] }
+  ],
+  "exampleHits": [
+    { "team": "cobalion", "player": "Bloom", "pokemon": "Cobalion", "points": 100 },
+    { "team": "terrakion", "player": "Hyper", "pokemon": "Terrakion", "points": 50 },
+    { "team": "virizion", "player": "BaldBabyBat", "pokemon": "Virizion", "points": 25 }
+  ]
+}

@@ -16,9 +16,10 @@ const NAV_ITEMS = [
       { to: '/bounties/', label: 'Bounties' },
       { to: '/events/', label: 'Events' },
       { to: '/dex-helper/', label: 'Dex Helper' },
-      { to: '/official-shiny-wars-planner/', label: 'Official Shiny Wars Planner' },
-      { to: '/shiny-war-2025/', label: 'Shiny Wars 2025' },
-      { to: '/synergy-2026-shiny-wars/', label: 'Synergy 2026 Shiny Wars' },
+      //{ to: '/official-shiny-wars-planner/', label: 'Official Shiny Wars Planner' },
+      { to: '/shiny-war-2025/', label: 'Official Shiny Wars 2025' },
+      { to: '/synergy-2026-shiny-wars/', label: 'Official Shiny Wars 2026' },
+      { to: '/synergy-shiny-war-2026/', label: 'Team Shiny War 2026' },
     ]
   },
   { to: '/pokedex/', label: 'PokeDex' },

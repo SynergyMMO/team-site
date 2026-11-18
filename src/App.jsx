@@ -18,6 +18,7 @@ const CounterGenerator = lazy(() => import('./pages/CounterGenerator/CounterGene
 const RandomPokemon = lazy(() => import('./pages/RandomPokemon/RandomPokemon'))
 const ShinyWar2025 = lazy(() => import('./pages/ShinyWar2025/ShinyWar2025'))
 const SynergyShinyWars2026 = lazy(() => import('./pages/SynergyShinyWars2026/SynergyShinyWars2026'))
+const SynergyShinyWar2026 = lazy(() => import('./pages/SynergyShinyWar2026/SynergyShinyWar2026'))
 const RoamingLegendariesCalendar = lazy(() => import('./pages/RoamingLegendaries/RoamingLegendariesCalendar'))
 const SafariZones = lazy(() => import('./pages/SafariZones/SafariZones'))
 const AlteringCaveRotations = lazy(() => import('./pages/AlteringCaveRotations/AlteringCaveRotations'))
@@ -141,6 +142,7 @@ export default function App() {
             <Route path="/resources/:category/:subcategory/:nested" element={<Resources />} />
             <Route path="/shiny-war-2025/" element={<ShinyWar2025 />} />
             <Route path="/synergy-2026-shiny-wars/" element={<SynergyShinyWars2026 />} />
+            <Route path="/synergy-shiny-war-2026/" element={<SynergyShinyWar2026 />} />
             <Route path="/bounties/" element={<BountiesPage />} />
             <Route path="/time-display/" element={<TimeDisplay />} />
             <Route path="/sprite-recolour/" element={<SpriteRecolour />} />

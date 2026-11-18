@@ -20,15 +20,24 @@ export function calculateShinyPoints(shiny, tierPoints, tierLookup) {
   }
 
   const tier = tierLookup[shiny.Pokemon.toLowerCase()] || null
-  const hasReplacementScore =
-    shiny.Alpha?.toLowerCase() === 'yes' ||
-    shiny.Costumed?.toLowerCase() === 'yes'
+  const tierPts = tierPoints[tier] || 0
 
-  let total = shiny.Alpha?.toLowerCase() === 'yes'
-    ? TRAIT_POINTS.Alpha
-    : shiny.Costumed?.toLowerCase() === 'yes'
-      ? TRAIT_POINTS.Costumed
-      : tierPoints[tier] || 0
+  let basePts
+  let hasReplacementScore
+
+  if (shiny.Alpha?.toLowerCase() === 'yes') {
+    basePts = TRAIT_POINTS.Alpha
+    hasReplacementScore = true
+  } else if (shiny.Costumed?.toLowerCase() === 'yes') {
+    // If tier points are higher than costume default (40), use tier points
+    basePts = tierPts > TRAIT_POINTS.Costumed ? tierPts : TRAIT_POINTS.Costumed
+    hasReplacementScore = true
+  } else {
+    basePts = tierPts
+    hasReplacementScore = false
+  }
+
+  let total = basePts
 
   total += Object.entries(TRAIT_POINTS).reduce((acc, [trait, pts]) => {
     if (hasReplacementScore || trait === 'Alpha' || trait === 'Costumed') return acc
