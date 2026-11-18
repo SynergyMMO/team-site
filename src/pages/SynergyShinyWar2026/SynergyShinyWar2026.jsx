@@ -34,7 +34,7 @@ export default function SynergyShinyWar2026() {
 
   const { data, isPending, fetchStatus, error } = useDatabase()
   const { tierPoints, tierLookup } = useTierData()
-  const [hitView, setHitView] = useState('all')
+  const [hitView, setHitView] = useState('teams')
   const results = useMemo(
     () => data ? buildWarResults(data, warData.teams, tierPoints, tierLookup, warData.exampleHits) : null,
     [data, tierPoints, tierLookup]
@@ -46,6 +46,8 @@ export default function SynergyShinyWar2026() {
     <div className={styles.page}>
       <header className={styles.hero}>
         <h1 className={styles.title}>Synergy Shiny War <span>2026</span></h1>
+        
+          <p>This page is WIP and may be changed before the event begins</p>
         <div className={styles.divider} aria-hidden="true"><span>✦</span></div>
       </header>
 
@@ -111,8 +113,9 @@ export default function SynergyShinyWar2026() {
           <h2 id="hits-heading">Hit List</h2>
         </div>
         <div className={styles.viewToggle} role="group" aria-label="Hit list view">
-          <button type="button" aria-pressed={hitView === 'all'} onClick={() => setHitView('all')}>All hits</button>
+          
           <button type="button" aria-pressed={hitView === 'teams'} onClick={() => setHitView('teams')}>Team columns</button>
+          <button type="button" aria-pressed={hitView === 'all'} onClick={() => setHitView('all')}>All hits</button>
         </div>
         {isPending ? (
           <div className={styles.empty} role="status">
