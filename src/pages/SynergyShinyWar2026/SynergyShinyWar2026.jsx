@@ -5,6 +5,7 @@ import { useTierData } from '../../hooks/useTierData'
 import { getLocalPokemonGif, onGifError } from '../../utils/pokemon'
 import warData from '../../data/synergy-shiny-war-2026.json'
 import { buildTeamRoster, buildWarResults } from './warResults'
+import OpeningCutscene from './OpeningCutscene'
 import styles from './SynergyShinyWar2026.module.css'
 
 function HitCard({ hit, teamName }) {
@@ -20,10 +21,65 @@ function HitCard({ hit, teamName }) {
   )
 }
 
+function BonusDay({ name, description }) {
+  return (
+    <div className={styles.bonusDay}>
+      <strong>{name}</strong>
+      <p>{description}</p>
+    </div>
+  )
+}
+
+function getCurrentBonusDay() {
+  // Determine which day of the week it is across all timezones
+  // We check the earliest (UTC-12) and latest (UTC+14) timezones
+  const now = new Date()
+  
+  // Get the day in both earliest and latest timezones
+  const earliestTime = new Date(now.getTime() - (12 * 60 * 60 * 1000)) // UTC-12
+  const latestTime = new Date(now.getTime() + (14 * 60 * 60 * 1000)) // UTC+14
+  
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const bonusDays = {
+    'Tuesday': 'Type Match Tuesdays',
+    'Friday': 'Fishing Friday',
+    'Saturday': 'Single Saturdays',
+    'Sunday': 'Safari Sunday'
+  }
+  
+  // Check if it's a bonus day in ANY timezone
+  const earliestDay = days[earliestTime.getUTCDay()]
+  const latestDay = days[latestTime.getUTCDay()]
+  
+  if (bonusDays[earliestDay]) return { day: earliestDay, name: bonusDays[earliestDay] }
+  if (bonusDays[latestDay]) return { day: latestDay, name: bonusDays[latestDay] }
+  
+  return null
+}
+
 export default function SynergyShinyWar2026() {
+  const [showCutscene, setShowCutscene] = useState(() => {
+    const hasSeenCutscene = localStorage.getItem('synergy-war-2026-cutscene-seen')
+    return !hasSeenCutscene
+  })
+  const [cutscenePhase, setCutscenePhase] = useState('active') // 'active', 'transitioning', 'hidden'
+  const [currentBonusDay, setCurrentBonusDay] = useState(null)
+
   useEffect(() => {
     document.body.classList.add('shiny-war-2026-active')
     return () => document.body.classList.remove('shiny-war-2026-active')
+  }, [])
+
+  useEffect(() => {
+    // Check for bonus day on mount and every 60 seconds
+    setCurrentBonusDay(getCurrentBonusDay())
+    const interval = setInterval(() => setCurrentBonusDay(getCurrentBonusDay()), 60000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Show test banner for Fishing Friday (this will be removed when event starts)
+  useEffect(() => {
+    setCurrentBonusDay({ day: 'Friday', name: 'Fishing Friday' })
   }, [])
 
   useDocumentHead({
@@ -42,8 +98,44 @@ export default function SynergyShinyWar2026() {
   const teams = results?.teams || warData.teams.map(team => ({ ...team, roster: buildTeamRoster(team) }))
   const leadingScore = results ? Math.max(0, ...teams.map(team => team.points)) : 0
 
-  return (
-    <div className={styles.page}>
+  const handleCutscenePhaseChange = (phase) => {
+    setCutscenePhase(phase)
+  }
+
+  const handleCutsceneComplete = () => {
+    try {
+      localStorage.setItem('synergy-war-2026-cutscene-seen', 'true')
+    } catch (e) {
+      console.warn('Failed to save cutscene state to localStorage:', e)
+    }
+    setCutscenePhase('hidden')
+    setTimeout(() => setShowCutscene(false), 500)
+  }
+
+  const handleReplayCutscene = () => {
+    setShowCutscene(true)
+    setCutscenePhase('active')
+  }
+
+  const pageContent = (
+    <div className={`${styles.page} ${showCutscene && cutscenePhase === 'transitioning' ? styles.cutsceneTransitioning : ''}`}>
+      {currentBonusDay && (
+        <div className={styles.bonusBanner} role="alert">
+          <span className={styles.bonusEmoji}>⭐</span>
+          <strong>It is currently {currentBonusDay.name}!</strong>
+          <span className={styles.bonusEmoji}>⭐</span>
+        </div>
+      )}
+      
+      <button 
+        className={`${styles.replayButton} ${currentBonusDay ? styles.replayButtonWithBanner : ''}`}
+        onClick={handleReplayCutscene}
+        aria-label="Replay opening cutscene"
+        title="Replay the opening cutscene"
+      >
+        <span aria-hidden="true">▶</span>
+      </button>
+      
       <header className={styles.hero}>
         <h1 className={styles.title}>Synergy Shiny War <span>2026</span></h1>
         
@@ -107,6 +199,76 @@ export default function SynergyShinyWar2026() {
         </div>
       </section>
 
+      <section className={styles.infoSection} aria-labelledby="scoring-heading">
+        <details className={styles.scoringDetails}>
+          <summary id="scoring-heading" className={styles.summaryHeading}>
+            <span>Scoring / Bonus Days</span>
+            <span className={styles.summaryChevron} aria-hidden="true">▼</span>
+          </summary>
+          <div className={styles.scoringContent}>
+            <div className={styles.scoringCategory}>
+              <h3>Scoring</h3>
+              <p className={styles.scoringNote}>This is placeholder for now and may change before the final event, currently just uses SHOTM point system</p>
+              <div className={styles.scoringTable}>
+                <div className={styles.scoringSection}>
+                  <h4>Base Tier Points</h4>
+                  <ul className={styles.scoringList}>
+                    <li><span>Tier 0</span> <strong>50 points</strong></li>
+                    <li><span>Tier 1</span> <strong>45 points</strong></li>
+                    <li><span>Tier 2</span> <strong>40 points</strong></li>
+                    <li><span>Tier 3</span> <strong>30 points</strong></li>
+                    <li><span>Tier 4</span> <strong>15 points</strong></li>
+                    <li><span>Tier 5</span> <strong>10 points</strong></li>
+                    <li><span>Tier 6</span> <strong>5 points</strong></li>
+                    <li><span>Tier 7</span> <strong>3 points</strong></li>
+                  </ul>
+                </div>
+                
+                <div className={styles.scoringSection}>
+                  <h4>Trait Bonuses</h4>
+                  <ul className={styles.scoringList}>
+                    <li><span>Alpha</span> <strong>100 points</strong></li>
+                    <li><span>Costumed</span> <strong>40 points</strong> <span className={styles.note}>(or base tier if higher)</span></li>
+                    <li><span>Headbutt</span> <strong>+10 points</strong></li>
+                    <li><span>Secret Shiny</span> <strong>+10 points</strong></li>
+                    <li><span>Egg</span> <strong>+5 points</strong></li>
+                    <li><span>Safari</span> <strong>+5 points</strong></li>
+                    <li><span>Event</span> <strong>+5 points</strong></li>
+                    <li><span>Honey Tree</span> <strong>+5 points</strong></li>
+                    <li><span>Fossil</span> <strong>+5 points</strong></li>
+                    <li><span>Swarm</span> <strong>+5 points</strong></li>
+                    <li><span>Fishing</span> <strong>0 points</strong></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className={styles.scoringCategory}>
+              <h3>Bonus Days</h3>
+              <p className={styles.bonusDescription}>Bonus days start when it becomes the bonus day in UTC-12 (earliest timezone) and end when it passes in UTC+14 (latest timezone), lasting approximately 36 hours total across all time zones.</p>
+              <div className={styles.bonusDaysList}>
+                <BonusDay 
+                  name="Type Match Tuesdays"
+                  description="Types will be selected at random, every shiny matching these types are worth (TBD) Points"
+                />
+                <BonusDay 
+                  name="Fishing Friday"
+                  description="Bonus (TBD) Points to all Fished Shinies"
+                />
+                <BonusDay 
+                  name="Single Saturdays"
+                  description="Bonus (TBD) Points to all single caught Shinies"
+                />
+                <BonusDay 
+                  name="Safari Sunday"
+                  description="Bonus (TBD) Points to any wild caught Safari Shiny"
+                />
+              </div>
+            </div>
+          </div>
+        </details>
+      </section>
+
       <section className={styles.hitSection} aria-labelledby="hits-heading">
         <div className={styles.sectionHeading}>
           <p className={styles.kicker}>The battle log</p>
@@ -155,5 +317,19 @@ export default function SynergyShinyWar2026() {
         )}
       </section>
     </div>
+  )
+
+  return (
+    <>
+      {pageContent}
+      {showCutscene && (
+        <OpeningCutscene 
+          teams={warData.teams} 
+          onComplete={handleCutsceneComplete} 
+          onPhaseChange={handleCutscenePhaseChange} 
+          cutscenePhase={cutscenePhase} 
+        />
+      )}
+    </>
   )
 }

@@ -24,6 +24,319 @@
     repeating-linear-gradient(90deg, transparent 0 12%, rgba(0, 0, 0, .13) 12% 13%, transparent 13% 25%),
     linear-gradient(180deg, rgba(29, 21, 38, .62) 0%, rgba(23, 18, 30, .72) 47%, rgba(16, 14, 23, .8) 100%);
   box-shadow: 0 24px 70px #000b, inset 0 0 90px #0009;
+  animation: pageContentFadeIn 0.8s ease-out forwards;
+}
+
+.page.cutsceneTransitioning {
+  /* During cutscene transition, start hidden */
+}
+
+@keyframes pageContentFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Staggered fade-in animations for cutscene transition */
+@keyframes bossGridsFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes pageRestFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.page.cutsceneTransitioning .arena {
+  animation: bossGridsFadeIn 0.8s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.page.cutsceneTransitioning .hero,
+.page.cutsceneTransitioning .hitSection {
+  animation: pageRestFadeIn 0.6s ease-out 1s forwards;
+  opacity: 0;
+}
+
+:global(body.cutscene-active) .page .arena,
+:global(body.cutscene-active) .page .hero,
+:global(body.cutscene-active) .page .hitSection {
+  opacity: 0;
+}
+
+.replayButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, rgba(220, 163, 90, 0.15), rgba(220, 163, 90, 0.05));
+  border: 1px solid rgba(220, 163, 90, 0.5);
+  border-radius: 6px;
+  color: #dca35a;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.bonusBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 20px;
+  margin: 16px 20px 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.1));
+  border: 2px solid rgba(255, 215, 0, 0.6);
+  color: #ffd700;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.1);
+  animation: bonusBannerPulse 2s ease-in-out infinite;
+}
+
+@keyframes bonusBannerPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), inset 0 0 30px rgba(255, 215, 0, 0.2);
+  }
+}
+
+.bonusEmoji {
+  font-size: 1.2em;
+  animation: bonusEmojiFloat 1.5s ease-in-out infinite;
+}
+
+.bonusEmoji:last-child {
+  animation-delay: 0.3s;
+}
+
+@keyframes bonusEmojiFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.replayButton:hover {
+  background: linear-gradient(135deg, rgba(220, 163, 90, 0.25), rgba(220, 163, 90, 0.1));
+  border-color: rgba(220, 163, 90, 0.8);
+  box-shadow: 0 0 12px rgba(220, 163, 90, 0.3);
+  transform: translateY(-1px);
+}
+
+.replayButton:active {
+  transform: translateY(0);
+  box-shadow: 0 0 8px rgba(220, 163, 90, 0.2);
+}
+
+.replayButton:focus-visible {
+  outline: 2px solid rgba(220, 163, 90, 0.8);
+  outline-offset: 2px;
+}
+
+.replayButtonWithBanner {
+  top: 100px;
+}
+
+.infoSection {
+  position: relative;
+  padding: 0 clamp(16px, 4vw, 50px) 20px;
+}
+
+.scoringDetails {
+  max-width: 1000px;
+  margin: 0 auto;
+  border: 1px solid #a98d6a44;
+  border-radius: 8px;
+  background: #0a090f99;
+  overflow: hidden;
+}
+
+.scoringDetails[open] {
+  background: linear-gradient(180deg, #0a090f99, #1a1420aa);
+}
+
+.summaryHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 24px;
+  color: #f7e9d7;
+  font: 700 1.2rem Georgia, serif;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.summaryHeading::-webkit-details-marker {
+  display: none;
+}
+
+.summaryChevron {
+  color: #dfb879;
+  font-size: 0.8em;
+  transition: transform 0.3s ease;
+}
+
+.scoringDetails[open] .summaryChevron {
+  transform: rotate(180deg);
+}
+
+.summaryHeading:focus-visible {
+  outline: 2px solid #e7c68b;
+  outline-offset: 2px;
+}
+
+.scoringContent {
+  display: grid;
+  gap: 32px;
+  padding: 24px;
+  border-top: 1px solid #a98d6a44;
+}
+
+.scoringCategory {
+  display: grid;
+  gap: 12px;
+}
+
+.scoringCategory h3 {
+  margin: 0;
+  color: #fff4e5;
+  font: 700 1.3rem Georgia, serif;
+}
+
+.comingSoon {
+  color: #9d8fa1;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+.bonusDescription {
+  margin: 0 0 16px;
+  color: #bfb1c2;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.bonusDaysList {
+  display: grid;
+  gap: 14px;
+}
+
+.bonusDay {
+  padding: 16px;
+  border-left: 3px solid #e7c68b;
+  border-radius: 4px;
+  background: rgba(220, 163, 90, 0.08);
+}
+
+.bonusDay strong {
+  display: block;
+  color: #e7c68b;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.bonusDay p {
+  margin: 0;
+  color: #d3c4d2;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.scoringNote {
+  margin: 0 0 16px;
+  padding: 12px;
+  color: #fff9c4;
+  background: rgba(255, 215, 0, 0.1);
+  border-left: 3px solid #ffd700;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.scoringTable {
+  display: grid;
+  gap: 20px;
+}
+
+.scoringSection {
+  display: grid;
+  gap: 12px;
+}
+
+.scoringSection h4 {
+  margin: 0;
+  color: #e7c68b;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.scoringList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.scoringList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: rgba(220, 163, 90, 0.05);
+  border-left: 2px solid rgba(220, 163, 90, 0.4);
+}
+
+.scoringList li span:first-child {
+  color: #d3c4d2;
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+.scoringList li strong {
+  color: #e7c68b;
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+.scoringList li .note {
+  color: #9d8fa1;
+  font-size: 0.8rem;
+  font-style: italic;
+  white-space: nowrap;
+  margin-left: auto;
 }
 
 .hero {
@@ -123,4 +436,15 @@
   .bossGrid { grid-template-columns: 1fr; max-width: 440px; margin-right: auto; margin-left: auto; }
   .hitColumns { grid-template-columns: 1fr; max-width: 440px; margin-right: auto; margin-left: auto; }
   .hero { padding-top: 36px; }
+  .bonusBanner {
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    gap: 8px;
+  }
+  .scoringContent {
+    gap: 24px;
+  }
+  .summaryHeading {
+    font-size: 1rem;
+  }
 }

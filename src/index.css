@@ -304,6 +304,16 @@ body.player-page-active #searchbar {
   display: none;
 }
 
+/* Hide navbar and footer during cutscene */
+body.cutscene-active nav,
+body.cutscene-active .site-footer {
+  display: none !important;
+}
+
+body.cutscene-active #main-container {
+  padding-top: 0;
+}
+
 /* SEO content - hidden from users but visible to search engines */
 .seo-optimized,
 .seo-intro {

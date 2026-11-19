@@ -1,0 +1,524 @@
+.cutscene {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #0a0a0a;
+  pointer-events: auto;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 50% 50%, rgba(60, 20, 40, 0.3), rgba(10, 5, 15, 0.9) 70%),
+    linear-gradient(135deg, #1a0f20 0%, #0a0a15 50%, #15090f 100%);
+  animation: pulseOverlay 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes pulseOverlay {
+  0%, 100% { opacity: 0.95; }
+  50% { opacity: 0.85; }
+}
+
+.overlay.fadeOut {
+  animation: fadeOutOverlay 1.2s ease-out forwards;
+}
+
+@keyframes fadeOutOverlay {
+  0% { 
+    opacity: 0.95; 
+  }
+  100% { 
+    opacity: 0; 
+  }
+}
+
+@keyframes fadeOutArena {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.cutscene.transitioning .overlay {
+  animation: fadeOutOverlay 0.8s ease-out 1.2s forwards;
+}
+
+.arena {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+.introText {
+  text-align: center;
+  opacity: 0;
+  animation: fadeInText 1.2s ease-out forwards;
+}
+
+@keyframes fadeInText {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+.line {
+  font-family: Georgia, serif;
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff3dc;
+  text-shadow: 
+    0 0 20px rgba(220, 163, 90, 0.8),
+    0 0 40px rgba(220, 163, 90, 0.4),
+    0 4px 20px rgba(0, 0, 0, 0.8);
+}
+
+.legendsContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 20px;
+  min-height: 400px;
+  position: relative;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.legendSlot {
+  flex: 1;
+  max-width: 200px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  opacity: 0;
+  transform: scale(0.5) translateY(100px);
+  animation: legendAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  position: relative;
+}
+
+@keyframes legendAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(150px);
+  }
+  70% {
+    transform: scale(1.1) translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.legendSlot.finalized {
+  animation: none;
+  transform: none;
+}
+
+.legendSlot.finalized .legendContent {
+  animation: settleInPlace 0.6s ease-out forwards;
+}
+
+@keyframes settleInPlace {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.legendContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.legendGlow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(220, 163, 90, 0.4), transparent 70%);
+  box-shadow: 0 0 40px rgba(220, 163, 90, 0.3), inset 0 0 60px rgba(220, 163, 90, 0.2);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(220, 163, 90, 0.3), inset 0 0 60px rgba(220, 163, 90, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(220, 163, 90, 0.5), inset 0 0 80px rgba(220, 163, 90, 0.3);
+  }
+}
+
+/* Team-specific halo colors */
+.legendGlow.cobalionHalo {
+  background: radial-gradient(circle, rgba(100, 180, 255, 0.4), transparent 70%);
+  box-shadow: 0 0 40px rgba(100, 180, 255, 0.3), inset 0 0 60px rgba(100, 180, 255, 0.2);
+  animation: cobalionGlow 2s ease-in-out infinite;
+}
+
+.legendGlow.terrakionHalo {
+  background: radial-gradient(circle, rgba(220, 100, 90, 0.4), transparent 70%);
+  box-shadow: 0 0 40px rgba(220, 100, 90, 0.3), inset 0 0 60px rgba(220, 100, 90, 0.2);
+  animation: terrakionGlow 2s ease-in-out infinite;
+}
+
+.legendGlow.virizionHalo {
+  background: radial-gradient(circle, rgba(100, 220, 120, 0.4), transparent 70%);
+  box-shadow: 0 0 40px rgba(100, 220, 120, 0.3), inset 0 0 60px rgba(100, 220, 120, 0.2);
+  animation: virizionGlow 2s ease-in-out infinite;
+}
+
+@keyframes cobalionGlow {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(100, 180, 255, 0.3), inset 0 0 60px rgba(100, 180, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(100, 180, 255, 0.5), inset 0 0 80px rgba(100, 180, 255, 0.3);
+  }
+}
+
+@keyframes terrakionGlow {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(220, 100, 90, 0.3), inset 0 0 60px rgba(220, 100, 90, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(220, 100, 90, 0.5), inset 0 0 80px rgba(220, 100, 90, 0.3);
+  }
+}
+
+@keyframes virizionGlow {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(100, 220, 120, 0.3), inset 0 0 60px rgba(100, 220, 120, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(100, 220, 120, 0.5), inset 0 0 80px rgba(100, 220, 120, 0.3);
+  }
+}
+
+.legendSprite {
+  position: relative;
+  z-index: 2;
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 15px rgba(220, 163, 90, 0.4));
+  animation: legendBounce 1.2s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+.legendSlot.moving .legendSprite {
+  animation: none;
+}
+
+@keyframes legendBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.nameplate {
+  position: relative;
+  z-index: 3;
+  margin-top: 20px;
+  text-align: center;
+  padding: 12px 20px;
+  background: linear-gradient(180deg, rgba(220, 163, 90, 0.2), rgba(220, 163, 90, 0.05));
+  border: 1px solid rgba(220, 163, 90, 0.4);
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.nameplate h3 {
+  margin: 0;
+  color: #fff3dc;
+  font-family: Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.readyText {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: readyPulse 1s ease-out forwards;
+}
+
+@keyframes readyPulse {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+.joinButton {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 16px 40px;
+  background: linear-gradient(135deg, rgba(220, 163, 90, 0.3), rgba(220, 163, 90, 0.1));
+  border: 2px solid rgba(220, 163, 90, 0.8);
+  border-radius: 8px;
+  color: #dca35a;
+  font-family: Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 20px rgba(220, 163, 90, 0.4);
+}
+
+@keyframes joinButtonPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(220, 163, 90, 0.4);
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(220, 163, 90, 0.6);
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+.joinButton:hover {
+  background: linear-gradient(135deg, rgba(220, 163, 90, 0.4), rgba(220, 163, 90, 0.2));
+  border-color: rgba(220, 163, 90, 1);
+  box-shadow: 0 0 50px rgba(220, 163, 90, 0.8);
+  transform: translateX(-50%) scale(1.08);
+}
+
+.joinButton:active {
+  transform: translateX(-50%) scale(0.98);
+}
+
+.joinButton span {
+  display: block;
+  text-shadow: 0 0 20px rgba(220, 163, 90, 0.6);
+}
+
+.legendsMoving {
+  transition: none;
+}
+
+.legendSlot.moving {
+  /* Base moving state - will be overridden by specific team animations */
+  animation: moveToFinalPosition 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes moveToFinalPosition {
+  0% {
+    transform: scale(1) translateY(0) translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(80px) translateX(0);
+    opacity: 1;
+  }
+}
+
+.legendSlot.moving .legendGlow {
+  animation: none !important;
+}
+
+.legendSlot.moving .legendSprite {
+  animation: none !important;
+}
+
+/* Position each legend correctly */
+.legendSlot.cobalion.moving {
+  animation: moveCobalion 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: 0s !important;
+}
+
+.legendSlot.terrakion.moving {
+  animation: moveTerrakion 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: 0s !important;
+}
+
+.legendSlot.virizion.moving {
+  animation: moveVirizion 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: 0s !important;
+}
+
+@keyframes moveCobalion {
+  0% {
+    transform: scale(1) translateY(0) translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(60px) translateX(-120px);
+    opacity: 1;
+  }
+}
+
+@keyframes moveTerrakion {
+  0% {
+    transform: scale(1) translateY(0) translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(80px) translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes moveVirizion {
+  0% {
+    transform: scale(1) translateY(0) translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(60px) translateX(120px);
+    opacity: 1;
+  }
+}
+
+.readyText span {
+  font-family: Georgia, serif;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #e4be7d;
+  text-shadow: 
+    0 0 20px rgba(228, 190, 125, 0.8),
+    0 0 40px rgba(220, 163, 90, 0.4),
+    0 4px 15px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 768px) {
+  .legendsContainer {
+    gap: 10px;
+    min-height: 320px;
+    padding: 0 10px;
+  }
+
+  .legendSlot {
+    max-width: 120px;
+    height: 200px;
+  }
+
+  .legendSprite {
+    width: 100px;
+    height: 100px;
+  }
+
+  .legendGlow {
+    width: 110px;
+    height: 110px;
+  }
+
+  .line {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+  }
+
+  .readyText span {
+    font-size: 2rem;
+  }
+
+  .joinButton {
+    bottom: 40px;
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
+
+  .arena {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .legendsContainer {
+    gap: 8px;
+    min-height: 280px;
+  }
+
+  .legendSlot {
+    max-width: 100px;
+    height: 160px;
+  }
+
+  .legendSprite {
+    width: 80px;
+    height: 80px;
+  }
+
+  .legendGlow {
+    width: 90px;
+    height: 90px;
+  }
+
+  .nameplate {
+    margin-top: 10px;
+    padding: 8px 12px;
+  }
+
+  .nameplate h3 {
+    font-size: 0.9rem;
+  }
+
+  .joinButton {
+    bottom: 30px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .line {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+  }
+}
