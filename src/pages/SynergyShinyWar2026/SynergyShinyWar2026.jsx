@@ -237,7 +237,6 @@ export default function SynergyShinyWar2026() {
                     <li><span>Honey Tree</span> <strong>+5 points</strong></li>
                     <li><span>Fossil</span> <strong>+5 points</strong></li>
                     <li><span>Swarm</span> <strong>+5 points</strong></li>
-                    <li><span>Fishing</span> <strong>0 points</strong></li>
                   </ul>
                 </div>
               </div>
