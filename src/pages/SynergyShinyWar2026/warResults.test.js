@@ -89,3 +89,32 @@ test('includes removable example hits in sorted hits, captain totals, and team s
   assert.deepEqual(withoutExamples.hits.map(hit => hit.pokemon), ['Eevee'])
   assert.deepEqual(withoutExamples.teams.map(team => team.points), [45, 0])
 })
+
+test('awards 250 points for Legendary Pokemon', () => {
+  const database = {
+    Captain: { shinies: {
+      legendary: { Pokemon: 'Zapdos', date_caught: '2027-01-01T00:00:00Z', Legendary: 'Yes' },
+      normal: { Pokemon: 'Pikachu', date_caught: '2027-01-01T00:00:00Z' },
+    } },
+  }
+  const result = buildWarResults(database, teams, tierPoints, tierLookup)
+  assert.deepEqual(result.hits.map(hit => [hit.pokemon, hit.points]), [
+    ['Zapdos', 250],
+    ['Pikachu', 10],
+  ])
+  assert.deepEqual(result.teams[0].points, 260)
+})
+
+test('Legendary takes precedence over other replacement scores like Alpha', () => {
+  const database = {
+    Captain: { shinies: {
+      legendary: { Pokemon: 'Zapdos', date_caught: '2027-01-01T00:00:00Z', Legendary: 'Yes', Alpha: 'Yes' },
+      alpha: { Pokemon: 'Pikachu', date_caught: '2027-01-01T00:00:00Z', Alpha: 'Yes' },
+    } },
+  }
+  const result = buildWarResults(database, teams, tierPoints, tierLookup)
+  assert.deepEqual(result.hits.map(hit => [hit.pokemon, hit.points]), [
+    ['Zapdos', 250],
+    ['Pikachu', 100],
+  ])
+})

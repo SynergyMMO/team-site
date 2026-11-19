@@ -1,5 +1,6 @@
 const TRAIT_POINTS = {
   Alpha: 100,
+  Legendary: 250,
   'Secret Shiny': 10,
   Egg: 5,
   Safari: 5,
@@ -25,7 +26,10 @@ export function calculateShinyPoints(shiny, tierPoints, tierLookup) {
   let basePts
   let hasReplacementScore
 
-  if (shiny.Alpha?.toLowerCase() === 'yes') {
+  if (shiny.Legendary?.toLowerCase() === 'yes') {
+    basePts = TRAIT_POINTS.Legendary
+    hasReplacementScore = true
+  } else if (shiny.Alpha?.toLowerCase() === 'yes') {
     basePts = TRAIT_POINTS.Alpha
     hasReplacementScore = true
   } else if (shiny.Costumed?.toLowerCase() === 'yes') {
@@ -40,7 +44,7 @@ export function calculateShinyPoints(shiny, tierPoints, tierLookup) {
   let total = basePts
 
   total += Object.entries(TRAIT_POINTS).reduce((acc, [trait, pts]) => {
-    if (hasReplacementScore || trait === 'Alpha' || trait === 'Costumed') return acc
+    if (hasReplacementScore || trait === 'Alpha' || trait === 'Legendary' || trait === 'Costumed') return acc
     if (trait === 'Egg') {
       if (tier && tierPoints[tier] < tierPoints['Tier 1'] && shiny[trait]?.toLowerCase() === 'yes') {
         return acc + pts

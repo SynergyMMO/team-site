@@ -248,19 +248,19 @@ export default function SynergyShinyWar2026() {
               <div className={styles.bonusDaysList}>
                 <BonusDay 
                   name="Type Match Tuesdays"
-                  description="Types will be selected at random, every shiny matching these types are worth (TBD) Points"
+                  description="Types will be selected at random, every shiny matching these types are worth +1 Points"
                 />
                 <BonusDay 
                   name="Fishing Friday"
-                  description="Bonus (TBD) Points to all Fished Shinies"
+                  description="Bonus +3 Points to all Fished Shinies"
                 />
                 <BonusDay 
                   name="Single Saturdays"
-                  description="Bonus (TBD) Points to all single caught Shinies"
+                  description="Bonus +6 Points to all single caught Shinies"
                 />
                 <BonusDay 
                   name="Safari Sunday"
-                  description="Bonus (TBD) Points to any wild caught Safari Shiny"
+                  description="Bonus +10 Points to any wild caught Safari Shiny"
                 />
               </div>
             </div>
