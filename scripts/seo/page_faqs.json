@@ -1,5 +1,23 @@
 {
   "PAGE_FAQS": {
+    "/roaming-legend-routes": [
+      {
+        "question": "What does Roaming Legend Routes show?",
+        "answer": "The tool compares outdoor Johto grass encounters across seasons and times, highlighting tier 0–2 shiny targets, recorded hordes, held items, and catch risks."
+      },
+      {
+        "question": "Can roaming legendaries appear in hordes?",
+        "answer": "No. Hordes are shown for comparison, but roaming legendaries are encountered through singles, not Sweet Scent hordes."
+      },
+      {
+        "question": "Are Surf hordes included?",
+        "answer": "No. The current guide focuses on grass routes and excludes Surf hordes."
+      },
+      {
+        "question": "Are the catch-risk warnings guaranteed?",
+        "answer": "No. Move warnings are estimates based on level-up data and encounter levels; verify them in-game."
+      }
+    ],
     "/time-display": [
       {
         "question": "What is the Time Display page?",

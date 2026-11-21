@@ -86,6 +86,15 @@
       "priority": "0.8"
     }
   },
+  "/roaming-legend-routes": {
+    "title": "Roaming Legend Routes | Team Synergy - PokeMMO",
+    "description": "Compare seasonal Johto roaming legendary routes, grass encounters, hordes, held items, and dangerous moves in PokeMMO.",
+    "image": "https://synergymmo.com/images/openGraph.jpg",
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": "0.7"
+    }
+  },
   "/streamers": {
     "title": "Team Synergy Streamers | Team Synergy - PokeMMO",
     "description": "Watch Team Synergy members stream PokeMMO live on Twitch. Check live status, find active streamers, join the community watching shiny hunts, encounters, and competitive gameplay.",

@@ -36,6 +36,7 @@ const NAV_ITEMS = [
       { to: '/egg-move-calculator/', label: 'Egg Move Calculator' },
       { to: '/player-card-generator/', label: 'Player Card Generator' },
       { to: '/random-pokemon-generator/', label: 'Random Pokemon Generator' },
+      { to: '/roaming-legend-routes/', label: 'Roaming Legend Routes' },
       { to: '/shiny-odds/', label: 'Shiny Odds' },
       { to: '/sprite-recolour/', label: 'Sprite Recolour' },
       { to: '/particle-viewer/', label: 'Particle Viewer' },

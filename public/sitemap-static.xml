@@ -44,6 +44,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://synergymmo.com/roaming-legend-routes/</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://synergymmo.com/streamers/</loc>
     <lastmod>2026-11-19</lastmod>
     <changefreq>daily</changefreq>

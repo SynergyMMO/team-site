@@ -20,6 +20,7 @@ const ShinyWar2025 = lazy(() => import('./pages/ShinyWar2025/ShinyWar2025'))
 const SynergyShinyWars2026 = lazy(() => import('./pages/SynergyShinyWars2026/SynergyShinyWars2026'))
 const SynergyShinyWar2026 = lazy(() => import('./pages/SynergyShinyWar2026/SynergyShinyWar2026'))
 const RoamingLegendariesCalendar = lazy(() => import('./pages/RoamingLegendaries/RoamingLegendariesCalendar'))
+const RoamingLegendRoutes = lazy(() => import('./pages/RoamingLegendRoutes/RoamingLegendRoutes'))
 const SafariZones = lazy(() => import('./pages/SafariZones/SafariZones'))
 const AlteringCaveRotations = lazy(() => import('./pages/AlteringCaveRotations/AlteringCaveRotations'))
 const Resources = lazy(() => import('./pages/Resources/Resources'))
@@ -130,6 +131,7 @@ export default function App() {
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />
             <Route path="/shiny-odds" element={<ShinyOdds />} />
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />
+            <Route path="/roaming-legend-routes" element={<RoamingLegendRoutes />} />
             <Route path="/safari-zones" element={<SafariZones />} />
             <Route path="/altering-cave-rotations" element={<AlteringCaveRotations />} />
             <Route path="/dex-helper" element={<DexHelper />} />
